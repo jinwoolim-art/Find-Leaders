@@ -613,9 +613,9 @@
 
             <!-- 메뉴 리스트 -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl border border-[#e7ebf3] dark:border-gray-700 overflow-hidden">
-                <button onclick="openMyInterestsCard()" class="w-full flex items-center gap-3 px-5 py-4 text-left border-b border-[#e7ebf3] dark:border-gray-700 active:bg-slate-50 dark:active:bg-slate-700">
-                    <span class="material-symbols-outlined text-slate-500 text-xl">bookmark</span>
-                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">관심 후보 목록</span>
+                <button onclick="openMyPolicyInterestsCard()" class="w-full flex items-center gap-3 px-5 py-4 text-left border-b border-[#e7ebf3] dark:border-gray-700 active:bg-slate-50 dark:active:bg-slate-700">
+                    <span class="material-symbols-outlined text-slate-500 text-xl">thumb_up</span>
+                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">공감 공약 목록</span>
                     <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
                 </button>
                 <button onclick="openMyReportsCard()" class="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-slate-50 dark:active:bg-slate-700">
@@ -1322,6 +1322,27 @@ function findCandidateById(id) {
         if (found) return found;
     }
     return null;
+}
+
+// ============ ELECTION TYPE (PHASE 9) ============
+const ELECTION_TYPE_LABELS = {
+    governor: '시·도지사',
+    mayor: '구청장',
+    // TODO: city(시장), county(군수), city_council, province_council,
+    // superintendent 등 추가 예정
+};
+
+// 후보자 id → candidateData 그룹 키 ("governor" / "mayor" ...) 역조회
+function getElectionType(id) {
+    for (const key of Object.keys(candidateData)) {
+        if (candidateData[key].some(c => c.id === id)) return key;
+    }
+    return null;
+}
+
+function getElectionTypeLabel(id) {
+    const type = getElectionType(id);
+    return (type && ELECTION_TYPE_LABELS[type]) || '';
 }
 
 // ============ NAVIGATION ============
@@ -3019,12 +3040,17 @@ function renderInterestsPage() {
         const c = findCandidateById(id);
         if (!c) return '';
         const pc = partyColors[c.partyColor] || '#6b7280';
+        const typeLabel = getElectionTypeLabel(id);
+        const typeBadge = typeLabel ? `<span class="inline-flex items-center px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-medium flex-shrink-0">${typeLabel} 후보</span>` : '';
         return `
             <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-[#e7ebf3] dark:border-gray-700">
                 <div class="flex items-center gap-3 mb-3">
                     <div class="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0" style="background:${pc}">${c.name.charAt(0)}</div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-bold text-slate-700 dark:text-slate-200 truncate">${c.name} <span class="text-xs font-normal text-slate-400">${c.party}</span></p>
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <p class="text-sm font-bold text-slate-700 dark:text-slate-200 truncate">${c.name} <span class="text-xs font-normal text-slate-400">${c.party}</span></p>
+                            ${typeBadge}
+                        </div>
                         <p class="text-xs text-slate-400 mt-0.5 truncate">${c.slogan}</p>
                     </div>
                     <button onclick="removeInterest(${c.id})" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 flex-shrink-0" aria-label="관심 해제">
@@ -3154,14 +3180,17 @@ function renderPolicyInterestsPage() {
             `;
         }).join('');
 
+        const typeLabel = getElectionTypeLabel(id);
+        const typeBadge = typeLabel ? `<span class="inline-flex items-center px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-medium flex-shrink-0">${escapeHtml(typeLabel)} 후보</span>` : '';
         return `
             <div class="rounded-2xl border border-[#e7ebf3] dark:border-gray-700 overflow-hidden">
                 <div class="bg-white dark:bg-slate-800 px-4 py-3 flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0" style="background:${pc}">${c.name.charAt(0)}</div>
                     <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2 flex-wrap">
                             <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${escapeHtml(c.name)}</p>
                             <span class="px-1.5 py-0.5 rounded text-[10px] font-bold text-white" style="background:${pc}">기호 ${c.number}</span>
+                            ${typeBadge}
                         </div>
                         <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${escapeHtml(c.party)}</p>
                     </div>
@@ -3495,6 +3524,7 @@ const translations = {
         reports: '신고',
         followList: '관심 후보 목록',
         policyInterests: '공감 공약',
+        policyInterestsList: '공감 공약 목록',
         removeInterest: '공감 해제',
         noPolicyInterests: '공감한 공약이 없습니다',
         likeHistory: '관심 후보 목록',
@@ -3555,6 +3585,7 @@ const translations = {
         reports: 'Reports',
         followList: 'Interested Candidates',
         policyInterests: 'Liked Policies',
+        policyInterestsList: 'Liked Policies List',
         removeInterest: 'Remove',
         noPolicyInterests: 'No policies liked yet',
         likeHistory: 'Bookmarked Candidates',
