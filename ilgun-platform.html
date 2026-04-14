@@ -1576,6 +1576,80 @@ function showCompare() {
     navigateTo('page-compare');
 }
 
+// ============ POLICY INTEREST (5-B) ============
+// TODO: 추후 서버 API로 실제 집계값 교체
+// 각 후보자 × 공약 키(summary/jobs/vision/education)에 대한 고정 초기 공감수 (50~400)
+const POLICY_INTEREST_COUNTS = {
+    '1':   { summary: 287, jobs: 342, vision: 198, education: 256 },
+    '2':   { summary: 213, jobs: 176, vision: 308, education: 231 },
+    '3':   { summary: 124, jobs: 95,  vision: 167, education: 88  },
+    '101': { summary: 245, jobs: 312, vision: 178, education: 267 },
+    '102': { summary: 198, jobs: 156, vision: 289, education: 234 },
+    '103': { summary: 67,  jobs: 112, vision: 78,  education: 54  },
+    '104': { summary: 189, jobs: 221, vision: 145, education: 203 }
+};
+
+let policyInterests = JSON.parse(localStorage.getItem('policyInterests') || '{}');
+
+function getPolicyInterestCount(candidateId, policyKey) {
+    const row = POLICY_INTEREST_COUNTS[String(candidateId)];
+    return (row && row[policyKey]) || 0;
+}
+
+function formatPolicyCount(n) {
+    if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+    return String(n);
+}
+
+function togglePolicyInterest(candidateId, policyKey, btnEl) {
+    const key = `candidate_${candidateId}`;
+    if (!policyInterests[key]) policyInterests[key] = [];
+    const arr = policyInterests[key];
+    const idx = arr.indexOf(policyKey);
+    let active;
+    if (idx === -1) { arr.push(policyKey); active = true; }
+    else { arr.splice(idx, 1); active = false; }
+    localStorage.setItem('policyInterests', JSON.stringify(policyInterests));
+
+    // 버튼 상태 업데이트
+    const baseCount = getPolicyInterestCount(candidateId, policyKey);
+    const newCount = baseCount + (active ? 1 : 0);
+    const countEl = btnEl.querySelector('.policy-interest-count');
+    if (countEl) countEl.textContent = formatPolicyCount(newCount);
+    const iconEl = btnEl.querySelector('.material-symbols-outlined');
+    if (active) {
+        btnEl.classList.remove('bg-white','dark:bg-slate-700','text-slate-600','dark:text-slate-300','border-[#e7ebf3]','dark:border-gray-600');
+        btnEl.classList.add('bg-primary','text-white','border-primary');
+        if (iconEl) iconEl.setAttribute('style', "font-variation-settings:'FILL' 1");
+    } else {
+        btnEl.classList.add('bg-white','dark:bg-slate-700','text-slate-600','dark:text-slate-300','border-[#e7ebf3]','dark:border-gray-600');
+        btnEl.classList.remove('bg-primary','text-white','border-primary');
+        if (iconEl) iconEl.removeAttribute('style');
+    }
+}
+
+// ============ DETAIL TAB (5-A) ============
+function switchDetailTab(tab) {
+    const portfolio = document.getElementById('detail-panel-portfolio');
+    const policy = document.getElementById('detail-panel-policy');
+    const tabP = document.getElementById('detail-tab-portfolio');
+    const tabPol = document.getElementById('detail-tab-policy');
+    if (!portfolio || !policy || !tabP || !tabPol) return;
+    const activeCls = ['bg-white','dark:bg-slate-700','text-primary','shadow-sm'];
+    const inactiveCls = ['text-slate-500','dark:text-slate-400'];
+    if (tab === 'portfolio') {
+        portfolio.classList.remove('hidden');
+        policy.classList.add('hidden');
+        tabP.classList.add(...activeCls); tabP.classList.remove(...inactiveCls);
+        tabPol.classList.remove(...activeCls); tabPol.classList.add(...inactiveCls);
+    } else {
+        portfolio.classList.add('hidden');
+        policy.classList.remove('hidden');
+        tabPol.classList.add(...activeCls); tabPol.classList.remove(...inactiveCls);
+        tabP.classList.remove(...activeCls); tabP.classList.add(...inactiveCls);
+    }
+}
+
 function openDetail(id) {
     const c = findCandidateById(id);
     if (!c) return;
@@ -1602,25 +1676,51 @@ function openDetail(id) {
         </div>`
     ).join('');
 
-    const policyHtml = c.policies ? `
-        <div class="space-y-3">
-            <div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-[#e7ebf3] dark:border-gray-700">
-                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${c.policies.summary}</p>
-            </div>
-            ${c.policies.jobs ? `<div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-[#e7ebf3] dark:border-gray-700">
-                <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1.5"><span class="material-symbols-outlined text-sm align-middle mr-1" style="color:${pc}">work</span>일자리</h4>
-                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${c.policies.jobs}</p>
-            </div>` : ''}
-            ${c.policies.vision ? `<div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-[#e7ebf3] dark:border-gray-700">
-                <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1.5"><span class="material-symbols-outlined text-sm align-middle mr-1" style="color:${pc}">visibility</span>비전</h4>
-                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${c.policies.vision}</p>
-            </div>` : ''}
-            ${c.policies.education ? `<div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-[#e7ebf3] dark:border-gray-700">
-                <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1.5"><span class="material-symbols-outlined text-sm align-middle mr-1" style="color:${pc}">school</span>교육</h4>
-                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${c.policies.education}</p>
-            </div>` : ''}
-        </div>
+    // 공약 카드 렌더 (5-B 공감 버튼 포함)
+    const policyKeys = c.policies ? ['summary','jobs','vision','education'].filter(k => c.policies[k]) : [];
+    const policyLabels = { summary: '정책 요약', jobs: '일자리', vision: '비전', education: '교육' };
+    const policyIcons = { summary: 'description', jobs: 'work', vision: 'visibility', education: 'school' };
+    const interestedSet = new Set((policyInterests[`candidate_${c.id}`] || []));
+    const policyCards = policyKeys.map(k => {
+        const count = getPolicyInterestCount(c.id, k);
+        const active = interestedSet.has(k);
+        return `<div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-[#e7ebf3] dark:border-gray-700">
+            <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1.5"><span class="material-symbols-outlined text-sm align-middle mr-1" style="color:${pc}">${policyIcons[k]}</span>${policyLabels[k]}</h4>
+            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-3">${c.policies[k]}</p>
+            <button onclick="togglePolicyInterest(${c.id}, '${k}', this)" data-policy-key="${k}" class="policy-interest-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 ${active ? 'bg-primary text-white border border-primary' : 'bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-[#e7ebf3] dark:border-gray-600'}">
+                <span class="material-symbols-outlined text-[14px]" ${active ? `style="font-variation-settings:'FILL' 1"` : ''}>thumb_up</span>
+                <span>공감 <span class="policy-interest-count">${formatPolicyCount(count + (active ? 1 : 0))}</span></span>
+            </button>
+        </div>`;
+    }).join('');
+
+    const policyHtml = policyCards ? `
+        <p class="text-xs text-slate-400 mb-3">이 정책에 관심을 표시할 수 있습니다.</p>
+        <div class="space-y-3">${policyCards}</div>
     ` : '';
+
+    const portfolioHtml = `
+        ${c.greeting ? `<section>
+            <h3 class="flex items-center gap-2 text-base font-bold text-slate-800 dark:text-white mb-3">
+                <span class="material-symbols-outlined" style="color:${pc}">waving_hand</span> 인사말
+            </h3>
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-[#e7ebf3] dark:border-gray-700">
+                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${c.greeting}</p>
+            </div>
+        </section>` : ''}
+        ${careerHtml ? `<section>
+            <h3 class="flex items-center gap-2 text-base font-bold text-slate-800 dark:text-white mb-3">
+                <span class="material-symbols-outlined" style="color:${pc}">timeline</span> 주요 약력
+            </h3>
+            <div class="space-y-3 pl-1">${careerHtml}</div>
+        </section>` : ''}
+        ${achieveHtml ? `<section>
+            <h3 class="flex items-center gap-2 text-base font-bold text-slate-800 dark:text-white mb-3">
+                <span class="material-symbols-outlined" style="color:${pc}">emoji_events</span> 주요 성과
+            </h3>
+            <div class="space-y-2">${achieveHtml}</div>
+        </section>` : ''}
+    `;
 
     document.getElementById('detail-content').innerHTML = `
         <!-- 프로필 카드 -->
@@ -1642,40 +1742,26 @@ function openDetail(id) {
             <p class="text-sm font-semibold italic text-slate-600 dark:text-slate-300">"${c.slogan}"</p>
         </div>
 
+        <!-- 탭 바 -->
+        <div class="sticky top-[57px] z-40 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 pt-3">
+            <div class="flex bg-slate-100 dark:bg-slate-800 rounded-xl p-1 gap-1">
+                <button onclick="switchDetailTab('portfolio')" id="detail-tab-portfolio" class="flex-1 py-2 rounded-lg text-slate-500 dark:text-slate-400 text-xs font-bold transition-all">
+                    포트폴리오
+                </button>
+                <button onclick="switchDetailTab('policy')" id="detail-tab-policy" class="flex-1 py-2 rounded-lg bg-white dark:bg-slate-700 text-primary shadow-sm text-xs font-bold transition-all">
+                    핵심공약 ${policyKeys.length}
+                </button>
+            </div>
+        </div>
+
+        <!-- 탭 패널 -->
         <div class="px-4 py-5 space-y-6">
-            <!-- 인사말 -->
-            ${c.greeting ? `<section>
-                <h3 class="flex items-center gap-2 text-base font-bold text-slate-800 dark:text-white mb-3">
-                    <span class="material-symbols-outlined" style="color:${pc}">waving_hand</span> 인사말
-                </h3>
-                <div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-[#e7ebf3] dark:border-gray-700">
-                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${c.greeting}</p>
-                </div>
-            </section>` : ''}
-
-            <!-- 주요 약력 -->
-            ${careerHtml ? `<section>
-                <h3 class="flex items-center gap-2 text-base font-bold text-slate-800 dark:text-white mb-3">
-                    <span class="material-symbols-outlined" style="color:${pc}">timeline</span> 주요 약력
-                </h3>
-                <div class="space-y-3 pl-1">${careerHtml}</div>
-            </section>` : ''}
-
-            <!-- 주요 성과 -->
-            ${achieveHtml ? `<section>
-                <h3 class="flex items-center gap-2 text-base font-bold text-slate-800 dark:text-white mb-3">
-                    <span class="material-symbols-outlined" style="color:${pc}">emoji_events</span> 주요 성과
-                </h3>
-                <div class="space-y-2">${achieveHtml}</div>
-            </section>` : ''}
-
-            <!-- 핵심 공약 -->
-            ${policyHtml ? `<section>
-                <h3 class="flex items-center gap-2 text-base font-bold text-slate-800 dark:text-white mb-3">
-                    <span class="material-symbols-outlined" style="color:${pc}">description</span> 핵심 공약
-                </h3>
+            <div id="detail-panel-portfolio" class="space-y-6 hidden">
+                ${portfolioHtml}
+            </div>
+            <div id="detail-panel-policy" class="space-y-3">
                 ${policyHtml}
-            </section>` : ''}
+            </div>
 
             <!-- 하단 버튼 -->
             <div class="flex gap-3 pt-2">
