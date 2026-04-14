@@ -145,7 +145,7 @@
                 <span class="material-symbols-outlined hidden dark:block">light_mode</span>
             </button>
         </header>
-        <main class="flex-1 flex flex-col px-6">
+        <main class="flex-1 flex flex-col px-6 pb-24">
             <div class="flex-1 flex flex-col items-center justify-center py-10">
                 <div class="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center mb-8">
                     <span class="material-symbols-outlined text-primary text-5xl">person_search</span>
@@ -194,7 +194,7 @@
                 </button>
             </div>
         </header>
-        <main class="flex-1 bg-background-light dark:bg-background-dark px-4 pb-10">
+        <main class="flex-1 bg-background-light dark:bg-background-dark px-4 pb-24">
             <!-- 거주 지역 선택 -->
             <div class="mt-4 p-4 bg-white dark:bg-slate-800 rounded-2xl border border-[#e7ebf3] dark:border-gray-700 shadow-sm">
                 <div class="flex items-center gap-3 mb-3">
@@ -343,25 +343,6 @@
             </button>
         </div>
 
-        <!-- Bottom nav -->
-        <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white dark:bg-background-dark border-t border-[#e7ebf3] dark:border-gray-800 px-6 py-2 flex items-center justify-around z-50 bottom-nav" id="main-bottom-nav">
-            <a href="#" onclick="switchBottomTab(this, 'page-home'); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500 active" data-tab="page-home">
-                <span class="material-symbols-outlined text-[22px]">home</span>
-                <span class="text-[12px] font-semibold">홈</span>
-            </a>
-            <a href="#" onclick="switchBottomTab(this, 'page-election-type'); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500" data-tab="page-candidates">
-                <span class="material-symbols-outlined text-[22px]">person_search</span>
-                <span class="text-[12px] font-semibold">후보자</span>
-            </a>
-            <a href="#" onclick="switchBottomTab(this, 'page-follow'); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500" data-tab="page-follow">
-                <span class="material-symbols-outlined text-[22px]">favorite_border</span>
-                <span class="text-[12px] font-semibold">팔로우</span>
-            </a>
-            <a href="#" onclick="switchBottomTab(this, 'page-my'); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500" data-tab="page-my">
-                <span class="material-symbols-outlined text-[22px]">person_outline</span>
-                <span class="text-[12px] font-semibold">마이</span>
-            </a>
-        </nav>
     </div>
 
     <!-- ==================== PAGE 3: AI CHAT ==================== -->
@@ -866,7 +847,7 @@
             </div>
         </header>
 
-        <main class="flex-1 bg-background-light dark:bg-background-dark pb-10">
+        <main class="flex-1 bg-background-light dark:bg-background-dark pb-24">
             <!-- API 설정 배너 -->
             <div id="api-banner" class="mx-4 mt-4 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl">
                 <div class="flex items-start gap-3">
@@ -949,7 +930,7 @@
             </div>
         </header>
 
-        <main class="flex-1 bg-background-light dark:bg-background-dark pb-10">
+        <main class="flex-1 bg-background-light dark:bg-background-dark pb-24">
             <!-- 네이버 API 설정 배너 -->
             <div id="news-api-banner" class="mx-4 mt-4 p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl">
                 <div class="flex items-start gap-3">
@@ -986,6 +967,26 @@
             </div>
         </main>
     </div>
+
+    <!-- ==================== GLOBAL BOTTOM NAV (모든 페이지 공통) ==================== -->
+    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white dark:bg-background-dark border-t border-[#e7ebf3] dark:border-gray-800 px-6 py-2 flex items-center justify-around z-50 bottom-nav" id="main-bottom-nav">
+        <a href="#" onclick="switchBottomTab(this, 'page-home'); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500 active" data-tab="page-home">
+            <span class="material-symbols-outlined text-[22px]">home</span>
+            <span class="text-[12px] font-semibold">홈</span>
+        </a>
+        <a href="#" onclick="switchBottomTab(this, 'page-election-type'); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500" data-tab="page-candidates">
+            <span class="material-symbols-outlined text-[22px]">person_search</span>
+            <span class="text-[12px] font-semibold">후보자</span>
+        </a>
+        <a href="#" onclick="switchBottomTab(this, 'page-follow'); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500" data-tab="page-follow">
+            <span class="material-symbols-outlined text-[22px]">favorite_border</span>
+            <span class="text-[12px] font-semibold">팔로우</span>
+        </a>
+        <a href="#" onclick="switchBottomTab(this, 'page-my'); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500" data-tab="page-my">
+            <span class="material-symbols-outlined text-[22px]">person_outline</span>
+            <span class="text-[12px] font-semibold">마이</span>
+        </a>
+    </nav>
 
 </div>
 
@@ -1212,10 +1213,16 @@ function findCandidateById(id) {
 }
 
 // ============ NAVIGATION ============
+// 하단 네비게이션을 숨길 페이지 (몰입형 or 자체 하단 UI 보유)
+const BOTTOM_NAV_HIDDEN_PAGES = new Set(['page-chat', 'page-consent']);
+
 function navigateTo(pageId, isBack = false) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active', 'page-enter', 'page-enter-back'));
     const page = document.getElementById(pageId);
     page.classList.add('active', isBack ? 'page-enter-back' : 'page-enter');
+    // 하단 네비 표시 토글
+    const nav = document.getElementById('main-bottom-nav');
+    if (nav) nav.style.display = BOTTOM_NAV_HIDDEN_PAGES.has(pageId) ? 'none' : '';
 }
 
 // ============ 거주 지역 선택 (GPS 수집 금지) ============
