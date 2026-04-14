@@ -803,39 +803,91 @@
         </div>
     </div>
 
-    <!-- ==================== MODAL: REPORT ==================== -->
+    <!-- ==================== MODAL: REPORT (5-F 전면 보강) ==================== -->
     <div id="report-modal" class="fixed inset-0 z-[100] flex items-end justify-center hidden" onclick="if(event.target===this)closeReportModal()">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-        <div class="relative w-full max-w-[480px] bg-white dark:bg-slate-800 rounded-t-3xl p-6 pb-8 animate-slideUp">
-            <div class="w-10 h-1 bg-slate-200 dark:bg-slate-600 rounded-full mx-auto mb-5"></div>
-            <h2 class="text-lg font-bold text-slate-800 dark:text-white mb-1">이 답변을 신고하시겠습니까?</h2>
-            <p class="text-xs text-slate-400 mb-5">부적절한 답변을 신고해주시면 검토 후 조치합니다.</p>
-            <div class="space-y-2.5" id="report-reasons">
-                <label class="flex items-center gap-3 p-3.5 rounded-xl border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                    <input type="radio" name="report-reason" value="허위 정보" class="accent-primary w-4 h-4" onchange="document.getElementById('report-etc-input').classList.add('hidden')">
-                    <span class="text-sm font-medium text-slate-700 dark:text-slate-200">허위 정보</span>
-                </label>
-                <label class="flex items-center gap-3 p-3.5 rounded-xl border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                    <input type="radio" name="report-reason" value="비방/모욕" class="accent-primary w-4 h-4" onchange="document.getElementById('report-etc-input').classList.add('hidden')">
-                    <span class="text-sm font-medium text-slate-700 dark:text-slate-200">비방 / 모욕</span>
-                </label>
-                <label class="flex items-center gap-3 p-3.5 rounded-xl border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                    <input type="radio" name="report-reason" value="선거법 위반 의심" class="accent-primary w-4 h-4" onchange="document.getElementById('report-etc-input').classList.add('hidden')">
-                    <span class="text-sm font-medium text-slate-700 dark:text-slate-200">선거법 위반 의심</span>
-                </label>
-                <label class="flex items-center gap-3 p-3.5 rounded-xl border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                    <input type="radio" name="report-reason" value="부적절한 발언" class="accent-primary w-4 h-4" onchange="document.getElementById('report-etc-input').classList.add('hidden')">
-                    <span class="text-sm font-medium text-slate-700 dark:text-slate-200">부적절한 발언</span>
-                </label>
-                <label class="flex items-center gap-3 p-3.5 rounded-xl border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                    <input type="radio" name="report-reason" value="기타" class="accent-primary w-4 h-4" onchange="document.getElementById('report-etc-input').classList.remove('hidden')">
-                    <span class="text-sm font-medium text-slate-700 dark:text-slate-200">기타</span>
-                </label>
-                <textarea id="report-etc-input" class="hidden w-full mt-1 p-3 rounded-xl border border-[#e7ebf3] dark:border-gray-700 bg-slate-50 dark:bg-slate-700 text-sm text-slate-700 dark:text-slate-200 resize-none focus:outline-none focus:border-primary" rows="2" placeholder="신고 사유를 입력해주세요"></textarea>
+        <div class="relative w-full max-w-[480px] max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-800 rounded-t-3xl p-6 pb-6 animate-slideUp">
+            <div class="w-10 h-1 bg-slate-200 dark:bg-slate-600 rounded-full mx-auto mb-4"></div>
+            <h2 class="text-lg font-bold text-slate-800 dark:text-white mb-1">답변 신고하기</h2>
+            <p class="text-xs text-slate-400 mb-4">부적절한 답변을 신고해주시면 검토 후 조치합니다.</p>
+
+            <!-- 신고 대상 답변 -->
+            <div class="mb-4">
+                <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1.5">신고 대상 답변</p>
+                <div id="report-target-content" class="p-3 rounded-lg bg-slate-100 dark:bg-slate-700 text-xs text-slate-600 dark:text-slate-300 max-h-24 overflow-y-auto whitespace-pre-line leading-relaxed"></div>
             </div>
-            <div class="flex gap-3 mt-6">
+
+            <!-- 카테고리 그룹 1: 후보자 관련 -->
+            <div class="mb-4">
+                <h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">📝 후보자 관련 <span class="text-[10px] font-normal text-slate-400">(후보자 대시보드로 전달)</span></h3>
+                <div class="space-y-2" id="report-cat-candidate">
+                    <label class="report-radio flex items-center gap-2.5 p-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                        <input type="radio" name="report-category" value="POLICY_ERROR" data-group="candidate" class="accent-primary w-4 h-4" onchange="updateReportSubmitGate()">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200">정책 내용 오류</span>
+                    </label>
+                    <label class="report-radio flex items-center gap-2.5 p-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                        <input type="radio" name="report-category" value="POLICY_MISMATCH" data-group="candidate" class="accent-primary w-4 h-4" onchange="updateReportSubmitGate()">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200">공약 정보 불일치</span>
+                    </label>
+                    <label class="report-radio flex items-center gap-2.5 p-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                        <input type="radio" name="report-category" value="ANSWER_INAPPROPRIATE" data-group="candidate" class="accent-primary w-4 h-4" onchange="updateReportSubmitGate()">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200">답변 내용 부적절</span>
+                    </label>
+                    <label class="report-radio flex items-center gap-2.5 p-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                        <input type="radio" name="report-category" value="INFO_OUTDATED" data-group="candidate" class="accent-primary w-4 h-4" onchange="updateReportSubmitGate()">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200">정보 업데이트 필요</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 카테고리 그룹 2: 시스템/법률 관련 -->
+            <div class="mb-4">
+                <h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">🚨 시스템/법률 관련 <span class="text-[10px] font-normal text-slate-400">(관리자 대시보드로 전달)</span></h3>
+                <div class="space-y-2" id="report-cat-system">
+                    <label class="report-radio flex items-center gap-2.5 p-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-red-400 has-[:checked]:bg-red-50 dark:has-[:checked]:bg-red-900/10">
+                        <input type="radio" name="report-category" value="AI_MALFUNCTION" data-group="system" class="accent-red-500 w-4 h-4" onchange="updateReportSubmitGate()">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200">AI 오작동/비정상 응답</span>
+                    </label>
+                    <label class="report-radio flex items-center gap-2.5 p-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-red-400 has-[:checked]:bg-red-50 dark:has-[:checked]:bg-red-900/10">
+                        <input type="radio" name="report-category" value="FALSE_INFO" data-group="system" class="accent-red-500 w-4 h-4" onchange="updateReportSubmitGate()">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200">허위사실 공표 의심</span>
+                    </label>
+                    <label class="report-radio flex items-center gap-2.5 p-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-red-400 has-[:checked]:bg-red-50 dark:has-[:checked]:bg-red-900/10">
+                        <input type="radio" name="report-category" value="OPPONENT_DEFAMATION" data-group="system" class="accent-red-500 w-4 h-4" onchange="updateReportSubmitGate()">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200">타 후보 비방</span>
+                    </label>
+                    <label class="report-radio flex items-center gap-2.5 p-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-red-400 has-[:checked]:bg-red-50 dark:has-[:checked]:bg-red-900/10">
+                        <input type="radio" name="report-category" value="HATE_SPEECH" data-group="system" class="accent-red-500 w-4 h-4" onchange="updateReportSubmitGate()">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200">혐오/차별 표현</span>
+                    </label>
+                    <label class="report-radio flex items-center gap-2.5 p-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-red-400 has-[:checked]:bg-red-50 dark:has-[:checked]:bg-red-900/10">
+                        <input type="radio" name="report-category" value="ELECTION_LAW_VIOLATION" data-group="system" class="accent-red-500 w-4 h-4" onchange="updateReportSubmitGate()">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200">선거법 위반 의심</span>
+                    </label>
+                    <label class="report-radio flex items-center gap-2.5 p-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-red-400 has-[:checked]:bg-red-50 dark:has-[:checked]:bg-red-900/10">
+                        <input type="radio" name="report-category" value="SYSTEM_ERROR" data-group="system" class="accent-red-500 w-4 h-4" onchange="updateReportSubmitGate()">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200">시스템 오류</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 상세 내용 -->
+            <div class="mb-3">
+                <div class="flex items-center justify-between mb-1.5">
+                    <label class="text-xs font-bold text-slate-700 dark:text-slate-300">상세 내용 <span class="text-red-500">*</span></label>
+                    <span id="report-char-counter" class="text-[11px] text-slate-400">0/500</span>
+                </div>
+                <textarea id="report-description" minlength="20" maxlength="500" rows="4" oninput="updateReportSubmitGate()" placeholder="구체적인 신고 사유를 입력해 주세요.&#10;예: 답변에서 언급된 정책 수치가 선관위 공보물과 다릅니다.&#10;최소 20자 이상 입력해주세요." class="w-full p-3 rounded-lg border border-[#e7ebf3] dark:border-gray-700 bg-white dark:bg-slate-700 text-sm text-slate-700 dark:text-slate-200 resize-none focus:outline-none focus:border-primary leading-relaxed"></textarea>
+            </div>
+
+            <!-- 경고 문구 -->
+            <div class="p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg mb-4">
+                <p class="text-[11px] text-amber-800 dark:text-amber-300 leading-relaxed">⚠️ 허위 신고 시 서비스 이용이 제한될 수 있습니다.<br/>신고 내용은 사안의 성격에 따라 후보자 또는 관리자에게 전달됩니다.</p>
+            </div>
+
+            <div class="flex gap-3">
                 <button onclick="closeReportModal()" class="flex-1 py-3 rounded-xl border border-[#e7ebf3] dark:border-gray-700 text-sm font-bold text-slate-500 active:scale-95 transition-transform">취소</button>
-                <button onclick="submitReport()" class="flex-1 py-3 rounded-xl bg-red-500 text-white text-sm font-bold active:scale-95 transition-transform">신고 제출</button>
+                <button id="report-submit-btn" onclick="submitReport()" disabled class="flex-1 py-3 rounded-xl bg-red-500 text-white text-sm font-bold active:scale-95 transition-transform disabled:bg-slate-300 dark:disabled:bg-slate-600 disabled:cursor-not-allowed">신고 제출</button>
             </div>
         </div>
     </div>
@@ -1820,11 +1872,23 @@ function openChat(id) {
 
 let msgIdCounter = 0;
 
+function resetChat() {
+    if (!currentChatCandidate) return;
+    const messages = document.getElementById('chat-messages');
+    if (!messages) return;
+    messages.innerHTML = '';
+    addBotMessage(`반갑습니다. 후보자 ${currentChatCandidate.name}의 AI 아바타입니다.\n제가 가진 정책 비전이나 공약에 대해 무엇이든 물어보세요.`);
+    showToast('대화가 초기화되었습니다');
+}
+
 function addBotMessage(text, showReactions = true) {
     const messages = document.getElementById('chat-messages');
     const div = document.createElement('div');
     const msgId = ++msgIdCounter;
-    div.className = 'flex items-start gap-3';
+    div.className = 'msg-wrapper flex items-start gap-3 relative';
+    div.id = `msg-${msgId}`;
+    div.dataset.msgId = String(msgId);
+    div.dataset.msgContent = text;
 
     const reactionsHtml = showReactions ? `
         <div class="flex items-center gap-1 mt-1.5 ml-1" id="reactions-${msgId}">
@@ -1858,9 +1922,38 @@ function addBotMessage(text, showReactions = true) {
             </div>
             ${reactionsHtml}
         </div>
+        <button class="msg-more-btn absolute top-0 right-0 p-1 rounded-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 shadow-sm" onclick="showMsgMenu(${msgId}, this)" aria-label="더보기">
+            <span class="material-symbols-outlined text-slate-500 dark:text-slate-300 text-[16px]">more_horiz</span>
+        </button>
     `;
     messages.appendChild(div);
     messages.scrollTop = messages.scrollHeight;
+}
+
+function showMsgMenu(msgId, btnEl) {
+    // 기존 메뉴 닫기
+    document.querySelectorAll('.msg-popover').forEach(el => el.remove());
+    const wrapper = document.getElementById(`msg-${msgId}`);
+    if (!wrapper) return;
+    const popover = document.createElement('div');
+    popover.className = 'msg-popover absolute top-8 right-0 z-40 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-1 min-w-[140px]';
+    popover.innerHTML = `
+        <button onclick="document.querySelectorAll('.msg-popover').forEach(el => el.remove()); openReportModal(${msgId})" class="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700">
+            <span class="material-symbols-outlined text-red-400 text-[18px]">flag</span>
+            <span>신고</span>
+        </button>
+    `;
+    wrapper.appendChild(popover);
+    // 외부 클릭 시 닫기
+    setTimeout(() => {
+        const off = (e) => {
+            if (!popover.contains(e.target) && e.target !== btnEl) {
+                popover.remove();
+                document.removeEventListener('click', off);
+            }
+        };
+        document.addEventListener('click', off);
+    }, 0);
 }
 
 function toggleReaction(btn, msgId, type) {
@@ -2965,46 +3058,142 @@ function openPollingStation() {
     window.open('https://www.nec.go.kr', '_blank');
 }
 
-// ============ REPORT (채팅 답변 단위) ============
+// ============ REPORT (5-F 전면 보강) ============
+// 카테고리 → 라우팅 대상 매핑
+const REPORT_CATEGORY_ROUTE = {
+    POLICY_ERROR: 'candidate',
+    POLICY_MISMATCH: 'candidate',
+    ANSWER_INAPPROPRIATE: 'candidate',
+    INFO_OUTDATED: 'candidate',
+    AI_MALFUNCTION: 'admin',
+    FALSE_INFO: 'admin',
+    OPPONENT_DEFAMATION: 'admin',
+    HATE_SPEECH: 'admin',
+    ELECTION_LAW_VIOLATION: 'admin',
+    SYSTEM_ERROR: 'admin'
+};
+
 let reportTargetMsgId = null;
+let reportTargetContent = '';
+// 최근 1분 내 신고 타임스탬프 (ms)
+let reportCooldown = [];
+
+function getReportedMsgIdsSet() {
+    return new Set(reportHistory.map(r => r.targetMessageId));
+}
 
 function openReportModal(msgId) {
-    reportTargetMsgId = msgId;
-    // 라디오 초기화
-    document.querySelectorAll('#report-reasons input[type=radio]').forEach(r => r.checked = false);
-    document.getElementById('report-etc-input').classList.add('hidden');
-    document.getElementById('report-etc-input').value = '';
+    // msgId 수집 및 메시지 내용 획득
+    const wrapper = document.getElementById(`msg-${msgId}`);
+    if (!wrapper) {
+        showToast('신고 대상 메시지를 찾을 수 없습니다');
+        return;
+    }
+    const targetKey = `msg-${msgId}`;
+
+    // 중복 신고 차단
+    if (getReportedMsgIdsSet().has(targetKey)) {
+        showToast('이미 신고한 답변입니다');
+        return;
+    }
+
+    // 1분 쿨다운: 60초 초과 기록 제거 후 3회 이상이면 차단
+    const now = Date.now();
+    reportCooldown = reportCooldown.filter(ts => now - ts < 60000);
+    if (reportCooldown.length >= 3) {
+        showToast('잠시 후 다시 시도해 주세요');
+        return;
+    }
+
+    reportTargetMsgId = targetKey;
+    reportTargetContent = wrapper.dataset.msgContent || '';
+
+    // 폼 초기화
+    document.querySelectorAll('#report-modal input[name="report-category"]').forEach(r => r.checked = false);
+    const desc = document.getElementById('report-description');
+    if (desc) desc.value = '';
+    const counter = document.getElementById('report-char-counter');
+    if (counter) counter.textContent = '0/500';
+    const target = document.getElementById('report-target-content');
+    if (target) target.textContent = reportTargetContent;
+    updateReportSubmitGate();
+
     document.getElementById('report-modal').classList.remove('hidden');
 }
 
 function closeReportModal() {
     document.getElementById('report-modal').classList.add('hidden');
     reportTargetMsgId = null;
+    reportTargetContent = '';
+}
+
+function updateReportSubmitGate() {
+    const btn = document.getElementById('report-submit-btn');
+    if (!btn) return;
+    const checked = document.querySelector('#report-modal input[name="report-category"]:checked');
+    const desc = document.getElementById('report-description');
+    const counter = document.getElementById('report-char-counter');
+    const len = desc ? desc.value.trim().length : 0;
+    if (counter && desc) counter.textContent = `${desc.value.length}/500`;
+    btn.disabled = !(checked && len >= 20);
+}
+
+function generateReportNumber() {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    const datePart = `${y}${m}${d}`;
+    // 오늘 날짜와 일치하는 기존 번호들 중 최대값 + 1
+    const prefix = `RP-${datePart}-`;
+    const todayNums = reportHistory
+        .map(r => r.number || '')
+        .filter(n => n.startsWith(prefix))
+        .map(n => parseInt(n.slice(prefix.length), 10))
+        .filter(n => !isNaN(n));
+    const next = (todayNums.length ? Math.max(...todayNums) : 0) + 1;
+    return `${prefix}${String(next).padStart(4, '0')}`;
 }
 
 function submitReport() {
-    const checked = document.querySelector('#report-reasons input[type=radio]:checked');
-    if (!checked) {
-        showToast('신고 사유를 선택해주세요');
-        return;
-    }
+    const checked = document.querySelector('#report-modal input[name="report-category"]:checked');
+    const desc = document.getElementById('report-description');
+    if (!checked) { showToast('신고 사유 카테고리를 선택해주세요'); return; }
+    if (!desc || desc.value.trim().length < 20) { showToast('상세 내용을 최소 20자 이상 입력해주세요'); return; }
 
-    let reason = checked.value;
-    if (reason === '기타') {
-        const etc = document.getElementById('report-etc-input').value.trim();
-        if (etc) reason = '기타: ' + etc;
-    }
+    const category = checked.value;
+    const route = REPORT_CATEGORY_ROUTE[category] || 'admin';
+    const number = generateReportNumber();
 
-    reportHistory.push({
-        msgId: reportTargetMsgId,
-        reason,
+    const record = {
+        number,
+        timestamp: new Date().toISOString(),
+        targetMessageId: reportTargetMsgId,
+        targetContent: reportTargetContent,
+        category,
+        route,
+        description: desc.value.trim(),
         candidate: currentChatCandidate ? currentChatCandidate.name : '',
-        date: new Date().toISOString()
-    });
+        status: 'submitted'
+    };
+    reportHistory.push(record);
     localStorage.setItem('reportHistory', JSON.stringify(reportHistory));
+    reportCooldown.push(Date.now());
+
+    // 신고 대상 메시지 숨김 처리
+    const wrapper = document.getElementById(reportTargetMsgId);
+    if (wrapper) {
+        wrapper.innerHTML = `
+            <div class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 text-center">
+                <p class="text-xs text-slate-500 dark:text-slate-400">🚩 신고하여 숨김 처리된 답변입니다</p>
+                <p class="text-[10px] text-slate-400 mt-0.5">${number}</p>
+            </div>
+        `;
+        wrapper.classList.remove('msg-wrapper');
+    }
 
     closeReportModal();
-    showToast('신고가 접수되었습니다.');
+    showToast(`신고가 접수되었습니다 (번호: ${number})`);
 }
 
 // ============ LANGUAGE (한/영) ============
@@ -3057,7 +3246,7 @@ const translations = {
         textChat: '채팅 대화',
         voiceChat: '음성 대화',
         typeMessage: '메시지를 입력하세요...',
-        reportTitle: '이 답변을 신고하시겠습니까?',
+        reportTitle: '답변 신고하기',
         reportDesc: '부적절한 답변을 신고해주시면 검토 후 조치합니다.',
         falseInfo: '허위 정보',
         defamation: '비방 / 모욕',
@@ -3114,7 +3303,7 @@ const translations = {
         textChat: 'Text Chat',
         voiceChat: 'Voice Chat',
         typeMessage: 'Type a message...',
-        reportTitle: 'Report this response?',
+        reportTitle: 'Report response',
         reportDesc: 'We will review reported responses and take action.',
         falseInfo: 'False information',
         defamation: 'Defamation / Insult',
@@ -3175,11 +3364,9 @@ function applyLang() {
     if (tabText) tabText.innerHTML = `<span class="material-symbols-outlined text-sm">chat</span> ${t('textChat')}`;
     if (tabVoice) tabVoice.innerHTML = `<span class="material-symbols-outlined text-sm">mic</span> ${t('voiceChat')}`;
 
-    // 신고 모달
+    // 신고 모달 (5-F 보강 이후 구조가 복잡해져 h2만 i18n)
     const reportTitleEl = document.querySelector('#report-modal h2');
     if (reportTitleEl) reportTitleEl.textContent = t('reportTitle');
-    const reportDescEl = document.querySelector('#report-modal p');
-    if (reportDescEl) reportDescEl.textContent = t('reportDesc');
 }
 
 // ============ CHAT MORE MENU ============
@@ -3197,9 +3384,9 @@ function showChatMoreMenu() {
         <div class="relative w-full max-w-[480px] bg-white dark:bg-slate-800 rounded-t-3xl p-5 pb-8 animate-slideUp">
             <div class="w-10 h-1 bg-slate-200 dark:bg-slate-600 rounded-full mx-auto mb-5"></div>
             <div class="space-y-1">
-                <button onclick="document.getElementById('chat-more-sheet').remove(); openReportModal()" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-left hover:bg-slate-50 dark:hover:bg-slate-700">
-                    <span class="material-symbols-outlined text-red-400">flag</span>
-                    <span class="text-sm font-medium text-slate-700 dark:text-slate-200">${isEn ? 'Report' : '신고하기'}</span>
+                <button onclick="document.getElementById('chat-more-sheet').remove(); resetChat()" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-left hover:bg-slate-50 dark:hover:bg-slate-700">
+                    <span class="material-symbols-outlined text-slate-500">refresh</span>
+                    <span class="text-sm font-medium text-slate-700 dark:text-slate-200">${isEn ? 'Reset Chat' : '대화 초기화'}</span>
                 </button>
                 <button onclick="document.getElementById('chat-more-sheet').remove(); showToast('${isEn ? 'Candidate blocked' : '후보가 차단되었습니다'}')" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-left hover:bg-slate-50 dark:hover:bg-slate-700">
                     <span class="material-symbols-outlined text-slate-500">block</span>
