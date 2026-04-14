@@ -596,18 +596,18 @@
             <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-[#e7ebf3] dark:border-gray-700">
                 <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-4">내 활동</h3>
                 <div class="grid grid-cols-3 gap-3 text-center">
-                    <div class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
+                    <button onclick="openMyInterestsCard()" class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl active:bg-slate-100 dark:active:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer">
                         <p class="text-xl font-bold text-primary" id="my-likes-count">0</p>
                         <p class="text-[11px] text-slate-400 mt-1">관심 후보</p>
-                    </div>
-                    <div class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
-                        <p class="text-xl font-bold text-primary" id="my-follow-count">0</p>
-                        <p class="text-[11px] text-slate-400 mt-1">팔로우</p>
-                    </div>
-                    <div class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
+                    </button>
+                    <button onclick="openMyPolicyInterestsCard()" class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl active:bg-slate-100 dark:active:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer">
+                        <p class="text-xl font-bold text-primary" id="my-policy-interests-count">0</p>
+                        <p class="text-[11px] text-slate-400 mt-1">공감 공약</p>
+                    </button>
+                    <button onclick="openMyReportsCard()" class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl active:bg-slate-100 dark:active:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer">
                         <p class="text-xl font-bold text-primary" id="my-report-count">0</p>
                         <p class="text-[11px] text-slate-400 mt-1">신고</p>
-                    </div>
+                    </button>
                 </div>
             </div>
 
@@ -3039,11 +3039,31 @@ function renderMyPage() {
         user.classList.add('hidden');
     }
 
-    // 내 활동 카드 카운트 (6-C에서 최종 구조로 리디자인됨)
-    const followEl = document.getElementById('my-follow-count');
-    if (followEl) followEl.textContent = 0;
-    document.getElementById('my-report-count').textContent = reportHistory.length;
+    // 내 활동 카드 카운트
     document.getElementById('my-likes-count').textContent = bookmarkedCandidates.length;
+    const policyCount = Object.values(policyInterests).reduce((sum, arr) => sum + (arr ? arr.length : 0), 0);
+    const policyEl = document.getElementById('my-policy-interests-count');
+    if (policyEl) policyEl.textContent = policyCount;
+    document.getElementById('my-report-count').textContent = reportHistory.length;
+}
+
+// ============ MY PAGE 카드 클릭 핸들러 (6-C) ============
+function openMyInterestsCard() {
+    switchBottomTab(document.querySelector('[data-tab=page-interests]'), 'page-interests');
+}
+
+function openMyPolicyInterestsCard() {
+    showToast('준비 중입니다. 곧 공감 공약 목록 페이지가 추가됩니다.');
+}
+
+function openMyReportsCard() {
+    const page = document.getElementById('page-reports');
+    if (page && typeof renderReportsPage === 'function') {
+        navigateTo('page-reports');
+        renderReportsPage();
+    } else {
+        showToast('신고 내역 페이지 준비 중');
+    }
 }
 
 function toggleBookmark(candidateId) {
