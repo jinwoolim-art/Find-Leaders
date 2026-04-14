@@ -647,6 +647,26 @@
         </main>
     </div>
 
+    <!-- ==================== PAGE: REPORTS (신고 내역, 6-E) ==================== -->
+    <div id="page-reports" class="page">
+        <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
+            <div class="flex items-center gap-3">
+                <button onclick="navigateTo('page-my', true)" class="p-1 -ml-1">
+                    <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
+                </button>
+                <h1 class="text-base font-bold">신고 내역</h1>
+            </div>
+        </header>
+        <main class="flex-1 bg-background-light dark:bg-background-dark px-4 pt-4 pb-24">
+            <div id="reports-list" class="space-y-3"></div>
+            <div id="reports-empty" class="hidden flex flex-col items-center py-20">
+                <span class="material-symbols-outlined text-slate-300 text-5xl mb-3">flag</span>
+                <p class="text-sm font-bold text-slate-500 dark:text-slate-400 mb-1">신고 내역이 없습니다</p>
+                <p class="text-xs text-slate-400">AI 답변에 문제가 있을 때 신고할 수 있습니다</p>
+            </div>
+        </main>
+    </div>
+
     <!-- ==================== PAGE: CONSENT (회원가입 약관 동의) ==================== -->
     <div id="page-consent" class="page">
         <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
@@ -3082,6 +3102,92 @@ function toggleBookmark(candidateId) {
 function openPollingStation() {
     // 중앙선관위 투표소 찾기 연결
     window.open('https://www.nec.go.kr', '_blank');
+}
+
+// ============ REPORT HISTORY PAGE (6-E) ============
+const REPORT_CATEGORY_LABELS = {
+    POLICY_ERROR: '📝 정책 내용 오류',
+    POLICY_MISMATCH: '📝 공약 정보 불일치',
+    ANSWER_INAPPROPRIATE: '📝 답변 내용 부적절',
+    INFO_OUTDATED: '📝 정보 업데이트 필요',
+    AI_MALFUNCTION: '🚨 AI 오작동',
+    FALSE_INFO: '🚨 허위사실 공표 의심',
+    OPPONENT_DEFAMATION: '🚨 타 후보 비방',
+    HATE_SPEECH: '🚨 혐오/차별 표현',
+    ELECTION_LAW_VIOLATION: '🚨 선거법 위반 의심',
+    SYSTEM_ERROR: '🚨 시스템 오류'
+};
+
+const REPORT_STATUS_MAP = {
+    submitted: { label: '처리 중', bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-300' },
+    resolved:  { label: '처리 완료', bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-700 dark:text-emerald-300' },
+    rejected:  { label: '반려됨', bg: 'bg-slate-100 dark:bg-slate-700', text: 'text-slate-500 dark:text-slate-400' }
+};
+
+function escapeHtml(s) {
+    return String(s || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function formatReportDate(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    const y = d.getFullYear();
+    const mo = String(d.getMonth() + 1).padStart(2, '0');
+    const da = String(d.getDate()).padStart(2, '0');
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    return `${y}-${mo}-${da} ${hh}:${mm}`;
+}
+
+function renderReportsPage() {
+    const list = document.getElementById('reports-list');
+    const empty = document.getElementById('reports-empty');
+    if (!list || !empty) return;
+
+    if (!reportHistory || reportHistory.length === 0) {
+        list.innerHTML = '';
+        empty.classList.remove('hidden');
+        empty.classList.add('flex');
+        return;
+    }
+
+    empty.classList.add('hidden');
+    empty.classList.remove('flex');
+
+    // 최신순 정렬 (원본 배열을 변경하지 않도록 slice)
+    const sorted = reportHistory.slice().reverse();
+
+    list.innerHTML = sorted.map(r => {
+        const status = REPORT_STATUS_MAP[r.status] || REPORT_STATUS_MAP.submitted;
+        const categoryLabel = REPORT_CATEGORY_LABELS[r.category] || r.category || '';
+        return `
+            <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-[#e7ebf3] dark:border-gray-700">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">${escapeHtml(r.number || '')}</span>
+                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full ${status.bg} ${status.text}">${status.label}</span>
+                </div>
+                <div class="text-sm font-bold text-slate-800 dark:text-slate-100 mb-2">${escapeHtml(categoryLabel)}</div>
+                <div class="mb-2">
+                    <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">신고 대상</p>
+                    <div class="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-700/50 text-xs text-slate-600 dark:text-slate-300 whitespace-pre-line leading-relaxed max-h-20 overflow-y-auto">${escapeHtml(r.targetContent || '(내용 없음)')}</div>
+                </div>
+                <div class="mb-2">
+                    <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">신고 사유</p>
+                    <div class="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-700/50 text-xs text-slate-600 dark:text-slate-300 whitespace-pre-line leading-relaxed">${escapeHtml(r.description || '')}</div>
+                </div>
+                <div class="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-[#e7ebf3] dark:border-gray-700">
+                    <span>${escapeHtml(formatReportDate(r.timestamp))}</span>
+                    <span>${escapeHtml(r.candidate ? r.candidate + ' 후보' : '')}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 // ============ REPORT (5-F 전면 보강) ============
