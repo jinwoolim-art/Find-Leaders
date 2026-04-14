@@ -647,6 +647,127 @@
         </main>
     </div>
 
+    <!-- ==================== PAGE: CONSENT (회원가입 약관 동의) ==================== -->
+    <div id="page-consent" class="page">
+        <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
+            <div class="flex items-center gap-3">
+                <button onclick="cancelConsent()" class="p-1 -ml-1">
+                    <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
+                </button>
+                <h1 class="text-base font-bold">약관 동의</h1>
+            </div>
+        </header>
+        <main class="flex-1 bg-background-light dark:bg-background-dark px-4 pt-4 pb-28">
+            <div class="mb-4">
+                <h2 class="text-lg font-bold text-slate-800 dark:text-white">서비스 이용을 위해<br/>약관에 동의해 주세요</h2>
+                <p class="text-xs text-slate-400 mt-1">필수 항목은 서비스 이용을 위해 반드시 동의가 필요합니다.</p>
+            </div>
+
+            <!-- 전체 동의 -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-[#e7ebf3] dark:border-gray-700 p-4 mb-3">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="consent-all" onchange="onConsentAllToggle()" class="accent-primary w-5 h-5" />
+                    <span class="text-base font-bold text-slate-800 dark:text-white">전체 동의</span>
+                </label>
+                <p class="text-[11px] text-slate-400 mt-1 ml-8">선택 항목 포함 모든 항목에 동의합니다.</p>
+            </div>
+
+            <!-- 개별 항목 -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-[#e7ebf3] dark:border-gray-700 divide-y divide-[#e7ebf3] dark:divide-gray-700">
+                <!-- 필수 1 -->
+                <div class="p-4">
+                    <label class="flex items-start gap-3 cursor-pointer">
+                        <input type="checkbox" class="consent-item accent-primary w-5 h-5 mt-0.5" data-required="true" id="consent-tos" onchange="updateConsentGate()" />
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-slate-800 dark:text-white">
+                                <span class="text-primary font-bold">[필수]</span> 서비스 이용약관 동의
+                            </p>
+                        </div>
+                    </label>
+                    <details class="mt-2 ml-8 text-xs text-slate-500 dark:text-slate-400">
+                        <summary class="cursor-pointer text-primary font-medium">약관 전문 보기</summary>
+                        <div class="mt-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50 whitespace-pre-line leading-relaxed">제1조 (목적) 본 약관은 '일군을찾다' 서비스의 이용 조건 및 절차를 규정합니다.
+제2조 (서비스 내용) 본 서비스는 선거 후보자 정보 조회, 챗봇 대화, 정책 비교 기능을 제공합니다.
+제3조 (회원의 의무) 회원은 선거 관련 허위 정보 유포, 후보자 비방, 타인 명예훼손 행위를 해서는 안 됩니다.
+제4조 (책임의 한계) 본 서비스의 AI 응답은 참고용이며 최종 투표 결정은 사용자 책임입니다.
+제5조 (서비스 운영 기간) 본 서비스는 선거 기간 중 운영되며 선거 종료 후 30일 내 종료됩니다.</div>
+                    </details>
+                </div>
+
+                <!-- 필수 2 -->
+                <div class="p-4">
+                    <label class="flex items-start gap-3 cursor-pointer">
+                        <input type="checkbox" class="consent-item accent-primary w-5 h-5 mt-0.5" data-required="true" id="consent-privacy" onchange="updateConsentGate()" />
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-slate-800 dark:text-white">
+                                <span class="text-primary font-bold">[필수]</span> 개인정보 수집 및 이용 동의
+                            </p>
+                            <p class="text-[11px] text-slate-400 mt-1">수집: 소셜 로그인 식별값, 거주 지역, 이용 기록 · 보관: 선거 종료 + 30일 내 파기</p>
+                        </div>
+                    </label>
+                    <details class="mt-2 ml-8 text-xs text-slate-500 dark:text-slate-400">
+                        <summary class="cursor-pointer text-primary font-medium">전문 보기</summary>
+                        <div class="mt-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50 whitespace-pre-line leading-relaxed">1. 수집 항목
+  - 소셜 로그인 고유 식별값(카카오/네이버/구글 ID)
+  - 거주 지역(시·도, 시·군·구)
+  - 이용 기록: 조회한 후보자, 관심 등록 목록, 챗봇 대화 로그
+2. 수집 및 이용 목적
+  - 본인 확인, 거주 지역 기반 후보자 정보 제공, 서비스 개선
+3. 보관 및 이용 기간
+  - 선거 종료일 + 30일 이내 전면 파기
+  - 단, 관련 법령에 따라 보존 의무가 있는 경우 그 기간 동안 보관
+4. 동의 거부 권리
+  - 본 항목에 동의하지 않을 권리가 있으나, 거부 시 서비스 가입이 제한됩니다.</div>
+                    </details>
+                </div>
+
+                <!-- 선택 1 -->
+                <div class="p-4">
+                    <label class="flex items-start gap-3 cursor-pointer">
+                        <input type="checkbox" class="consent-item accent-primary w-5 h-5 mt-0.5" id="consent-demo" onchange="updateConsentGate()" />
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-slate-800 dark:text-white">
+                                <span class="text-slate-400 font-bold">[선택]</span> 인구통계(연령대/성별) 수집 동의
+                            </p>
+                            <p class="text-[11px] text-slate-400 mt-1">통계 목적으로만 활용되며 식별 정보와 분리 저장됩니다.</p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- 선택 2 -->
+                <div class="p-4">
+                    <label class="flex items-start gap-3 cursor-pointer">
+                        <input type="checkbox" class="consent-item accent-primary w-5 h-5 mt-0.5" id="consent-news" onchange="updateConsentGate()" />
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-slate-800 dark:text-white">
+                                <span class="text-slate-400 font-bold">[선택]</span> 정책 소식 알림 수신 동의
+                            </p>
+                            <p class="text-[11px] text-slate-400 mt-1">관심 후보 및 정책 업데이트 알림을 받습니다.</p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- 선택 3 -->
+                <div class="p-4">
+                    <label class="flex items-start gap-3 cursor-pointer">
+                        <input type="checkbox" class="consent-item accent-primary w-5 h-5 mt-0.5" id="consent-postelection" onchange="updateConsentGate()" />
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-slate-800 dark:text-white">
+                                <span class="text-slate-400 font-bold">[선택]</span> 선거 종료 후 정책 소통 서비스 전환 이용 동의
+                            </p>
+                            <p class="text-[11px] text-slate-400 mt-1">미동의 시 선거 종료 + 30일 내 계정이 파기됩니다.</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </main>
+        <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] p-4 bg-white dark:bg-background-dark border-t border-[#e7ebf3] dark:border-gray-800 z-40">
+            <button id="consent-submit" onclick="completeSignup()" disabled class="w-full py-4 rounded-xl bg-primary text-white font-bold text-sm shadow-lg shadow-primary/20 active:scale-[0.98] transition-transform disabled:bg-slate-300 dark:disabled:bg-slate-600 disabled:shadow-none disabled:cursor-not-allowed">
+                동의하고 가입 완료
+            </button>
+        </div>
+    </div>
+
     <!-- ==================== MODAL: LOGIN ==================== -->
     <div id="login-modal" class="fixed inset-0 z-[100] flex items-end justify-center hidden" onclick="if(event.target===this)closeLoginModal()">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
@@ -2530,16 +2651,65 @@ function closeLoginModal() {
     document.getElementById('login-modal').classList.add('hidden');
 }
 
+// 소셜 인증 결과를 잠시 보관했다가 약관 동의 완료 후 로그인 상태로 확정
+let pendingProvider = null;
+let pendingConsent = {};
+
 function handleSocialLogin(provider) {
-    // 데모: 즉시 로그인 처리
-    isLoggedIn = true;
+    // TODO: 실제 OAuth 연동 예정 (카카오/네이버/구글 SDK 호출).
+    // 현재는 stub: 소셜 인증 성공을 가정하고 약관 동의 페이지로 이동.
+    pendingProvider = provider;
+    closeLoginModal();
+    // 이전 상태 초기화
+    document.querySelectorAll('#page-consent .consent-item').forEach(cb => cb.checked = false);
+    const all = document.getElementById('consent-all');
+    if (all) all.checked = false;
+    updateConsentGate();
+    navigateTo('page-consent');
+}
+
+function onConsentAllToggle() {
+    const checked = document.getElementById('consent-all').checked;
+    document.querySelectorAll('#page-consent .consent-item').forEach(cb => cb.checked = checked);
+    updateConsentGate();
+}
+
+function updateConsentGate() {
+    const items = document.querySelectorAll('#page-consent .consent-item');
+    if (items.length === 0) return;
+    const required = Array.from(items).filter(cb => cb.dataset.required === 'true');
+    const allRequiredChecked = required.length > 0 && required.every(cb => cb.checked);
+    const submit = document.getElementById('consent-submit');
+    if (submit) submit.disabled = !allRequiredChecked;
+    // "전체 동의" 상태 동기화
+    const all = document.getElementById('consent-all');
+    if (all) all.checked = Array.from(items).every(cb => cb.checked);
+}
+
+function cancelConsent() {
+    pendingProvider = null;
+    navigateTo('page-home', true);
+}
+
+function completeSignup() {
+    if (!pendingProvider) return;
     const names = { kakao: '카카오 사용자', naver: '네이버 사용자', google: 'Google 사용자' };
     const emails = { kakao: 'user@kakao.com', naver: 'user@naver.com', google: 'user@gmail.com' };
-    currentUser = { name: names[provider], email: emails[provider], provider };
-    closeLoginModal();
-    showToast(`${names[provider]}님 환영합니다!`);
+    isLoggedIn = true;
+    currentUser = { name: names[pendingProvider], email: emails[pendingProvider], provider: pendingProvider };
+    pendingConsent = {
+        tos: true,
+        privacy: true,
+        demographics: document.getElementById('consent-demo').checked,
+        news: document.getElementById('consent-news').checked,
+        postElection: document.getElementById('consent-postelection').checked,
+        at: new Date().toISOString()
+    };
+    pendingProvider = null;
+    showToast(`${currentUser.name}님 환영합니다!`);
     renderFollowPage();
     renderMyPage();
+    navigateTo('page-home', true);
 }
 
 function handleLogout() {
