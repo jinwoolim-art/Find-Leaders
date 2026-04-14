@@ -518,38 +518,38 @@
         </main>
     </div>
 
-    <!-- ==================== PAGE: FOLLOW ==================== -->
-    <div id="page-follow" class="page">
+    <!-- ==================== PAGE: INTERESTS (관심 후보) ==================== -->
+    <div id="page-interests" class="page">
         <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
             <div class="flex items-center justify-between">
-                <h1 class="text-lg font-bold text-slate-800 dark:text-white">팔로우</h1>
+                <h1 class="text-lg font-bold text-slate-800 dark:text-white">관심 후보</h1>
                 <button onclick="toggleDark()" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
                     <span class="material-symbols-outlined text-gray-600 dark:text-gray-400 block dark:hidden">dark_mode</span>
                     <span class="material-symbols-outlined text-gray-400 hidden dark:block">light_mode</span>
                 </button>
             </div>
         </header>
-        <main class="flex-1 bg-background-light dark:bg-background-dark pb-20">
+        <main class="flex-1 bg-background-light dark:bg-background-dark pb-24">
             <!-- 비로그인 상태 -->
-            <div id="follow-guest" class="flex flex-col items-center justify-center px-6 py-20">
+            <div id="interests-guest" class="flex flex-col items-center justify-center px-6 py-20">
                 <div class="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-5">
-                    <span class="material-symbols-outlined text-slate-300 dark:text-slate-600 text-4xl">favorite_border</span>
+                    <span class="material-symbols-outlined text-slate-300 dark:text-slate-600 text-4xl">bookmark_border</span>
                 </div>
-                <p class="text-base font-bold text-slate-700 dark:text-slate-200 mb-2">팔로우한 후보를 확인하세요</p>
+                <p class="text-base font-bold text-slate-700 dark:text-slate-200 mb-2">관심 후보를 확인하세요</p>
                 <p class="text-sm text-slate-400 text-center leading-relaxed mb-6">로그인하면 관심 후보의 공약, 활동 소식을<br>한 곳에서 모아볼 수 있습니다.</p>
                 <button onclick="showLoginModal()" class="px-8 py-3 bg-primary text-white font-bold text-sm rounded-xl shadow-lg shadow-primary/20 active:scale-95 transition-transform">
                     로그인 / 회원가입
                 </button>
             </div>
-            <!-- 로그인 상태 (팔로우 피드) -->
-            <div id="follow-feed" class="hidden px-4 py-4 space-y-4">
+            <!-- 로그인 상태 (관심 후보 피드) -->
+            <div id="interests-feed" class="hidden px-4 py-4 space-y-4">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-sm text-slate-500"><span id="follow-count" class="font-bold text-primary">0</span>명의 후보를 팔로우 중</p>
+                    <p class="text-sm text-slate-500"><span id="interests-count" class="font-bold text-primary">0</span>명의 후보를 관심 등록 중</p>
                 </div>
-                <div id="follow-list" class="space-y-3"></div>
-                <div id="follow-empty" class="hidden flex flex-col items-center py-16">
-                    <span class="material-symbols-outlined text-slate-300 text-4xl mb-3">person_add</span>
-                    <p class="text-sm text-slate-400">아직 팔로우한 후보가 없습니다</p>
+                <div id="interests-list" class="space-y-3"></div>
+                <div id="interests-empty" class="hidden flex flex-col items-center py-16">
+                    <span class="material-symbols-outlined text-slate-300 text-4xl mb-3">bookmark_add</span>
+                    <p class="text-sm text-slate-400">관심 등록한 후보가 없습니다</p>
                     <button onclick="switchBottomTab(document.querySelector('[data-tab=page-candidates]'), 'page-election-type')" class="mt-4 px-5 py-2 bg-primary/10 text-primary text-sm font-bold rounded-lg">후보자 둘러보기</button>
                 </div>
             </div>
@@ -596,34 +596,29 @@
             <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-[#e7ebf3] dark:border-gray-700">
                 <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-4">내 활동</h3>
                 <div class="grid grid-cols-3 gap-3 text-center">
-                    <div class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
+                    <button onclick="openMyInterestsCard()" class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl active:bg-slate-100 dark:active:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer">
                         <p class="text-xl font-bold text-primary" id="my-likes-count">0</p>
                         <p class="text-[11px] text-slate-400 mt-1">관심 후보</p>
-                    </div>
-                    <div class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
-                        <p class="text-xl font-bold text-primary" id="my-follow-count">0</p>
-                        <p class="text-[11px] text-slate-400 mt-1">팔로우</p>
-                    </div>
-                    <div class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
+                    </button>
+                    <button onclick="openMyPolicyInterestsCard()" class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl active:bg-slate-100 dark:active:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer">
+                        <p class="text-xl font-bold text-primary" id="my-policy-interests-count">0</p>
+                        <p class="text-[11px] text-slate-400 mt-1">공감 공약</p>
+                    </button>
+                    <button onclick="openMyReportsCard()" class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl active:bg-slate-100 dark:active:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer">
                         <p class="text-xl font-bold text-primary" id="my-report-count">0</p>
                         <p class="text-[11px] text-slate-400 mt-1">신고</p>
-                    </div>
+                    </button>
                 </div>
             </div>
 
             <!-- 메뉴 리스트 -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl border border-[#e7ebf3] dark:border-gray-700 overflow-hidden">
-                <button onclick="switchBottomTab(document.querySelector('[data-tab=page-follow]'), 'page-follow')" class="w-full flex items-center gap-3 px-5 py-4 text-left border-b border-[#e7ebf3] dark:border-gray-700 active:bg-slate-50 dark:active:bg-slate-700">
-                    <span class="material-symbols-outlined text-slate-500 text-xl">favorite_border</span>
-                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">팔로우 목록</span>
-                    <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
-                </button>
-                <button onclick="showMyBookmarks()" class="w-full flex items-center gap-3 px-5 py-4 text-left border-b border-[#e7ebf3] dark:border-gray-700 active:bg-slate-50 dark:active:bg-slate-700">
+                <button onclick="openMyInterestsCard()" class="w-full flex items-center gap-3 px-5 py-4 text-left border-b border-[#e7ebf3] dark:border-gray-700 active:bg-slate-50 dark:active:bg-slate-700">
                     <span class="material-symbols-outlined text-slate-500 text-xl">bookmark</span>
                     <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">관심 후보 목록</span>
                     <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
                 </button>
-                <button onclick="showMyReports()" class="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-slate-50 dark:active:bg-slate-700">
+                <button onclick="openMyReportsCard()" class="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-slate-50 dark:active:bg-slate-700">
                     <span class="material-symbols-outlined text-slate-500 text-xl">flag</span>
                     <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">신고 내역</span>
                     <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
@@ -648,6 +643,26 @@
             <!-- 앱 정보 -->
             <div class="pt-4 text-center">
                 <p class="text-[11px] text-slate-300 dark:text-slate-600">일군을찾다 v1.0</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- ==================== PAGE: REPORTS (신고 내역, 6-E) ==================== -->
+    <div id="page-reports" class="page">
+        <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
+            <div class="flex items-center gap-3">
+                <button onclick="navigateTo('page-my', true)" class="p-1 -ml-1">
+                    <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
+                </button>
+                <h1 class="text-base font-bold">신고 내역</h1>
+            </div>
+        </header>
+        <main class="flex-1 bg-background-light dark:bg-background-dark px-4 pt-4 pb-24">
+            <div id="reports-list" class="space-y-3"></div>
+            <div id="reports-empty" class="hidden flex flex-col items-center py-20">
+                <span class="material-symbols-outlined text-slate-300 text-5xl mb-3">flag</span>
+                <p class="text-sm font-bold text-slate-500 dark:text-slate-400 mb-1">신고 내역이 없습니다</p>
+                <p class="text-xs text-slate-400">AI 답변에 문제가 있을 때 신고할 수 있습니다</p>
             </div>
         </main>
     </div>
@@ -1054,9 +1069,9 @@
             <span class="material-symbols-outlined text-[22px]">person_search</span>
             <span class="text-[12px] font-semibold">후보자</span>
         </a>
-        <a href="#" onclick="switchBottomTab(this, 'page-follow'); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500" data-tab="page-follow">
-            <span class="material-symbols-outlined text-[22px]">favorite_border</span>
-            <span class="text-[12px] font-semibold">팔로우</span>
+        <a href="#" onclick="switchBottomTab(this, 'page-interests'); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500" data-tab="page-interests">
+            <span class="material-symbols-outlined text-[22px]">bookmark_border</span>
+            <span class="text-[12px] font-semibold">관심</span>
         </a>
         <a href="#" onclick="switchBottomTab(this, 'page-my'); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500" data-tab="page-my">
             <span class="material-symbols-outlined text-[22px]">person_outline</span>
@@ -2856,16 +2871,20 @@ function switchBottomTab(el, pageId) {
 
     navigateTo(pageId);
 
-    // 팔로우 페이지 상태 갱신
-    if (pageId === 'page-follow') renderFollowPage();
+    // 관심 페이지 상태 갱신
+    if (pageId === 'page-interests') renderInterestsPage();
     if (pageId === 'page-my') renderMyPage();
 }
 
 // ============ LOGIN STATE ============
 let isLoggedIn = false;
 let currentUser = null;
-let followedCandidates = JSON.parse(localStorage.getItem('followedCandidates') || '[]');
 let reportHistory = JSON.parse(localStorage.getItem('reportHistory') || '[]');
+// TODO: 일정 기간 후 제거 예정 — 구 "팔로우" 기능 데이터 정리 (PHASE 6에서 관심으로 통합)
+if (localStorage.getItem('followedCandidates')) {
+    localStorage.removeItem('followedCandidates');
+    console.log('[PHASE 6] Removed legacy followedCandidates key from localStorage');
+}
 // 관심 등록: 본인 로컬에만 저장되는 개인 북마크 (다른 사용자에게 노출/집계 금지)
 // TODO(next-session): 후보자 대시보드 연동 시 서버 동기화 스펙 정의 필요
 let bookmarkedCandidates = JSON.parse(localStorage.getItem('bookmarkedCandidates') || '[]');
@@ -2934,7 +2953,7 @@ function completeSignup() {
     };
     pendingProvider = null;
     showToast(`${currentUser.name}님 환영합니다!`);
-    renderFollowPage();
+    renderInterestsPage();
     renderMyPage();
     navigateTo('page-home', true);
 }
@@ -2944,25 +2963,14 @@ function handleLogout() {
     currentUser = null;
     showToast('로그아웃되었습니다');
     renderMyPage();
-    renderFollowPage();
+    renderInterestsPage();
 }
 
-// ============ FOLLOW ============
-function toggleFollow(candidateId) {
-    const idx = followedCandidates.indexOf(candidateId);
-    if (idx === -1) {
-        followedCandidates.push(candidateId);
-        showToast('팔로우했습니다');
-    } else {
-        followedCandidates.splice(idx, 1);
-        showToast('팔로우를 해제했습니다');
-    }
-    localStorage.setItem('followedCandidates', JSON.stringify(followedCandidates));
-}
-
-function renderFollowPage() {
-    const guest = document.getElementById('follow-guest');
-    const feed = document.getElementById('follow-feed');
+// ============ INTERESTS (관심 후보) ============
+function renderInterestsPage() {
+    const guest = document.getElementById('interests-guest');
+    const feed = document.getElementById('interests-feed');
+    if (!guest || !feed) return;
 
     if (!isLoggedIn) {
         guest.classList.remove('hidden');
@@ -2973,11 +2981,11 @@ function renderFollowPage() {
     guest.classList.add('hidden');
     feed.classList.remove('hidden');
 
-    const list = document.getElementById('follow-list');
-    const empty = document.getElementById('follow-empty');
-    document.getElementById('follow-count').textContent = followedCandidates.length;
+    const list = document.getElementById('interests-list');
+    const empty = document.getElementById('interests-empty');
+    document.getElementById('interests-count').textContent = bookmarkedCandidates.length;
 
-    if (followedCandidates.length === 0) {
+    if (bookmarkedCandidates.length === 0) {
         list.innerHTML = '';
         empty.classList.remove('hidden');
         return;
@@ -2986,23 +2994,49 @@ function renderFollowPage() {
     empty.classList.add('hidden');
     const partyColors = { blue: '#2563eb', red: '#dc2626', gray: '#6b7280' };
 
-    list.innerHTML = followedCandidates.map(id => {
+    list.innerHTML = bookmarkedCandidates.map(id => {
         const c = findCandidateById(id);
         if (!c) return '';
         const pc = partyColors[c.partyColor] || '#6b7280';
         return `
-            <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-[#e7ebf3] dark:border-gray-700 flex items-center gap-3">
-                <div class="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold" style="background:${pc}">${c.name.charAt(0)}</div>
-                <div class="flex-1">
-                    <p class="text-sm font-bold text-slate-700 dark:text-slate-200">${c.name} <span class="text-xs font-normal text-slate-400">${c.party}</span></p>
-                    <p class="text-xs text-slate-400 mt-0.5">${c.slogan}</p>
+            <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-[#e7ebf3] dark:border-gray-700">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0" style="background:${pc}">${c.name.charAt(0)}</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-bold text-slate-700 dark:text-slate-200 truncate">${c.name} <span class="text-xs font-normal text-slate-400">${c.party}</span></p>
+                        <p class="text-xs text-slate-400 mt-0.5 truncate">${c.slogan}</p>
+                    </div>
+                    <button onclick="removeInterest(${c.id})" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 flex-shrink-0" aria-label="관심 해제">
+                        <span class="material-symbols-outlined text-amber-500 text-xl" style="font-variation-settings:'FILL' 1,'wght' 400">bookmark</span>
+                    </button>
                 </div>
-                <button onclick="toggleFollow(${c.id}); renderFollowPage();" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
-                    <span class="material-symbols-outlined text-red-400 text-xl" style="font-variation-settings:'FILL' 1,'wght' 400">favorite</span>
-                </button>
+                <div class="flex gap-2">
+                    <button onclick="openDetail(${c.id})" class="flex-1 py-2 rounded-lg border border-[#e7ebf3] dark:border-gray-700 text-xs font-bold text-slate-700 dark:text-slate-200 active:scale-[0.98] transition-transform">
+                        <span class="material-symbols-outlined text-[14px] align-middle mr-0.5">description</span>공약 보기
+                    </button>
+                    <button onclick="openChat(${c.id})" class="flex-1 py-2 rounded-lg bg-primary text-white text-xs font-bold active:scale-[0.98] transition-transform">
+                        <span class="material-symbols-outlined text-[14px] align-middle mr-0.5">forum</span>AI 대화
+                    </button>
+                </div>
             </div>
         `;
     }).join('');
+}
+
+function removeInterest(candidateId) {
+    const idx = bookmarkedCandidates.indexOf(candidateId);
+    if (idx === -1) return;
+    bookmarkedCandidates.splice(idx, 1);
+    localStorage.setItem('bookmarkedCandidates', JSON.stringify(bookmarkedCandidates));
+    // 후보자 리스트의 체크박스 동기화
+    const cb = document.getElementById(`btn-like-${candidateId}`);
+    if (cb) cb.checked = false;
+    // 관심 페이지 재렌더
+    renderInterestsPage();
+    // 마이 페이지 카운터 갱신
+    const myLikes = document.getElementById('my-likes-count');
+    if (myLikes) myLikes.textContent = bookmarkedCandidates.length;
+    showToast('관심 등록을 해제했습니다');
 }
 
 // ============ MY PAGE ============
@@ -3020,9 +3054,31 @@ function renderMyPage() {
         user.classList.add('hidden');
     }
 
-    document.getElementById('my-follow-count').textContent = followedCandidates.length;
-    document.getElementById('my-report-count').textContent = reportHistory.length;
+    // 내 활동 카드 카운트
     document.getElementById('my-likes-count').textContent = bookmarkedCandidates.length;
+    const policyCount = Object.values(policyInterests).reduce((sum, arr) => sum + (arr ? arr.length : 0), 0);
+    const policyEl = document.getElementById('my-policy-interests-count');
+    if (policyEl) policyEl.textContent = policyCount;
+    document.getElementById('my-report-count').textContent = reportHistory.length;
+}
+
+// ============ MY PAGE 카드 클릭 핸들러 (6-C) ============
+function openMyInterestsCard() {
+    switchBottomTab(document.querySelector('[data-tab=page-interests]'), 'page-interests');
+}
+
+function openMyPolicyInterestsCard() {
+    showToast('준비 중입니다. 곧 공감 공약 목록 페이지가 추가됩니다.');
+}
+
+function openMyReportsCard() {
+    const page = document.getElementById('page-reports');
+    if (page && typeof renderReportsPage === 'function') {
+        navigateTo('page-reports');
+        renderReportsPage();
+    } else {
+        showToast('신고 내역 페이지 준비 중');
+    }
 }
 
 function toggleBookmark(candidateId) {
@@ -3035,27 +3091,103 @@ function toggleBookmark(candidateId) {
     localStorage.setItem('bookmarkedCandidates', JSON.stringify(bookmarkedCandidates));
     const myLikes = document.getElementById('my-likes-count');
     if (myLikes) myLikes.textContent = bookmarkedCandidates.length;
+    // 관심 페이지가 활성 상태이면 자동 재렌더
+    const interestsPage = document.getElementById('page-interests');
+    if (interestsPage && interestsPage.classList.contains('active')) {
+        renderInterestsPage();
+    }
 }
 
-function showMyBookmarks() {
-    if (bookmarkedCandidates.length === 0) {
-        showToast('관심 등록한 후보가 없습니다');
-        return;
-    }
-    showToast(`관심 후보 ${bookmarkedCandidates.length}명`);
-}
-
-function showMyReports() {
-    if (reportHistory.length === 0) {
-        showToast('신고 내역이 없습니다');
-        return;
-    }
-    showToast(`총 ${reportHistory.length}건의 신고 내역이 있습니다`);
-}
 
 function openPollingStation() {
     // 중앙선관위 투표소 찾기 연결
     window.open('https://www.nec.go.kr', '_blank');
+}
+
+// ============ REPORT HISTORY PAGE (6-E) ============
+const REPORT_CATEGORY_LABELS = {
+    POLICY_ERROR: '📝 정책 내용 오류',
+    POLICY_MISMATCH: '📝 공약 정보 불일치',
+    ANSWER_INAPPROPRIATE: '📝 답변 내용 부적절',
+    INFO_OUTDATED: '📝 정보 업데이트 필요',
+    AI_MALFUNCTION: '🚨 AI 오작동',
+    FALSE_INFO: '🚨 허위사실 공표 의심',
+    OPPONENT_DEFAMATION: '🚨 타 후보 비방',
+    HATE_SPEECH: '🚨 혐오/차별 표현',
+    ELECTION_LAW_VIOLATION: '🚨 선거법 위반 의심',
+    SYSTEM_ERROR: '🚨 시스템 오류'
+};
+
+const REPORT_STATUS_MAP = {
+    submitted: { label: '처리 중', bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-300' },
+    resolved:  { label: '처리 완료', bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-700 dark:text-emerald-300' },
+    rejected:  { label: '반려됨', bg: 'bg-slate-100 dark:bg-slate-700', text: 'text-slate-500 dark:text-slate-400' }
+};
+
+function escapeHtml(s) {
+    return String(s || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function formatReportDate(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    const y = d.getFullYear();
+    const mo = String(d.getMonth() + 1).padStart(2, '0');
+    const da = String(d.getDate()).padStart(2, '0');
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    return `${y}-${mo}-${da} ${hh}:${mm}`;
+}
+
+function renderReportsPage() {
+    const list = document.getElementById('reports-list');
+    const empty = document.getElementById('reports-empty');
+    if (!list || !empty) return;
+
+    if (!reportHistory || reportHistory.length === 0) {
+        list.innerHTML = '';
+        empty.classList.remove('hidden');
+        empty.classList.add('flex');
+        return;
+    }
+
+    empty.classList.add('hidden');
+    empty.classList.remove('flex');
+
+    // 최신순 정렬 (원본 배열을 변경하지 않도록 slice)
+    const sorted = reportHistory.slice().reverse();
+
+    list.innerHTML = sorted.map(r => {
+        const status = REPORT_STATUS_MAP[r.status] || REPORT_STATUS_MAP.submitted;
+        const categoryLabel = REPORT_CATEGORY_LABELS[r.category] || r.category || '';
+        return `
+            <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-[#e7ebf3] dark:border-gray-700">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">${escapeHtml(r.number || '')}</span>
+                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full ${status.bg} ${status.text}">${status.label}</span>
+                </div>
+                <div class="text-sm font-bold text-slate-800 dark:text-slate-100 mb-2">${escapeHtml(categoryLabel)}</div>
+                <div class="mb-2">
+                    <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">신고 대상</p>
+                    <div class="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-700/50 text-xs text-slate-600 dark:text-slate-300 whitespace-pre-line leading-relaxed max-h-20 overflow-y-auto">${escapeHtml(r.targetContent || '(내용 없음)')}</div>
+                </div>
+                <div class="mb-2">
+                    <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">신고 사유</p>
+                    <div class="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-700/50 text-xs text-slate-600 dark:text-slate-300 whitespace-pre-line leading-relaxed">${escapeHtml(r.description || '')}</div>
+                </div>
+                <div class="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-[#e7ebf3] dark:border-gray-700">
+                    <span>${escapeHtml(formatReportDate(r.timestamp))}</span>
+                    <span>${escapeHtml(r.candidate ? r.candidate + ' 후보' : '')}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 // ============ REPORT (5-F 전면 보강) ============
@@ -3218,7 +3350,7 @@ const translations = {
         eduCandidate: '교육감 후보',
         home: '홈',
         candidates: '후보자',
-        follow: '팔로우',
+        follow: '관심',
         my: '마이',
         all: '전체',
         detail: '상세보기',
@@ -3231,13 +3363,13 @@ const translations = {
         login: '로그인',
         loginRequired: '로그인이 필요합니다',
         loginDesc: '로그인하고 더 많은 기능을 이용하세요',
-        followTitle: '팔로우한 후보를 확인하세요',
+        followTitle: '관심 후보를 확인하세요',
         followDesc: '로그인하면 관심 후보의 공약, 활동 소식을\n한 곳에서 모아볼 수 있습니다.',
         loginSignup: '로그인 / 회원가입',
         myActivity: '내 활동',
         likes: '관심 후보',
         reports: '신고',
-        followList: '팔로우 목록',
+        followList: '관심 후보 목록',
         likeHistory: '관심 후보 목록',
         reportHistory: '신고 내역',
         myVoteInfo: '내 투표 정보',
@@ -3275,7 +3407,7 @@ const translations = {
         eduCandidate: 'Superintendent',
         home: 'Home',
         candidates: 'Candidates',
-        follow: 'Follow',
+        follow: 'Interests',
         my: 'My',
         all: 'All',
         detail: 'Details',
@@ -3288,13 +3420,13 @@ const translations = {
         login: 'Login',
         loginRequired: 'Login required',
         loginDesc: 'Log in to access all features',
-        followTitle: 'Check your followed candidates',
+        followTitle: 'Check your interested candidates',
         followDesc: 'Log in to see your favorite candidates\u2019\npolicies and updates in one place.',
         loginSignup: 'Login / Sign up',
         myActivity: 'My Activity',
         likes: 'Bookmarks',
         reports: 'Reports',
-        followList: 'Following',
+        followList: 'Interested Candidates',
         likeHistory: 'Bookmarked Candidates',
         reportHistory: 'Report History',
         myVoteInfo: 'My Voting Info',
