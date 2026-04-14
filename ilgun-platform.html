@@ -421,7 +421,26 @@
 
                 <!-- 음성 대화 영역 -->
                 <div id="chat-mode-voice" class="flex-1 flex-col items-center justify-center hidden">
-                    <div class="flex-1 flex flex-col items-center justify-center px-6">
+                    <!-- 비활성화 안내 (5-C) -->
+                    <div id="voice-disabled-notice" class="flex-1 flex flex-col items-center justify-center px-6 py-8 hidden">
+                        <div class="w-full max-w-sm bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl p-5">
+                            <div class="flex items-start gap-3 mb-3">
+                                <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-2xl">warning</span>
+                                <h3 class="text-sm font-bold text-amber-800 dark:text-amber-300 leading-snug">음성 대화 기능은 현재<br/>제공되지 않습니다</h3>
+                            </div>
+                            <ul class="text-xs text-amber-700 dark:text-amber-400 space-y-1.5 mb-4 pl-1">
+                                <li>• AI 음성은 후보자 본인의 목소리가 아닙니다</li>
+                                <li>• 공직선거법 제82조의8에 따라 선거일 90일 전부터 제공이 제한됩니다</li>
+                                <li>• 텍스트 대화를 이용해 주세요</li>
+                            </ul>
+                            <button onclick="switchChatMode('text')" class="w-full py-2.5 rounded-lg bg-primary text-white text-sm font-bold active:scale-95 transition-transform flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-base">chat</span>
+                                채팅 대화로 이동
+                            </button>
+                        </div>
+                    </div>
+                    <!-- 실제 음성 UI (재활성화 시 사용) -->
+                    <div id="voice-ui-real" class="flex-1 flex flex-col items-center justify-center px-6">
                         <!-- 음성 상태 표시 -->
                         <div id="voice-status-text" class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-6">마이크 버튼을 눌러 질문하세요</div>
 
@@ -1957,6 +1976,10 @@ let chatMode = 'text';
 let isVoiceRecording = false;
 let recognition = null;
 
+// 음성 대화 활성화 플래그 (5-C)
+// TODO: 선거일 기반 자동 비활성화 (다음 PHASE)
+const VOICE_CHAT_ENABLED = false;
+
 function switchChatMode(mode) {
     chatMode = mode;
     const tabText = document.getElementById('tab-text');
@@ -1982,10 +2005,22 @@ function switchChatMode(mode) {
         modeVoice.classList.add('flex');
         modeText.classList.add('hidden');
         modeText.classList.remove('flex');
+
+        // 비활성화 상태: 안내 박스 표시, 실 UI 숨김
+        const notice = document.getElementById('voice-disabled-notice');
+        const real = document.getElementById('voice-ui-real');
+        if (VOICE_CHAT_ENABLED) {
+            if (notice) { notice.classList.add('hidden'); notice.classList.remove('flex'); }
+            if (real)   { real.classList.remove('hidden'); real.classList.add('flex'); }
+        } else {
+            if (notice) { notice.classList.remove('hidden'); notice.classList.add('flex'); }
+            if (real)   { real.classList.add('hidden'); real.classList.remove('flex'); }
+        }
     }
 }
 
 function toggleVoice() {
+    if (!VOICE_CHAT_ENABLED) return;
     if (isVoiceRecording) {
         stopVoice();
     } else {
@@ -2115,6 +2150,7 @@ function processVoiceInput(text) {
 }
 
 function voiceQuickAsk(text) {
+    if (!VOICE_CHAT_ENABLED) return;
     const statusText = document.getElementById('voice-status-text');
     const answerDiv = document.getElementById('voice-answer');
 
