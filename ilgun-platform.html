@@ -1688,9 +1688,11 @@ function showCompare() {
     navigateTo('page-compare');
 }
 
-// ============ POLICY INTEREST (5-B) ============
+// ============ POLICY INTEREST (5-B, PHASE 8 수치 비공개화) ============
+// 시민 UI 노출 금지. 후보자 대시보드 통계용으로만 사용.
+// PHASE 8 (공직선거법 제108조 대응): 공약별 공감 수치 공개 = 지지도 수치화 위험 → 시민 화면에서 제거.
+// 상수 자체는 유지 (다음 단계 후보자 대시보드 통계 집계용).
 // TODO: 추후 서버 API로 실제 집계값 교체
-// 각 후보자 × 공약 키(summary/jobs/vision/education)에 대한 고정 초기 공감수 (50~400)
 const POLICY_INTEREST_COUNTS = {
     '1':   { summary: 287, jobs: 342, vision: 198, education: 256 },
     '2':   { summary: 213, jobs: 176, vision: 308, education: 231 },
@@ -1707,16 +1709,6 @@ let policyInterests = JSON.parse(localStorage.getItem('policyInterests') || '{}'
 const POLICY_LABELS_KO = { summary: '정책 요약', jobs: '일자리', vision: '비전', education: '교육' };
 const POLICY_ICONS = { summary: 'description', jobs: 'work', vision: 'visibility', education: 'school' };
 
-function getPolicyInterestCount(candidateId, policyKey) {
-    const row = POLICY_INTEREST_COUNTS[String(candidateId)];
-    return (row && row[policyKey]) || 0;
-}
-
-function formatPolicyCount(n) {
-    if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
-    return String(n);
-}
-
 function togglePolicyInterest(candidateId, policyKey, btnEl) {
     const key = `candidate_${candidateId}`;
     if (!policyInterests[key]) policyInterests[key] = [];
@@ -1727,20 +1719,25 @@ function togglePolicyInterest(candidateId, policyKey, btnEl) {
     else { arr.splice(idx, 1); active = false; }
     localStorage.setItem('policyInterests', JSON.stringify(policyInterests));
 
-    // 버튼 상태 업데이트
-    const baseCount = getPolicyInterestCount(candidateId, policyKey);
-    const newCount = baseCount + (active ? 1 : 0);
-    const countEl = btnEl.querySelector('.policy-interest-count');
-    if (countEl) countEl.textContent = formatPolicyCount(newCount);
+    // 버튼 상태 업데이트 (수치 없음, 본인 공감 여부만 토글)
+    const labelEl = btnEl.querySelector('.policy-interest-label');
+    if (labelEl) labelEl.textContent = active ? '공감함' : '공감하기';
     const iconEl = btnEl.querySelector('.material-symbols-outlined');
     if (active) {
-        btnEl.classList.remove('bg-white','dark:bg-slate-700','text-slate-600','dark:text-slate-300','border-[#e7ebf3]','dark:border-gray-600');
+        btnEl.classList.remove('bg-slate-100','dark:bg-slate-700','text-slate-600','dark:text-slate-300','border-slate-300','dark:border-gray-600');
         btnEl.classList.add('bg-primary','text-white','border-primary');
         if (iconEl) iconEl.setAttribute('style', "font-variation-settings:'FILL' 1");
     } else {
-        btnEl.classList.add('bg-white','dark:bg-slate-700','text-slate-600','dark:text-slate-300','border-[#e7ebf3]','dark:border-gray-600');
+        btnEl.classList.add('bg-slate-100','dark:bg-slate-700','text-slate-600','dark:text-slate-300','border-slate-300','dark:border-gray-600');
         btnEl.classList.remove('bg-primary','text-white','border-primary');
         if (iconEl) iconEl.removeAttribute('style');
+    }
+
+    // 마이 페이지 카운터 동기화 (본인 통계, 노출 OK)
+    const policyEl = document.getElementById('my-policy-interests-count');
+    if (policyEl) {
+        const policyCount = Object.values(policyInterests).reduce((sum, a) => sum + (a ? a.length : 0), 0);
+        policyEl.textContent = policyCount;
     }
 }
 
@@ -1798,14 +1795,13 @@ function openDetail(id) {
     const policyIcons = { summary: 'description', jobs: 'work', vision: 'visibility', education: 'school' };
     const interestedSet = new Set((policyInterests[`candidate_${c.id}`] || []));
     const policyCards = policyKeys.map(k => {
-        const count = getPolicyInterestCount(c.id, k);
         const active = interestedSet.has(k);
         return `<div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-[#e7ebf3] dark:border-gray-700">
             <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1.5"><span class="material-symbols-outlined text-sm align-middle mr-1" style="color:${pc}">${policyIcons[k]}</span>${policyLabels[k]}</h4>
             <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-3">${c.policies[k]}</p>
-            <button onclick="togglePolicyInterest(${c.id}, '${k}', this)" data-policy-key="${k}" class="policy-interest-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 ${active ? 'bg-primary text-white border border-primary' : 'bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-[#e7ebf3] dark:border-gray-600'}">
+            <button onclick="togglePolicyInterest(${c.id}, '${k}', this)" data-policy-key="${k}" class="policy-interest-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 ${active ? 'bg-primary text-white border border-primary' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-gray-600'}">
                 <span class="material-symbols-outlined text-[14px]" ${active ? `style="font-variation-settings:'FILL' 1"` : ''}>thumb_up</span>
-                <span>공감 <span class="policy-interest-count">${formatPolicyCount(count + (active ? 1 : 0))}</span></span>
+                <span class="policy-interest-label">${active ? '공감함' : '공감하기'}</span>
             </button>
         </div>`;
     }).join('');
