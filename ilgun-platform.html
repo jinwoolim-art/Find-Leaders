@@ -647,6 +647,27 @@
         </main>
     </div>
 
+    <!-- ==================== PAGE: POLICY INTERESTS (공감 공약, 7-A) ==================== -->
+    <div id="page-policy-interests" class="page">
+        <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
+            <div class="flex items-center gap-3">
+                <button onclick="navigateTo('page-my', true)" class="p-1 -ml-1">
+                    <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
+                </button>
+                <h1 class="text-base font-bold">공감 공약</h1>
+            </div>
+        </header>
+        <main class="flex-1 bg-background-light dark:bg-background-dark px-4 pt-4 pb-24">
+            <div id="policy-interests-list" class="space-y-4"></div>
+            <div id="policy-interests-empty" class="hidden flex-col items-center py-20">
+                <span class="material-symbols-outlined text-slate-300 text-5xl mb-3">thumb_up</span>
+                <p class="text-sm font-bold text-slate-500 dark:text-slate-400 mb-1">공감한 공약이 없습니다</p>
+                <p class="text-xs text-slate-400 mb-4">후보자 상세 페이지에서 공약에 공감을 표시해 보세요</p>
+                <button onclick="switchBottomTab(document.querySelector('[data-tab=page-candidates]'), 'page-election-type')" class="px-5 py-2 bg-primary/10 text-primary text-sm font-bold rounded-lg">후보자 둘러보기</button>
+            </div>
+        </main>
+    </div>
+
     <!-- ==================== PAGE: REPORTS (신고 내역, 6-E) ==================== -->
     <div id="page-reports" class="page">
         <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
@@ -1681,6 +1702,10 @@ const POLICY_INTEREST_COUNTS = {
 };
 
 let policyInterests = JSON.parse(localStorage.getItem('policyInterests') || '{}');
+
+// 전역 공약 라벨/아이콘 (openDetail 내부 지역 변수에서 승격, PHASE 7 재사용)
+const POLICY_LABELS_KO = { summary: '정책 요약', jobs: '일자리', vision: '비전', education: '교육' };
+const POLICY_ICONS = { summary: 'description', jobs: 'work', vision: 'visibility', education: 'school' };
 
 function getPolicyInterestCount(candidateId, policyKey) {
     const row = POLICY_INTEREST_COUNTS[String(candidateId)];
@@ -3068,7 +3093,110 @@ function openMyInterestsCard() {
 }
 
 function openMyPolicyInterestsCard() {
-    showToast('준비 중입니다. 곧 공감 공약 목록 페이지가 추가됩니다.');
+    navigateTo('page-policy-interests');
+    renderPolicyInterestsPage();
+}
+
+// ============ POLICY INTERESTS PAGE (PHASE 7) ============
+function renderPolicyInterestsPage() {
+    const list = document.getElementById('policy-interests-list');
+    const empty = document.getElementById('policy-interests-empty');
+    if (!list || !empty) return;
+
+    // policyInterests 구조: { "candidate_<id>": ["summary","jobs",...] }
+    // 유효 항목만 필터 (빈 배열 제외)
+    const entries = Object.entries(policyInterests)
+        .filter(([, arr]) => Array.isArray(arr) && arr.length > 0);
+
+    if (entries.length === 0) {
+        list.innerHTML = '';
+        empty.classList.remove('hidden');
+        empty.classList.add('flex');
+        return;
+    }
+
+    empty.classList.add('hidden');
+    empty.classList.remove('flex');
+
+    const partyColors = { blue: '#2563eb', red: '#dc2626', gray: '#6b7280' };
+
+    // 후보자 데이터 순서로 안정 정렬 (기호 번호 오름차순)
+    const rows = entries
+        .map(([key, policyKeys]) => {
+            const id = parseInt(key.replace('candidate_', ''), 10);
+            const c = findCandidateById(id);
+            if (!c || !c.policies) return null;
+            return { id, c, policyKeys };
+        })
+        .filter(Boolean)
+        .sort((a, b) => (a.c.number || 0) - (b.c.number || 0));
+
+    list.innerHTML = rows.map(({ id, c, policyKeys }) => {
+        const pc = partyColors[c.partyColor] || '#6b7280';
+        // 실제 공약 데이터가 존재하는 키만
+        const validKeys = policyKeys.filter(k => c.policies[k]);
+        if (validKeys.length === 0) return '';
+
+        const subCards = validKeys.map(k => {
+            const label = POLICY_LABELS_KO[k] || k;
+            const icon = POLICY_ICONS[k] || 'description';
+            const content = c.policies[k];
+            return `
+                <div class="bg-white dark:bg-slate-800 border-t border-[#e7ebf3] dark:border-gray-700 p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="material-symbols-outlined text-base" style="color:${pc}">${icon}</span>
+                        <span class="text-sm font-bold text-slate-700 dark:text-slate-200">${escapeHtml(label)}</span>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">${escapeHtml(content)}</p>
+                    <div class="flex justify-end">
+                        <button onclick="removePolicyInterest(${id}, '${k}')" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-[#e7ebf3] dark:border-gray-600 bg-white dark:bg-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 active:scale-95 transition-transform">
+                            <span class="material-symbols-outlined text-[14px]">close</span>
+                            공감 해제
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        return `
+            <div class="rounded-2xl border border-[#e7ebf3] dark:border-gray-700 overflow-hidden">
+                <div class="bg-white dark:bg-slate-800 px-4 py-3 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0" style="background:${pc}">${c.name.charAt(0)}</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2">
+                            <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${escapeHtml(c.name)}</p>
+                            <span class="px-1.5 py-0.5 rounded text-[10px] font-bold text-white" style="background:${pc}">기호 ${c.number}</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${escapeHtml(c.party)}</p>
+                    </div>
+                </div>
+                ${subCards}
+            </div>
+        `;
+    }).join('');
+}
+
+function removePolicyInterest(candidateId, policyKey) {
+    const key = `candidate_${candidateId}`;
+    if (policyInterests[key]) {
+        policyInterests[key] = policyInterests[key].filter(k => k !== policyKey);
+        if (policyInterests[key].length === 0) {
+            delete policyInterests[key];
+        }
+    }
+    localStorage.setItem('policyInterests', JSON.stringify(policyInterests));
+
+    // 공감 공약 페이지 재렌더
+    renderPolicyInterestsPage();
+
+    // 마이 페이지 카운터 갱신 (활성 상태 여부와 무관하게 존재하면 갱신)
+    const policyEl = document.getElementById('my-policy-interests-count');
+    if (policyEl) {
+        const policyCount = Object.values(policyInterests).reduce((sum, arr) => sum + (arr ? arr.length : 0), 0);
+        policyEl.textContent = policyCount;
+    }
+
+    showToast('공감을 해제했습니다');
 }
 
 function openMyReportsCard() {
@@ -3370,6 +3498,9 @@ const translations = {
         likes: '관심 후보',
         reports: '신고',
         followList: '관심 후보 목록',
+        policyInterests: '공감 공약',
+        removeInterest: '공감 해제',
+        noPolicyInterests: '공감한 공약이 없습니다',
         likeHistory: '관심 후보 목록',
         reportHistory: '신고 내역',
         myVoteInfo: '내 투표 정보',
@@ -3427,6 +3558,9 @@ const translations = {
         likes: 'Bookmarks',
         reports: 'Reports',
         followList: 'Interested Candidates',
+        policyInterests: 'Liked Policies',
+        removeInterest: 'Remove',
+        noPolicyInterests: 'No policies liked yet',
         likeHistory: 'Bookmarked Candidates',
         reportHistory: 'Report History',
         myVoteInfo: 'My Voting Info',
