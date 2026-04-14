@@ -68,9 +68,9 @@
         /* Checkbox styles */
         .candidate-checkbox:checked + label { background-color: #135bec; border-color: #135bec; }
         .candidate-checkbox:checked + label .check-icon { display: block; }
-        .like-checkbox:checked + label .material-symbols-outlined { font-variation-settings: 'FILL' 1; color: #ef4444; }
-        .like-checkbox:checked + label { border-color: #fee2e2; background-color: #fef2f2; }
-        .dark .like-checkbox:checked + label { background-color: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.2); }
+        .like-checkbox:checked + label .material-symbols-outlined { font-variation-settings: 'FILL' 1; color: #f59e0b; }
+        .like-checkbox:checked + label { border-color: #fde68a; background-color: #fffbeb; }
+        .dark .like-checkbox:checked + label { background-color: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.2); }
 
         /* Compare FAB */
         .compare-fab { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 448px; z-index: 40; transition: all 0.3s; }
@@ -594,7 +594,7 @@
                 <div class="grid grid-cols-3 gap-3 text-center">
                     <div class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
                         <p class="text-xl font-bold text-primary" id="my-likes-count">0</p>
-                        <p class="text-[11px] text-slate-400 mt-1">좋아요</p>
+                        <p class="text-[11px] text-slate-400 mt-1">관심 후보</p>
                     </div>
                     <div class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
                         <p class="text-xl font-bold text-primary" id="my-follow-count">0</p>
@@ -614,9 +614,9 @@
                     <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">팔로우 목록</span>
                     <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
                 </button>
-                <button onclick="showMyLikes()" class="w-full flex items-center gap-3 px-5 py-4 text-left border-b border-[#e7ebf3] dark:border-gray-700 active:bg-slate-50 dark:active:bg-slate-700">
-                    <span class="material-symbols-outlined text-slate-500 text-xl">thumb_up</span>
-                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">좋아요 내역</span>
+                <button onclick="showMyBookmarks()" class="w-full flex items-center gap-3 px-5 py-4 text-left border-b border-[#e7ebf3] dark:border-gray-700 active:bg-slate-50 dark:active:bg-slate-700">
+                    <span class="material-symbols-outlined text-slate-500 text-xl">bookmark</span>
+                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">관심 후보 목록</span>
                     <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
                 </button>
                 <button onclick="showMyReports()" class="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-slate-50 dark:active:bg-slate-700">
@@ -1276,7 +1276,7 @@ function renderCandidates() {
     const list = document.getElementById('candidate-list');
     list.innerHTML = '';
 
-    getCurrentCandidates().forEach(c => {
+    getCurrentCandidates().slice().sort((a, b) => a.number - b.number).forEach(c => {
         const colorClasses = {
             blue: { bg: 'bg-blue-50', text: 'text-blue-600', slogan: 'text-primary' },
             red: { bg: 'bg-red-50', text: 'text-red-600', slogan: 'text-red-600' },
@@ -1300,13 +1300,6 @@ function renderCandidates() {
                     <div class="size-full rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 border border-gray-100 dark:border-gray-700 flex items-center justify-center">
                         <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-4xl">person</span>
                     </div>
-                    <div class="absolute -bottom-1 -right-1">
-                        <input class="like-checkbox hidden" id="like-${c.id}" type="checkbox" />
-                        <label class="flex items-center gap-1 px-1.5 py-0.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full shadow-sm cursor-pointer hover:scale-105 transition-transform active:scale-95" for="like-${c.id}">
-                            <span class="material-symbols-outlined text-[14px] text-gray-400">favorite</span>
-                            <span class="text-[10px] font-bold text-gray-600 dark:text-gray-300">${formatNumber(c.likes)}</span>
-                        </label>
-                    </div>
                 </div>
                 <div class="flex-1 pr-6">
                     <div class="flex items-center gap-2 mb-1">
@@ -1322,10 +1315,10 @@ function renderCandidates() {
                     <span class="material-symbols-outlined text-sm">forum</span> 대화
                 </button>
                 <div class="flex items-center">
-                    <input class="like-checkbox hidden" id="btn-like-${c.id}" type="checkbox" />
+                    <input class="like-checkbox hidden" id="btn-like-${c.id}" type="checkbox" ${bookmarkedCandidates.includes(c.id) ? 'checked' : ''} onchange="toggleBookmark(${c.id})" />
                     <label class="flex items-center gap-1.5 px-3 py-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 text-sm font-bold cursor-pointer transition-all active:scale-[0.98]" for="btn-like-${c.id}">
-                        <span class="material-symbols-outlined text-sm text-gray-400">favorite</span>
-                        <span class="text-[#0d121b] dark:text-white">좋아요</span>
+                        <span class="material-symbols-outlined text-sm text-gray-400">bookmark</span>
+                        <span class="text-[#0d121b] dark:text-white">관심 등록</span>
                     </label>
                 </div>
                 <button onclick="openDetail(${c.id})" class="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 text-[#0d121b] dark:text-white text-sm font-bold active:scale-[0.98] transition-transform">상세보기</button>
@@ -2492,6 +2485,9 @@ let isLoggedIn = false;
 let currentUser = null;
 let followedCandidates = JSON.parse(localStorage.getItem('followedCandidates') || '[]');
 let reportHistory = JSON.parse(localStorage.getItem('reportHistory') || '[]');
+// 관심 등록: 본인 로컬에만 저장되는 개인 북마크 (다른 사용자에게 노출/집계 금지)
+// TODO(next-session): 후보자 대시보드 연동 시 서버 동기화 스펙 정의 필요
+let bookmarkedCandidates = JSON.parse(localStorage.getItem('bookmarkedCandidates') || '[]');
 
 function showLoginModal() {
     document.getElementById('login-modal').classList.remove('hidden');
@@ -2596,10 +2592,27 @@ function renderMyPage() {
 
     document.getElementById('my-follow-count').textContent = followedCandidates.length;
     document.getElementById('my-report-count').textContent = reportHistory.length;
+    document.getElementById('my-likes-count').textContent = bookmarkedCandidates.length;
 }
 
-function showMyLikes() {
-    showToast('좋아요 내역을 준비 중입니다');
+function toggleBookmark(candidateId) {
+    const idx = bookmarkedCandidates.indexOf(candidateId);
+    if (idx === -1) {
+        bookmarkedCandidates.push(candidateId);
+    } else {
+        bookmarkedCandidates.splice(idx, 1);
+    }
+    localStorage.setItem('bookmarkedCandidates', JSON.stringify(bookmarkedCandidates));
+    const myLikes = document.getElementById('my-likes-count');
+    if (myLikes) myLikes.textContent = bookmarkedCandidates.length;
+}
+
+function showMyBookmarks() {
+    if (bookmarkedCandidates.length === 0) {
+        showToast('관심 등록한 후보가 없습니다');
+        return;
+    }
+    showToast(`관심 후보 ${bookmarkedCandidates.length}명`);
 }
 
 function showMyReports() {
@@ -2698,10 +2711,10 @@ const translations = {
         followDesc: '로그인하면 관심 후보의 공약, 활동 소식을\n한 곳에서 모아볼 수 있습니다.',
         loginSignup: '로그인 / 회원가입',
         myActivity: '내 활동',
-        likes: '좋아요',
+        likes: '관심 후보',
         reports: '신고',
         followList: '팔로우 목록',
-        likeHistory: '좋아요 내역',
+        likeHistory: '관심 후보 목록',
         reportHistory: '신고 내역',
         myVoteInfo: '내 투표 정보',
         findPollingStation: '투표소 찾기',
@@ -2757,10 +2770,10 @@ const translations = {
         followDesc: 'Log in to see your favorite candidates\u2019\npolicies and updates in one place.',
         loginSignup: 'Login / Sign up',
         myActivity: 'My Activity',
-        likes: 'Likes',
+        likes: 'Bookmarks',
         reports: 'Reports',
         followList: 'Following',
-        likeHistory: 'Like History',
+        likeHistory: 'Bookmarked Candidates',
         reportHistory: 'Report History',
         myVoteInfo: 'My Voting Info',
         findPollingStation: 'Find Polling Station',
