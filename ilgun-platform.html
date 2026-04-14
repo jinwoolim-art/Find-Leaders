@@ -490,6 +490,80 @@
         </div>
     </div>
 
+    <!-- ==================== PAGE: EDUCATION (교육감, PHASE 11) ==================== -->
+    <div id="page-education" class="page">
+        <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
+            <div class="flex items-center gap-3">
+                <button onclick="navigateTo('page-election-type', true)" class="p-1 -ml-1">
+                    <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
+                </button>
+                <div class="flex-1 min-w-0">
+                    <h1 class="text-base font-bold flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-primary text-lg">school</span>
+                        교육감 후보
+                    </h1>
+                    <p id="education-header-sub" class="text-xs text-[#4c669a] dark:text-gray-400 font-medium">거주 지역 미선택</p>
+                </div>
+            </div>
+        </header>
+        <main class="flex-1 bg-background-light dark:bg-background-dark px-4 pt-4 pb-24">
+            <p class="text-[11px] text-slate-400 mb-3">가나다순으로 정렬됩니다. 거주 시·도의 후보만 표시됩니다.</p>
+            <div id="education-list" class="space-y-3"></div>
+            <div id="education-empty" class="hidden flex-col items-center py-16">
+                <span class="material-symbols-outlined text-slate-300 text-5xl mb-3">school</span>
+                <p class="text-sm font-bold text-slate-500 dark:text-slate-400 mb-1">등록된 교육감 후보가 없습니다</p>
+                <p class="text-xs text-slate-400">거주 시·도를 확인해 주세요</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- ==================== PAGE: COUNCIL (우리 골목, PHASE 11) ==================== -->
+    <div id="page-council" class="page">
+        <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
+            <div class="flex items-center gap-3">
+                <button onclick="navigateTo('page-election-type', true)" class="p-1 -ml-1">
+                    <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
+                </button>
+                <div class="flex-1 min-w-0">
+                    <h1 class="text-base font-bold flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-primary text-lg">holiday_village</span>
+                        우리 골목
+                    </h1>
+                    <p class="text-xs text-[#4c669a] dark:text-gray-400 font-medium">시·도의원 · 시·구·군의원 후보</p>
+                </div>
+            </div>
+        </header>
+        <main class="flex-1 bg-background-light dark:bg-background-dark px-4 pt-4 pb-24">
+            <!-- 검색창 -->
+            <div class="relative mb-2">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+                <input id="council-search" type="text" placeholder="우리 동네 검색 (예: 강남, 종로, 수원)" oninput="filterCouncilCandidates()" class="w-full pl-10 pr-10 py-3 rounded-xl border border-[#e7ebf3] dark:border-gray-700 bg-white dark:bg-slate-800 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-primary" />
+                <button id="council-search-clear" onclick="clearCouncilSearch()" class="hidden absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700" aria-label="검색어 지우기">
+                    <span class="material-symbols-outlined text-slate-400 text-lg">close</span>
+                </button>
+            </div>
+            <p class="text-[11px] text-slate-400 mb-3">💡 지역명이나 선거구명으로 검색해보세요</p>
+
+            <!-- 타입 필터 -->
+            <div class="flex gap-2 mb-3 overflow-x-auto scrollbar-hide">
+                <button class="council-filter-btn px-3 py-1.5 rounded-full text-xs font-bold bg-primary text-white shadow-sm flex-shrink-0" data-type="all" onclick="setCouncilFilter(this, 'all')">전체</button>
+                <button class="council-filter-btn px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-[#e7ebf3] dark:border-gray-700 flex-shrink-0" data-type="광역의원" onclick="setCouncilFilter(this, '광역의원')">🏛️ 광역의원</button>
+                <button class="council-filter-btn px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-[#e7ebf3] dark:border-gray-700 flex-shrink-0" data-type="기초의원" onclick="setCouncilFilter(this, '기초의원')">🏘️ 기초의원</button>
+            </div>
+
+            <!-- 결과 카운터 -->
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-3"><span id="council-result-count" class="font-bold text-primary">0</span>명의 후보</p>
+
+            <!-- 리스트 -->
+            <div id="council-list" class="space-y-3"></div>
+            <div id="council-empty" class="hidden flex-col items-center py-16">
+                <span class="material-symbols-outlined text-slate-300 text-5xl mb-3">search_off</span>
+                <p class="text-sm font-bold text-slate-500 dark:text-slate-400 mb-1">검색 결과가 없습니다</p>
+                <p class="text-xs text-slate-400">다른 키워드로 검색해보세요</p>
+            </div>
+        </main>
+    </div>
+
     <!-- ==================== PAGE: CANDIDATE DETAIL ==================== -->
     <div id="page-detail" class="page">
         <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
@@ -1304,7 +1378,433 @@ const candidateData = {
     county_head: [],
     city_council: [],
     province_council: [],
-    superintendent: []
+    // PHASE 11: 교육감 후보 (시·도 단위, sido 필드 기반)
+    superintendent: [
+        {
+            id: 201, name: "홍교육", age: 58, party: "무소속", partyKey: "independent",
+            number: 0, partyColor: "gray", slogan: "아이들의 미래를 여는 교육",
+            sido: "서울특별시",
+            greeting: "서울 시민 여러분, 교육감 후보 홍교육입니다. 35년 교단 경험으로 서울 교육의 새 장을 열겠습니다.",
+            career: [
+                { year: "2018-2026", title: "서울교육청 정책자문위원장" },
+                { year: "2000-2018", title: "서울 소재 중·고등학교 교사·교감·교장" },
+                { year: "1988", title: "서울대 사범대 국어교육과 졸업" }
+            ],
+            achievements: [
+                { icon: "school", text: "서울시 우수 교육자 표창 (2020)" },
+                { icon: "volunteer_activism", text: "학부모 교육공동체 네트워크 창립" }
+            ],
+            education: "서울대 국어교육 학사 / 한국교원대 교육학 석사",
+            birthplace: "서울특별시 노원구",
+            policies: {
+                summary: "학생 중심, 교사 존중, 학부모 참여의 3대 원칙으로 서울 교육을 재설계합니다.",
+                jobs: "교원 행정업무 50% 감축, 교사 연수 예산 확대로 교직원 근무 환경을 근본적으로 개선하겠습니다.",
+                vision: "AI 시대를 살아갈 아이들을 위한 디지털 리터러시와 인문학 교육을 균형 있게 추진합니다.",
+                education: "기초학력 책임제, 학교 폭력 제로, 방과후 무상 돌봄 확대를 핵심으로 추진합니다."
+            }
+        },
+        {
+            id: 202, name: "박교육", age: 62, party: "무소속", partyKey: "independent",
+            number: 0, partyColor: "gray", slogan: "공교육 정상화가 답입니다",
+            sido: "서울특별시",
+            greeting: "서울 교육감 후보 박교육입니다. 공교육 정상화로 사교육 의존도를 낮추고 모든 아이에게 공정한 출발선을 보장하겠습니다.",
+            career: [
+                { year: "2015-2026", title: "한국교육정책연구소 소장" },
+                { year: "2000-2015", title: "교육부 학교정책관, 대학정책관 역임" }
+            ],
+            achievements: [
+                { icon: "policy", text: "2022 교육 불평등 해소 정책 연구 수행" },
+                { icon: "groups", text: "전국 교육청 정책 자문 10년" }
+            ],
+            education: "고려대 교육학 박사",
+            birthplace: "경기도 수원시",
+            policies: {
+                summary: "사교육비 절감과 공교육 신뢰 회복을 최우선 과제로 삼습니다.",
+                jobs: "교사 연구년제 확대, 행정업무 경감 TF 상설화",
+                vision: "학교가 학생의 삶을 바꾸는 공간이 되도록 지원합니다.",
+                education: "기초학력 진단 연 2회 의무화, 진로체험 프로그램 전면 확대."
+            }
+        },
+        {
+            id: 203, name: "이교육", age: 55, party: "무소속", partyKey: "independent",
+            number: 0, partyColor: "gray", slogan: "바다처럼 넓은 교육, 산처럼 든든한 부산",
+            sido: "부산광역시",
+            greeting: "부산 교육감 후보 이교육입니다. 부산의 특수성과 지역 정체성을 반영한 교육 정책을 추진하겠습니다.",
+            career: [
+                { year: "2019-2026", title: "부산시교육청 정책기획관" },
+                { year: "1995-2019", title: "부산 소재 초·중학교 교사·교장" }
+            ],
+            achievements: [
+                { icon: "directions_boat", text: "부산형 해양 교육 프로그램 개발" },
+                { icon: "eco", text: "지역 연계 환경 교육 운영" }
+            ],
+            education: "부산대 교육학 학사",
+            birthplace: "부산광역시 해운대구",
+            policies: {
+                summary: "지역 특성화 교육과 기초학력 강화를 병행합니다.",
+                jobs: "부산 교원 정주 지원금, 섬 지역 근무 가산점 확대",
+                vision: "해양 도시 부산의 미래 인재 양성",
+                education: "해양·환경·산업 연계 직업교육 강화"
+            }
+        },
+        {
+            id: 204, name: "최교육", age: 60, party: "무소속", partyKey: "independent",
+            number: 0, partyColor: "gray", slogan: "현장에서 답을 찾겠습니다",
+            sido: "부산광역시",
+            greeting: "현장 중심 교육을 약속드립니다. 학교 현장의 목소리를 정책으로 연결하겠습니다.",
+            career: [
+                { year: "2020-2026", title: "부산교육정책연구원 원장" },
+                { year: "1990-2020", title: "부산 소재 고등학교 교사" }
+            ],
+            achievements: [
+                { icon: "forum", text: "학교 현장 의견 수렴 포럼 50회 운영" },
+                { icon: "handshake", text: "부산 교육감협의회 자문위원" }
+            ],
+            education: "부산교대 졸업 / 부산대 교육학 석사",
+            birthplace: "경상남도 양산시",
+            policies: {
+                summary: "현장 교사가 신뢰하는 교육 행정.",
+                jobs: "교사 권리 보호 조례 제정 추진",
+                vision: "부산 학생의 자기주도 학습 역량 강화",
+                education: "독서·토론 중심 수업 혁신"
+            }
+        },
+        {
+            id: 205, name: "정교육", age: 57, party: "무소속", partyKey: "independent",
+            number: 0, partyColor: "gray", slogan: "경기 교육, 다시 일어섭니다",
+            sido: "경기도",
+            greeting: "경기도 교육감 후보 정교육입니다. 전국 최대 규모 경기 교육의 도약을 이끌겠습니다.",
+            career: [
+                { year: "2016-2026", title: "경기도교육청 혁신학교 정책관" },
+                { year: "1992-2016", title: "경기 소재 중·고등학교 교사·교장" }
+            ],
+            achievements: [
+                { icon: "auto_stories", text: "경기 혁신학교 모델 전국 확산" },
+                { icon: "psychology", text: "청소년 마음건강 지원 체계 구축" }
+            ],
+            education: "이화여대 교육학 학사",
+            birthplace: "경기도 성남시",
+            policies: {
+                summary: "경기형 혁신교육 2.0과 돌봄 체계 통합.",
+                jobs: "신규 교원 연수 6개월 의무화, 멘토 교사제 도입",
+                vision: "자율과 책임이 균형을 이루는 학교 자치",
+                education: "학생 주도 프로젝트 학습, 다문화 교육 확대"
+            }
+        },
+        {
+            id: 206, name: "윤교육", age: 59, party: "무소속", partyKey: "independent",
+            number: 0, partyColor: "gray", slogan: "실력과 인성을 함께 키웁니다",
+            sido: "경기도",
+            greeting: "경기도 교육의 기본기를 다시 세우겠습니다. 학력과 인성 교육을 함께 추진합니다.",
+            career: [
+                { year: "2014-2026", title: "경기도교육청 학생인권 담당관" },
+                { year: "1993-2014", title: "경기 소재 초등학교 교사·교장" }
+            ],
+            achievements: [
+                { icon: "balance", text: "학생 인권·교권 상생 조례 발의" },
+                { icon: "menu_book", text: "경기 독서 마라톤 프로젝트 운영" }
+            ],
+            education: "경인교대 졸업 / 서울대 교육학 석사",
+            birthplace: "경기도 고양시",
+            policies: {
+                summary: "학력 회복과 인성 교육의 균형.",
+                jobs: "교사 행정업무 전담 인력 확충",
+                vision: "경기 학생이 세계 시민으로 성장하는 교육",
+                education: "기초학력 보장제, 인성·진로 통합 프로그램"
+            }
+        }
+    ],
+    // PHASE 11: 의원 후보 (광역의원 + 기초의원 통합, 검색 기반 탐색)
+    council: [
+        {
+            id: 301, name: "김서울", age: 42, party: "더불어민주당", partyKey: "democratic",
+            number: 1, partyColor: "blue", slogan: "강남을 시민의 품으로",
+            council_type: "광역의원",
+            constituency: "서울특별시 강남구 제1선거구",
+            region_tags: ["서울특별시", "서울", "강남구", "강남", "제1선거구"],
+            greeting: "서울시의회 강남구 제1선거구 김서울입니다. 주거 안정과 교통 혁신으로 살기 좋은 강남을 만들겠습니다.",
+            career: [
+                { year: "2022-2026", title: "서울시의회 의원 (강남구 제1)" },
+                { year: "2018-2022", title: "강남구 지역정책연구소 소장" }
+            ],
+            achievements: [
+                { icon: "apartment", text: "강남 재건축 투명성 조례 발의" },
+                { icon: "train", text: "지하철 9호선 증편 예산 확보" }
+            ],
+            education: "연세대 행정학 학사",
+            birthplace: "서울특별시 강남구",
+            policies: {
+                summary: "주거·교통·복지 3대 정책으로 강남의 일상을 바꿉니다.",
+                jobs: "강남 청년 창업 지원센터 2배 확대",
+                vision: "투명한 재건축과 쾌적한 주거 환경",
+                education: "학원 밀집지역 통학로 안전 강화"
+            }
+        },
+        {
+            id: 302, name: "박종로", age: 51, party: "국민의힘", partyKey: "peoples",
+            number: 2, partyColor: "red", slogan: "역사와 미래가 공존하는 종로",
+            council_type: "광역의원",
+            constituency: "서울특별시 종로구 제2선거구",
+            region_tags: ["서울특별시", "서울", "종로구", "종로", "제2선거구"],
+            greeting: "종로구 제2선거구 박종로입니다. 전통과 혁신이 함께하는 종로를 만들겠습니다.",
+            career: [
+                { year: "2022-2026", title: "서울시의회 의원 (종로구 제2)" },
+                { year: "2015-2022", title: "종로구 문화관광위원회 위원장" }
+            ],
+            achievements: [
+                { icon: "museum", text: "종로 역사문화거리 조성사업 주도" },
+                { icon: "storefront", text: "전통시장 활성화 조례 발의" }
+            ],
+            education: "성균관대 경제학 학사",
+            birthplace: "서울특별시 종로구",
+            policies: {
+                summary: "문화·관광·소상공인 지원을 통한 지역경제 활성화.",
+                jobs: "종로 전통시장 디지털화 예산 확보",
+                vision: "역사도시 종로의 글로벌 브랜딩",
+                education: "문화재 연계 현장 체험 학습 확대"
+            }
+        },
+        {
+            id: 303, name: "이수원", age: 45, party: "더불어민주당", partyKey: "democratic",
+            number: 3, partyColor: "blue", slogan: "수원, 사람 중심의 변화",
+            council_type: "광역의원",
+            constituency: "경기도 수원시 제3선거구",
+            region_tags: ["경기도", "경기", "수원시", "수원", "제3선거구"],
+            greeting: "경기도의회 수원시 제3선거구 이수원입니다. 수원 시민이 체감하는 변화를 이끌겠습니다.",
+            career: [
+                { year: "2022-2026", title: "경기도의회 의원 (수원시 제3)" },
+                { year: "2016-2022", title: "수원시 주민자치위원회 위원장" }
+            ],
+            achievements: [
+                { icon: "park", text: "수원 도심 공원 3개소 신설" },
+                { icon: "child_care", text: "영유아 돌봄 시설 확충" }
+            ],
+            education: "아주대 사회복지학 학사",
+            birthplace: "경기도 수원시",
+            policies: {
+                summary: "돌봄·복지·교통 인프라 강화로 일상을 바꿉니다.",
+                jobs: "수원 청년 일자리 매칭 플랫폼 운영",
+                vision: "아이 키우기 좋은 수원",
+                education: "공공 돌봄 교실 전 구 설치"
+            }
+        },
+        {
+            id: 304, name: "최고양", age: 48, party: "국민의힘", partyKey: "peoples",
+            number: 1, partyColor: "red", slogan: "고양, 다시 뛰는 도시",
+            council_type: "광역의원",
+            constituency: "경기도 고양시 제1선거구",
+            region_tags: ["경기도", "경기", "고양시", "고양", "제1선거구"],
+            greeting: "경기도의회 고양시 제1선거구 최고양입니다. 고양을 경기 북부 경제 중심으로 만들겠습니다.",
+            career: [
+                { year: "2022-2026", title: "경기도의회 의원 (고양시 제1)" },
+                { year: "2014-2022", title: "고양시 경제발전위원회 자문" }
+            ],
+            achievements: [
+                { icon: "business", text: "고양 대화역 상권 활성화 주도" },
+                { icon: "directions_subway", text: "GTX-A 개통 촉구 결의" }
+            ],
+            education: "건국대 경영학 학사",
+            birthplace: "경기도 고양시",
+            policies: {
+                summary: "교통 인프라와 상권 부흥으로 도시 경쟁력 강화.",
+                jobs: "고양 일산테크노밸리 청년 채용 연계",
+                vision: "경기 북부의 경제 허브",
+                education: "산학 연계 직업 교육 확대"
+            }
+        },
+        {
+            id: 305, name: "정서울", age: 39, party: "정의당", partyKey: "justice",
+            number: 5, partyColor: "gray", slogan: "시민이 주인인 의회",
+            council_type: "광역의원",
+            constituency: "서울특별시 강남구 제2선거구",
+            region_tags: ["서울특별시", "서울", "강남구", "강남", "제2선거구"],
+            greeting: "강남구 제2선거구 정서울입니다. 진보적 대안으로 강남에 새로운 선택지를 드립니다.",
+            career: [
+                { year: "2020-2026", title: "시민단체 '강남시민연대' 대표" },
+                { year: "2015-2020", title: "청년 주거권 네트워크 간사" }
+            ],
+            achievements: [
+                { icon: "campaign", text: "청년 1인 가구 지원 조례 추진" },
+                { icon: "accessibility", text: "보행약자 교통권 캠페인 운영" }
+            ],
+            education: "한양대 사회학 학사",
+            birthplace: "서울특별시 강남구",
+            policies: {
+                summary: "시민 참여 예산 확대와 약자 우선 정책.",
+                jobs: "청년 주거 바우처 제도 신설",
+                vision: "다양성이 존중받는 강남",
+                education: "학생 인권 교육 의무화"
+            }
+        },
+        {
+            id: 306, name: "윤성남", age: 53, party: "더불어민주당", partyKey: "democratic",
+            number: 2, partyColor: "blue", slogan: "성남, 균형 발전의 모범",
+            council_type: "광역의원",
+            constituency: "경기도 성남시 제1선거구",
+            region_tags: ["경기도", "경기", "성남시", "성남", "제1선거구"],
+            greeting: "경기도의회 성남시 제1선거구 윤성남입니다. 구도심과 신도심의 균형 발전을 약속드립니다.",
+            career: [
+                { year: "2022-2026", title: "경기도의회 의원 (성남시 제1)" },
+                { year: "2018-2022", title: "성남시 도시재생 자문위원" }
+            ],
+            achievements: [
+                { icon: "apartment", text: "성남 구도심 재생사업 예산 확대" },
+                { icon: "elderly", text: "어르신 무료 교통 확대 조례" }
+            ],
+            education: "경희대 도시공학 학사",
+            birthplace: "경기도 성남시",
+            policies: {
+                summary: "도시재생과 세대 통합 복지.",
+                jobs: "성남 산업단지 청년 고용 촉진",
+                vision: "사람이 떠나지 않는 성남",
+                education: "지역 도서관 야간 운영 확대"
+            }
+        },
+        {
+            id: 311, name: "강강남", age: 44, party: "더불어민주당", partyKey: "democratic",
+            number: 1, partyColor: "blue", slogan: "동네를 바꾸는 생활 정치",
+            council_type: "기초의원",
+            constituency: "서울특별시 강남구 가선거구",
+            region_tags: ["서울특별시", "서울", "강남구", "강남", "가선거구"],
+            greeting: "강남구의회 가선거구 강강남입니다. 골목 하나하나의 불편을 해결하는 의원이 되겠습니다.",
+            career: [
+                { year: "2022-2026", title: "강남구의회 의원 (가선거구)" },
+                { year: "2017-2022", title: "강남구 주민자치위원" }
+            ],
+            achievements: [
+                { icon: "cleaning_services", text: "논현동 골목길 청소 주 2회 확대" },
+                { icon: "security", text: "CCTV 사각지대 해소 예산 편성" }
+            ],
+            education: "중앙대 행정학 학사",
+            birthplace: "서울특별시 강남구",
+            policies: {
+                summary: "생활 밀착형 민원 해결과 안전한 동네.",
+                jobs: "소상공인 간판 개선 지원 확대",
+                vision: "걷기 좋은 강남 골목",
+                education: "초등학교 통학로 안전 펜스 설치"
+            }
+        },
+        {
+            id: 312, name: "한강남", age: 37, party: "국민의힘", partyKey: "peoples",
+            number: 2, partyColor: "red", slogan: "청년이 머무는 강남",
+            council_type: "기초의원",
+            constituency: "서울특별시 강남구 나선거구",
+            region_tags: ["서울특별시", "서울", "강남구", "강남", "나선거구"],
+            greeting: "강남구의회 나선거구 한강남입니다. 청년이 떠나지 않는 강남을 만들겠습니다.",
+            career: [
+                { year: "2022-2026", title: "강남구의회 의원 (나선거구)" },
+                { year: "2019-2022", title: "청년 스타트업 액셀러레이터 운영" }
+            ],
+            achievements: [
+                { icon: "rocket_launch", text: "강남 청년 창업 지원금 신설" },
+                { icon: "home_work", text: "청년 주거 지원 조례 공동발의" }
+            ],
+            education: "서강대 경영학 학사",
+            birthplace: "서울특별시 강남구",
+            policies: {
+                summary: "청년 창업과 주거 지원의 양대 축.",
+                jobs: "강남 청년 매칭 취업 박람회 연 2회",
+                vision: "청년 세대와 함께하는 강남",
+                education: "청년 금융 교육 프로그램 운영"
+            }
+        },
+        {
+            id: 313, name: "장종로", age: 56, party: "더불어민주당", partyKey: "democratic",
+            number: 1, partyColor: "blue", slogan: "종로의 골목이 살아야 서울이 산다",
+            council_type: "기초의원",
+            constituency: "서울특별시 종로구 가선거구",
+            region_tags: ["서울특별시", "서울", "종로구", "종로", "가선거구"],
+            greeting: "종로구의회 가선거구 장종로입니다. 골목상권과 문화재가 조화를 이루는 종로를 만들겠습니다.",
+            career: [
+                { year: "2018-2026", title: "종로구의회 의원 2선" },
+                { year: "2010-2018", title: "종로 전통시장 상인회 간사" }
+            ],
+            achievements: [
+                { icon: "storefront", text: "광장시장 디지털 결제 인프라 구축" },
+                { icon: "history_edu", text: "종로 한옥거리 보존 조례 발의" }
+            ],
+            education: "동국대 국어국문학 학사",
+            birthplace: "서울특별시 종로구",
+            policies: {
+                summary: "문화·상권 공존의 생활경제.",
+                jobs: "종로 소상공인 경영 컨설팅 지원",
+                vision: "세대가 함께 찾는 종로",
+                education: "청소년 문화유산 탐방 프로그램"
+            }
+        },
+        {
+            id: 314, name: "오수원", age: 50, party: "국민의힘", partyKey: "peoples",
+            number: 3, partyColor: "red", slogan: "수원 라선거구, 현장이 답입니다",
+            council_type: "기초의원",
+            constituency: "경기도 수원시 라선거구",
+            region_tags: ["경기도", "경기", "수원시", "수원", "라선거구"],
+            greeting: "수원시의회 라선거구 오수원입니다. 주민 민원 365일 1시간 응답을 약속합니다.",
+            career: [
+                { year: "2022-2026", title: "수원시의회 의원 (라선거구)" },
+                { year: "2015-2022", title: "수원 지역 봉사단체 대표" }
+            ],
+            achievements: [
+                { icon: "support_agent", text: "민원 응답 시스템 디지털화" },
+                { icon: "volunteer_activism", text: "독거 어르신 반찬 나눔 주관" }
+            ],
+            education: "경기대 사회복지학 학사",
+            birthplace: "경기도 수원시",
+            policies: {
+                summary: "민원 즉시 대응과 촘촘한 복지.",
+                jobs: "수원 소상공인 임대료 지원 확대",
+                vision: "모두가 체감하는 생활 정치",
+                education: "지역 아동센터 시설 현대화"
+            }
+        },
+        {
+            id: 315, name: "문수원", age: 41, party: "정의당", partyKey: "justice",
+            number: 4, partyColor: "gray", slogan: "수원 마선거구, 진짜 변화",
+            council_type: "기초의원",
+            constituency: "경기도 수원시 마선거구",
+            region_tags: ["경기도", "경기", "수원시", "수원", "마선거구"],
+            greeting: "수원시의회 마선거구 문수원입니다. 진보적 대안으로 수원의 낡은 관행을 바꾸겠습니다.",
+            career: [
+                { year: "2020-2026", title: "수원 노동권 연대 대표" },
+                { year: "2014-2020", title: "경기 시민사회 연합 정책팀장" }
+            ],
+            achievements: [
+                { icon: "engineering", text: "감정노동자 보호 조례 추진" },
+                { icon: "eco", text: "수원 탄소중립 계획 자문" }
+            ],
+            education: "성균관대 사회학 학사",
+            birthplace: "경기도 수원시",
+            policies: {
+                summary: "노동·환경·인권의 기초의회.",
+                jobs: "감정노동자 휴게시설 설치 의무화",
+                vision: "지속가능한 수원",
+                education: "환경·인권 시민 교육 확대"
+            }
+        },
+        {
+            id: 316, name: "신성남", age: 47, party: "더불어민주당", partyKey: "democratic",
+            number: 2, partyColor: "blue", slogan: "성남 바선거구, 다시 시작",
+            council_type: "기초의원",
+            constituency: "경기도 성남시 바선거구",
+            region_tags: ["경기도", "경기", "성남시", "성남", "바선거구"],
+            greeting: "성남시의회 바선거구 신성남입니다. 구도심 주민의 목소리를 의회로 전달합니다.",
+            career: [
+                { year: "2022-2026", title: "성남시의회 의원 (바선거구)" },
+                { year: "2016-2022", title: "성남 수정구 주민자치회장" }
+            ],
+            achievements: [
+                { icon: "construction", text: "노후 주거지 집수리 지원 확대" },
+                { icon: "elderly", text: "경로당 냉난방 전수 점검 추진" }
+            ],
+            education: "한국외대 행정학 학사",
+            birthplace: "경기도 성남시",
+            policies: {
+                summary: "구도심 재생과 어르신 복지.",
+                jobs: "성남 전통시장 공동배송 지원",
+                vision: "소외 없는 성남",
+                education: "지역 아동 돌봄 공간 확대"
+            }
+        }
+    ]
 };
 
 let currentSegment = 'governor';
@@ -1324,15 +1824,15 @@ function findCandidateById(id) {
     return null;
 }
 
-// ============ ELECTION TYPE (PHASE 9) ============
+// ============ ELECTION TYPE (PHASE 9 + PHASE 11) ============
 const ELECTION_TYPE_LABELS = {
     governor: '시·도지사',
     mayor: '구청장',
-    // TODO: city(시장), county(군수), city_council, province_council,
-    // superintendent 등 추가 예정
+    superintendent: '교육감',
+    council: '의원' // council은 getElectionTypeLabel에서 council_type으로 세분화
 };
 
-// 후보자 id → candidateData 그룹 키 ("governor" / "mayor" ...) 역조회
+// 후보자 id → candidateData 그룹 키 역조회
 function getElectionType(id) {
     for (const key of Object.keys(candidateData)) {
         if (candidateData[key].some(c => c.id === id)) return key;
@@ -1342,6 +1842,10 @@ function getElectionType(id) {
 
 function getElectionTypeLabel(id) {
     const type = getElectionType(id);
+    if (type === 'council') {
+        const c = findCandidateById(id);
+        return (c && c.council_type) || '의원';
+    }
     return (type && ELECTION_TYPE_LABELS[type]) || '';
 }
 
@@ -1784,6 +2288,19 @@ const electionCategoryConfig = {
 
 function openElectionCategory(category) {
     currentElectionCategory = category;
+
+    // PHASE 11: 우리 골목 / 우리교육은 전용 페이지로 분기
+    if (category === 'council') {
+        navigateTo('page-council');
+        renderCouncilList();
+        return;
+    }
+    if (category === 'education') {
+        navigateTo('page-education');
+        renderEducationList();
+        return;
+    }
+
     const config = electionCategoryConfig[category];
 
     // 헤더 업데이트
@@ -1829,6 +2346,195 @@ function openElectionCategory(category) {
     });
 
     navigateTo('page-candidates');
+}
+
+// ============ PHASE 11: 우리교육 (교육감) ============
+function renderEducationList() {
+    const list = document.getElementById('education-list');
+    const empty = document.getElementById('education-empty');
+    const sub = document.getElementById('education-header-sub');
+    if (!list || !empty) return;
+
+    const sido = selectedRegion && selectedRegion.sido;
+    if (sub) sub.textContent = sido ? (sido + ' 교육감') : '거주 지역 미선택';
+
+    let pool = (candidateData.superintendent || []).slice();
+    if (sido) pool = pool.filter(c => c.sido === sido);
+    // 가나다순 정렬
+    pool.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ko'));
+
+    if (pool.length === 0) {
+        list.innerHTML = '';
+        empty.classList.remove('hidden');
+        empty.classList.add('flex');
+        return;
+    }
+    empty.classList.add('hidden');
+    empty.classList.remove('flex');
+
+    list.innerHTML = pool.map(renderEducationCard).join('');
+}
+
+function renderEducationCard(c) {
+    const partyColors = { blue: '#2563eb', red: '#dc2626', gray: '#6b7280' };
+    const pc = partyColors[c.partyColor] || '#6b7280';
+    const booked = bookmarkedCandidates.includes(c.id);
+    return `
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-[#e7ebf3] dark:border-gray-800 p-4">
+            <div class="flex items-start gap-3 mb-3">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0" style="background:${pc}">${c.name.charAt(0)}</div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <p class="text-base font-bold text-slate-800 dark:text-white truncate">${escapeHtml(c.name)} <span class="text-xs font-normal text-slate-400">(${c.age}세)</span></p>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[11px] font-medium">교육감 후보</span>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${escapeHtml(c.party || '무소속')} · ${escapeHtml(c.sido || '')}</p>
+                    <p class="text-sm mt-1 line-clamp-1" style="color:${pc}">"${escapeHtml(c.slogan || '')}"</p>
+                </div>
+                <input class="like-checkbox hidden" id="btn-like-${c.id}" type="checkbox" ${booked ? 'checked' : ''} onchange="toggleBookmark(${c.id})" />
+                <label class="flex items-center gap-1 px-2 py-1.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 text-xs font-bold cursor-pointer active:scale-[0.98] flex-shrink-0" for="btn-like-${c.id}">
+                    <span class="material-symbols-outlined text-sm text-gray-400">bookmark</span>
+                </label>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="openDetail(${c.id})" class="py-2 rounded-lg border border-[#e7ebf3] dark:border-gray-700 text-xs font-bold text-slate-700 dark:text-slate-200 active:scale-[0.98]">
+                    <span class="material-symbols-outlined text-[14px] align-middle mr-0.5">description</span>공약 보기
+                </button>
+                <button onclick="openChat(${c.id})" class="py-2 rounded-lg bg-primary text-white text-xs font-bold active:scale-[0.98]">
+                    <span class="material-symbols-outlined text-[14px] align-middle mr-0.5">forum</span>AI 대화
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// ============ PHASE 11: 우리 골목 (의원 검색) ============
+let currentCouncilFilter = 'all';
+let currentCouncilSearch = '';
+
+function filterCouncilCandidates() {
+    const inp = document.getElementById('council-search');
+    currentCouncilSearch = inp ? inp.value.trim() : '';
+    const clearBtn = document.getElementById('council-search-clear');
+    if (clearBtn) clearBtn.classList.toggle('hidden', !currentCouncilSearch);
+    renderCouncilList();
+}
+
+function clearCouncilSearch() {
+    const inp = document.getElementById('council-search');
+    if (inp) inp.value = '';
+    currentCouncilSearch = '';
+    const clearBtn = document.getElementById('council-search-clear');
+    if (clearBtn) clearBtn.classList.add('hidden');
+    renderCouncilList();
+}
+
+function setCouncilFilter(btnEl, type) {
+    currentCouncilFilter = type;
+    document.querySelectorAll('.council-filter-btn').forEach(b => {
+        const active = b.dataset.type === type;
+        b.classList.toggle('bg-primary', active);
+        b.classList.toggle('text-white', active);
+        b.classList.toggle('shadow-sm', active);
+        b.classList.toggle('bg-white', !active);
+        b.classList.toggle('dark:bg-slate-800', !active);
+        b.classList.toggle('text-slate-600', !active);
+        b.classList.toggle('dark:text-slate-300', !active);
+        b.classList.toggle('border', !active);
+        b.classList.toggle('border-[#e7ebf3]', !active);
+        b.classList.toggle('dark:border-gray-700', !active);
+    });
+    renderCouncilList();
+}
+
+function renderCouncilList() {
+    const list = document.getElementById('council-list');
+    const empty = document.getElementById('council-empty');
+    const count = document.getElementById('council-result-count');
+    if (!list || !empty || !count) return;
+
+    let pool = (candidateData.council || []).slice();
+
+    // 타입 필터
+    if (currentCouncilFilter !== 'all') {
+        pool = pool.filter(c => c.council_type === currentCouncilFilter);
+    }
+
+    // 검색 필터 (지역 태그 / 선거구 / 이름 / 정당)
+    if (currentCouncilSearch) {
+        const kw = currentCouncilSearch.toLowerCase();
+        pool = pool.filter(c => {
+            const tagsMatch = Array.isArray(c.region_tags) && c.region_tags.some(t => String(t).toLowerCase().includes(kw));
+            const constMatch = (c.constituency || '').toLowerCase().includes(kw);
+            const nameMatch = (c.name || '').toLowerCase().includes(kw);
+            const partyMatch = (c.party || '').toLowerCase().includes(kw);
+            return tagsMatch || constMatch || nameMatch || partyMatch;
+        });
+    }
+
+    // 가나다순 정렬
+    pool.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ko'));
+
+    count.textContent = pool.length;
+
+    if (pool.length === 0) {
+        list.innerHTML = '';
+        empty.classList.remove('hidden');
+        empty.classList.add('flex');
+        return;
+    }
+    empty.classList.add('hidden');
+    empty.classList.remove('flex');
+    list.innerHTML = pool.map(renderCouncilCard).join('');
+}
+
+function renderCouncilCard(c) {
+    const partyColors = { blue: '#2563eb', red: '#dc2626', gray: '#6b7280' };
+    const pc = partyColors[c.partyColor] || '#6b7280';
+    const booked = bookmarkedCandidates.includes(c.id);
+
+    // 레벨링 배지 — 광역/기초 구분 색상
+    const typeBadgeCls = c.council_type === '광역의원'
+        ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300'
+        : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300';
+    const typeIcon = c.council_type === '광역의원' ? '🏛️' : '🏘️';
+    const sidoTag = (c.region_tags || []).find(t => /특별시|광역시|특별자치|도$/.test(t)) || '';
+    const gunguTag = (c.region_tags || []).find(t => /구$|시$|군$/.test(t)) || '';
+
+    const levelBadges = `
+        <div class="flex flex-wrap gap-1 mb-2">
+            <span class="inline-flex items-center px-2 py-0.5 rounded ${typeBadgeCls} text-[11px] font-bold">${typeIcon} ${escapeHtml(c.council_type || '의원')}</span>
+            ${sidoTag ? `<span class="inline-flex items-center px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-[11px] font-medium">${escapeHtml(sidoTag)}</span>` : ''}
+            ${gunguTag && gunguTag !== sidoTag ? `<span class="inline-flex items-center px-2 py-0.5 rounded bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 text-[11px] font-medium">${escapeHtml(gunguTag)}</span>` : ''}
+        </div>
+    `;
+
+    return `
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-[#e7ebf3] dark:border-gray-800 p-4">
+            <div class="flex items-start gap-3 mb-2">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0" style="background:${pc}">${c.name.charAt(0)}</div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-base font-bold text-slate-800 dark:text-white truncate">${escapeHtml(c.name)} <span class="text-xs font-normal text-slate-400">(${c.age}세)</span></p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${escapeHtml(c.party || '')}</p>
+                </div>
+                <input class="like-checkbox hidden" id="btn-like-${c.id}" type="checkbox" ${booked ? 'checked' : ''} onchange="toggleBookmark(${c.id})" />
+                <label class="flex items-center gap-1 px-2 py-1.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 text-xs font-bold cursor-pointer active:scale-[0.98] flex-shrink-0" for="btn-like-${c.id}">
+                    <span class="material-symbols-outlined text-sm text-gray-400">bookmark</span>
+                </label>
+            </div>
+            ${levelBadges}
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-1"><span class="material-symbols-outlined text-[12px] align-middle mr-0.5">place</span>${escapeHtml(c.constituency || '')}</p>
+            <p class="text-sm mb-3 line-clamp-1" style="color:${pc}">"${escapeHtml(c.slogan || '')}"</p>
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="openDetail(${c.id})" class="py-2 rounded-lg border border-[#e7ebf3] dark:border-gray-700 text-xs font-bold text-slate-700 dark:text-slate-200 active:scale-[0.98]">
+                    <span class="material-symbols-outlined text-[14px] align-middle mr-0.5">description</span>공약 보기
+                </button>
+                <button onclick="openChat(${c.id})" class="py-2 rounded-lg bg-primary text-white text-xs font-bold active:scale-[0.98]">
+                    <span class="material-symbols-outlined text-[14px] align-middle mr-0.5">forum</span>AI 대화
+                </button>
+            </div>
+        </div>
+    `;
 }
 
 // ============ DARK MODE ============
