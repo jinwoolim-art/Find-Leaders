@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html class="light" lang="ko">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>일군을찾다 · 후보자 대시보드</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#7c3aed",
+                        "primary-dark": "#6d28d9",
+                        "sidebar-bg": "#1e1b4b",
+                        "sidebar-hover": "#312e81",
+                        "bg-canvas": "#f8fafc",
+                        "bg-card": "#ffffff"
+                    },
+                    fontFamily: {
+                        sans: ["Noto Sans KR", "Inter", "sans-serif"],
+                        mono: ["JetBrains Mono", "monospace"]
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Sidebar */
+        .sidebar { background: linear-gradient(180deg, #1e1b4b 0%, #2e1065 100%); }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            color: #c4b5fd;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            user-select: none;
+        }
+        .nav-item:hover { background: rgba(124,58,237,0.18); color: #ffffff; }
+        .nav-item.active {
+            background: rgba(124,58,237,0.35);
+            color: #ffffff;
+            box-shadow: inset 3px 0 0 #a78bfa;
+        }
+        .nav-item.active .nav-icon { color: #a78bfa; }
+        .nav-icon { font-size: 18px; }
+        .nav-section-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #8b5cf6;
+            padding: 16px 14px 6px;
+        }
+
+        /* Page sections */
+        .dash-page { display: none; }
+        .dash-page.active { display: block; }
+
+        /* KPI card */
+        .kpi-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 18px;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .kpi-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.06); transform: translateY(-1px); }
+
+        /* Section card */
+        .section-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge-up { background: #dcfce7; color: #16a34a; }
+        .badge-down { background: #fee2e2; color: #dc2626; }
+        .badge-flat { background: #f1f5f9; color: #64748b; }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120%);
+            background: #1e293b;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            z-index: 200;
+            transition: transform 0.25s;
+            pointer-events: none;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* Mobile: sidebar overlay */
+        @media (max-width: 900px) {
+            .sidebar {
+                position: fixed;
+                inset: 0 auto 0 0;
+                width: 240px;
+                transform: translateX(-100%);
+                transition: transform 0.25s;
+                z-index: 50;
+            }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-backdrop {
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.4);
+                display: none;
+                z-index: 40;
+            }
+            .sidebar-backdrop.show { display: block; }
+        }
+    </style>
+</head>
+<body class="bg-bg-canvas text-slate-800">
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<!-- 레이아웃 -->
+<div class="flex min-h-screen">
+
+    <!-- ======= 사이드바 ======= -->
+    <aside id="sidebar" class="sidebar w-60 flex-shrink-0 text-white flex flex-col">
+        <!-- 로고 -->
+        <div class="px-5 pt-6 pb-4 border-b border-white/10">
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center shadow-lg">
+                    <span class="material-symbols-outlined text-white text-xl">dashboard</span>
+                </div>
+                <div>
+                    <p class="text-xs text-purple-200 font-medium">일군을찾다</p>
+                    <p class="text-sm font-bold text-white">후보자 대시보드</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 후보자 프로필 카드 -->
+        <div class="px-4 py-3 border-b border-white/10">
+            <div class="flex items-center gap-3 p-2.5 rounded-xl bg-white/5">
+                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-purple-300 to-purple-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">김</div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-bold text-white truncate" id="candidate-name">김현준 후보</p>
+                    <p class="text-[10px] text-purple-200 truncate">시·도지사 · 기호 1</p>
+                </div>
+                <button class="material-symbols-outlined text-purple-200 text-base hover:text-white" title="프로필">expand_more</button>
+            </div>
+        </div>
+
+        <!-- 내비게이션 -->
+        <nav class="flex-1 px-3 py-2 overflow-y-auto scrollbar-hide">
+            <p class="nav-section-label">운영</p>
+            <div class="nav-item active" data-page="page-overview" onclick="switchDashPage(this, 'page-overview')">
+                <span class="material-symbols-outlined nav-icon">space_dashboard</span>
+                <span>대시보드</span>
+            </div>
+            <div class="nav-item" data-page="page-stats" onclick="switchDashPage(this, 'page-stats')">
+                <span class="material-symbols-outlined nav-icon">analytics</span>
+                <span>통계 분석</span>
+            </div>
+            <div class="nav-item" data-page="page-reactions" onclick="switchDashPage(this, 'page-reactions')">
+                <span class="material-symbols-outlined nav-icon">sentiment_satisfied</span>
+                <span>리액션 분석</span>
+            </div>
+
+            <p class="nav-section-label">콘텐츠</p>
+            <div class="nav-item" data-page="page-policies" onclick="switchDashPage(this, 'page-policies')">
+                <span class="material-symbols-outlined nav-icon">description</span>
+                <span>공약 관리</span>
+            </div>
+            <div class="nav-item" data-page="page-avatar" onclick="switchDashPage(this, 'page-avatar')">
+                <span class="material-symbols-outlined nav-icon">smart_toy</span>
+                <span>아바타 설정</span>
+            </div>
+            <div class="nav-item" data-page="page-questions" onclick="switchDashPage(this, 'page-questions')">
+                <span class="material-symbols-outlined nav-icon">forum</span>
+                <span>질문 TOP 10</span>
+            </div>
+            <div class="nav-item" data-page="page-reports" onclick="switchDashPage(this, 'page-reports')">
+                <span class="material-symbols-outlined nav-icon">flag</span>
+                <span>신고 관리</span>
+            </div>
+
+            <p class="nav-section-label">계정</p>
+            <div class="nav-item" data-page="page-settings" onclick="switchDashPage(this, 'page-settings')">
+                <span class="material-symbols-outlined nav-icon">settings</span>
+                <span>설정</span>
+            </div>
+        </nav>
+
+        <!-- 하단: 로그아웃 -->
+        <div class="px-4 pt-2 pb-4 border-t border-white/10">
+            <button onclick="handleDashLogout()" class="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-purple-200 hover:text-white hover:bg-white/5 text-xs font-medium transition-colors">
+                <span class="material-symbols-outlined text-base">logout</span>
+                <span>로그아웃</span>
+            </button>
+            <p class="text-[10px] text-purple-300/60 text-center mt-2">v1.0 · 내부 운영 전용</p>
+        </div>
+    </aside>
+
+    <!-- 모바일 백드롭 -->
+    <div id="sidebar-backdrop" class="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <!-- ======= 메인 컨텐츠 ======= -->
+    <main class="flex-1 flex flex-col min-w-0">
+        <!-- 상단 헤더 -->
+        <header class="sticky top-0 z-30 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <button class="md:hidden p-1 rounded-lg hover:bg-slate-100" onclick="toggleSidebar()">
+                    <span class="material-symbols-outlined text-slate-600">menu</span>
+                </button>
+                <div>
+                    <h1 id="page-title" class="text-lg font-bold text-slate-800">대시보드</h1>
+                    <p id="page-subtitle" class="text-[11px] text-slate-500">오늘의 운영 현황 요약</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="badge badge-flat font-mono">🔒 내부 전용</span>
+                <button class="p-2 rounded-lg hover:bg-slate-100" title="알림">
+                    <span class="material-symbols-outlined text-slate-600">notifications</span>
+                </button>
+                <button onclick="toggleDark()" class="p-2 rounded-lg hover:bg-slate-100" title="다크 모드">
+                    <span class="material-symbols-outlined text-slate-600 block dark:hidden">dark_mode</span>
+                    <span class="material-symbols-outlined text-slate-400 hidden dark:block">light_mode</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 페이지 본문 (탭 전환) -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-6">
+
+            <!-- ========== PAGE: OVERVIEW (대시보드) ========== -->
+            <section id="page-overview" class="dash-page active">
+                <!-- 환영 배너 -->
+                <div class="rounded-2xl p-6 text-white shadow-lg" style="background:linear-gradient(135deg,#7c3aed 0%,#6d28d9 60%,#4c1d95 100%);">
+                    <div class="flex items-start justify-between flex-wrap gap-4">
+                        <div>
+                            <p class="text-xs text-purple-200 font-medium mb-1">안녕하세요 👋</p>
+                            <h2 class="text-2xl font-bold">김현준 후보님</h2>
+                            <p class="text-sm text-purple-100 mt-1">오늘도 시민과 함께하는 하루 되세요.</p>
+                        </div>
+                        <div class="flex items-center gap-2 bg-white/10 backdrop-blur px-4 py-2 rounded-xl">
+                            <span class="material-symbols-outlined text-purple-200">schedule</span>
+                            <div>
+                                <p class="text-[10px] text-purple-200">선거일까지</p>
+                                <p class="text-lg font-bold" id="election-countdown">D-52</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- D-1 자리: KPI 카드 4개 (D-2에서 채움) -->
+                <div class="mt-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-base font-bold text-slate-800">핵심 지표</h3>
+                        <span class="text-[11px] text-slate-400">※ D-2에서 구현 예정</span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="kpi-card opacity-60">
+                            <p class="text-xs text-slate-500 font-medium">관심 등록</p>
+                            <p class="text-2xl font-bold text-slate-300 mt-1">—</p>
+                            <p class="text-[11px] text-slate-400 mt-2">D-2 구현 예정</p>
+                        </div>
+                        <div class="kpi-card opacity-60">
+                            <p class="text-xs text-slate-500 font-medium">오늘 대화</p>
+                            <p class="text-2xl font-bold text-slate-300 mt-1">—</p>
+                            <p class="text-[11px] text-slate-400 mt-2">D-2 구현 예정</p>
+                        </div>
+                        <div class="kpi-card opacity-60">
+                            <p class="text-xs text-slate-500 font-medium">리액션 합계</p>
+                            <p class="text-2xl font-bold text-slate-300 mt-1">—</p>
+                            <p class="text-[11px] text-slate-400 mt-2">D-2 구현 예정</p>
+                        </div>
+                        <div class="kpi-card opacity-60">
+                            <p class="text-xs text-slate-500 font-medium">신고</p>
+                            <p class="text-2xl font-bold text-slate-300 mt-1">—</p>
+                            <p class="text-[11px] text-slate-400 mt-2">D-2 구현 예정</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 빠른 링크 -->
+                <div class="mt-6">
+                    <h3 class="text-base font-bold text-slate-800 mb-3">빠른 실행</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <button onclick="switchDashPageById('page-stats')" class="section-card text-left hover:border-primary hover:shadow-md transition-all">
+                            <span class="material-symbols-outlined text-primary text-2xl">analytics</span>
+                            <p class="text-sm font-bold text-slate-800 mt-2">통계 분석 열기</p>
+                            <p class="text-xs text-slate-500 mt-1">공약별 공감, 만족도 확인</p>
+                        </button>
+                        <button onclick="switchDashPageById('page-avatar')" class="section-card text-left hover:border-primary hover:shadow-md transition-all">
+                            <span class="material-symbols-outlined text-primary text-2xl">smart_toy</span>
+                            <p class="text-sm font-bold text-slate-800 mt-2">아바타 설정</p>
+                            <p class="text-xs text-slate-500 mt-1">선거송 업로드 · 대화 톤 설정</p>
+                        </button>
+                        <button onclick="switchDashPageById('page-reports')" class="section-card text-left hover:border-primary hover:shadow-md transition-all">
+                            <span class="material-symbols-outlined text-primary text-2xl">flag</span>
+                            <p class="text-sm font-bold text-slate-800 mt-2">신고 내역 확인</p>
+                            <p class="text-xs text-slate-500 mt-1">처리 대기 건 검토</p>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== PAGE: STATS (통계 분석) ========== -->
+            <section id="page-stats" class="dash-page">
+                <div class="section-card">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="material-symbols-outlined text-primary text-2xl">analytics</span>
+                        <h3 class="text-base font-bold text-slate-800">통계 분석</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">공약별 공감 분석, 질문 TOP 10, 답변 만족도 등</p>
+                    <p class="text-xs text-slate-400 mt-4">※ PHASE D-2에서 구현 예정</p>
+                </div>
+            </section>
+
+            <!-- ========== PAGE: REACTIONS (리액션 분석) ========== -->
+            <section id="page-reactions" class="dash-page">
+                <div class="section-card">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="material-symbols-outlined text-primary text-2xl">sentiment_satisfied</span>
+                        <h3 class="text-base font-bold text-slate-800">리액션 분석</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">응원 / 칭찬 / 댄스타임 분포 · 7일 추이</p>
+                    <p class="text-xs text-slate-400 mt-4">※ PHASE D-2에서 구현 예정</p>
+                </div>
+            </section>
+
+            <!-- ========== PAGE: POLICIES ========== -->
+            <section id="page-policies" class="dash-page">
+                <div class="section-card">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="material-symbols-outlined text-primary text-2xl">description</span>
+                        <h3 class="text-base font-bold text-slate-800">공약 관리</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">정책 요약 / 일자리 / 비전 / 교육 공약 편집</p>
+                    <p class="text-xs text-slate-400 mt-4">※ 다음 PHASE에서 구현 예정</p>
+                </div>
+            </section>
+
+            <!-- ========== PAGE: AVATAR (아바타 설정) ========== -->
+            <section id="page-avatar" class="dash-page">
+                <div class="section-card">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="material-symbols-outlined text-primary text-2xl">smart_toy</span>
+                        <h3 class="text-base font-bold text-slate-800">아바타 설정</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">선거송 업로드 · 대화 톤 · 아바타 이미지</p>
+                    <p class="text-xs text-slate-400 mt-4">※ PHASE D-3에서 구현 예정</p>
+                </div>
+            </section>
+
+            <!-- ========== PAGE: QUESTIONS ========== -->
+            <section id="page-questions" class="dash-page">
+                <div class="section-card">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="material-symbols-outlined text-primary text-2xl">forum</span>
+                        <h3 class="text-base font-bold text-slate-800">질문 TOP 10</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">시민이 가장 많이 물어본 질문 상위 10개</p>
+                    <p class="text-xs text-slate-400 mt-4">※ PHASE D-2에서 구현 예정</p>
+                </div>
+            </section>
+
+            <!-- ========== PAGE: REPORTS ========== -->
+            <section id="page-reports" class="dash-page">
+                <div class="section-card">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="material-symbols-outlined text-primary text-2xl">flag</span>
+                        <h3 class="text-base font-bold text-slate-800">신고 관리</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">후보자 관련 신고(답변/공약/정보 오류)</p>
+                    <p class="text-xs text-slate-400 mt-4">※ PHASE D-2에서 구현 예정</p>
+                </div>
+            </section>
+
+            <!-- ========== PAGE: SETTINGS ========== -->
+            <section id="page-settings" class="dash-page">
+                <div class="section-card">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="material-symbols-outlined text-primary text-2xl">settings</span>
+                        <h3 class="text-base font-bold text-slate-800">설정</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">계정 · 알림 · 언어 · 약관 재확인</p>
+                    <p class="text-xs text-slate-400 mt-4">※ 다음 PHASE에서 구현 예정</p>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<script>
+// ============ PAGE TITLE MAP ============
+const PAGE_META = {
+    'page-overview':  { title: '대시보드',   sub: '오늘의 운영 현황 요약' },
+    'page-stats':     { title: '통계 분석',   sub: '공약별 공감 · 질문 · 만족도' },
+    'page-reactions': { title: '리액션 분석', sub: '응원 · 칭찬 · 댄스 분포' },
+    'page-policies':  { title: '공약 관리',   sub: '핵심 공약 편집' },
+    'page-avatar':    { title: '아바타 설정', sub: '선거송 · 대화 톤' },
+    'page-questions': { title: '질문 TOP 10', sub: '시민 질문 빈도' },
+    'page-reports':   { title: '신고 관리',   sub: '답변 및 콘텐츠 신고' },
+    'page-settings':  { title: '설정',        sub: '계정 · 알림 · 약관' }
+};
+
+// ============ NAVIGATION ============
+function switchDashPage(navEl, pageId) {
+    // 사이드바 active 상태 갱신
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    if (navEl) navEl.classList.add('active');
+    // 페이지 전환
+    document.querySelectorAll('.dash-page').forEach(p => p.classList.remove('active'));
+    const page = document.getElementById(pageId);
+    if (page) page.classList.add('active');
+    // 헤더 타이틀 갱신
+    const meta = PAGE_META[pageId] || {};
+    const t = document.getElementById('page-title');
+    const s = document.getElementById('page-subtitle');
+    if (t && meta.title) t.textContent = meta.title;
+    if (s && meta.sub) s.textContent = meta.sub;
+    // 모바일 사이드바 닫기
+    closeSidebar();
+    // 본문 스크롤 상단으로
+    const scrollContainer = document.querySelector('main > div.flex-1');
+    if (scrollContainer) scrollContainer.scrollTop = 0;
+}
+
+function switchDashPageById(pageId) {
+    const navEl = document.querySelector(`.nav-item[data-page="${pageId}"]`);
+    switchDashPage(navEl, pageId);
+}
+
+function toggleSidebar() {
+    const sb = document.getElementById('sidebar');
+    const bd = document.getElementById('sidebar-backdrop');
+    if (sb) sb.classList.toggle('open');
+    if (bd) bd.classList.toggle('show');
+}
+function closeSidebar() {
+    const sb = document.getElementById('sidebar');
+    const bd = document.getElementById('sidebar-backdrop');
+    if (sb) sb.classList.remove('open');
+    if (bd) bd.classList.remove('show');
+}
+
+// ============ DARK MODE ============
+function toggleDark() {
+    document.documentElement.classList.toggle('dark');
+}
+
+// ============ TOAST ============
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ============ LOGOUT (stub) ============
+function handleDashLogout() {
+    showToast('로그아웃되었습니다 (stub)');
+    // TODO: 실제 로그아웃 시 약관 플래그 및 세션 정리 (PHASE D-5)
+}
+
+// ============ ICONIFY SVG 변환 (Figma export 호환, PHASE 14와 동일 방식) ============
+(function () {
+    function convertIcons(root) {
+        if (!root || typeof root.querySelectorAll !== 'function') return;
+        const spans = root.querySelectorAll('span.material-symbols-outlined:not([data-iconified])');
+        spans.forEach(span => {
+            const raw = (span.textContent || '').trim();
+            if (!raw) return;
+            const name = raw.replace(/_/g, '-');
+            const el = document.createElement('iconify-icon');
+            el.setAttribute('icon', 'material-symbols:' + name);
+            el.setAttribute('data-iconified', 'true');
+            const cls = (span.className || '').replace(/material-symbols-outlined/g, '').replace(/nav-icon/g, 'nav-icon').trim();
+            if (cls) el.className = cls;
+            const styleAttr = span.getAttribute('style');
+            if (styleAttr) el.setAttribute('style', styleAttr);
+            try {
+                const cs = getComputedStyle(span);
+                const fs = cs.fontSize;
+                if (fs) {
+                    el.style.width = fs;
+                    el.style.height = fs;
+                    el.style.display = 'inline-block';
+                    el.style.verticalAlign = 'middle';
+                }
+            } catch (e) {}
+            span.replaceWith(el);
+        });
+    }
+    convertIcons(document);
+    try {
+        const observer = new MutationObserver(mutations => {
+            for (const m of mutations) {
+                for (const node of m.addedNodes) {
+                    if (node.nodeType === 1) convertIcons(node);
+                }
+            }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+    } catch (e) {}
+})();
+
+// ============ INIT ============
+// D-1 골격 완료. 내용은 D-2 이후 채워짐.
+</script>
+</body>
+</html>
