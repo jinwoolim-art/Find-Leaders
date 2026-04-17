@@ -3,11 +3,12 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>일군을찾다 | AI Election Platform</title>
+    <title>일꾼을찾다 | AI Election Platform</title>
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+    <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
     <script>
@@ -145,21 +146,21 @@
                 <span class="material-symbols-outlined hidden dark:block">light_mode</span>
             </button>
         </header>
-        <main class="flex-1 flex flex-col px-6">
+        <main class="flex-1 flex flex-col px-6 pb-20">
             <div class="flex-1 flex flex-col items-center justify-center py-10">
                 <div class="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center mb-8">
                     <span class="material-symbols-outlined text-primary text-5xl">person_search</span>
                 </div>
-                <h1 class="text-4xl font-bold tracking-tight text-slate-900 dark:text-white mb-3">일군을찾다</h1>
-                <p class="text-slate-500 dark:text-slate-400 font-medium text-center">AI 아바타와 함께하는 스마트한 선택</p>
+                <h1 class="text-4xl font-bold tracking-tight text-slate-900 dark:text-white mb-3" data-i18n="appTitle">일꾼을찾다</h1>
+                <p class="text-slate-500 dark:text-slate-400 font-medium text-center" data-i18n="appSub">AI 아바타와 함께하는 스마트한 선택</p>
                 <div class="w-full mt-10 space-y-3">
                     <button onclick="navigateTo('page-election-type'); detectLocation();" class="w-full bg-primary hover:bg-blue-700 text-white font-bold py-5 px-6 rounded-2xl flex items-center justify-center gap-2 shadow-xl shadow-primary/20 transition-all active:scale-[0.98]">
-                        <span>일군보기</span>
+                        <span data-i18n="viewCandidates">일꾼보기</span>
                         <span class="material-symbols-outlined">arrow_forward</span>
                     </button>
                     <button onclick="navigateTo('page-policy'); loadPolicies();" class="w-full bg-transparent border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold py-5 px-6 rounded-2xl flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
                         <span class="material-symbols-outlined text-primary">policy</span>
-                        <span>현 시행되고 있는 정책</span>
+                        <span data-i18n="viewPolicy">현 시행되고 있는 정책</span>
                     </button>
                 </div>
             </div>
@@ -167,9 +168,9 @@
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-lg font-bold flex items-center gap-2">
                         <span class="material-symbols-outlined text-red-500">campaign</span>
-                        실시간 선거 뉴스 보기
+                        <span data-i18n="latestNews">실시간 선거 뉴스 보기</span>
                     </h2>
-                    <span onclick="navigateTo('page-news'); loadNews();" class="text-xs text-primary font-bold cursor-pointer hover:underline">더보기</span>
+                    <span onclick="navigateTo('page-news'); loadNews();" class="text-xs text-primary font-bold cursor-pointer hover:underline" data-i18n="more">더보기</span>
                 </div>
                 <div id="home-news-list" class="space-y-3">
                 </div>
@@ -183,10 +184,10 @@
         <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <button onclick="navigateTo('page-home', true)" class="p-1 -ml-1">
+                    <button onclick="goBack()" class="p-1 -ml-1">
                         <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
                     </button>
-                    <h1 class="text-base font-bold">선거 종류 선택</h1>
+                    <h1 class="text-base font-bold" data-i18n="electionType">선거 종류 선택</h1>
                 </div>
                 <button onclick="toggleDark()" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
                     <span class="material-symbols-outlined text-gray-600 dark:text-gray-400 block dark:hidden">dark_mode</span>
@@ -203,7 +204,7 @@
                             <span class="material-symbols-outlined text-primary text-xl">my_location</span>
                         </div>
                         <div>
-                            <p class="text-[11px] text-slate-400 font-medium">내 지역 자동 찾기</p>
+                            <p class="text-[11px] text-slate-400 font-medium" data-i18n="findMyArea">내 지역 자동 찾기</p>
                             <p id="user-location" class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-1">
                                 <span class="material-symbols-outlined text-primary text-sm">location_on</span>
                                 위치를 확인하는 중...
@@ -212,7 +213,7 @@
                     </div>
                     <button onclick="detectLocation()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 active:scale-95 transition-all flex items-center gap-1">
                         <span class="material-symbols-outlined text-sm">refresh</span>
-                        재검색
+                        <span data-i18n="retry">재검색</span>
                     </button>
                 </div>
             </div>
@@ -221,15 +222,15 @@
             <div class="mt-3 px-1">
                 <button onclick="openPollingStation()" class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-primary transition-colors py-1.5">
                     <span class="material-symbols-outlined text-base">location_on</span>
-                    <span class="font-medium">우리 투표소 찾기</span>
+                    <span class="font-medium" data-i18n="findPolling">우리 투표소 찾기</span>
                     <span class="material-symbols-outlined text-sm text-slate-300">chevron_right</span>
                 </button>
             </div>
 
             <!-- 선거 카테고리 타이틀 -->
             <div class="mt-5 mb-4 px-1">
-                <h2 class="text-lg font-bold text-slate-800 dark:text-white">어떤 선거의 후보자를 찾으시나요?</h2>
-                <p class="text-xs text-slate-400 mt-1">카테고리를 선택하면 해당 후보자 목록을 볼 수 있습니다</p>
+                <h2 class="text-lg font-bold text-slate-800 dark:text-white" data-i18n="whichElection">어떤 선거의 후보자를 찾으시나요?</h2>
+                <p class="text-xs text-slate-400 mt-1" data-i18n="selectCategory">카테고리를 선택하면 해당 후보자 목록을 볼 수 있습니다</p>
             </div>
 
             <!-- 우리지역 (대형 상단 버튼) -->
@@ -241,7 +242,7 @@
                         <span class="material-symbols-outlined text-blue-600 dark:text-blue-400 text-4xl">location_city</span>
                     </div>
                     <div class="flex-1">
-                        <h3 class="text-xl font-bold text-slate-800 dark:text-white">우리지역</h3>
+                        <h3 class="text-xl font-bold text-slate-800 dark:text-white" data-i18n="ourRegion">우리지역</h3>
                         <p class="text-[11px] font-bold text-blue-600 dark:text-blue-400 tracking-wider mt-0.5">CITY & LOCAL</p>
                         <p class="text-xs text-slate-400 mt-1.5">시·도지사 · 구청장 · 시장 · 군수</p>
                     </div>
@@ -257,7 +258,7 @@
                     <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                         <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-2xl">holiday_village</span>
                     </div>
-                    <h3 class="text-base font-bold text-slate-800 dark:text-white">우리 골목</h3>
+                    <h3 class="text-base font-bold text-slate-800 dark:text-white" data-i18n="ourAlley">우리 골목</h3>
                     <p class="text-[10px] font-bold text-amber-600 dark:text-amber-400 tracking-wider mt-0.5">COUNCIL</p>
                     <p class="text-[11px] text-slate-400 mt-2 leading-relaxed">시의원 · 구의원<br>도의원 · 군의원</p>
                 </button>
@@ -268,9 +269,9 @@
                     <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                         <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-2xl">school</span>
                     </div>
-                    <h3 class="text-base font-bold text-slate-800 dark:text-white">우리교육</h3>
+                    <h3 class="text-base font-bold text-slate-800 dark:text-white" data-i18n="ourEdu">우리교육</h3>
                     <p class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 tracking-wider mt-0.5">EDU</p>
-                    <p class="text-[11px] text-slate-400 mt-2 leading-relaxed">교육감 후보</p>
+                    <p class="text-[11px] text-slate-400 mt-2 leading-relaxed" data-i18n="eduCandidate">교육감 후보</p>
                 </button>
             </div>
 
@@ -279,8 +280,8 @@
                 <div class="flex items-start gap-3">
                     <span class="material-symbols-outlined text-primary text-lg mt-0.5">info</span>
                     <div>
-                        <p class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">제8회 전국동시지방선거</p>
-                        <p class="text-[11px] text-slate-400 leading-relaxed">각 카테고리를 선택하면 내 지역에 출마한 후보자 목록을 확인할 수 있습니다. AI 아바타 대화를 통해 후보자의 공약을 자세히 알아보세요.</p>
+                        <p class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-1" data-i18n="localElectionInfo">제8회 전국동시지방선거</p>
+                        <p class="text-[11px] text-slate-400 leading-relaxed" data-i18n="localElectionDesc">각 카테고리를 선택하면 내 지역에 출마한 후보자 목록을 확인할 수 있습니다. AI 아바타 대화를 통해 후보자의 공약을 자세히 알아보세요.</p>
                     </div>
                 </div>
             </div>
@@ -292,7 +293,7 @@
         <header class="sticky top-0 z-50 w-full bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <button onclick="navigateTo('page-election-type', true)" class="p-1 -ml-1">
+                    <button onclick="goBack()" class="p-1 -ml-1">
                         <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
                     </button>
                     <div class="flex flex-col">
@@ -318,7 +319,7 @@
         <main class="flex-1 pb-32 bg-background-light dark:bg-background-dark">
             <!-- Party filter -->
             <div class="flex gap-2.5 px-4 py-4 overflow-x-auto scrollbar-hide bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800">
-                <button onclick="filterParty(this, 'all')" class="party-filter flex-shrink-0 px-4 py-1.5 rounded-full bg-primary text-white text-sm font-bold shadow-sm">전체</button>
+                <button onclick="filterParty(this, 'all')" class="party-filter flex-shrink-0 px-4 py-1.5 rounded-full bg-primary text-white text-sm font-bold shadow-sm" data-i18n="all">전체</button>
                 <button onclick="filterParty(this, 'democratic')" class="party-filter flex-shrink-0 flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white dark:bg-gray-800 text-[#4c669a] dark:text-gray-300 border border-[#e7ebf3] dark:border-gray-700 text-sm font-medium">
                     <span class="w-2 h-2 rounded-full bg-blue-600"></span> 더불어민주당
                 </button>
@@ -339,30 +340,11 @@
         <div id="compare-fab" class="compare-fab hidden">
             <button onclick="showCompare()" class="w-full py-4 rounded-xl bg-gradient-to-r from-primary to-blue-400 text-white font-black text-base flex items-center justify-center gap-3 shadow-[0_8px_25px_-5px_rgba(19,91,236,0.4)] hover:brightness-110 active:scale-[0.98] transition-all">
                 <div id="compare-count" class="flex items-center justify-center size-6 bg-white/20 rounded-full text-xs">0</div>
-                선택한 후보자 비교하기
+                <span data-i18n="compare">선택한 후보자 비교하기</span>
                 <span class="material-symbols-outlined">compare_arrows</span>
             </button>
         </div>
 
-        <!-- Bottom nav -->
-        <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white dark:bg-background-dark border-t border-[#e7ebf3] dark:border-gray-800 px-6 py-2 flex items-center justify-around z-50 bottom-nav" id="main-bottom-nav">
-            <a href="#" onclick="switchBottomTab(this, 'page-home'); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500 active" data-tab="page-home">
-                <span class="material-symbols-outlined text-[22px]">home</span>
-                <span class="text-[12px] font-semibold">홈</span>
-            </a>
-            <a href="#" onclick="switchBottomTab(this, 'page-election-type'); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500" data-tab="page-candidates">
-                <span class="material-symbols-outlined text-[22px]">person_search</span>
-                <span class="text-[12px] font-semibold">후보자</span>
-            </a>
-            <a href="#" onclick="switchBottomTab(this, 'page-follow'); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500" data-tab="page-follow">
-                <span class="material-symbols-outlined text-[22px]">favorite_border</span>
-                <span class="text-[12px] font-semibold">팔로우</span>
-            </a>
-            <a href="#" onclick="switchBottomTab(this, 'page-my'); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500" data-tab="page-my">
-                <span class="material-symbols-outlined text-[22px]">person_outline</span>
-                <span class="text-[12px] font-semibold">마이</span>
-            </a>
-        </nav>
     </div>
 
     <!-- ==================== PAGE 3: AI CHAT ==================== -->
@@ -372,7 +354,7 @@
             <section class="relative h-[45%] w-full overflow-hidden bg-gradient-to-b from-[#111722] via-[#1a253a] to-[#101622]">
                 <header class="absolute top-0 left-0 w-full z-20 flex items-center justify-between px-5 py-4 border-b border-white/5">
                     <div class="flex items-center gap-3">
-                        <button onclick="navigateTo('page-candidates', true)" class="text-white p-1 -ml-1">
+                        <button onclick="goBack()" class="text-white p-1 -ml-1">
                             <span class="material-symbols-outlined">arrow_back</span>
                         </button>
                         <div>
@@ -380,9 +362,15 @@
                             <p id="chat-candidate-sub" class="text-[10px] text-slate-400">디지털 트윈</p>
                         </div>
                     </div>
-                    <button onclick="showChatMoreMenu()" class="p-2 rounded-full hover:bg-white/10 transition-colors">
-                        <span class="material-symbols-outlined text-white/80 text-xl">more_vert</span>
-                    </button>
+                    <div class="flex items-center gap-1">
+                        <button onclick="showPolicySympathy()" id="policy-sympathy-btn" class="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 transition-all text-white/90 border border-white/20">
+                            <span class="material-symbols-outlined text-[16px]" style="font-variation-settings:'FILL' 0,'wght' 400">thumb_up</span>
+                            <span class="text-[11px] font-bold">공감</span>
+                        </button>
+                        <button onclick="showChatMoreMenu()" class="p-2 rounded-full hover:bg-white/10 transition-colors">
+                            <span class="material-symbols-outlined text-white/80 text-xl">more_vert</span>
+                        </button>
+                    </div>
                 </header>
                 <div class="absolute inset-0 flex items-center justify-center pt-16">
                     <div class="w-48 h-48 rounded-full bg-gradient-to-br from-primary/30 to-blue-400/10 flex items-center justify-center avatar-glow">
@@ -430,7 +418,7 @@
                         </div>
                         <div class="flex items-center gap-2">
                             <div class="relative flex-1">
-                                <input id="chat-input" onkeydown="if(event.key==='Enter')sendMessage()" class="w-full h-11 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-1 focus:ring-primary focus:border-primary px-4 pr-10 text-sm" placeholder="궁금한 내용을 입력하세요..." type="text"/>
+                                <input id="chat-input" onkeydown="if(event.key==='Enter')sendMessage()" class="w-full h-11 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-1 focus:ring-primary focus:border-primary px-4 pr-10 text-sm" placeholder="" data-i18n-placeholder="typeMessagePlaceholder" type="text"/>
                                 <div onclick="sendMessage()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary">
                                     <span class="material-symbols-outlined text-xl">send</span>
                                 </div>
@@ -490,7 +478,7 @@
     <div id="page-detail" class="page">
         <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
             <div class="flex items-center gap-3">
-                <button onclick="navigateTo('page-candidates', true)" class="p-1 -ml-1">
+                <button onclick="goBack()" class="p-1 -ml-1">
                     <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
                 </button>
                 <h1 class="text-lg font-bold" id="detail-header-name">후보자 상세</h1>
@@ -504,10 +492,10 @@
     <div id="page-compare" class="page">
         <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
             <div class="flex items-center gap-3">
-                <button onclick="navigateTo('page-candidates', true)" class="p-1 -ml-1">
+                <button onclick="goBack()" class="p-1 -ml-1">
                     <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
                 </button>
-                <h1 class="text-lg font-bold">후보자 비교</h1>
+                <h1 class="text-lg font-bold" data-i18n="compareTitle">후보자 비교</h1>
             </div>
         </header>
         <main id="compare-content" class="flex-1 p-4 bg-background-light dark:bg-background-dark pb-20">
@@ -518,7 +506,12 @@
     <div id="page-follow" class="page">
         <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
             <div class="flex items-center justify-between">
-                <h1 class="text-lg font-bold text-slate-800 dark:text-white">팔로우</h1>
+                <div class="flex items-center gap-3">
+                    <button onclick="goBack()" class="p-1 -ml-1">
+                        <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
+                    </button>
+                    <h1 class="text-lg font-bold text-slate-800 dark:text-white" data-i18n="interestCandidatesTitle">관심 후보</h1>
+                </div>
                 <button onclick="toggleDark()" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
                     <span class="material-symbols-outlined text-gray-600 dark:text-gray-400 block dark:hidden">dark_mode</span>
                     <span class="material-symbols-outlined text-gray-400 hidden dark:block">light_mode</span>
@@ -531,22 +524,22 @@
                 <div class="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-5">
                     <span class="material-symbols-outlined text-slate-300 dark:text-slate-600 text-4xl">favorite_border</span>
                 </div>
-                <p class="text-base font-bold text-slate-700 dark:text-slate-200 mb-2">팔로우한 후보를 확인하세요</p>
-                <p class="text-sm text-slate-400 text-center leading-relaxed mb-6">로그인하면 관심 후보의 공약, 활동 소식을<br>한 곳에서 모아볼 수 있습니다.</p>
-                <button onclick="showLoginModal()" class="px-8 py-3 bg-primary text-white font-bold text-sm rounded-xl shadow-lg shadow-primary/20 active:scale-95 transition-transform">
+                <p class="text-base font-bold text-slate-700 dark:text-slate-200 mb-2" data-i18n="manageInterest">관심 후보를 관리하세요</p>
+                <p class="text-sm text-slate-400 text-center leading-relaxed mb-6" data-i18n="interestLoginDesc">로그인하면 관심 후보의 정책 업데이트를<br>한 곳에서 확인할 수 있습니다.</p>
+                <button onclick="showLoginModal()" class="px-8 py-3 bg-primary text-white font-bold text-sm rounded-xl shadow-lg shadow-primary/20 active:scale-95 transition-transform" data-i18n="loginSignup">
                     로그인 / 회원가입
                 </button>
             </div>
             <!-- 로그인 상태 (팔로우 피드) -->
             <div id="follow-feed" class="hidden px-4 py-4 space-y-4">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-sm text-slate-500"><span id="follow-count" class="font-bold text-primary">0</span>명의 후보를 팔로우 중</p>
+                    <p class="text-sm text-slate-500"><span id="follow-count" class="font-bold text-primary">0</span>명의 관심 후보</p>
                 </div>
                 <div id="follow-list" class="space-y-3"></div>
                 <div id="follow-empty" class="hidden flex flex-col items-center py-16">
                     <span class="material-symbols-outlined text-slate-300 text-4xl mb-3">person_add</span>
-                    <p class="text-sm text-slate-400">아직 팔로우한 후보가 없습니다</p>
-                    <button onclick="switchBottomTab(document.querySelector('[data-tab=page-candidates]'), 'page-election-type')" class="mt-4 px-5 py-2 bg-primary/10 text-primary text-sm font-bold rounded-lg">후보자 둘러보기</button>
+                    <p class="text-sm text-slate-400" data-i18n="noInterestYet">아직 관심 후보가 없습니다</p>
+                    <button onclick="switchBottomTab(document.querySelector('[data-tab=page-candidates]'), 'page-election-type')" class="mt-4 px-5 py-2 bg-primary/10 text-primary text-sm font-bold rounded-lg" data-i18n="browseCandidates">후보자 둘러보기</button>
                 </div>
             </div>
         </main>
@@ -556,7 +549,9 @@
     <div id="page-my" class="page">
         <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
             <div class="flex items-center justify-between">
-                <h1 class="text-lg font-bold text-slate-800 dark:text-white">마이</h1>
+                <div class="flex items-center gap-3">
+                    <h1 class="text-lg font-bold text-slate-800 dark:text-white" data-i18n="myPageTitle">마이</h1>
+                </div>
                 <button onclick="toggleDark()" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
                     <span class="material-symbols-outlined text-gray-600 dark:text-gray-400 block dark:hidden">dark_mode</span>
                     <span class="material-symbols-outlined text-gray-400 hidden dark:block">light_mode</span>
@@ -571,10 +566,10 @@
                         <span class="material-symbols-outlined text-slate-400 text-2xl">person</span>
                     </div>
                     <div class="flex-1">
-                        <p class="text-base font-bold text-slate-700 dark:text-slate-200">로그인이 필요합니다</p>
-                        <p class="text-xs text-slate-400 mt-0.5">로그인하고 더 많은 기능을 이용하세요</p>
+                        <p class="text-base font-bold text-slate-700 dark:text-slate-200" data-i18n="loginNeeded">로그인이 필요합니다</p>
+                        <p class="text-xs text-slate-400 mt-0.5" data-i18n="loginForMore">로그인하고 더 많은 기능을 이용하세요</p>
                     </div>
-                    <button onclick="showLoginModal()" class="px-4 py-2 bg-primary text-white text-xs font-bold rounded-lg active:scale-95 transition-transform">로그인</button>
+                    <button onclick="showLoginModal()" class="px-4 py-2 bg-primary text-white text-xs font-bold rounded-lg active:scale-95 transition-transform" data-i18n="login">로그인</button>
                 </div>
                 <div id="my-profile-user" class="hidden flex items-center gap-4">
                     <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
@@ -584,69 +579,131 @@
                         <p class="text-base font-bold text-slate-700 dark:text-slate-200" id="my-username">사용자</p>
                         <p class="text-xs text-slate-400 mt-0.5" id="my-email">user@example.com</p>
                     </div>
-                    <button onclick="handleLogout()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-500 text-xs font-bold rounded-lg">로그아웃</button>
+                    <button onclick="handleLogout()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-500 text-xs font-bold rounded-lg" data-i18n="logout">로그아웃</button>
                 </div>
             </div>
 
             <!-- 내 활동 요약 -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-[#e7ebf3] dark:border-gray-700">
-                <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-4">내 활동</h3>
+                <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-4" data-i18n="myActivityLabel">내 활동</h3>
                 <div class="grid grid-cols-3 gap-3 text-center">
                     <div class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
-                        <p class="text-xl font-bold text-primary" id="my-likes-count">0</p>
-                        <p class="text-[11px] text-slate-400 mt-1">좋아요</p>
+                        <p class="text-xl font-bold text-primary" id="my-interest-count">0</p>
+                        <p class="text-[11px] text-slate-400 mt-1" data-i18n="interestCandidatesLabel">관심후보</p>
                     </div>
                     <div class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
-                        <p class="text-xl font-bold text-primary" id="my-follow-count">0</p>
-                        <p class="text-[11px] text-slate-400 mt-1">팔로우</p>
+                        <p class="text-xl font-bold text-primary" id="my-empathy-count">0</p>
+                        <p class="text-[11px] text-slate-400 mt-1" data-i18n="empathyPledgesLabel">공감 공약</p>
                     </div>
                     <div class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
-                        <p class="text-xl font-bold text-primary" id="my-report-count">0</p>
-                        <p class="text-[11px] text-slate-400 mt-1">신고</p>
+                        <p class="text-xl font-bold text-primary" id="my-saved-count">0</p>
+                        <p class="text-[11px] text-slate-400 mt-1" data-i18n="bookmarkPoliciesLabel">북마크 정책</p>
                     </div>
                 </div>
             </div>
 
-            <!-- 메뉴 리스트 -->
+            <!-- 활동 관리 메뉴 -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl border border-[#e7ebf3] dark:border-gray-700 overflow-hidden">
                 <button onclick="switchBottomTab(document.querySelector('[data-tab=page-follow]'), 'page-follow')" class="w-full flex items-center gap-3 px-5 py-4 text-left border-b border-[#e7ebf3] dark:border-gray-700 active:bg-slate-50 dark:active:bg-slate-700">
-                    <span class="material-symbols-outlined text-slate-500 text-xl">favorite_border</span>
-                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">팔로우 목록</span>
+                    <span class="material-symbols-outlined text-primary text-xl">person_search</span>
+                    <div class="flex-1">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200" data-i18n="myInterest">내 관심 후보</span>
+                        <p class="text-[10px] text-slate-400 mt-0.5" data-i18n="pledgeUpdates">공약 업데이트를 확인할 수 있습니다</p>
+                    </div>
                     <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
                 </button>
-                <button onclick="showMyLikes()" class="w-full flex items-center gap-3 px-5 py-4 text-left border-b border-[#e7ebf3] dark:border-gray-700 active:bg-slate-50 dark:active:bg-slate-700">
-                    <span class="material-symbols-outlined text-slate-500 text-xl">thumb_up</span>
-                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">좋아요 내역</span>
+                <button onclick="showMyLikedPledges()" class="w-full flex items-center gap-3 px-5 py-4 text-left border-b border-[#e7ebf3] dark:border-gray-700 active:bg-slate-50 dark:active:bg-slate-700">
+                    <span class="material-symbols-outlined text-blue-500 text-xl">thumb_up</span>
+                    <div class="flex-1">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200" data-i18n="myEmpathyPledges">내가 공감한 공약</span>
+                        <p class="text-[10px] text-slate-400 mt-0.5" data-i18n="empathyPledgeDesc">후보자 핵심공약에 공감한 목록</p>
+                    </div>
                     <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
                 </button>
-                <button onclick="showMyReports()" class="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-slate-50 dark:active:bg-slate-700">
-                    <span class="material-symbols-outlined text-slate-500 text-xl">flag</span>
-                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">신고 내역</span>
+                <button onclick="showMySavedPolicies()" class="w-full flex items-center gap-3 px-5 py-4 text-left border-b border-[#e7ebf3] dark:border-gray-700 active:bg-slate-50 dark:active:bg-slate-700">
+                    <span class="material-symbols-outlined text-amber-500 text-xl">bookmark</span>
+                    <div class="flex-1">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200" data-i18n="myBookmarkedPolicies">내가 북마크한 현정책</span>
+                        <p class="text-[10px] text-slate-400 mt-0.5" data-i18n="bookmarkDesc">나중에 다시 볼 현행 정책</p>
+                    </div>
+                    <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
+                </button>
+                <button onclick="openMyReportsSheet()" class="w-full flex items-center gap-3 px-5 py-4 text-left border-b border-[#e7ebf3] dark:border-gray-700 active:bg-slate-50 dark:active:bg-slate-700">
+                    <span class="material-symbols-outlined text-red-400 text-xl">flag</span>
+                    <div class="flex-1">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200">신고 내역</span>
+                        <p class="text-[10px] text-slate-400 mt-0.5">내가 제출한 신고 목록 및 처리 상태</p>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span id="my-report-badge" class="hidden bg-red-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full min-w-[18px] text-center"></span>
+                        <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
+                    </div>
+                </button>
+                <button onclick="showToast(currentLang === 'en' ? 'Notifications coming soon' : '알림 설정을 준비 중입니다')" class="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-slate-50 dark:active:bg-slate-700">
+                    <span class="material-symbols-outlined text-slate-500 text-xl">notifications</span>
+                    <div class="flex-1">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200" data-i18n="notifSettings">알림 설정</span>
+                        <p class="text-[10px] text-slate-400 mt-0.5" data-i18n="notifDesc">관심 후보 공약 업데이트 알림</p>
+                    </div>
                     <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
                 </button>
             </div>
 
             <!-- 내 투표 정보 -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl border border-[#e7ebf3] dark:border-gray-700 overflow-hidden">
-                <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 px-5 pt-4 pb-2">내 투표 정보</h3>
+                <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 px-5 pt-4 pb-2" data-i18n="myVotingInfo">내 투표 정보</h3>
                 <button onclick="openPollingStation()" class="w-full flex items-center gap-3 px-5 py-3.5 text-left border-b border-[#e7ebf3] dark:border-gray-700 active:bg-slate-50 dark:active:bg-slate-700">
                     <span class="material-symbols-outlined text-slate-500 text-xl">location_on</span>
-                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">투표소 찾기</span>
+                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200" data-i18n="findPolling2">투표소 찾기</span>
                     <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
                 </button>
-                <button onclick="showToast('선거 일정을 준비 중입니다')" class="w-full flex items-center gap-3 px-5 py-3.5 text-left active:bg-slate-50 dark:active:bg-slate-700">
+                <button onclick="showToast(currentLang === 'en' ? 'Schedule coming soon' : '선거 일정을 준비 중입니다')" class="w-full flex items-center gap-3 px-5 py-3.5 text-left active:bg-slate-50 dark:active:bg-slate-700">
                     <span class="material-symbols-outlined text-slate-500 text-xl">calendar_month</span>
-                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">선거 일정 보기</span>
+                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200" data-i18n="viewElectionSchedule">선거 일정 보기</span>
                     <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
                 </button>
             </div>
 
             <!-- 앱 정보 -->
             <div class="pt-4 text-center">
-                <p class="text-[11px] text-slate-300 dark:text-slate-600">일군을찾다 v1.0</p>
+                <p class="text-[11px] text-slate-300 dark:text-slate-600">일꾼을찾다 v1.0</p>
             </div>
         </main>
     </div>
+
+    <!-- ==================== PAGE: LIKED PLEDGES ==================== -->
+    <div id="page-liked-pledges" class="page">
+        <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
+            <div class="flex items-center gap-3">
+                <button onclick="goBack()" class="p-1 -ml-1">
+                    <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
+                </button>
+                <h1 class="text-lg font-bold text-slate-800 dark:text-white">내가 공감한 공약</h1>
+            </div>
+        </header>
+        <main id="liked-pledges-content" class="flex-1 bg-background-light dark:bg-background-dark pb-6 overflow-y-auto px-4 py-4 space-y-3">
+        </main>
+    </div>
+
+    <!-- ==================== SHARED BOTTOM NAV ==================== -->
+    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white dark:bg-background-dark border-t border-[#e7ebf3] dark:border-gray-800 px-6 py-2 flex items-center justify-around z-50 bottom-nav" id="main-bottom-nav">
+        <a href="#" onclick="switchBottomTab(this, 'page-home'); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500 active" data-tab="page-home">
+            <span class="material-symbols-outlined text-[22px]">home</span>
+            <span class="text-[12px] font-semibold">홈</span>
+        </a>
+        <a href="#" onclick="switchBottomTab(this, 'page-election-type'); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500" data-tab="page-candidates">
+            <span class="material-symbols-outlined text-[22px]">person_search</span>
+            <span class="text-[12px] font-semibold">후보자</span>
+        </a>
+        <a href="#" onclick="switchBottomTab(this, 'page-follow'); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500" data-tab="page-follow">
+            <span class="material-symbols-outlined text-[22px]">favorite_border</span>
+            <span class="text-[12px] font-semibold">관심</span>
+        </a>
+        <a href="#" onclick="switchBottomTab(this, 'page-my'); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500" data-tab="page-my">
+            <span class="material-symbols-outlined text-[22px]">person_outline</span>
+            <span class="text-[12px] font-semibold">마이</span>
+        </a>
+    </nav>
 
     <!-- ==================== MODAL: LOGIN ==================== -->
     <div id="login-modal" class="fixed inset-0 z-[100] flex items-end justify-center hidden" onclick="if(event.target===this)closeLoginModal()">
@@ -657,8 +714,8 @@
                 <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
                     <span class="material-symbols-outlined text-primary text-3xl">how_to_reg</span>
                 </div>
-                <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-2">로그인</h2>
-                <p class="text-sm text-slate-400">간편하게 로그인하고 모든 기능을 이용하세요</p>
+                <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-2" data-i18n="login">로그인</h2>
+                <p class="text-sm text-slate-400" data-i18n="loginDesc">간편하게 로그인하고 모든 기능을 이용하세요</p>
             </div>
             <div class="space-y-3">
                 <button onclick="handleSocialLogin('kakao')" class="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm transition-all active:scale-[0.98]" style="background:#FEE500; color:#191919;">
@@ -674,44 +731,71 @@
                     Google로 시작하기
                 </button>
             </div>
-            <button onclick="closeLoginModal()" class="w-full mt-4 py-3 text-sm text-slate-400 font-medium">나중에 할게요</button>
+            <button onclick="closeLoginModal()" class="w-full mt-4 py-3 text-sm text-slate-400 font-medium" data-i18n="close">나중에 할게요</button>
         </div>
     </div>
 
     <!-- ==================== MODAL: REPORT ==================== -->
     <div id="report-modal" class="fixed inset-0 z-[100] flex items-end justify-center hidden" onclick="if(event.target===this)closeReportModal()">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-        <div class="relative w-full max-w-[480px] bg-white dark:bg-slate-800 rounded-t-3xl p-6 pb-8 animate-slideUp">
-            <div class="w-10 h-1 bg-slate-200 dark:bg-slate-600 rounded-full mx-auto mb-5"></div>
-            <h2 class="text-lg font-bold text-slate-800 dark:text-white mb-1">이 답변을 신고하시겠습니까?</h2>
-            <p class="text-xs text-slate-400 mb-5">부적절한 답변을 신고해주시면 검토 후 조치합니다.</p>
-            <div class="space-y-2.5" id="report-reasons">
-                <label class="flex items-center gap-3 p-3.5 rounded-xl border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                    <input type="radio" name="report-reason" value="허위 정보" class="accent-primary w-4 h-4" onchange="document.getElementById('report-etc-input').classList.add('hidden')">
-                    <span class="text-sm font-medium text-slate-700 dark:text-slate-200">허위 정보</span>
-                </label>
-                <label class="flex items-center gap-3 p-3.5 rounded-xl border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                    <input type="radio" name="report-reason" value="비방/모욕" class="accent-primary w-4 h-4" onchange="document.getElementById('report-etc-input').classList.add('hidden')">
-                    <span class="text-sm font-medium text-slate-700 dark:text-slate-200">비방 / 모욕</span>
-                </label>
-                <label class="flex items-center gap-3 p-3.5 rounded-xl border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                    <input type="radio" name="report-reason" value="선거법 위반 의심" class="accent-primary w-4 h-4" onchange="document.getElementById('report-etc-input').classList.add('hidden')">
-                    <span class="text-sm font-medium text-slate-700 dark:text-slate-200">선거법 위반 의심</span>
-                </label>
-                <label class="flex items-center gap-3 p-3.5 rounded-xl border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                    <input type="radio" name="report-reason" value="부적절한 발언" class="accent-primary w-4 h-4" onchange="document.getElementById('report-etc-input').classList.add('hidden')">
-                    <span class="text-sm font-medium text-slate-700 dark:text-slate-200">부적절한 발언</span>
-                </label>
-                <label class="flex items-center gap-3 p-3.5 rounded-xl border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                    <input type="radio" name="report-reason" value="기타" class="accent-primary w-4 h-4" onchange="document.getElementById('report-etc-input').classList.remove('hidden')">
-                    <span class="text-sm font-medium text-slate-700 dark:text-slate-200">기타</span>
-                </label>
-                <textarea id="report-etc-input" class="hidden w-full mt-1 p-3 rounded-xl border border-[#e7ebf3] dark:border-gray-700 bg-slate-50 dark:bg-slate-700 text-sm text-slate-700 dark:text-slate-200 resize-none focus:outline-none focus:border-primary" rows="2" placeholder="신고 사유를 입력해주세요"></textarea>
+        <div class="relative w-full max-w-[480px] bg-white dark:bg-slate-800 rounded-t-3xl pb-8 animate-slideUp">
+            <div class="w-10 h-1 bg-slate-200 dark:bg-slate-600 rounded-full mx-auto mt-3 mb-1"></div>
+
+            <!-- Step 1: 사유 선택 -->
+            <div id="report-step1" class="p-6">
+                <h2 class="text-lg font-bold text-slate-800 dark:text-white mb-1">신고하기</h2>
+                <p class="text-xs text-slate-400 mb-5">부적절한 답변을 신고해주시면 검토 후 조치합니다.</p>
+                <div class="space-y-2.5">
+                    <label class="flex items-center gap-3 p-3.5 rounded-xl border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                        <input type="radio" name="report-reason" value="허위 정보" data-type="candidate" class="accent-primary w-4 h-4">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200 flex-1">허위 정보</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3.5 rounded-xl border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                        <input type="radio" name="report-reason" value="비방 / 모욕" data-type="auto" class="accent-primary w-4 h-4">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200 flex-1">비방 / 모욕</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3.5 rounded-xl border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                        <input type="radio" name="report-reason" value="선거법 위반 의심" data-type="candidate" class="accent-primary w-4 h-4">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200 flex-1">선거법 위반 의심</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3.5 rounded-xl border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                        <input type="radio" name="report-reason" value="부적절한 발언" data-type="auto" class="accent-primary w-4 h-4">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200 flex-1">부적절한 발언</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3.5 rounded-xl border border-[#e7ebf3] dark:border-gray-700 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                        <input type="radio" name="report-reason" value="기타" data-type="candidate" class="accent-primary w-4 h-4">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200 flex-1">기타</span>
+                    </label>
+                    <textarea id="report-etc-input" class="hidden w-full mt-1 p-3 rounded-xl border border-[#e7ebf3] dark:border-gray-700 bg-slate-50 dark:bg-slate-700 text-sm text-slate-700 dark:text-slate-200 resize-none focus:outline-none focus:border-primary" rows="2" placeholder="추가 설명을 입력해주세요 (선택사항)"></textarea>
+                </div>
+                <div class="flex gap-3 mt-6">
+                    <button onclick="closeReportModal()" class="flex-1 py-3 rounded-xl border border-[#e7ebf3] dark:border-gray-700 text-sm font-bold text-slate-500 active:scale-95 transition-transform">취소</button>
+                    <button onclick="submitReport()" class="flex-1 py-3 rounded-xl bg-red-500 text-white text-sm font-bold active:scale-95 transition-transform">신고 제출</button>
+                </div>
             </div>
-            <div class="flex gap-3 mt-6">
-                <button onclick="closeReportModal()" class="flex-1 py-3 rounded-xl border border-[#e7ebf3] dark:border-gray-700 text-sm font-bold text-slate-500 active:scale-95 transition-transform">취소</button>
-                <button onclick="submitReport()" class="flex-1 py-3 rounded-xl bg-red-500 text-white text-sm font-bold active:scale-95 transition-transform">신고 제출</button>
+
+            <!-- Step 2: 완료 화면 -->
+            <div id="report-step2" class="hidden p-6 text-center py-10">
+                <div id="report-done-icon" class="text-5xl mb-4"></div>
+                <h3 id="report-done-title" class="text-base font-black text-slate-800 dark:text-white mb-2"></h3>
+                <p id="report-done-desc" class="text-xs text-slate-400 leading-relaxed mb-6"></p>
+                <button onclick="closeReportModal()" class="w-full py-3 rounded-xl bg-slate-100 dark:bg-slate-700 text-sm font-bold text-slate-600 dark:text-slate-300 active:scale-95 transition-transform">닫기</button>
             </div>
+        </div>
+    </div>
+
+    <!-- ==================== SHEET: MY REPORTS ==================== -->
+    <div id="my-reports-sheet" class="fixed inset-0 z-[90] flex items-end justify-center hidden" onclick="if(event.target===this)closeMyReportsSheet()">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-[480px] bg-white dark:bg-slate-800 rounded-t-3xl animate-slideUp" style="max-height:85vh;overflow-y:auto;">
+            <div class="sticky top-0 bg-white dark:bg-slate-800 z-10">
+                <div class="w-10 h-1 bg-slate-200 dark:bg-slate-600 rounded-full mx-auto mt-3"></div>
+                <div class="flex items-center justify-between px-5 py-4 border-b border-[#e7ebf3] dark:border-gray-700">
+                    <h2 class="text-base font-black text-slate-800 dark:text-white">신고 내역</h2>
+                    <button onclick="closeMyReportsSheet()" class="text-slate-400 text-xl leading-none">✕</button>
+                </div>
+            </div>
+            <div id="my-reports-list" class="p-4 space-y-3 pb-8"></div>
         </div>
     </div>
 
@@ -720,29 +804,49 @@
         <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <button onclick="navigateTo('page-home', true)" class="p-1 -ml-1">
+                    <button onclick="goBack()" class="p-1 -ml-1">
                         <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
                     </button>
                     <div>
                         <h1 class="text-base font-bold flex items-center gap-1.5">
                             <span class="material-symbols-outlined text-primary text-lg">policy</span>
-                            현 시행 정책
+                            <span data-i18n="currentPolicyTitle">현 시행 정책</span>
                         </h1>
-                        <p class="text-xs text-[#4c669a] dark:text-gray-400 font-medium ml-6">공공데이터 API 연동</p>
+                        <p class="text-xs text-[#4c669a] dark:text-gray-400 font-medium ml-6" data-i18n="publicDataApi">공공데이터 API 연동</p>
                     </div>
                 </div>
-                <button onclick="loadPolicies()" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
-                    <span id="policy-refresh" class="material-symbols-outlined text-gray-600 dark:text-gray-400">refresh</span>
-                </button>
+                <div class="flex items-center gap-1">
+                    <!-- 북마크 필터 토글 -->
+                    <button id="bookmark-filter-btn" onclick="toggleBookmarkFilter()" class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all border border-transparent text-slate-400 hover:text-primary">
+                        <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 0">bookmark</span>
+                    </button>
+                    <!-- 정렬 드롭다운 -->
+                    <div class="relative">
+                        <button onclick="togglePolicySortMenu()" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+                            <span class="material-symbols-outlined text-gray-600 dark:text-gray-400 text-xl">sort</span>
+                        </button>
+                        <div id="policy-sort-menu" class="hidden absolute right-0 top-10 w-40 bg-white dark:bg-slate-800 rounded-xl border border-[#e7ebf3] dark:border-gray-700 shadow-lg z-50 py-1">
+                            <button onclick="setPolicySort('date')" class="policy-sort-item w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2"><span class="material-symbols-outlined text-sm text-primary">calendar_today</span>시행일 순</button>
+                            <button onclick="setPolicySort('interest')" class="policy-sort-item w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2"><span class="material-symbols-outlined text-sm text-slate-400">trending_up</span>관심도 순</button>
+                            <button onclick="setPolicySort('beneficiary')" class="policy-sort-item w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2"><span class="material-symbols-outlined text-sm text-slate-400">groups</span>수혜 대상 순</button>
+                            <button onclick="setPolicySort('budget')" class="policy-sort-item w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2"><span class="material-symbols-outlined text-sm text-slate-400">payments</span>예산 규모 순</button>
+                        </div>
+                    </div>
+                    <button onclick="loadPolicies()" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+                        <span id="policy-refresh" class="material-symbols-outlined text-gray-600 dark:text-gray-400">refresh</span>
+                    </button>
+                </div>
             </div>
-            <!-- 카테고리 필터 -->
-            <div class="flex gap-2 mt-4 overflow-x-auto scrollbar-hide">
-                <button onclick="filterPolicyCategory(this, 'all')" class="policy-cat-btn flex-shrink-0 px-4 py-1.5 rounded-full bg-primary text-white text-sm font-bold shadow-sm">전체</button>
-                <button onclick="filterPolicyCategory(this, 'economy')" class="policy-cat-btn flex-shrink-0 px-4 py-1.5 rounded-full bg-white dark:bg-gray-800 text-[#4c669a] dark:text-gray-300 border border-[#e7ebf3] dark:border-gray-700 text-sm font-medium">경제</button>
-                <button onclick="filterPolicyCategory(this, 'welfare')" class="policy-cat-btn flex-shrink-0 px-4 py-1.5 rounded-full bg-white dark:bg-gray-800 text-[#4c669a] dark:text-gray-300 border border-[#e7ebf3] dark:border-gray-700 text-sm font-medium">복지</button>
-                <button onclick="filterPolicyCategory(this, 'education')" class="policy-cat-btn flex-shrink-0 px-4 py-1.5 rounded-full bg-white dark:bg-gray-800 text-[#4c669a] dark:text-gray-300 border border-[#e7ebf3] dark:border-gray-700 text-sm font-medium">교육</button>
-                <button onclick="filterPolicyCategory(this, 'environment')" class="policy-cat-btn flex-shrink-0 px-4 py-1.5 rounded-full bg-white dark:bg-gray-800 text-[#4c669a] dark:text-gray-300 border border-[#e7ebf3] dark:border-gray-700 text-sm font-medium">환경</button>
-                <button onclick="filterPolicyCategory(this, 'safety')" class="policy-cat-btn flex-shrink-0 px-4 py-1.5 rounded-full bg-white dark:bg-gray-800 text-[#4c669a] dark:text-gray-300 border border-[#e7ebf3] dark:border-gray-700 text-sm font-medium">안전</button>
+            <!-- 1차 세그먼트 탭: 연령별 / 정책 분야별 / 최근 시행 -->
+            <div class="mt-3">
+                <div class="flex bg-slate-100 dark:bg-slate-800 rounded-xl p-1 gap-1">
+                    <button onclick="switchPolicyTab(this, 'age')" class="policy-main-tab flex-1 py-2 rounded-lg text-xs font-bold text-slate-500 dark:text-slate-400 transition-all" data-i18n="byAge">연령별</button>
+                    <button onclick="switchPolicyTab(this, 'category')" class="policy-main-tab flex-1 py-2 rounded-lg text-xs font-bold bg-white dark:bg-slate-700 text-primary shadow-sm transition-all" data-i18n="byCategory">정책 분야별</button>
+                    <button onclick="switchPolicyTab(this, 'recent')" class="policy-main-tab flex-1 py-2 rounded-lg text-xs font-bold text-slate-500 dark:text-slate-400 transition-all" data-i18n="recent">최근 시행</button>
+                </div>
+            </div>
+            <!-- 2차 하위 필터 (동적 변경) -->
+            <div id="policy-sub-filter" class="flex gap-2 mt-3 overflow-x-auto scrollbar-hide">
             </div>
         </header>
 
@@ -752,7 +856,7 @@
                 <div class="flex items-start gap-3">
                     <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 mt-0.5">info</span>
                     <div class="flex-1">
-                        <p class="text-sm font-bold text-amber-800 dark:text-amber-300 mb-1">공공데이터 API 연동 안내</p>
+                        <p class="text-sm font-bold text-amber-800 dark:text-amber-300 mb-1" data-i18n="apiGuide">공공데이터 API 연동 안내</p>
                         <p class="text-xs text-amber-700 dark:text-amber-400 leading-relaxed mb-3">
                             실시간 정책 데이터를 보려면 <b>data.go.kr</b>에서 API 키를 발급받아 아래에 입력하세요.
                             현재는 샘플 데이터를 표시합니다.
@@ -772,7 +876,7 @@
             <!-- 로딩 스피너 -->
             <div id="policy-loading" class="hidden flex flex-col items-center justify-center py-20">
                 <div class="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4"></div>
-                <p class="text-sm text-slate-500">정책 데이터를 불러오는 중...</p>
+                <p class="text-sm text-slate-500" data-i18n="loadingPolicies">정책 데이터를 불러오는 중...</p>
             </div>
 
             <!-- 정책 카드 리스트 -->
@@ -796,6 +900,7 @@
                     </div>
                 </div>
             </div>
+
         </main>
     </div>
 
@@ -804,15 +909,15 @@
         <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <button onclick="navigateTo('page-home', true)" class="p-1 -ml-1">
+                    <button onclick="goBack()" class="p-1 -ml-1">
                         <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
                     </button>
                     <div>
                         <h1 class="text-base font-bold flex items-center gap-1.5">
                             <span class="material-symbols-outlined text-red-500 text-lg">campaign</span>
-                            선거 뉴스
+                            <span data-i18n="latestElectionNews">선거 뉴스</span>
                         </h1>
-                        <p class="text-xs text-[#4c669a] dark:text-gray-400 font-medium ml-6">지방선거 실시간 뉴스</p>
+                        <p class="text-xs text-[#4c669a] dark:text-gray-400 font-medium ml-6" data-i18n="publicDataApi">지방선거 실시간 뉴스</p>
                     </div>
                 </div>
                 <button onclick="loadNews()" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
@@ -821,7 +926,7 @@
             </div>
             <!-- 뉴스 카테고리 -->
             <div class="flex gap-2 mt-4 overflow-x-auto scrollbar-hide">
-                <button onclick="filterNewsCategory(this, 'all')" class="news-cat-btn flex-shrink-0 px-4 py-1.5 rounded-full bg-primary text-white text-sm font-bold shadow-sm">전체</button>
+                <button onclick="filterNewsCategory(this, 'all')" class="news-cat-btn flex-shrink-0 px-4 py-1.5 rounded-full bg-primary text-white text-sm font-bold shadow-sm" data-i18n="all">전체</button>
                 <button onclick="filterNewsCategory(this, 'headline')" class="news-cat-btn flex-shrink-0 px-4 py-1.5 rounded-full bg-white dark:bg-gray-800 text-[#4c669a] dark:text-gray-300 border border-[#e7ebf3] dark:border-gray-700 text-sm font-medium">주요뉴스</button>
                 <button onclick="filterNewsCategory(this, 'candidate')" class="news-cat-btn flex-shrink-0 px-4 py-1.5 rounded-full bg-white dark:bg-gray-800 text-[#4c669a] dark:text-gray-300 border border-[#e7ebf3] dark:border-gray-700 text-sm font-medium">후보자</button>
                 <button onclick="filterNewsCategory(this, 'policy')" class="news-cat-btn flex-shrink-0 px-4 py-1.5 rounded-full bg-white dark:bg-gray-800 text-[#4c669a] dark:text-gray-300 border border-[#e7ebf3] dark:border-gray-700 text-sm font-medium">정책</button>
@@ -858,7 +963,7 @@
             <!-- 로딩 -->
             <div id="news-loading" class="hidden flex flex-col items-center justify-center py-20">
                 <div class="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4"></div>
-                <p class="text-sm text-slate-500">뉴스를 불러오는 중...</p>
+                <p class="text-sm text-slate-500" data-i18n="loadingNews">뉴스를 불러오는 중...</p>
             </div>
 
             <!-- 뉴스 리스트 -->
@@ -869,6 +974,23 @@
 
 </div>
 
+<!-- 공약 상세 팝업 모달 (최상위) -->
+<div id="pledge-modal" class="fixed inset-0 z-[70] hidden">
+    <div class="absolute inset-0 bg-black/50" onclick="closePledgeModal()"></div>
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white dark:bg-slate-900 rounded-t-3xl max-h-[85vh] overflow-y-auto shadow-2xl">
+        <div class="sticky top-0 z-10 bg-white dark:bg-slate-900 px-5 pt-4 pb-3 border-b border-slate-200 dark:border-slate-700">
+            <div class="w-10 h-1 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto mb-3"></div>
+            <div class="flex items-center justify-between">
+                <h3 id="pledge-modal-title" class="text-lg font-bold text-slate-800 dark:text-white"></h3>
+                <button onclick="closePledgeModal()" class="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <span class="material-symbols-outlined text-slate-500">close</span>
+                </button>
+            </div>
+        </div>
+        <div id="pledge-modal-body" class="p-5"></div>
+    </div>
+</div>
+
 <script>
 // ============ DATA ============
 const candidateData = {
@@ -876,7 +998,6 @@ const candidateData = {
         {
             id: 1, name: "김현준", age: 52, party: "더불어민주당", partyKey: "democratic",
             number: 1, partyColor: "blue", slogan: "시민의 삶을 바꾸는 스마트 시티 서울",
-            likes: 1200,
             greeting: "존경하는 시민 여러분, 기호 1번 김현준입니다. 저는 30년간 IT 분야에서 쌓은 경험과 전문성을 바탕으로, 서울을 세계 최고의 스마트 시티로 만들겠다는 꿈을 가지고 이 자리에 섰습니다. 시민의 삶을 기술로 바꾸되, 사람이 중심인 도시를 약속드립니다.",
             career: [
                 { year: "2022-2026", title: "서울시 디지털혁신추진단장" },
@@ -894,17 +1015,28 @@ const candidateData = {
             ],
             education: "서울대학교 컴퓨터공학 학사 / KAIST 경영공학 석사",
             birthplace: "서울특별시 강북구",
-            policies: {
-                summary: "스마트 시티 기반 시민 생활 혁신, 디지털 행정 서비스 고도화, 친환경 도시 인프라 구축을 핵심 공약으로 제시합니다.",
-                jobs: "지역 특화 산업 클러스터 조성을 통해 10만 개의 양질의 일자리를 창출하고, 중소기업 채용 시 임금 격차를 정부가 직접 지원하는 청년 소득 보전제를 실시하겠습니다.",
-                vision: "데이터 기반의 투명한 행정과 시민 참여 플랫폼을 통해 모든 시민이 도시 발전에 함께하는 '함께 만드는 서울'을 만들겠습니다.",
-                education: "공교육 강화를 위해 교사 1인당 학생 수를 20명 이하로 줄이고, AI 맞춤 교육 시스템을 전 학교에 도입하겠습니다."
-            }
+            pledges: [
+                { id: 1001, title: '스마트 시티 혁신', icon: 'smart_toy', description: '스마트 시티 기반 시민 생활 혁신, 디지털 행정 서비스 고도화, 친환경 도시 인프라 구축을 핵심 공약으로 제시합니다.', empathyCount: 342,
+                  detail: '1단계: 서울시 전역 IoT 센서 네트워크 구축 (2026~2027)\n2단계: AI 기반 교통·에너지·방재 통합관제센터 운영\n3단계: 시민 참여형 스마트 서비스 플랫폼 오픈\n\n예상 예산: 총 1조 2,000억 원\n추진 일정: 임기 4년 내 완료\n수혜 대상: 서울시 전체 시민 약 950만 명',
+                  eligibility: { minAge: 0, maxAge: 999, regions: ['서울'] },
+                  sourceUrl: 'https://www.seoul.go.kr' },
+                { id: 1002, title: '일자리 창출', icon: 'work', description: '지역 특화 산업 클러스터 조성을 통해 10만 개의 양질의 일자리를 창출하고, 중소기업 채용 시 임금 격차를 정부가 직접 지원하는 청년 소득 보전제를 실시하겠습니다.', empathyCount: 215,
+                  detail: '핵심 사업:\n- 지역별 산업 클러스터 5개 조성 (AI, 바이오, 핀테크, 콘텐츠, 그린에너지)\n- 청년 소득 보전제: 중소기업 취업 청년에게 월 50만 원 보전 (최대 2년)\n- 경력단절여성 재취업 프로그램 확대\n\n목표: 임기 내 10만 개 일자리 창출\n예산: 연 3,000억 원\n수혜 대상: 만 19~39세 청년, 경력단절여성',
+                  eligibility: { minAge: 19, maxAge: 39, regions: ['서울'] },
+                  sourceUrl: 'https://www.seoul.go.kr' },
+                { id: 1003, title: '투명한 행정', icon: 'visibility', description: '데이터 기반의 투명한 행정과 시민 참여 플랫폼을 통해 모든 시민이 도시 발전에 함께하는 \'함께 만드는 서울\'을 만들겠습니다.', empathyCount: 189,
+                  detail: '주요 내용:\n- 모든 예산 집행 내역 실시간 공개 시스템 구축\n- 시민 제안 → 정책 반영 온라인 플랫폼 운영\n- 블록체인 기반 투표·청원 시스템 도입\n- 분기별 시정 성과 보고회 개최\n\n목표: 행정 투명도 지수 OECD 1위\n수혜 대상: 서울시 전체 시민',
+                  eligibility: { minAge: 0, maxAge: 999, regions: ['서울'] },
+                  sourceUrl: '' },
+                { id: 1004, title: '교육 혁신', icon: 'school', description: '공교육 강화를 위해 교사 1인당 학생 수를 20명 이하로 줄이고, AI 맞춤 교육 시스템을 전 학교에 도입하겠습니다.', empathyCount: 276,
+                  detail: '세부 계획:\n- 교사 1인당 학생 수 현행 25명 → 20명 이하 감축\n- 전 학교 AI 맞춤형 학습 시스템 도입 (수학·영어·과학)\n- 방과 후 무상 돌봄 프로그램 초등 전학년 확대\n- 학교 시설 현대화 (노후 건물 100% 리모델링)\n\n예산: 연 5,000억 원\n수혜 대상: 만 7~18세 학생 및 학부모',
+                  eligibility: { minAge: 7, maxAge: 18, regions: ['서울'] },
+                  sourceUrl: 'https://www.moe.go.kr' }
+            ]
         },
         {
             id: 2, name: "이소영", age: 45, party: "국민의힘", partyKey: "peoples",
             number: 2, partyColor: "red", slogan: "다시 뛰는 공정 도시, 새로운 서울",
-            likes: 856,
             greeting: "시민 여러분, 안녕하십니까. 기호 2번 이소영입니다. 검찰과 시민단체에서 불공정과 싸워온 경험을 바탕으로, 누구에게나 공정한 기회가 주어지는 서울을 만들겠습니다. 특권 없는 도시, 노력이 보상받는 사회를 향해 함께 나아갑시다.",
             career: [
                 { year: "2020-2026", title: "국회의원 (서울 서초을, 법사위 위원)" },
@@ -922,17 +1054,28 @@ const candidateData = {
             ],
             education: "고려대학교 법학 학사 / 서울대 법학전문대학원 석사",
             birthplace: "서울특별시 서초구",
-            policies: {
-                summary: "규제 혁파를 통한 경제 활성화, 공정한 기회 보장, 안전한 도시 만들기를 핵심 공약으로 추진합니다.",
-                jobs: "스타트업 생태계 활성화를 위한 규제 샌드박스 확대, 청년 창업 지원금 5천만 원 지급, 중소기업 세제 혜택 강화를 실시하겠습니다.",
-                vision: "공정한 경쟁과 기회의 평등이 보장되는 도시, 안전하고 깨끗한 서울을 만들어 시민 모두가 자부심을 가질 수 있도록 하겠습니다.",
-                education: "사교육비 절감을 위한 방과 후 프로그램 확대, 영재교육 강화, 학교 안전 인프라 구축에 집중하겠습니다."
-            }
+            pledges: [
+                { id: 2001, title: '경제 활성화', icon: 'trending_up', description: '규제 혁파를 통한 경제 활성화, 공정한 기회 보장, 안전한 도시 만들기를 핵심 공약으로 추진합니다.', empathyCount: 198,
+                  detail: '핵심 추진 과제:\n- 창업·중소기업 규제 50% 감축 (인허가 간소화)\n- 민간투자 유치 활성화 특별법 추진\n- 소상공인 임대료 부담 완화 (상생 임대 제도)\n- 전통시장 현대화 및 온라인 연계 지원\n\n목표: GDP 성장률 서울 4% 달성\n수혜 대상: 서울시 자영업자·소상공인 약 80만 명',
+                  eligibility: { minAge: 20, maxAge: 65, regions: ['서울'] },
+                  sourceUrl: 'https://www.seoul.go.kr' },
+                { id: 2002, title: '창업 생태계', icon: 'work', description: '스타트업 생태계 활성화를 위한 규제 샌드박스 확대, 청년 창업 지원금 5천만 원 지급, 중소기업 세제 혜택 강화를 실시하겠습니다.', empathyCount: 167,
+                  detail: '세부 계획:\n- 규제 샌드박스 대상 분야 확대 (AI, 모빌리티, 헬스케어)\n- 청년 창업 지원금 5,000만 원 (만 19~34세, 연 1,000명)\n- 글로벌 스타트업 허브 3개소 신설\n- 중소기업 법인세 50% 감면 (연매출 10억 이하)\n\n수혜 대상: 만 19~34세 예비 창업자',
+                  eligibility: { minAge: 19, maxAge: 34, regions: ['서울'] },
+                  sourceUrl: '' },
+                { id: 2003, title: '공정한 도시', icon: 'balance', description: '공정한 경쟁과 기회의 평등이 보장되는 도시, 안전하고 깨끗한 서울을 만들어 시민 모두가 자부심을 가질 수 있도록 하겠습니다.', empathyCount: 145,
+                  detail: '추진 내용:\n- 공공기관 블라인드 채용 전면 확대\n- 불공정 하도급 근절 특별 단속반 운영\n- 공정거래 시민 신고 포상제 도입\n- 취약계층 법률 지원 센터 확대 (5개소 → 15개소)\n\n수혜 대상: 서울시 전체 시민',
+                  eligibility: { minAge: 0, maxAge: 999, regions: ['서울'] },
+                  sourceUrl: '' },
+                { id: 2004, title: '교육 혁신', icon: 'school', description: '사교육비 절감을 위한 방과 후 프로그램 확대, 영재교육 강화, 학교 안전 인프라 구축에 집중하겠습니다.', empathyCount: 134,
+                  detail: '세부 계획:\n- 방과 후 프로그램 참여율 50% → 80% 확대\n- 사교육비 절감 목표: 가구당 월 30만 원 절감\n- 영재학급 500개 신설\n- 전 학교 안전 인프라 점검·보강\n- 학교폭력 예방 전문 상담사 전교 배치\n\n수혜 대상: 만 7~18세 학생',
+                  eligibility: { minAge: 7, maxAge: 18, regions: ['서울'] },
+                  sourceUrl: 'https://www.moe.go.kr' }
+            ]
         },
         {
             id: 3, name: "박지성", age: 38, party: "무소속", partyKey: "independent",
             number: 7, partyColor: "gray", slogan: "진영 논리 없는 오직 시민 중심 행정",
-            likes: 421,
             greeting: "안녕하세요, 기호 7번 박지성입니다. 시민단체와 사회적 기업에서 현장을 뛰며 배운 것이 있습니다. 진짜 변화는 시민의 일상에서 시작된다는 것입니다. 어떤 당도 아닌, 오직 시민만을 위한 후보가 되겠습니다.",
             career: [
                 { year: "2021-2026", title: "사단법인 시민행동 대표" },
@@ -949,19 +1092,30 @@ const candidateData = {
             ],
             education: "연세대학교 도시공학 학사 / 서울대 행정대학원 석사",
             birthplace: "경기도 수원시",
-            policies: {
-                summary: "당파를 초월한 시민 중심 행정, 생활 밀착형 복지, 주거 안정 대책을 핵심으로 제시합니다.",
-                jobs: "지역 기반 사회적 기업 육성, 경력 단절 여성 재취업 프로그램 강화, 시니어 일자리 3만 개 창출을 추진하겠습니다.",
-                vision: "좌도 우도 아닌 시민의 편에서, 실용적 정책으로 일상의 불편을 해결하는 생활 정치를 실현하겠습니다.",
-                education: "돌봄 교실 확대, 학교 급식 무상화 완전 실현, 청소년 문화 공간 확대를 추진하겠습니다."
-            }
+            pledges: [
+                { id: 3001, title: '시민 중심 행정', icon: 'groups', description: '당파를 초월한 시민 중심 행정, 생활 밀착형 복지, 주거 안정 대책을 핵심으로 제시합니다.', empathyCount: 112,
+                  detail: '추진 방안:\n- 주민자치회 권한 대폭 확대 (예산 편성권 부여)\n- 동 단위 주민 총회 정례화 (분기 1회)\n- 생활 민원 48시간 내 처리 시스템 구축\n- 주거 취약계층 긴급 주거비 지원 (월 30만 원)\n\n수혜 대상: 서울시 전체 시민',
+                  eligibility: { minAge: 0, maxAge: 999, regions: ['서울'] },
+                  sourceUrl: '' },
+                { id: 3002, title: '사회적 일자리', icon: 'work', description: '지역 기반 사회적 기업 육성, 경력 단절 여성 재취업 프로그램 강화, 시니어 일자리 3만 개 창출을 추진하겠습니다.', empathyCount: 89,
+                  detail: '세부 계획:\n- 사회적 기업 육성 펀드 500억 원 조성\n- 경력단절여성 맞춤형 직업훈련 + 취업 연계\n- 시니어 일자리 3만 개 (돌봄·환경·문화 분야)\n- 장애인 고용 의무 비율 상향 추진\n\n수혜 대상: 경력단절여성, 만 60세 이상 시니어',
+                  eligibility: { minAge: 35, maxAge: 999, regions: ['서울'] },
+                  sourceUrl: '' },
+                { id: 3003, title: '생활 정치', icon: 'favorite', description: '좌도 우도 아닌 시민의 편에서, 실용적 정책으로 일상의 불편을 해결하는 생활 정치를 실현하겠습니다.', empathyCount: 95,
+                  detail: '실행 계획:\n- 생활 불편 앱 운영 (실시간 민원 접수·처리)\n- 골목길 안전 조명 1만 개소 설치\n- 주차난 해소 공유 주차장 확대\n- 공공 와이파이 전 지역 확대\n\n수혜 대상: 서울시 전체 시민',
+                  eligibility: { minAge: 0, maxAge: 999, regions: ['서울'] },
+                  sourceUrl: '' },
+                { id: 3004, title: '돌봄·교육', icon: 'school', description: '돌봄 교실 확대, 학교 급식 무상화 완전 실현, 청소년 문화 공간 확대를 추진하겠습니다.', empathyCount: 78,
+                  detail: '세부 내용:\n- 초등 돌봄 교실 저녁 8시까지 연장 운영\n- 중·고등학교까지 무상급식 전면 확대\n- 청소년 문화·예술 복합 공간 25개 신설\n- 아동 심리 상담 센터 구별 1개소 이상\n\n수혜 대상: 만 7~18세 아동·청소년 및 학부모',
+                  eligibility: { minAge: 7, maxAge: 18, regions: ['서울'] },
+                  sourceUrl: '' }
+            ]
         }
     ],
     mayor: [
         {
             id: 101, name: "정민호", age: 49, party: "더불어민주당", partyKey: "democratic",
             number: 1, partyColor: "blue", slogan: "사람이 먼저인 따뜻한 강남",
-            likes: 980,
             greeting: "주민 여러분, 기호 1번 정민호입니다. 20년 넘게 지역 현장에서 주민 여러분과 함께해온 경험을 바탕으로, 사람이 먼저인 따뜻한 행정을 실현하겠습니다. 골목 하나, 시장 하나까지 세심하게 돌보겠습니다.",
             career: [
                 { year: "2022-2026", title: "강남구 부구청장" },
@@ -978,17 +1132,28 @@ const candidateData = {
             ],
             education: "성균관대학교 행정학 학사 / 서울시립대 도시행정학 석사",
             birthplace: "서울특별시 강남구",
-            policies: {
-                summary: "주민 밀착형 행정 서비스 강화, 골목상권 활성화, 문화 인프라 확충을 핵심 공약으로 제시합니다.",
-                jobs: "지역 상권 활성화를 위한 소상공인 맞춤 지원, 청년 창업 허브 3곳 신설, 경력 단절 여성 재취업 센터를 운영하겠습니다.",
-                vision: "주민 한 분 한 분의 목소리에 귀 기울이며, 소통과 현장 중심의 행정으로 살기 좋은 강남을 만들겠습니다.",
-                education: "방과 후 돌봄 프로그램 확대, 지역 도서관 야간 운영, 청소년 진로 멘토링 센터를 설립하겠습니다."
-            }
+            pledges: [
+                { id: 10101, title: '골목상권 활성화', icon: 'store', description: '주민 밀착형 행정 서비스 강화, 골목상권 활성화, 문화 인프라 확충을 핵심 공약으로 제시합니다.', empathyCount: 256,
+                  detail: '실행 계획:\n- 골목상권 전용 지원금 월 100만 원 (6개월)\n- 상인회 공동 마케팅·배달 플랫폼 구축 지원\n- 문화거리 조성 5개 권역\n- 유동인구 분석 기반 맞춤형 상권 컨설팅\n\n수혜 대상: 강남구 소상공인 약 12,000명',
+                  eligibility: { minAge: 20, maxAge: 65, regions: ['서울'] },
+                  sourceUrl: 'https://www.gangnam.go.kr' },
+                { id: 10102, title: '소상공인 지원', icon: 'work', description: '지역 상권 활성화를 위한 소상공인 맞춤 지원, 청년 창업 허브 3곳 신설, 경력 단절 여성 재취업 센터를 운영하겠습니다.', empathyCount: 198,
+                  detail: '세부 사업:\n- 청년 창업 허브 3개소 (역삼, 삼성, 개포)\n- 창업 자금 최대 3,000만 원 무이자 대출\n- 경력단절여성 재취업 센터 (월 교육 + 취업 연계)\n- 소상공인 세무·법률 무료 상담\n\n수혜 대상: 만 19~45세 예비 창업자, 경력단절여성',
+                  eligibility: { minAge: 19, maxAge: 45, regions: ['서울'] },
+                  sourceUrl: '' },
+                { id: 10103, title: '소통 행정', icon: 'forum', description: '주민 한 분 한 분의 목소리에 귀 기울이며, 소통과 현장 중심의 행정으로 살기 좋은 강남을 만들겠습니다.', empathyCount: 167,
+                  detail: '추진 방안:\n- 구청장 현장 방문 주 2회 정례화\n- 주민 온라인 의견 수렴 플랫폼 운영\n- 동별 주민 간담회 월 1회 개최\n- 행정 서비스 만족도 조사 분기 실시\n\n수혜 대상: 강남구 전체 주민',
+                  eligibility: { minAge: 0, maxAge: 999, regions: ['서울'] },
+                  sourceUrl: '' },
+                { id: 10104, title: '돌봄·교육', icon: 'school', description: '방과 후 돌봄 프로그램 확대, 지역 도서관 야간 운영, 청소년 진로 멘토링 센터를 설립하겠습니다.', empathyCount: 145,
+                  detail: '세부 내용:\n- 방과 후 돌봄 저녁 9시까지 연장\n- 구립 도서관 야간 개방 (22시까지)\n- 청소년 진로 멘토링 센터 2개소 신설\n- 지역 대학 연계 무료 학습 튜터링\n\n수혜 대상: 만 7~18세 학생 및 학부모',
+                  eligibility: { minAge: 7, maxAge: 18, regions: ['서울'] },
+                  sourceUrl: '' }
+            ]
         },
         {
             id: 102, name: "한서윤", age: 41, party: "국민의힘", partyKey: "peoples",
             number: 2, partyColor: "red", slogan: "안전하고 깨끗한 강남, 다시 시작",
-            likes: 743,
             greeting: "주민 여러분, 기호 2번 한서윤입니다. 환경공학 박사로서 깨끗한 도시, IT 전문가로서 스마트한 행정을 약속드립니다. 안전하고 쾌적한 강남, 기술로 더 편리한 강남을 만들어가겠습니다.",
             career: [
                 { year: "2023-2026", title: "강남구 스마트도시추진단장" },
@@ -1005,17 +1170,28 @@ const candidateData = {
             ],
             education: "KAIST 환경공학 학사·박사 / MIT 도시계획 방문연구원",
             birthplace: "대전광역시 유성구",
-            policies: {
-                summary: "주민 안전 인프라 강화, 친환경 녹색도시 전환, 디지털 행정 서비스 확대를 핵심으로 추진합니다.",
-                jobs: "IT·바이오 특화 일자리 500개 창출, 지역 기업과 청년 매칭 프로그램 운영, 직업훈련 무상 지원을 실시하겠습니다.",
-                vision: "깨끗한 환경과 안전한 거리를 기반으로, 주민 모두가 자부심을 느낄 수 있는 강남을 만들겠습니다.",
-                education: "코딩·AI 특화 교육 프로그램 도입, 학교 시설 현대화, 학부모 참여형 교육 위원회를 구성하겠습니다."
-            }
+            pledges: [
+                { id: 10201, title: '녹색 도시', icon: 'eco', description: '주민 안전 인프라 강화, 친환경 녹색도시 전환, 디지털 행정 서비스 확대를 핵심으로 추진합니다.', empathyCount: 187,
+                  detail: '추진 과제:\n- 강남구 탄소배출 30% 추가 감축 (2030 목표)\n- 공공건물 태양광·지열 에너지 전환\n- 미세먼지 저감 도시숲 10개소 조성\n- AI 기반 에너지 관리 시스템 구축\n\n수혜 대상: 강남구 전체 주민',
+                  eligibility: { minAge: 0, maxAge: 999, regions: ['서울'] },
+                  sourceUrl: 'https://www.me.go.kr' },
+                { id: 10202, title: 'IT·바이오 일자리', icon: 'work', description: 'IT·바이오 특화 일자리 500개 창출, 지역 기업과 청년 매칭 프로그램 운영, 직업훈련 무상 지원을 실시하겠습니다.', empathyCount: 143,
+                  detail: '세부 계획:\n- IT·바이오 특화 일자리 500개 (기업 보조금 연계)\n- 청년-기업 매칭 프로그램 연 2회 개최\n- 직업훈련 무상 지원 (코딩, AI, 바이오)\n- 테헤란로 글로벌 테크 허브 조성\n\n수혜 대상: 만 19~39세 구직 청년',
+                  eligibility: { minAge: 19, maxAge: 39, regions: ['서울'] },
+                  sourceUrl: '' },
+                { id: 10203, title: '안전한 강남', icon: 'security', description: '깨끗한 환경과 안전한 거리를 기반으로, 주민 모두가 자부심을 느낄 수 있는 강남을 만들겠습니다.', empathyCount: 156,
+                  detail: '실행 방안:\n- 스마트 CCTV 2,000대 추가 설치\n- AI 범죄 예측 순찰 시스템 도입\n- 여성 안심 귀갓길 500개 노선\n- 어린이 보호구역 안전 시설 100% 보강\n\n수혜 대상: 강남구 전체 주민',
+                  eligibility: { minAge: 0, maxAge: 999, regions: ['서울'] },
+                  sourceUrl: '' },
+                { id: 10204, title: 'AI 교육', icon: 'school', description: '코딩·AI 특화 교육 프로그램 도입, 학교 시설 현대화, 학부모 참여형 교육 위원회를 구성하겠습니다.', empathyCount: 121,
+                  detail: '세부 내용:\n- 구립 AI 교육센터 3개소 신설\n- 초·중·고 코딩 교육 주 2시간 필수화\n- 학교 건물 리모델링 (노후 30년 이상)\n- 학부모 참여형 교육위원회 동별 구성\n\n수혜 대상: 만 7~18세 학생',
+                  eligibility: { minAge: 7, maxAge: 18, regions: ['서울'] },
+                  sourceUrl: 'https://www.moe.go.kr' }
+            ]
         },
         {
             id: 103, name: "오재훈", age: 55, party: "무소속", partyKey: "independent",
             number: 5, partyColor: "gray", slogan: "경험과 실력으로 일하는 구청장",
-            likes: 312,
             greeting: "주민 여러분, 기호 5번 오재훈입니다. 30년간 공직에서 묵묵히 일해왔습니다. 화려한 말보다 실력으로, 약속보다 실적으로 증명하는 구청장이 되겠습니다. 경험이 가장 큰 자산입니다.",
             career: [
                 { year: "2020-2026", title: "서울시 균형발전추진단 단장" },
@@ -1032,17 +1208,28 @@ const candidateData = {
             ],
             education: "한양대학교 도시공학 학사 / 서울대 행정대학원 석사",
             birthplace: "서울특별시 강남구",
-            policies: {
-                summary: "30년 행정 경험을 바탕으로 효율적 예산 운용, 주민 편의 시설 확충, 교통 개선을 약속합니다.",
-                jobs: "전통시장 현대화 사업 추진, 시니어 일자리 1천 개 확대, 지역 사회적 기업 육성을 추진하겠습니다.",
-                vision: "당파에 얽매이지 않고 오직 주민만 바라보며, 경험에서 나오는 실력으로 일하겠습니다.",
-                education: "학교 급식 질 향상, 다문화 가정 교육 지원, 마을 학교 프로그램 활성화에 집중하겠습니다."
-            }
+            pledges: [
+                { id: 10301, title: '효율 행정', icon: 'savings', description: '30년 행정 경험을 바탕으로 효율적 예산 운용, 주민 편의 시설 확충, 교통 개선을 약속합니다.', empathyCount: 87,
+                  detail: '실행 계획:\n- 구 예산 15% 절감 (불요불급 사업 정리)\n- 절감 예산 주민 편의 시설에 전액 투입\n- 강남역 일대 교통 체증 추가 30% 감소\n- 주민센터 행정 서비스 원스톱 시스템\n\n수혜 대상: 강남구 전체 주민',
+                  eligibility: { minAge: 0, maxAge: 999, regions: ['서울'] },
+                  sourceUrl: '' },
+                { id: 10302, title: '전통시장 활성화', icon: 'store', description: '전통시장 현대화 사업 추진, 시니어 일자리 1천 개 확대, 지역 사회적 기업 육성을 추진하겠습니다.', empathyCount: 65,
+                  detail: '세부 사업:\n- 전통시장 시설 현대화 (지붕, 주차장, 화장실)\n- 시니어 일자리 1,000개 (환경미화, 돌봄, 안전)\n- 사회적 기업 창업 지원금 2,000만 원\n- 전통시장 온라인 판매 플랫폼 구축\n\n수혜 대상: 만 60세 이상 시니어, 소상공인',
+                  eligibility: { minAge: 55, maxAge: 999, regions: ['서울'] },
+                  sourceUrl: '' },
+                { id: 10303, title: '실용 정치', icon: 'handshake', description: '당파에 얽매이지 않고 오직 주민만 바라보며, 경험에서 나오는 실력으로 일하겠습니다.', empathyCount: 72,
+                  detail: '추진 방향:\n- 초당적 구정 운영 (여야 공동 협의체)\n- 성과 기반 행정 평가 시스템 도입\n- 구정 만족도 조사 반기 1회\n- 주민 참여 예산 비율 20% 확대\n\n수혜 대상: 강남구 전체 주민',
+                  eligibility: { minAge: 0, maxAge: 999, regions: ['서울'] },
+                  sourceUrl: '' },
+                { id: 10304, title: '교육 복지', icon: 'school', description: '학교 급식 질 향상, 다문화 가정 교육 지원, 마을 학교 프로그램 활성화에 집중하겠습니다.', empathyCount: 54,
+                  detail: '세부 내용:\n- 학교 급식 유기농 식재료 비율 50% 확대\n- 다문화 가정 학생 전담 멘토링\n- 마을 학교 프로그램 (지역 전문가 재능 기부)\n- 방과 후 돌봄 확대\n\n수혜 대상: 만 7~18세 학생, 다문화 가정',
+                  eligibility: { minAge: 7, maxAge: 18, regions: ['서울'] },
+                  sourceUrl: '' }
+            ]
         },
         {
             id: 104, name: "윤지아", age: 36, party: "더불어민주당", partyKey: "democratic",
             number: 3, partyColor: "blue", slogan: "청년이 돌아오는 활기찬 우리 동네",
-            likes: 567,
             greeting: "안녕하세요, 기호 3번 윤지아입니다! 저는 이 동네에서 나고 자란 토박이입니다. 청년의 눈으로 보면 바꿀 수 있는 것들이 너무 많습니다. 젊은 에너지로 동네를 바꾸겠습니다. 함께해주세요!",
             career: [
                 { year: "2023-2026", title: "서울시 청년정책 자문위원" },
@@ -1059,12 +1246,24 @@ const candidateData = {
             ],
             education: "이화여자대학교 사회학 학사 / 서울대 공공정책학 석사",
             birthplace: "서울특별시 강남구",
-            policies: {
-                summary: "청년 주거 안정, 문화예술 공간 확대, 디지털 기반 주민 참여 플랫폼 구축을 핵심으로 제시합니다.",
-                jobs: "청년 주거비 보조 월 30만 원 지원, 공유 오피스 확대, 1인 창업자 세무·법률 무료 상담소를 운영하겠습니다.",
-                vision: "젊은 감각으로 낡은 행정을 바꾸고, 주민이 직접 참여하는 열린 구정을 실현하겠습니다.",
-                education: "예체능 방과 후 교실 무상화, 청소년 심리 상담 센터 확충, 미래형 학습 공간 조성을 추진하겠습니다."
-            }
+            pledges: [
+                { id: 10401, title: '청년 주거 안정', icon: 'home', description: '청년 주거 안정, 문화예술 공간 확대, 디지털 기반 주민 참여 플랫폼 구축을 핵심으로 제시합니다.', empathyCount: 178,
+                  detail: '세부 계획:\n- 청년 공공임대 500세대 공급\n- 보증금 무이자 대출 최대 5,000만 원\n- 빈 건물 활용 문화예술 공간 10개소 조성\n- 주민 참여 디지털 플랫폼 구축\n\n수혜 대상: 만 19~39세 무주택 청년',
+                  eligibility: { minAge: 19, maxAge: 39, regions: ['서울'] },
+                  sourceUrl: '' },
+                { id: 10402, title: '청년 창업 지원', icon: 'work', description: '청년 주거비 보조 월 30만 원 지원, 공유 오피스 확대, 1인 창업자 세무·법률 무료 상담소를 운영하겠습니다.', empathyCount: 156,
+                  detail: '실행 방안:\n- 청년 주거비 보조 월 30만 원 (최대 12개월)\n- 공유 오피스 5개소 무상 제공 (1년)\n- 1인 창업자 세무·법률 무료 상담소 3개소\n- 청년 네트워킹 행사 월 1회\n\n수혜 대상: 만 19~34세 1인 창업자',
+                  eligibility: { minAge: 19, maxAge: 34, regions: ['서울'] },
+                  sourceUrl: '' },
+                { id: 10403, title: '열린 구정', icon: 'diversity_3', description: '젊은 감각으로 낡은 행정을 바꾸고, 주민이 직접 참여하는 열린 구정을 실현하겠습니다.', empathyCount: 134,
+                  detail: '추진 내용:\n- 구정 모든 회의 온라인 생중계\n- 주민 참여 예산 30% 확대\n- 청년 정책 자문단 100명 운영\n- SNS 소통 창구 365일 운영\n\n수혜 대상: 강남구 전체 주민',
+                  eligibility: { minAge: 0, maxAge: 999, regions: ['서울'] },
+                  sourceUrl: '' },
+                { id: 10404, title: '청소년 복지', icon: 'school', description: '예체능 방과 후 교실 무상화, 청소년 심리 상담 센터 확충, 미래형 학습 공간 조성을 추진하겠습니다.', empathyCount: 112,
+                  detail: '세부 내용:\n- 예체능 방과 후 교실 전면 무상화\n- 청소년 심리 상담 센터 3개소 신설\n- 미래형 학습 공간 (메이커스페이스) 5개소\n- 청소년 활동 포인트제 도입 (문화비 연계)\n\n수혜 대상: 만 7~18세 아동·청소년',
+                  eligibility: { minAge: 7, maxAge: 18, regions: ['서울'] },
+                  sourceUrl: '' }
+            ]
         }
     ],
     district_head: [],
@@ -1091,11 +1290,53 @@ function findCandidateById(id) {
     return null;
 }
 
+function getAllCandidates() {
+    let all = [];
+    for (const key of Object.keys(candidateData)) {
+        all = all.concat(candidateData[key]);
+    }
+    return all;
+}
+
 // ============ NAVIGATION ============
+let pageHistory = ['page-home'];
+const NAV_PAGES = new Set(['page-home', 'page-candidates', 'page-follow', 'page-my']);
+
 function navigateTo(pageId, isBack = false) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active', 'page-enter', 'page-enter-back'));
     const page = document.getElementById(pageId);
     page.classList.add('active', isBack ? 'page-enter-back' : 'page-enter');
+
+    // 하단 내비 표시/숨김 (4개 탭 루트 페이지에서만 표시)
+    const nav = document.getElementById('main-bottom-nav');
+    if (nav) nav.style.display = NAV_PAGES.has(pageId) ? 'flex' : 'none';
+
+    if (!isBack) {
+        if (pageHistory[pageHistory.length - 1] !== pageId) {
+            pageHistory.push(pageId);
+        }
+    }
+}
+
+function goBack() {
+    if (pageHistory.length > 1) {
+        pageHistory.pop();
+        const prevPage = pageHistory[pageHistory.length - 1];
+        navigateTo(prevPage, true);
+        // 하단 내비 활성 탭 동기화
+        const tabMap = { 'page-home': 'page-home', 'page-election-type': 'page-candidates', 'page-candidates': 'page-candidates', 'page-follow': 'page-follow', 'page-my': 'page-my' };
+        const tabKey = tabMap[prevPage];
+        if (tabKey) {
+            const nav = document.getElementById('main-bottom-nav');
+            nav.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+            const target = nav.querySelector(`[data-tab="${tabKey}"]`);
+            if (target) target.classList.add('active');
+        }
+        if (prevPage === 'page-follow') renderFollowPage();
+        if (prevPage === 'page-my') renderMyPage();
+    } else {
+        switchBottomTab(document.querySelector('[data-tab=page-home]'), 'page-home');
+    }
 }
 
 // ============ GPS LOCATION ============
@@ -1288,56 +1529,48 @@ function renderCandidates() {
         card.dataset.party = c.partyKey;
         card.dataset.id = c.id;
 
+        const isFollowed = followedCandidates.includes(c.id);
         card.innerHTML = `
-            <div class="absolute top-3 right-3 z-10">
+            <div class="absolute top-3 right-3 z-10 flex flex-col items-end gap-2">
                 <input class="candidate-checkbox hidden" id="check-${c.id}" type="checkbox" onchange="toggleSelect(${c.id})" ${selectedCandidates.has(c.id) ? 'checked' : ''} />
                 <label class="flex items-center justify-center size-6 rounded-full border-2 border-gray-300 bg-white cursor-pointer transition-colors" for="check-${c.id}">
                     <span class="material-symbols-outlined check-icon text-white text-base hidden">check</span>
                 </label>
+                <button id="interest-btn-${c.id}" onclick="event.stopPropagation(); toggleInterestCard(${c.id}, this);"
+                    class="w-7 h-7 rounded-full flex items-center justify-center transition-all shadow-sm ${isFollowed ? 'bg-red-50 border border-red-200 text-red-500' : 'bg-white border border-slate-200 text-slate-300'}">
+                    <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' ${isFollowed ? 1 : 0}">favorite</span>
+                </button>
             </div>
             <div class="p-4 flex gap-4">
                 <div class="relative size-24 flex-shrink-0">
                     <div class="size-full rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 border border-gray-100 dark:border-gray-700 flex items-center justify-center">
                         <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-4xl">person</span>
                     </div>
-                    <div class="absolute -bottom-1 -right-1">
-                        <input class="like-checkbox hidden" id="like-${c.id}" type="checkbox" />
-                        <label class="flex items-center gap-1 px-1.5 py-0.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full shadow-sm cursor-pointer hover:scale-105 transition-transform active:scale-95" for="like-${c.id}">
-                            <span class="material-symbols-outlined text-[14px] text-gray-400">favorite</span>
-                            <span class="text-[10px] font-bold text-gray-600 dark:text-gray-300">${formatNumber(c.likes)}</span>
-                        </label>
+                    <div class="absolute bottom-0 left-0 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-1 rounded-tr-lg rounded-bl-xl flex items-center gap-1">
+                        <span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1">thumb_up</span>
+                        ${getCandidateTotalLikes(c).toLocaleString()}
                     </div>
                 </div>
                 <div class="flex-1 pr-6">
                     <div class="flex items-center gap-2 mb-1">
-                        <span class="text-[10px] font-bold px-1.5 py-0.5 ${colorClasses.bg} ${colorClasses.text} rounded">기호 ${c.number}</span>
+                        <span class="text-[10px] font-bold px-1.5 py-0.5 ${colorClasses.bg} ${colorClasses.text} rounded">${t('no')} ${c.number}</span>
                         <span class="text-xs font-medium text-[#4c669a] dark:text-gray-400">${c.party}</span>
                     </div>
-                    <h3 class="text-lg font-bold text-[#0d121b] dark:text-white leading-tight">${c.name} <span class="text-sm font-normal text-gray-400">(${c.age}세)</span></h3>
+                    <h3 class="text-lg font-bold text-[#0d121b] dark:text-white leading-tight">${c.name} <span class="text-sm font-normal text-gray-400">(${c.age}${t('age')})</span></h3>
                     <p class="text-sm ${colorClasses.slogan} font-bold mt-1 line-clamp-1">"${c.slogan}"</p>
                 </div>
             </div>
-            <div class="px-4 pb-4 grid grid-cols-[1fr_auto_1fr] gap-2">
+            <div class="px-4 pb-4 grid grid-cols-2 gap-2">
                 <button onclick="openChat(${c.id})" class="flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-primary text-white text-sm font-bold active:scale-[0.98] transition-transform">
-                    <span class="material-symbols-outlined text-sm">forum</span> 대화
+                    <span class="material-symbols-outlined text-sm">forum</span> ${t('aiChat')}
                 </button>
-                <div class="flex items-center">
-                    <input class="like-checkbox hidden" id="btn-like-${c.id}" type="checkbox" />
-                    <label class="flex items-center gap-1.5 px-3 py-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 text-sm font-bold cursor-pointer transition-all active:scale-[0.98]" for="btn-like-${c.id}">
-                        <span class="material-symbols-outlined text-sm text-gray-400">favorite</span>
-                        <span class="text-[#0d121b] dark:text-white">좋아요</span>
-                    </label>
-                </div>
-                <button onclick="openDetail(${c.id})" class="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 text-[#0d121b] dark:text-white text-sm font-bold active:scale-[0.98] transition-transform">상세보기</button>
+                <button onclick="openDetail(${c.id})" class="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 text-[#0d121b] dark:text-white text-sm font-bold active:scale-[0.98] transition-transform">
+                    <span class="material-symbols-outlined text-sm">description</span> ${t('viewPledges')}
+                </button>
             </div>
         `;
         list.appendChild(card);
     });
-}
-
-function formatNumber(n) {
-    if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
-    return n.toString();
 }
 
 // ============ CANDIDATE SELECTION & COMPARE ============
@@ -1346,7 +1579,7 @@ function toggleSelect(id) {
         selectedCandidates.delete(id);
     } else {
         if (selectedCandidates.size >= 3) {
-            showToast('최대 3명까지 선택 가능합니다');
+            showToast(t('maxSelectToast'));
             const cb = document.getElementById('check-' + id);
             if (cb) cb.checked = false;
             return;
@@ -1372,17 +1605,14 @@ function showCompare() {
     const selected = allCandidates.filter(c => selectedCandidates.has(c.id));
     const content = document.getElementById('compare-content');
 
-    const categories = [
-        { key: 'summary', label: '주요 정책', icon: 'description' },
-        { key: 'jobs', label: '일자리 공약', icon: 'work' },
-        { key: 'vision', label: '비전', icon: 'visibility' },
-        { key: 'education', label: '교육 대책', icon: 'school' }
-    ];
+    // 최대 공약 수 파악
+    const maxPledges = Math.max(...selected.map(c => (c.pledges || []).length));
 
     let html = `
         <div class="grid grid-cols-${selected.length} gap-3 mb-6">
             ${selected.map(c => {
                 const color = { blue: 'primary', red: 'red-600', gray: 'gray-600' }[c.partyColor];
+                const total = getCandidateTotalLikes(c);
                 return `
                 <div class="text-center">
                     <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center mb-2">
@@ -1390,28 +1620,32 @@ function showCompare() {
                     </div>
                     <p class="font-bold text-sm">${c.name}</p>
                     <p class="text-xs text-${color}">${c.party}</p>
+                    <p class="text-[10px] text-slate-400 mt-0.5">${t('totalEmpathy')} ${total.toLocaleString()}</p>
                 </div>`;
             }).join('')}
         </div>
     `;
 
-    categories.forEach(cat => {
+    for (let i = 0; i < maxPledges; i++) {
         html += `
             <div class="mb-4">
-                <div class="flex items-center gap-2 mb-3">
-                    <span class="material-symbols-outlined text-primary text-lg">${cat.icon}</span>
-                    <h3 class="font-bold text-sm">${cat.label}</h3>
-                </div>
                 <div class="grid grid-cols-${selected.length} gap-3">
-                    ${selected.map(c => `
+                    ${selected.map(c => {
+                        const p = (c.pledges || [])[i];
+                        if (!p) return `<div class="bg-slate-50 dark:bg-gray-900 rounded-xl p-3 border border-dashed border-slate-200 dark:border-gray-800"><p class="text-xs text-slate-300">-</p></div>`;
+                        const liked = pledgeLikes.includes(p.id);
+                        const count = (p.empathyCount || 0) + (liked ? 1 : 0);
+                        return `
                         <div class="bg-white dark:bg-gray-900 rounded-xl p-3 border border-[#e7ebf3] dark:border-gray-800">
-                            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">${c.policies[cat.key]}</p>
-                        </div>
-                    `).join('')}
+                            <p class="text-[10px] font-bold text-primary mb-1">${p.title}</p>
+                            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-4">${p.description}</p>
+                            <p class="text-[10px] text-slate-400 mt-2 flex items-center gap-1"><span class="material-symbols-outlined text-[11px]" style="font-variation-settings:'FILL' 1">thumb_up</span>${count}</p>
+                        </div>`;
+                    }).join('')}
                 </div>
             </div>
         `;
-    });
+    }
 
     content.innerHTML = html;
     navigateTo('page-compare');
@@ -1421,7 +1655,7 @@ function openDetail(id) {
     const c = findCandidateById(id);
     if (!c) return;
 
-    document.getElementById('detail-header-name').textContent = c.name + ' 후보';
+    document.getElementById('detail-header-name').textContent = c.name + (currentLang === 'en' ? '' : ' 후보');
 
     const partyColors = { blue: '#2563eb', red: '#dc2626', gray: '#6b7280' };
     const pc = partyColors[c.partyColor] || '#6b7280';
@@ -1443,39 +1677,53 @@ function openDetail(id) {
         </div>`
     ).join('');
 
-    const policyHtml = c.policies ? `
-        <div class="space-y-3">
-            <div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-[#e7ebf3] dark:border-gray-700">
-                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${c.policies.summary}</p>
-            </div>
-            ${c.policies.jobs ? `<div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-[#e7ebf3] dark:border-gray-700">
-                <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1.5"><span class="material-symbols-outlined text-sm align-middle mr-1" style="color:${pc}">work</span>일자리</h4>
-                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${c.policies.jobs}</p>
-            </div>` : ''}
-            ${c.policies.vision ? `<div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-[#e7ebf3] dark:border-gray-700">
-                <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1.5"><span class="material-symbols-outlined text-sm align-middle mr-1" style="color:${pc}">visibility</span>비전</h4>
-                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${c.policies.vision}</p>
-            </div>` : ''}
-            ${c.policies.education ? `<div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-[#e7ebf3] dark:border-gray-700">
-                <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1.5"><span class="material-symbols-outlined text-sm align-middle mr-1" style="color:${pc}">school</span>교육</h4>
-                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${c.policies.education}</p>
-            </div>` : ''}
-        </div>
-    ` : '';
+    // 핵심공약 카드 HTML
+    const pledgesHtml = (c.pledges || []).map(p => {
+        const liked = pledgeLikes.includes(p.id);
+        const count = (p.empathyCount || 0) + (liked ? 1 : 0);
+        return `
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-[#e7ebf3] dark:border-gray-700 cursor-pointer hover:border-primary/30 transition-colors" onclick="openPledgeModal(${p.id}, ${c.id})">
+                <div class="flex items-start gap-3">
+                    <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:${pc}15">
+                        <span class="material-symbols-outlined text-lg" style="color:${pc}">${p.icon}</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1.5">${p.title}</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-2">${p.description}</p>
+                    </div>
+                    <span class="material-symbols-outlined text-slate-300 dark:text-slate-600 text-lg flex-shrink-0 mt-1">chevron_right</span>
+                </div>
+                <div class="flex items-center justify-between mt-3 pt-2.5 border-t border-[#e7ebf3] dark:border-gray-700">
+                    <span class="text-[10px] text-slate-400">${t('viewDetail')}</span>
+                    <button id="pledge-like-btn-${p.id}" onclick="event.stopPropagation(); togglePledgeLike(${p.id}, this);" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 ${liked ? 'bg-primary/10 text-primary' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-primary'}">
+                        <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' ${liked ? 1 : 0}">thumb_up</span>
+                        ${t('empathy')} ${count.toLocaleString()}
+                    </button>
+                </div>
+            </div>`;
+    }).join('');
+
+    const totalLikes = getCandidateTotalLikes(c);
 
     document.getElementById('detail-content').innerHTML = `
         <!-- 프로필 카드 -->
         <div class="bg-white dark:bg-gray-900 px-6 py-6 border-b border-[#e7ebf3] dark:border-gray-800">
             <div class="flex items-center gap-4 mb-4">
-                <div class="w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold text-white" style="background:${pc}">
-                    ${c.name.charAt(0)}
+                <div class="relative">
+                    <div class="w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold text-white" style="background:${pc}">
+                        ${c.name.charAt(0)}
+                    </div>
+                    <div class="absolute -bottom-1 -right-1 bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[11px]" style="font-variation-settings: 'FILL' 1">thumb_up</span>
+                        ${totalLikes.toLocaleString()}
+                    </div>
                 </div>
                 <div class="flex-1">
                     <div class="flex items-center gap-2 mb-1">
                         <span class="text-xl font-bold text-slate-800 dark:text-white">${c.name}</span>
-                        <span class="px-2 py-0.5 rounded-full text-xs font-bold text-white" style="background:${pc}">기호 ${c.number}번</span>
+                        <span class="px-2 py-0.5 rounded-full text-xs font-bold text-white" style="background:${pc}">${t('no')} ${c.number}</span>
                     </div>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">${c.party} · ${c.age}세</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">${c.party} · ${c.age}${t('age')}</p>
                     <p class="text-xs text-slate-400 mt-0.5"><span class="material-symbols-outlined text-xs align-middle">location_on</span> ${c.birthplace || ''}</p>
                     <p class="text-xs text-slate-400"><span class="material-symbols-outlined text-xs align-middle">school</span> ${c.education || ''}</p>
                 </div>
@@ -1483,48 +1731,57 @@ function openDetail(id) {
             <p class="text-sm font-semibold italic text-slate-600 dark:text-slate-300">"${c.slogan}"</p>
         </div>
 
-        <div class="px-4 py-5 space-y-6">
-            <!-- 인사말 -->
+        <!-- 탭 전환 -->
+        <div class="sticky top-[53px] z-40 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4">
+            <div class="flex">
+                <button id="detail-tab-portfolio" onclick="switchDetailTab('portfolio', ${c.id})" class="flex-1 py-3 text-sm font-bold text-primary border-b-2 border-primary transition-colors">${t('portfolio')}</button>
+                <button id="detail-tab-pledges" onclick="switchDetailTab('pledges', ${c.id})" class="flex-1 py-3 text-sm font-bold text-slate-400 border-b-2 border-transparent transition-colors">${t('keyPledges')} <span class="text-xs ml-1 px-1.5 py-0.5 bg-primary/10 text-primary rounded-full">${(c.pledges || []).length}</span></button>
+            </div>
+        </div>
+
+        <!-- 포트폴리오 탭 -->
+        <div id="detail-portfolio" class="px-4 py-5 space-y-6">
             ${c.greeting ? `<section>
                 <h3 class="flex items-center gap-2 text-base font-bold text-slate-800 dark:text-white mb-3">
-                    <span class="material-symbols-outlined" style="color:${pc}">waving_hand</span> 인사말
+                    <span class="material-symbols-outlined" style="color:${pc}">waving_hand</span> ${t('greetingLabel')}
                 </h3>
                 <div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-[#e7ebf3] dark:border-gray-700">
                     <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${c.greeting}</p>
                 </div>
             </section>` : ''}
 
-            <!-- 주요 약력 -->
             ${careerHtml ? `<section>
                 <h3 class="flex items-center gap-2 text-base font-bold text-slate-800 dark:text-white mb-3">
-                    <span class="material-symbols-outlined" style="color:${pc}">timeline</span> 주요 약력
+                    <span class="material-symbols-outlined" style="color:${pc}">timeline</span> ${t('careerLabel')}
                 </h3>
                 <div class="space-y-3 pl-1">${careerHtml}</div>
             </section>` : ''}
 
-            <!-- 주요 성과 -->
             ${achieveHtml ? `<section>
                 <h3 class="flex items-center gap-2 text-base font-bold text-slate-800 dark:text-white mb-3">
-                    <span class="material-symbols-outlined" style="color:${pc}">emoji_events</span> 주요 성과
+                    <span class="material-symbols-outlined" style="color:${pc}">emoji_events</span> ${t('achievementsLabel')}
                 </h3>
                 <div class="space-y-2">${achieveHtml}</div>
             </section>` : ''}
+        </div>
 
-            <!-- 핵심 공약 -->
-            ${policyHtml ? `<section>
-                <h3 class="flex items-center gap-2 text-base font-bold text-slate-800 dark:text-white mb-3">
-                    <span class="material-symbols-outlined" style="color:${pc}">description</span> 핵심 공약
-                </h3>
-                ${policyHtml}
-            </section>` : ''}
+        <!-- 핵심공약 탭 (기본 숨김) -->
+        <div id="detail-pledges" class="px-4 py-5 space-y-3 hidden">
+            <div class="flex items-center justify-between mb-2">
+                <p class="text-xs text-slate-400">${t('empathyReflect')}</p>
+                <span class="text-xs font-bold text-primary">${t('totalEmpathy')} ${totalLikes.toLocaleString()}</span>
+            </div>
+            ${pledgesHtml || `<p class="text-center text-slate-400 py-10">${t('noPledges')}</p>`}
+        </div>
 
-            <!-- 하단 버튼 -->
-            <div class="flex gap-3 pt-2">
+        <!-- 하단 버튼 -->
+        <div class="px-4 pb-6">
+            <div class="flex gap-3 pt-4">
                 <button onclick="openChat(${c.id})" class="flex-1 py-3 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2" style="background:${pc}">
-                    <span class="material-symbols-outlined text-lg">chat</span> AI 아바타와 대화
+                    <span class="material-symbols-outlined text-lg">chat</span> ${t('chatWithAI')}
                 </button>
-                <button onclick="navigateTo('page-candidates', true)" class="flex-1 py-3 rounded-xl border-2 font-bold text-sm flex items-center justify-center gap-2" style="border-color:${pc}; color:${pc}">
-                    <span class="material-symbols-outlined text-lg">arrow_back</span> 목록으로
+                <button onclick="goBack()" class="flex-1 py-3 rounded-xl border-2 font-bold text-sm flex items-center justify-center gap-2" style="border-color:${pc}; color:${pc}">
+                    <span class="material-symbols-outlined text-lg">arrow_back</span> ${t('backToList')}
                 </button>
             </div>
         </div>
@@ -1533,18 +1790,37 @@ function openDetail(id) {
     navigateTo('page-detail');
 }
 
+function switchDetailTab(tab, candidateId) {
+    const portfolioTab = document.getElementById('detail-tab-portfolio');
+    const pledgesTab = document.getElementById('detail-tab-pledges');
+    const portfolioContent = document.getElementById('detail-portfolio');
+    const pledgesContent = document.getElementById('detail-pledges');
+
+    if (tab === 'portfolio') {
+        portfolioTab.className = 'flex-1 py-3 text-sm font-bold text-primary border-b-2 border-primary transition-colors';
+        pledgesTab.className = 'flex-1 py-3 text-sm font-bold text-slate-400 border-b-2 border-transparent transition-colors';
+        portfolioContent.classList.remove('hidden');
+        pledgesContent.classList.add('hidden');
+    } else {
+        portfolioTab.className = 'flex-1 py-3 text-sm font-bold text-slate-400 border-b-2 border-transparent transition-colors';
+        pledgesTab.className = 'flex-1 py-3 text-sm font-bold text-primary border-b-2 border-primary transition-colors';
+        portfolioContent.classList.add('hidden');
+        pledgesContent.classList.remove('hidden');
+    }
+}
+
 // ============ CHAT ============
 function openChat(id) {
     currentChatCandidate = findCandidateById(id);
     if (!currentChatCandidate) return;
 
-    document.getElementById('chat-candidate-name').textContent = `${currentChatCandidate.name} AI 아바타`;
-    document.getElementById('chat-candidate-sub').textContent = `${currentChatCandidate.name} 후보 디지털 트윈 (Live)`;
+    document.getElementById('chat-candidate-name').textContent = `${currentChatCandidate.name} AI ${currentLang === 'en' ? 'Avatar' : '아바타'}`;
+    document.getElementById('chat-candidate-sub').textContent = `${currentChatCandidate.name} ${t('digitalTwin')} (Live)`;
 
     const messages = document.getElementById('chat-messages');
     messages.innerHTML = '';
 
-    addBotMessage(`반갑습니다. 후보자 ${currentChatCandidate.name}의 AI 아바타입니다.\n제가 가진 정책 비전이나 공약에 대해 무엇이든 물어보세요.`);
+    addBotMessage(t('avatarIntro').replace('{name}', currentChatCandidate.name));
 
     navigateTo('page-chat');
 }
@@ -1666,24 +1942,34 @@ function removeTypingIndicator() {
 function getResponse(text) {
     const c = currentChatCandidate;
     const lower = text.toLowerCase();
+    const pledges = c.pledges || [];
+    const getByCategory = (cat) => pledges.find(p => (pledgeCategoryMap[p.id] || '') === cat);
 
     if (lower.includes('정책') || lower.includes('요약') || lower.includes('공약')) {
-        return c.policies.summary;
+        return pledges.map(p => `• <b>${p.title}</b>: ${p.description.split('.')[0]}.`).join('<br>');
     }
     if (lower.includes('일자리') || lower.includes('취업') || lower.includes('고용') || lower.includes('청년')) {
-        return c.policies.jobs;
+        const m = getByCategory('경제'); return m ? m.description : `"${c.slogan}"`;
     }
     if (lower.includes('비전') || lower.includes('목표') || lower.includes('꿈')) {
-        return c.policies.vision;
+        return pledges[0] ? pledges[0].description : `"${c.slogan}"이 저의 핵심 비전입니다.`;
     }
     if (lower.includes('교육') || lower.includes('학교') || lower.includes('학생')) {
-        return c.policies.education;
+        const m = getByCategory('교육'); return m ? m.description : `"${c.slogan}"`;
+    }
+    if (lower.includes('환경') || lower.includes('녹색') || lower.includes('탄소')) {
+        const m = getByCategory('환경'); return m ? m.description : `환경 관련 공약을 준비 중입니다.`;
+    }
+    if (lower.includes('안전') || lower.includes('치안') || lower.includes('범죄')) {
+        const m = getByCategory('안전'); return m ? m.description : `안전 관련 공약을 준비 중입니다.`;
+    }
+    if (lower.includes('복지') || lower.includes('돌봄') || lower.includes('주거')) {
+        const m = getByCategory('복지'); return m ? m.description : `복지 관련 공약을 준비 중입니다.`;
     }
     if (lower.includes('나이') || lower.includes('소개')) {
         return `저는 ${c.party} 소속 기호 ${c.number}번 ${c.name}입니다. 올해 ${c.age}세이며, "${c.slogan}"이라는 슬로건으로 출마했습니다. 궁금한 정책이 있으시면 물어봐주세요!`;
     }
-
-    return `좋은 질문입니다. "${c.slogan}" - 이것이 저의 핵심 가치입니다. 구체적인 정책이 궁금하시다면 '주요 정책', '일자리', '교육', '비전' 등의 키워드로 질문해주세요!`;
+    return `좋은 질문입니다. "${c.slogan}" - 이것이 저의 핵심 가치입니다. '주요 정책', '일자리', '교육', '비전', '환경', '안전', '복지' 등의 키워드로 질문해주세요!`;
 }
 
 function sendMessage() {
@@ -1924,86 +2210,104 @@ const samplePolicies = [
     {
         id: 1, category: 'economy', categoryLabel: '경제',
         title: '2026년 소상공인 긴급 경영안정자금 지원',
-        department: '중소벤처기업부',
-        date: '2026.01.15',
-        status: '시행중',
+        department: '중소벤처기업부', date: '2026.01.15', status: '시행중',
         summary: '코로나 이후 매출이 감소한 소상공인에게 최대 2천만 원의 저금리 대출을 지원합니다.',
         detail: '지원 대상: 연 매출 10억 원 이하 소상공인\n지원 한도: 최대 2,000만 원\n금리: 연 2.0%\n상환 기간: 5년 (거치 1년)\n신청 방법: 소상공인시장진흥공단 온라인 신청\n접수 기간: 2026.01.15 ~ 예산 소진 시',
-        icon: 'store'
+        icon: 'store',
+        ageGroup: 'middle', ageLabel: '중장년', beneficiary: 350000, budget: 5000, interest: 87,
+        enforceDate: '2026-01-15', isNew: false, empathyCount: 234,
+        eligibility: { minAge: 20, maxAge: 65, regions: ['서울', '경기', '인천', '부산', '대구', '광주', '대전', '울산', '세종'] },
+        deptUrl: 'https://www.mss.go.kr', applyUrl: 'https://www.semas.or.kr'
     },
     {
         id: 2, category: 'welfare', categoryLabel: '복지',
         title: '청년 월세 특별지원 확대',
-        department: '국토교통부',
-        date: '2026.02.01',
-        status: '시행중',
+        department: '국토교통부', date: '2026.02.01', status: '시행중',
         summary: '무주택 청년에게 월 최대 20만 원의 월세를 12개월간 지원합니다.',
         detail: '지원 대상: 만 19~34세 무주택 청년\n소득 기준: 중위소득 60% 이하\n지원 금액: 월 최대 20만 원\n지원 기간: 최대 12개월\n신청 방법: 복지로 또는 주민센터 방문\n필요 서류: 임대차계약서, 소득증빙서류',
-        icon: 'home'
+        icon: 'home',
+        ageGroup: 'youth', ageLabel: '청년', beneficiary: 520000, budget: 12480, interest: 95,
+        enforceDate: '2026-02-01', isNew: true, empathyCount: 892,
+        eligibility: { minAge: 19, maxAge: 34, regions: ['서울', '경기', '인천', '부산', '대구', '광주', '대전', '울산', '세종', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주'] },
+        deptUrl: 'https://www.molit.go.kr', applyUrl: 'https://www.bokjiro.go.kr'
     },
     {
         id: 3, category: 'education', categoryLabel: '교육',
         title: '디지털 교육 혁신 프로젝트',
-        department: '교육부',
-        date: '2026.03.01',
-        status: '시행예정',
+        department: '교육부', date: '2026.03.01', status: '시행예정',
         summary: '전국 초·중·고교에 AI 보조교사 시스템을 도입하고 1인 1디바이스를 지원합니다.',
         detail: '대상: 전국 초·중·고등학교\n내용: AI 보조교사 시스템 전면 도입\n기기 지원: 학생 1인 1태블릿 무상 지급\n교사 연수: AI 교육 활용 전문 연수 실시\n예산: 총 3조 2천억 원\n시행 시기: 2026년 3월 신학기부터',
-        icon: 'school'
+        icon: 'school',
+        ageGroup: 'child', ageLabel: '아동·청소년', beneficiary: 5400000, budget: 32000, interest: 82,
+        enforceDate: '2026-03-01', isNew: true, empathyCount: 567,
+        eligibility: { minAge: 7, maxAge: 18, regions: [] },
+        deptUrl: 'https://www.moe.go.kr', applyUrl: ''
     },
     {
         id: 4, category: 'environment', categoryLabel: '환경',
         title: '탄소중립 녹색건물 전환 지원사업',
-        department: '환경부',
-        date: '2025.12.01',
-        status: '시행중',
+        department: '환경부', date: '2025.12.01', status: '시행중',
         summary: '노후 건물의 에너지 효율 개선 공사 비용을 최대 80%까지 지원합니다.',
         detail: '지원 대상: 준공 후 15년 이상 노후 건물\n지원 내용: 단열, 창호, 냉난방 설비 교체\n지원율: 공사비의 최대 80%\n한도: 건물당 최대 5억 원\n신청: 한국환경공단 녹색건물 포털\n에너지 절감 목표: 연간 30% 이상',
-        icon: 'eco'
+        icon: 'eco',
+        ageGroup: 'all', ageLabel: '전 연령', beneficiary: 120000, budget: 8000, interest: 64,
+        enforceDate: '2025-12-01', isNew: false, empathyCount: 145,
+        eligibility: { minAge: 0, maxAge: 999, regions: [] },
+        deptUrl: 'https://www.me.go.kr', applyUrl: 'https://www.gbuilding.or.kr'
     },
     {
         id: 5, category: 'safety', categoryLabel: '안전',
         title: '스마트 안전도시 구축사업',
-        department: '행정안전부',
-        date: '2026.01.01',
-        status: '시행중',
+        department: '행정안전부', date: '2026.01.01', status: '시행중',
         summary: 'AI 기반 재난 예측 시스템과 스마트 CCTV 확대를 통해 안전한 도시를 만듭니다.',
         detail: '주요 내용:\n- AI 재난 예측 시스템 전국 확대\n- 스마트 CCTV 5만 대 추가 설치\n- 긴급 신고 앱 고도화\n- 취약지역 안전 인프라 강화\n대상 지역: 전국 226개 시·군·구\n예산: 1조 5천억 원',
-        icon: 'shield'
+        icon: 'shield',
+        ageGroup: 'all', ageLabel: '전 연령', beneficiary: 51000000, budget: 15000, interest: 78,
+        enforceDate: '2026-01-01', isNew: false, empathyCount: 412,
+        eligibility: { minAge: 0, maxAge: 999, regions: [] },
+        deptUrl: 'https://www.mois.go.kr', applyUrl: ''
     },
     {
         id: 6, category: 'economy', categoryLabel: '경제',
         title: '지역화폐 활성화 및 확대 정책',
-        department: '행정안전부',
-        date: '2026.01.20',
-        status: '시행중',
+        department: '행정안전부', date: '2026.01.20', status: '시행중',
         summary: '지역 경제 활성화를 위해 지역화폐 캐시백 비율을 10%로 확대합니다.',
         detail: '변경 사항: 캐시백 비율 6% → 10%\n사용 한도: 월 100만 원\n가맹점: 연매출 30억 원 이하 가맹점\n추가 혜택: 전통시장 사용 시 15% 캐시백\n시행 기간: 2026년 1월 ~ 12월',
-        icon: 'payments'
+        icon: 'payments',
+        ageGroup: 'all', ageLabel: '전 연령', beneficiary: 8000000, budget: 3200, interest: 72,
+        enforceDate: '2026-01-20', isNew: false, empathyCount: 189,
+        eligibility: { minAge: 0, maxAge: 999, regions: [] },
+        deptUrl: 'https://www.mois.go.kr', applyUrl: ''
     },
     {
         id: 7, category: 'welfare', categoryLabel: '복지',
         title: '고령자 디지털 포용 지원 사업',
-        department: '과학기술정보통신부',
-        date: '2026.02.10',
-        status: '시행중',
+        department: '과학기술정보통신부', date: '2026.02.10', status: '시행중',
         summary: '65세 이상 고령자에게 무료 디지털 교육과 스마트폰 지원을 실시합니다.',
         detail: '대상: 만 65세 이상 어르신\n교육 내용: 스마트폰 기초, 키오스크 사용법, 온라인 민원\n교육 장소: 전국 주민센터, 복지관\n기기 지원: 저소득 어르신 스마트폰 무상 지급\n1:1 멘토링: 대학생 봉사자 연결',
-        icon: 'elderly'
+        icon: 'elderly',
+        ageGroup: 'senior', ageLabel: '노년', beneficiary: 980000, budget: 2800, interest: 68,
+        enforceDate: '2026-02-10', isNew: true, empathyCount: 321,
+        eligibility: { minAge: 65, maxAge: 999, regions: [] },
+        deptUrl: 'https://www.msit.go.kr', applyUrl: 'https://www.bokjiro.go.kr'
     },
     {
         id: 8, category: 'education', categoryLabel: '교육',
         title: '평생교육 바우처 지원 확대',
-        department: '교육부',
-        date: '2026.01.10',
-        status: '시행중',
+        department: '교육부', date: '2026.01.10', status: '시행중',
         summary: '저소득층 성인 학습자에게 연 50만 원의 평생교육 바우처를 지원합니다.',
         detail: '대상: 만 25~64세 중위소득 65% 이하\n지원 금액: 연 50만 원 (기존 35만 원)\n사용처: 평생교육기관, 직업훈련기관\n신청 방법: 국가평생교육진흥원 온라인\n사용 기간: 발급일로부터 1년',
-        icon: 'menu_book'
+        icon: 'menu_book',
+        ageGroup: 'middle', ageLabel: '중장년', beneficiary: 200000, budget: 1000, interest: 58,
+        enforceDate: '2026-01-10', isNew: false, empathyCount: 98,
+        eligibility: { minAge: 25, maxAge: 64, regions: [] },
+        deptUrl: 'https://www.moe.go.kr', applyUrl: 'https://www.nile.or.kr'
     }
 ];
 
 let currentPolicyFilter = 'all';
+let currentPolicyTab = 'category';
+let currentPolicySort = 'date';
 
 function saveApiKey() {
     const key = document.getElementById('api-key-input').value.trim();
@@ -2018,7 +2322,6 @@ async function loadPolicies() {
     const loading = document.getElementById('policy-loading');
     const list = document.getElementById('policy-list');
 
-    // 저장된 API 키 복원
     const savedKey = localStorage.getItem('policy_api_key');
     if (savedKey) {
         API_CONFIG.key = savedKey;
@@ -2026,7 +2329,6 @@ async function loadPolicies() {
     }
 
     if (API_CONFIG.key) {
-        // 실제 API 호출 시도
         loading.classList.remove('hidden');
         list.innerHTML = '';
         try {
@@ -2043,7 +2345,6 @@ async function loadPolicies() {
                     return;
                 }
             }
-            // API 응답이 비정상이면 샘플 데이터 사용
             showToast('API 응답 오류 - 샘플 데이터를 표시합니다');
         } catch (e) {
             showToast('API 연결 실패 - 샘플 데이터를 표시합니다');
@@ -2051,47 +2352,175 @@ async function loadPolicies() {
     }
 
     loading.classList.add('hidden');
-    renderSamplePolicies();
+    // 초기 탭 설정
+    switchPolicyTab(document.querySelector('.policy-main-tab:nth-child(2)'), 'category');
 }
 
 function renderApiPolicies(items) {
     const list = document.getElementById('policy-list');
     list.innerHTML = '';
     items.forEach(item => {
-        const card = createPolicyCard({
+        list.appendChild(createPolicyCard({
             title: item.title || item.policyName || '정책명 없음',
             department: item.department || item.ministryName || '부서 미정',
-            date: item.date || item.announcementDate || '',
-            summary: item.summary || item.description || '내용 없음',
-            detail: item.detail || item.content || item.summary || '',
-            status: '시행중',
-            icon: 'policy',
-            category: 'all',
-            categoryLabel: '정책'
-        });
-        list.appendChild(card);
+            date: item.date || item.announcementDate || '', summary: item.summary || item.description || '내용 없음',
+            detail: item.detail || item.content || item.summary || '', status: '시행중',
+            icon: 'policy', category: 'all', categoryLabel: '정책',
+            ageGroup: 'all', ageLabel: '전 연령', beneficiary: 0, budget: 0, interest: 0,
+            enforceDate: '', isNew: false
+        }));
     });
 }
 
-function renderSamplePolicies() {
+// ---- 탭 전환 ----
+function switchPolicyTab(btn, tab) {
+    document.querySelectorAll('.policy-main-tab').forEach(b => {
+        b.className = 'policy-main-tab flex-1 py-2 rounded-lg text-xs font-bold text-slate-500 dark:text-slate-400 transition-all';
+    });
+    btn.className = 'policy-main-tab flex-1 py-2 rounded-lg text-xs font-bold bg-white dark:bg-slate-700 text-primary shadow-sm transition-all';
+    currentPolicyTab = tab;
+    currentPolicyFilter = 'all';
+    renderPolicySubFilter();
+    renderPolicies();
+}
+
+function renderPolicySubFilter() {
+    const wrap = document.getElementById('policy-sub-filter');
+    let buttons = '';
+    const activeClass = 'policy-sub-btn flex-shrink-0 px-4 py-1.5 rounded-full bg-primary text-white text-sm font-bold shadow-sm';
+    const defaultClass = 'policy-sub-btn flex-shrink-0 px-4 py-1.5 rounded-full bg-white dark:bg-gray-800 text-[#4c669a] dark:text-gray-300 border border-[#e7ebf3] dark:border-gray-700 text-sm font-medium';
+
+    if (currentPolicyTab === 'age') {
+        const groups = [
+            { key: 'all', label: '전체' }, { key: 'youth', label: '청년 (19~34)' },
+            { key: 'middle', label: '중장년 (35~64)' }, { key: 'senior', label: '노년 (65+)' },
+            { key: 'child', label: '아동·청소년' }
+        ];
+        buttons = groups.map((g, i) =>
+            `<button onclick="filterPolicySub(this, '${g.key}')" class="${i === 0 ? activeClass : defaultClass}">${g.label}</button>`
+        ).join('');
+    } else if (currentPolicyTab === 'category') {
+        const cats = [
+            { key: 'all', label: '전체' }, { key: 'economy', label: '경제' },
+            { key: 'welfare', label: '복지' }, { key: 'education', label: '교육' },
+            { key: 'environment', label: '환경' }, { key: 'safety', label: '안전' }
+        ];
+        buttons = cats.map((c, i) =>
+            `<button onclick="filterPolicySub(this, '${c.key}')" class="${i === 0 ? activeClass : defaultClass}">${c.label}</button>`
+        ).join('');
+    } else {
+        // 최근 시행 - 하위 필터 없음, 안내 텍스트
+        buttons = '<span class="text-xs text-slate-400 py-1.5">최근 시행일 기준 자동 정렬</span>';
+    }
+    wrap.innerHTML = buttons;
+}
+
+function filterPolicySub(btn, filter) {
+    document.querySelectorAll('.policy-sub-btn').forEach(b => {
+        b.className = 'policy-sub-btn flex-shrink-0 px-4 py-1.5 rounded-full bg-white dark:bg-gray-800 text-[#4c669a] dark:text-gray-300 border border-[#e7ebf3] dark:border-gray-700 text-sm font-medium';
+    });
+    btn.className = 'policy-sub-btn flex-shrink-0 px-4 py-1.5 rounded-full bg-primary text-white text-sm font-bold shadow-sm';
+    currentPolicyFilter = filter;
+    renderPolicies();
+}
+
+// ---- 정렬 ----
+function togglePolicySortMenu() {
+    document.getElementById('policy-sort-menu').classList.toggle('hidden');
+}
+
+function setPolicySort(sort) {
+    currentPolicySort = sort;
+    document.getElementById('policy-sort-menu').classList.add('hidden');
+    // 아이콘 색상 업데이트
+    document.querySelectorAll('.policy-sort-item .material-symbols-outlined').forEach(el => el.className = 'material-symbols-outlined text-sm text-slate-400');
+    const sortIcons = { date: 0, interest: 1, beneficiary: 2, budget: 3 };
+    const items = document.querySelectorAll('.policy-sort-item');
+    if (items[sortIcons[sort]]) items[sortIcons[sort]].querySelector('.material-symbols-outlined').className = 'material-symbols-outlined text-sm text-primary';
+    renderPolicies();
+}
+
+// ---- 메인 렌더링 ----
+let bookmarkFilterOn = false;
+
+function toggleBookmarkFilter() {
+    bookmarkFilterOn = !bookmarkFilterOn;
+    const btn = document.getElementById('bookmark-filter-btn');
+    if (bookmarkFilterOn) {
+        btn.className = 'flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all border border-primary bg-primary/5 text-primary';
+        btn.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 1";
+    } else {
+        btn.className = 'flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all border border-transparent text-slate-400 hover:text-primary';
+        btn.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 0";
+    }
+    renderPolicies();
+}
+
+function renderPolicies() {
     const list = document.getElementById('policy-list');
     list.innerHTML = '';
-    const filtered = currentPolicyFilter === 'all'
-        ? samplePolicies
-        : samplePolicies.filter(p => p.category === currentPolicyFilter);
+    let filtered = [...samplePolicies];
+
+    // 북마크 필터
+    if (bookmarkFilterOn) {
+        filtered = filtered.filter(p => policySaved.includes(p.id));
+    }
+
+    // 필터링
+    if (currentPolicyTab === 'age' && currentPolicyFilter !== 'all') {
+        filtered = filtered.filter(p => p.ageGroup === currentPolicyFilter);
+    } else if (currentPolicyTab === 'category' && currentPolicyFilter !== 'all') {
+        filtered = filtered.filter(p => p.category === currentPolicyFilter);
+    }
+
+    // 정렬
+    if (currentPolicyTab === 'recent') {
+        filtered.sort((a, b) => (b.enforceDate || '').localeCompare(a.enforceDate || ''));
+    } else {
+        const sortFns = {
+            date: (a, b) => (b.enforceDate || '').localeCompare(a.enforceDate || ''),
+            interest: (a, b) => (b.interest || 0) - (a.interest || 0),
+            beneficiary: (a, b) => (b.beneficiary || 0) - (a.beneficiary || 0),
+            budget: (a, b) => (b.budget || 0) - (a.budget || 0)
+        };
+        if (sortFns[currentPolicySort]) filtered.sort(sortFns[currentPolicySort]);
+    }
 
     if (filtered.length === 0) {
-        list.innerHTML = `
-            <div class="flex flex-col items-center py-16 text-slate-400">
-                <span class="material-symbols-outlined text-5xl mb-3">search_off</span>
-                <p class="text-sm font-medium">해당 카테고리의 정책이 없습니다</p>
-            </div>`;
+        list.innerHTML = `<div class="flex flex-col items-center py-16 text-slate-400">
+            <span class="material-symbols-outlined text-5xl mb-3">search_off</span>
+            <p class="text-sm font-medium">${t('noFilteredPolicy')}</p>
+        </div>`;
         return;
     }
 
-    filtered.forEach(p => {
-        list.appendChild(createPolicyCard(p));
-    });
+    filtered.forEach(p => list.appendChild(createPolicyCard(p)));
+}
+
+function formatNumber(n) {
+    if (n >= 10000000) return (n / 10000000).toFixed(0) + '천만';
+    if (n >= 10000) return (n / 10000).toFixed(0) + '만';
+    if (n >= 1000) return (n / 1000).toFixed(1) + '천';
+    return n.toString();
+}
+
+function getDday(dateStr) {
+    if (!dateStr) return '';
+    const target = new Date(dateStr);
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const diff = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+    if (diff > 0) return `D-${diff}`;
+    if (diff === 0) return 'D-Day';
+    return '';
+}
+
+function isWithin30Days(dateStr) {
+    if (!dateStr) return false;
+    const target = new Date(dateStr);
+    const today = new Date();
+    const diff = (today - target) / (1000 * 60 * 60 * 24);
+    return diff >= 0 && diff <= 30;
 }
 
 function createPolicyCard(p) {
@@ -2101,10 +2530,32 @@ function createPolicyCard(p) {
         '종료': 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400',
     };
     const statusClass = statusColors[p.status] || statusColors['시행중'];
+    const dday = getDday(p.enforceDate);
+
+    // 연령별 탭 추가 배지
+    let ageBadge = '';
+    if (currentPolicyTab === 'age' && p.ageLabel) {
+        const ageColors = { '청년': 'bg-blue-50 text-blue-600', '중장년': 'bg-purple-50 text-purple-600', '노년': 'bg-orange-50 text-orange-600', '아동·청소년': 'bg-pink-50 text-pink-600', '전 연령': 'bg-slate-100 text-slate-500' };
+        const ac = ageColors[p.ageLabel] || 'bg-slate-100 text-slate-500';
+        ageBadge = `<span class="text-[10px] font-bold px-1.5 py-0.5 ${ac} dark:bg-opacity-30 rounded">${p.ageLabel}</span>`;
+    }
+
+    // 최근 시행 탭 배지
+    let recentBadge = '';
+    if (currentPolicyTab === 'recent') {
+        if (p.isNew) recentBadge += '<span class="text-[10px] font-bold px-1.5 py-0.5 bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400 rounded">신규 정책</span>';
+        if (isWithin30Days(p.enforceDate)) recentBadge += '<span class="text-[10px] font-bold px-1.5 py-0.5 bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 rounded">최근 30일</span>';
+        if (dday && p.status === '시행예정') recentBadge += `<span class="text-[10px] font-bold px-1.5 py-0.5 bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 rounded">${dday}</span>`;
+    }
+
+    // 수혜 인구 (연령별 탭)
+    let beneficiaryInfo = '';
+    if (currentPolicyTab === 'age' && p.beneficiary) {
+        beneficiaryInfo = `<span class="text-[10px] text-slate-400 flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">groups</span>수혜 약 ${formatNumber(p.beneficiary)}명</span>`;
+    }
 
     const card = document.createElement('div');
     card.className = 'policy-card bg-white dark:bg-gray-900 rounded-2xl border border-[#e7ebf3] dark:border-gray-800 overflow-hidden shadow-sm hover:border-primary/30 transition-colors cursor-pointer';
-    card.dataset.category = p.category;
     card.onclick = () => openPolicyModal(p);
 
     card.innerHTML = `
@@ -2114,22 +2565,30 @@ function createPolicyCard(p) {
                     <span class="material-symbols-outlined text-primary text-xl">${p.icon}</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <div class="flex items-center gap-1.5 mb-1 flex-wrap">
                         <span class="text-[10px] font-bold px-1.5 py-0.5 ${statusClass} rounded">${p.status}</span>
                         <span class="text-[10px] font-medium text-[#4c669a] dark:text-gray-400 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">${p.categoryLabel}</span>
+                        ${ageBadge}${recentBadge}
                     </div>
                     <h3 class="text-sm font-bold text-[#0d121b] dark:text-white leading-snug line-clamp-2">${p.title}</h3>
                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 line-clamp-2 leading-relaxed">${p.summary}</p>
-                    <div class="flex items-center gap-3 mt-2">
+                    <div class="flex items-center gap-3 mt-2 flex-wrap">
                         <span class="text-[10px] text-slate-400 flex items-center gap-1">
                             <span class="material-symbols-outlined text-[12px]">apartment</span>${p.department}
                         </span>
                         <span class="text-[10px] text-slate-400 flex items-center gap-1">
                             <span class="material-symbols-outlined text-[12px]">calendar_today</span>${p.date}
                         </span>
+                        ${beneficiaryInfo}
                     </div>
                 </div>
                 <span class="material-symbols-outlined text-slate-300 dark:text-slate-600 text-lg flex-shrink-0 mt-1">chevron_right</span>
+            </div>
+            <div class="flex items-center justify-end pt-3 mt-3 border-t border-[#e7ebf3] dark:border-gray-800 px-1">
+                <button onclick="event.stopPropagation(); togglePolicySave(${p.id})" class="flex items-center gap-1.5 text-xs font-medium transition-colors ${policySaved.includes(p.id) ? 'text-primary' : 'text-slate-400 hover:text-primary'}">
+                    <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' ${policySaved.includes(p.id) ? 1 : 0}">bookmark</span>
+                    ${policySaved.includes(p.id) ? t('bookmarked') : t('bookmark')}
+                </button>
             </div>
         </div>
     `;
@@ -2139,20 +2598,76 @@ function createPolicyCard(p) {
 function openPolicyModal(p) {
     const modal = document.getElementById('policy-modal');
     document.getElementById('modal-title').textContent = p.title;
+
+    let metaBadges = `
+        <span class="text-xs font-bold px-2 py-1 bg-primary/10 text-primary rounded-lg">${p.categoryLabel}</span>
+        <span class="text-xs font-bold px-2 py-1 bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-lg">${p.status}</span>
+    `;
+    if (p.ageLabel) metaBadges += `<span class="text-xs font-bold px-2 py-1 bg-blue-50 text-blue-600 rounded-lg">${p.ageLabel}</span>`;
+
+    let extraInfo = '';
+    if (p.beneficiary) extraInfo += `<div class="flex items-center gap-2 text-xs text-slate-500"><span class="material-symbols-outlined text-sm text-primary">groups</span>${t('beneficiaryExpected')}${formatNumber(p.beneficiary)}${t('people')}</div>`;
+    if (p.budget) extraInfo += `<div class="flex items-center gap-2 text-xs text-slate-500"><span class="material-symbols-outlined text-sm text-primary">payments</span>${t('budgetScale')} ${formatNumber(p.budget)}${t('billion')}</div>`;
+
+    // 수혜 가능성 체크 UI
+    const elig = p.eligibility;
+    const regionOptions = ['서울','경기','인천','부산','대구','광주','대전','울산','세종','강원','충북','충남','전북','전남','경북','경남','제주'];
+    const eligibilityHtml = elig ? `
+        <div class="mt-5 bg-gradient-to-br from-primary/5 to-blue-50 dark:from-primary/10 dark:to-slate-800 rounded-2xl p-4 border border-primary/20">
+            <h4 class="text-sm font-bold mb-3 flex items-center gap-1.5 text-slate-800 dark:text-white">
+                <span class="material-symbols-outlined text-primary text-base">fact_check</span> ${t('canIReceive')}
+            </h4>
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs font-medium text-slate-500 mb-1 block">${t('ageInput')}</label>
+                    <input id="elig-age" type="number" placeholder="${t('ageInputPlaceholder')}" min="0" max="120"
+                        class="w-full h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm px-3 focus:ring-2 focus:ring-primary/30 focus:border-primary text-slate-900 dark:text-white placeholder-slate-400" />
+                </div>
+                <div>
+                    <label class="text-xs font-medium text-slate-500 mb-1 block">${t('regionSelect')}</label>
+                    <select id="elig-region"
+                        class="w-full h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm px-3 focus:ring-2 focus:ring-primary/30 focus:border-primary text-slate-900 dark:text-white">
+                        <option value="">${t('selectPlease')}</option>
+                        ${regionOptions.map(r => '<option value="' + r + '">' + r + '</option>').join('')}
+                    </select>
+                </div>
+                <button onclick="checkEligibility(${p.id})" class="w-full h-10 bg-primary text-white text-sm font-bold rounded-lg active:scale-[0.98] transition-transform flex items-center justify-center gap-1.5">
+                    <span class="material-symbols-outlined text-base">search</span> ${t('checkCondition')}
+                </button>
+                <div id="elig-result-${p.id}" class="hidden"></div>
+            </div>
+        </div>
+    ` : '';
+
+    // 담당 부서 & 신청 버튼
+    const actionButtons = `
+        <div class="flex gap-2 mt-4">
+            <a href="${p.deptUrl || '#'}" target="_blank" onclick="${!p.deptUrl ? 'event.preventDefault()' : ''}"
+                class="flex-1 h-11 rounded-xl text-sm font-bold flex items-center justify-center gap-1.5 border-2 transition-all active:scale-[0.98] ${p.deptUrl ? 'border-primary text-primary hover:bg-primary/5' : 'border-slate-200 text-slate-300 cursor-not-allowed'}">
+                <span class="material-symbols-outlined text-base">open_in_new</span> ${t('deptLink')}
+            </a>
+            <a href="${p.applyUrl || '#'}" target="_blank" onclick="${!p.applyUrl ? 'event.preventDefault()' : ''}"
+                class="flex-1 h-11 rounded-xl text-sm font-bold flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] ${p.applyUrl ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed'}">
+                <span class="material-symbols-outlined text-base">launch</span> ${t('applyLink')}
+            </a>
+        </div>
+    `;
+
     document.getElementById('modal-body').innerHTML = `
         <div class="flex items-center gap-2 mb-4 flex-wrap">
-            <span class="text-xs font-bold px-2 py-1 bg-primary/10 text-primary rounded-lg">${p.categoryLabel}</span>
-            <span class="text-xs font-bold px-2 py-1 bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-lg">${p.status}</span>
+            ${metaBadges}
             <span class="text-xs text-slate-400">${p.department} · ${p.date}</span>
         </div>
         <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 mb-4">
             <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">${p.summary}</p>
         </div>
+        ${extraInfo ? `<div class="flex gap-4 mb-4 p-3 bg-primary/5 rounded-xl">${extraInfo}</div>` : ''}
         <h4 class="text-sm font-bold mb-2 flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-primary text-base">info</span>
-            상세 내용
+            <span class="material-symbols-outlined text-primary text-base">info</span> ${t('detailContent')}
         </h4>
         <div class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-line bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-700">${p.detail}</div>
+        ${eligibilityHtml}
+        ${actionButtons}
     `;
     modal.classList.remove('hidden');
 }
@@ -2161,14 +2676,223 @@ function closePolicyModal() {
     document.getElementById('policy-modal').classList.add('hidden');
 }
 
-function filterPolicyCategory(btn, category) {
-    document.querySelectorAll('.policy-cat-btn').forEach(b => {
-        b.className = 'policy-cat-btn flex-shrink-0 px-4 py-1.5 rounded-full bg-white dark:bg-gray-800 text-[#4c669a] dark:text-gray-300 border border-[#e7ebf3] dark:border-gray-700 text-sm font-medium';
-    });
-    btn.className = 'policy-cat-btn flex-shrink-0 px-4 py-1.5 rounded-full bg-primary text-white text-sm font-bold shadow-sm';
-    currentPolicyFilter = category;
-    renderSamplePolicies();
+function checkEligibility(policyId) {
+    const policy = samplePolicies.find(p => p.id === policyId);
+    if (!policy || !policy.eligibility) return;
+
+    const ageInput = document.getElementById('elig-age');
+    const regionSelect = document.getElementById('elig-region');
+    const resultDiv = document.getElementById('elig-result-' + policyId);
+    const age = parseInt(ageInput.value);
+    const region = regionSelect.value;
+
+    if (!age && age !== 0) {
+        showToast(currentLang === 'en' ? 'Please enter your age' : '나이를 입력해주세요');
+        ageInput.focus();
+        return;
+    }
+    if (!region) {
+        showToast(currentLang === 'en' ? 'Please select your region' : '거주 지역을 선택해주세요');
+        regionSelect.focus();
+        return;
+    }
+
+    const elig = policy.eligibility;
+    const ageOk = age >= elig.minAge && age <= elig.maxAge;
+    const regionOk = elig.regions.length === 0 || elig.regions.includes(region);
+    const pass = ageOk && regionOk;
+
+    let reasons = [];
+    if (!ageOk) reasons.push((currentLang === 'en' ? 'Age ' : '연령 조건 (만 ') + elig.minAge + '~' + elig.maxAge + (currentLang === 'en' ? '' : '세)'));
+    if (!regionOk) reasons.push((currentLang === 'en' ? 'Region ' : '지역 조건 ') + '(' + elig.regions.join(', ') + ')');
+
+    resultDiv.classList.remove('hidden');
+    if (pass) {
+        resultDiv.innerHTML = `
+            <div class="flex items-start gap-2.5 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl mt-1">
+                <span class="material-symbols-outlined text-green-500 text-xl mt-0.5">check_circle</span>
+                <div>
+                    <p class="text-sm font-bold text-green-700 dark:text-green-400">${t('eligible')}</p>
+                    <p class="text-xs text-green-600 dark:text-green-500 mt-0.5">${t('eligibleDesc')}</p>
+                </div>
+            </div>`;
+    } else {
+        resultDiv.innerHTML = `
+            <div class="flex items-start gap-2.5 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl mt-1">
+                <span class="material-symbols-outlined text-red-400 text-xl mt-0.5">cancel</span>
+                <div>
+                    <p class="text-sm font-bold text-red-600 dark:text-red-400">${t('notEligible')}</p>
+                    <p class="text-xs text-red-500 dark:text-red-400 mt-0.5">${t('mismatch')} ${reasons.join(', ')}</p>
+                </div>
+            </div>`;
+    }
 }
+
+// ============ 공약 상세 팝업 ============
+function openPledgeModal(pledgeId, candidateId) {
+    const c = findCandidateById(candidateId);
+    if (!c) return;
+    const p = (c.pledges || []).find(pl => pl.id === pledgeId);
+    if (!p) return;
+
+    const pc = { blue: '#2563eb', red: '#dc2626', gray: '#6b7280' }[c.partyColor] || '#6b7280';
+    const liked = pledgeLikes.includes(p.id);
+    const count = (p.empathyCount || 0) + (liked ? 1 : 0);
+    const regionOptions = ['서울','경기','인천','부산','대구','광주','대전','울산','세종','강원','충북','충남','전북','전남','경북','경남','제주'];
+
+    const eligHtml = p.eligibility ? `
+        <div class="mt-5 bg-gradient-to-br from-primary/5 to-blue-50 dark:from-primary/10 dark:to-slate-800 rounded-2xl p-4 border border-primary/20">
+            <h4 class="text-sm font-bold mb-3 flex items-center gap-1.5 text-slate-800 dark:text-white">
+                <span class="material-symbols-outlined text-primary text-base">fact_check</span> ${t('isThisForMe')}
+            </h4>
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs font-medium text-slate-500 mb-1 block">${t('ageInput')}</label>
+                    <input id="pledge-elig-age" type="number" placeholder="${t('ageInputPlaceholder')}" min="0" max="120"
+                        class="w-full h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm px-3 focus:ring-2 focus:ring-primary/30 focus:border-primary text-slate-900 dark:text-white placeholder-slate-400" />
+                </div>
+                <div>
+                    <label class="text-xs font-medium text-slate-500 mb-1 block">${t('regionSelect')}</label>
+                    <select id="pledge-elig-region"
+                        class="w-full h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm px-3 focus:ring-2 focus:ring-primary/30 focus:border-primary text-slate-900 dark:text-white">
+                        <option value="">${t('selectPlease')}</option>
+                        ${regionOptions.map(r => '<option value="' + r + '">' + r + '</option>').join('')}
+                    </select>
+                </div>
+                <button onclick="checkPledgeEligibility(${p.id}, ${c.id})" class="w-full h-10 bg-primary text-white text-sm font-bold rounded-lg active:scale-[0.98] transition-transform flex items-center justify-center gap-1.5">
+                    <span class="material-symbols-outlined text-base">search</span> ${t('checkIfApplicable')}
+                </button>
+                <div id="pledge-elig-result-${p.id}" class="hidden"></div>
+            </div>
+        </div>
+    ` : '';
+
+    const sourceBtn = p.sourceUrl
+        ? `<a href="${p.sourceUrl}" target="_blank" class="flex-1 h-11 rounded-xl text-sm font-bold flex items-center justify-center gap-1.5 border-2 border-primary text-primary hover:bg-primary/5 transition-all active:scale-[0.98]">
+            <span class="material-symbols-outlined text-base">open_in_new</span> ${t('sourceLink')}
+          </a>`
+        : `<button disabled class="flex-1 h-11 rounded-xl text-sm font-bold flex items-center justify-center gap-1.5 border-2 border-slate-200 dark:border-slate-700 text-slate-300 dark:text-slate-600 cursor-not-allowed">
+            <span class="material-symbols-outlined text-base">open_in_new</span> ${t('sourceLink')}
+          </button>`;
+
+    document.getElementById('pledge-modal-title').textContent = p.title;
+    document.getElementById('pledge-modal-body').innerHTML = `
+        <!-- 후보 정보 -->
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm" style="background:${pc}">${c.name.charAt(0)}</div>
+            <div>
+                <p class="text-sm font-bold text-slate-700 dark:text-slate-200">${c.name}${currentLang === 'en' ? '' : ' 후보'}</p>
+                <p class="text-xs text-slate-400">${c.party} · ${t('no')} ${c.number}</p>
+            </div>
+            <div class="ml-auto flex items-center gap-1 text-xs font-bold text-primary">
+                <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">thumb_up</span>
+                ${t('empathy')} ${count.toLocaleString()}
+            </div>
+        </div>
+
+        <!-- 공약 아이콘 + 설명 -->
+        <div class="flex items-start gap-3 mb-4">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:${pc}15">
+                <span class="material-symbols-outlined text-xl" style="color:${pc}">${p.icon}</span>
+            </div>
+            <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3.5 flex-1">
+                <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">${p.description}</p>
+            </div>
+        </div>
+
+        <!-- 세부 내용 -->
+        ${p.detail ? `
+        <h4 class="text-sm font-bold mb-2 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-primary text-base">article</span> ${t('pledgeDetail')}
+        </h4>
+        <div class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-line bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-700 mb-1">${p.detail}</div>
+        ` : ''}
+
+        <!-- 수혜 가능성 체크 -->
+        ${eligHtml}
+
+        <!-- 공감 버튼 -->
+        <div class="mt-5 mb-4">
+            <button onclick="togglePledgeLike(${p.id}); openPledgeModal(${p.id}, ${c.id});" class="w-full h-11 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] ${liked ? 'bg-primary text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary'}">
+                <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' ${liked ? 1 : 0}">thumb_up</span>
+                ${liked ? t('cancelEmpathy') : t('empathyThis')} (${count.toLocaleString()})
+            </button>
+        </div>
+
+        <!-- 바로가기 버튼 -->
+        <div class="flex gap-2">
+            ${sourceBtn}
+        </div>
+    `;
+
+    document.getElementById('pledge-modal').classList.remove('hidden');
+}
+
+function closePledgeModal() {
+    document.getElementById('pledge-modal').classList.add('hidden');
+}
+
+function checkPledgeEligibility(pledgeId, candidateId) {
+    const c = findCandidateById(candidateId);
+    if (!c) return;
+    const p = (c.pledges || []).find(pl => pl.id === pledgeId);
+    if (!p || !p.eligibility) return;
+
+    const ageInput = document.getElementById('pledge-elig-age');
+    const regionSelect = document.getElementById('pledge-elig-region');
+    const resultDiv = document.getElementById('pledge-elig-result-' + pledgeId);
+    const age = parseInt(ageInput.value);
+    const region = regionSelect.value;
+
+    if (!age && age !== 0) {
+        showToast(currentLang === 'en' ? 'Please enter your age' : '나이를 입력해주세요');
+        ageInput.focus();
+        return;
+    }
+    if (!region) {
+        showToast(currentLang === 'en' ? 'Please select your region' : '거주 지역을 선택해주세요');
+        regionSelect.focus();
+        return;
+    }
+
+    const elig = p.eligibility;
+    const ageOk = age >= elig.minAge && age <= elig.maxAge;
+    const regionOk = elig.regions.length === 0 || elig.regions.includes(region);
+    const pass = ageOk && regionOk;
+
+    let reasons = [];
+    if (!ageOk) reasons.push('연령 조건 (만 ' + elig.minAge + (elig.maxAge < 999 ? '~' + elig.maxAge : '+') + '세)');
+    if (!regionOk) reasons.push('지역 조건 (' + elig.regions.join(', ') + ')');
+
+    resultDiv.classList.remove('hidden');
+    if (pass) {
+        resultDiv.innerHTML = `
+            <div class="flex items-start gap-2.5 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl mt-1">
+                <span class="material-symbols-outlined text-green-500 text-xl mt-0.5">check_circle</span>
+                <div>
+                    <p class="text-sm font-bold text-green-700 dark:text-green-400">${t('pledgeEligible')}</p>
+                    <p class="text-xs text-green-600 dark:text-green-500 mt-0.5">${t('pledgeEligibleDesc')}</p>
+                </div>
+            </div>`;
+    } else {
+        resultDiv.innerHTML = `
+            <div class="flex items-start gap-2.5 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl mt-1">
+                <span class="material-symbols-outlined text-red-400 text-xl mt-0.5">cancel</span>
+                <div>
+                    <p class="text-sm font-bold text-red-600 dark:text-red-400">${t('pledgeNotEligible')}</p>
+                    <p class="text-xs text-red-500 dark:text-red-400 mt-0.5">${t('mismatch')} ${reasons.join(', ')}</p>
+                </div>
+            </div>`;
+    }
+}
+
+// 정렬 메뉴 외부 클릭 닫기
+document.addEventListener('click', function(e) {
+    const sortMenu = document.getElementById('policy-sort-menu');
+    if (sortMenu && !sortMenu.classList.contains('hidden') && !e.target.closest('.relative')) {
+        sortMenu.classList.add('hidden');
+    }
+});
 
 // ============ NEWS ============
 const NEWS_CONFIG = {
@@ -2516,22 +3240,38 @@ function handleSocialLogin(provider) {
 function handleLogout() {
     isLoggedIn = false;
     currentUser = null;
-    showToast('로그아웃되었습니다');
+    showToast(currentLang === 'en' ? 'Logged out' : '로그아웃되었습니다');
     renderMyPage();
     renderFollowPage();
 }
 
-// ============ FOLLOW ============
-function toggleFollow(candidateId) {
+// ============ 관심후보 (INTEREST) ============
+let pledgeLikes = JSON.parse(localStorage.getItem('pledgeLikes') || '[]');
+let policySaved = JSON.parse(localStorage.getItem('policySaved') || '[]');
+
+function toggleInterest(candidateId) {
     const idx = followedCandidates.indexOf(candidateId);
     if (idx === -1) {
         followedCandidates.push(candidateId);
-        showToast('팔로우했습니다');
+        showToast(t('addedToInterest'));
     } else {
         followedCandidates.splice(idx, 1);
-        showToast('팔로우를 해제했습니다');
+        showToast(t('removedFromInterest'));
     }
     localStorage.setItem('followedCandidates', JSON.stringify(followedCandidates));
+}
+
+function toggleInterestCard(candidateId, btn) {
+    toggleInterest(candidateId);
+    const followed = followedCandidates.includes(candidateId);
+    if (btn) {
+        btn.className = `w-7 h-7 rounded-full flex items-center justify-center transition-all shadow-sm ${followed ? 'bg-red-50 border border-red-200 text-red-500' : 'bg-white border border-slate-200 text-slate-300'}`;
+        btn.innerHTML = `<span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' ${followed ? 1 : 0}">favorite</span>`;
+    }
+    // 관심 페이지가 활성화 상태면 즉시 갱신
+    if (document.getElementById('page-follow').classList.contains('active')) {
+        renderFollowPage();
+    }
 }
 
 function renderFollowPage() {
@@ -2564,19 +3304,79 @@ function renderFollowPage() {
         const c = findCandidateById(id);
         if (!c) return '';
         const pc = partyColors[c.partyColor] || '#6b7280';
+        const totalLikes = getCandidateTotalLikes(c);
         return `
-            <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-[#e7ebf3] dark:border-gray-700 flex items-center gap-3">
-                <div class="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold" style="background:${pc}">${c.name.charAt(0)}</div>
-                <div class="flex-1">
-                    <p class="text-sm font-bold text-slate-700 dark:text-slate-200">${c.name} <span class="text-xs font-normal text-slate-400">${c.party}</span></p>
-                    <p class="text-xs text-slate-400 mt-0.5">${c.slogan}</p>
+            <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-[#e7ebf3] dark:border-gray-700">
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <div class="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold" style="background:${pc}">${c.name.charAt(0)}</div>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-bold text-slate-700 dark:text-slate-200">${c.name} <span class="text-xs font-normal text-slate-400">${c.party}</span></p>
+                        <p class="text-xs text-slate-400 mt-0.5">${c.slogan}</p>
+                        <p class="text-[10px] text-primary font-medium mt-1 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[11px]" style="font-variation-settings:'FILL' 1">thumb_up</span>
+                            ${t('totalEmpathy')} ${totalLikes.toLocaleString()}
+                        </p>
+                    </div>
+                    <button onclick="toggleInterest(${c.id}); renderFollowPage();" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+                        <span class="material-symbols-outlined text-red-500 text-xl" style="font-variation-settings:'FILL' 1,'wght' 400">favorite</span>
+                    </button>
                 </div>
-                <button onclick="toggleFollow(${c.id}); renderFollowPage();" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
-                    <span class="material-symbols-outlined text-red-400 text-xl" style="font-variation-settings:'FILL' 1,'wght' 400">favorite</span>
-                </button>
+                <div class="flex gap-2 mt-3">
+                    <button onclick="openDetail(${c.id})" class="flex-1 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 rounded-lg border border-[#e7ebf3] dark:border-gray-700 active:scale-[0.98]">${t('viewPledges')}</button>
+                    <button onclick="openChat(${c.id})" class="flex-1 py-2 text-xs font-bold text-white bg-primary rounded-lg active:scale-[0.98]">${t('aiChat')}</button>
+                </div>
             </div>
         `;
     }).join('');
+}
+
+// ============ 후보 공약 공감 ============
+function togglePledgeLike(pledgeId, btn) {
+    const idx = pledgeLikes.indexOf(pledgeId);
+    if (idx === -1) {
+        pledgeLikes.push(pledgeId);
+        showToast(t('empathized'));
+    } else {
+        pledgeLikes.splice(idx, 1);
+    }
+    localStorage.setItem('pledgeLikes', JSON.stringify(pledgeLikes));
+
+    // 탭 전환 없이 버튼 상태 인플레이스 업데이트
+    if (btn) {
+        const liked = pledgeLikes.includes(pledgeId);
+        let empathyCount = 0;
+        for (const c of getAllCandidates()) {
+            const p = (c.pledges || []).find(p => p.id === pledgeId);
+            if (p) { empathyCount = p.empathyCount || 0; break; }
+        }
+        const count = empathyCount + (liked ? 1 : 0);
+        btn.className = `flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 ${liked ? 'bg-primary/10 text-primary' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-primary'}`;
+        btn.innerHTML = `<span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' ${liked ? 1 : 0}">thumb_up</span> ${t('empathy')} ${count.toLocaleString()}`;
+    }
+}
+
+// 후보의 총 공감수 계산 (pledges empathyCount + 내 공감)
+function getCandidateTotalLikes(candidate) {
+    if (!candidate.pledges) return 0;
+    return candidate.pledges.reduce((sum, p) => {
+        return sum + (p.empathyCount || 0) + (pledgeLikes.includes(p.id) ? 1 : 0);
+    }, 0);
+}
+
+// ============ 현행 정책 북마크 ============
+function togglePolicySave(policyId) {
+    const idx = policySaved.indexOf(policyId);
+    if (idx === -1) {
+        policySaved.push(policyId);
+        showToast(t('bookmarkSaved'));
+    } else {
+        policySaved.splice(idx, 1);
+        showToast(t('bookmarkRemoved'));
+    }
+    localStorage.setItem('policySaved', JSON.stringify(policySaved));
+    renderPolicies();
 }
 
 // ============ MY PAGE ============
@@ -2594,20 +3394,90 @@ function renderMyPage() {
         user.classList.add('hidden');
     }
 
-    document.getElementById('my-follow-count').textContent = followedCandidates.length;
-    document.getElementById('my-report-count').textContent = reportHistory.length;
+    document.getElementById('my-interest-count').textContent = followedCandidates.length;
+    document.getElementById('my-empathy-count').textContent = pledgeLikes.length;
+    document.getElementById('my-saved-count').textContent = policySaved.length;
 }
 
-function showMyLikes() {
-    showToast('좋아요 내역을 준비 중입니다');
-}
-
-function showMyReports() {
-    if (reportHistory.length === 0) {
-        showToast('신고 내역이 없습니다');
+function showMyLikedPledges() {
+    if (pledgeLikes.length === 0) {
+        showToast(t('noEmpathyPledges'));
         return;
     }
-    showToast(`총 ${reportHistory.length}건의 신고 내역이 있습니다`);
+    renderLikedPledgesPage();
+    navigateTo('page-liked-pledges');
+}
+
+function renderLikedPledgesPage() {
+    const allCandidates = getAllCandidates();
+    const likedItems = [];
+    allCandidates.forEach(c => {
+        (c.pledges || []).forEach(p => {
+            if (pledgeLikes.includes(p.id)) {
+                likedItems.push({ candidate: c, pledge: p });
+            }
+        });
+    });
+
+    const content = document.getElementById('liked-pledges-content');
+    if (!content) return;
+
+    if (likedItems.length === 0) {
+        content.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-20">
+                <span class="material-symbols-outlined text-slate-300 text-5xl mb-4">thumb_up</span>
+                <p class="text-sm text-slate-400">${t('noEmpathyPledges')}</p>
+            </div>`;
+        return;
+    }
+
+    content.innerHTML = `
+        <p class="text-xs text-slate-400 mb-3">총 <span class="font-bold text-primary">${likedItems.length}개</span>의 공약에 공감했습니다</p>
+        <div class="space-y-3">
+        ${likedItems.map(item => {
+            const pc = { blue: '#2563eb', red: '#dc2626', gray: '#6b7280' }[item.candidate.partyColor] || '#6b7280';
+            const count = (item.pledge.empathyCount || 0) + 1;
+            return `
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-[#e7ebf3] dark:border-gray-700 cursor-pointer hover:border-primary/30 transition-colors" onclick="openPledgeModal(${item.pledge.id}, ${item.candidate.id})">
+                <div class="flex items-center gap-2 mb-2.5">
+                    <div class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white" style="background:${pc}">${item.candidate.name.charAt(0)}</div>
+                    <span class="text-xs font-medium text-slate-500">${item.candidate.name} 후보</span>
+                    <span class="px-1.5 py-0.5 rounded text-[10px] font-bold text-white ml-auto" style="background:${pc}">${item.candidate.party}</span>
+                </div>
+                <div class="flex items-start gap-2.5">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:${pc}15">
+                        <span class="material-symbols-outlined text-base" style="color:${pc}">${item.pledge.icon}</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-bold text-slate-700 dark:text-slate-200">${item.pledge.title}</p>
+                        <p class="text-xs text-slate-500 mt-1 line-clamp-2">${item.pledge.description}</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-end mt-2.5 pt-2 border-t border-[#e7ebf3] dark:border-gray-700">
+                    <span class="flex items-center gap-1 text-xs font-bold text-primary">
+                        <span class="material-symbols-outlined text-[13px]" style="font-variation-settings:'FILL' 1">thumb_up</span>
+                        공감 ${count.toLocaleString()}
+                    </span>
+                </div>
+            </div>`;
+        }).join('')}
+        </div>`;
+}
+
+function showMySavedPolicies() {
+    if (policySaved.length === 0) {
+        showToast(t('noBookmarkedPolicies'));
+        return;
+    }
+    navigateTo('page-policy');
+    // 북마크 필터 ON 상태로 전환
+    bookmarkFilterOn = true;
+    const btn = document.getElementById('bookmark-filter-btn');
+    if (btn) {
+        btn.className = 'flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all border border-primary bg-primary/5 text-primary';
+        btn.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 1";
+    }
+    setTimeout(() => renderPolicies(), 100);
 }
 
 function openPollingStation() {
@@ -2617,44 +3487,142 @@ function openPollingStation() {
 
 // ============ REPORT (채팅 답변 단위) ============
 let reportTargetMsgId = null;
+let reportTargetMsgText = null;
 
-function openReportModal(msgId) {
-    reportTargetMsgId = msgId;
-    // 라디오 초기화
-    document.querySelectorAll('#report-reasons input[type=radio]').forEach(r => r.checked = false);
+// 기타 사유 선택 시 textarea 토글
+document.addEventListener('change', function(e) {
+    if (e.target && e.target.name === 'report-reason') {
+        const etcBox = document.getElementById('report-etc-input');
+        if (e.target.value === '기타') { etcBox.classList.remove('hidden'); }
+        else { etcBox.classList.add('hidden'); etcBox.value = ''; }
+    }
+});
+
+function openReportModal(msgId, msgText) {
+    reportTargetMsgId = msgId || null;
+    reportTargetMsgText = msgText || null;
+    document.querySelectorAll('input[name="report-reason"]').forEach(r => r.checked = false);
     document.getElementById('report-etc-input').classList.add('hidden');
     document.getElementById('report-etc-input').value = '';
+    document.getElementById('report-step1').classList.remove('hidden');
+    document.getElementById('report-step2').classList.add('hidden');
     document.getElementById('report-modal').classList.remove('hidden');
 }
 
 function closeReportModal() {
     document.getElementById('report-modal').classList.add('hidden');
     reportTargetMsgId = null;
+    reportTargetMsgText = null;
 }
 
+// AI 자동처리 사유
+const AUTO_REPORT_REASONS = ['비방 / 모욕', '부적절한 발언'];
+
 function submitReport() {
-    const checked = document.querySelector('#report-reasons input[type=radio]:checked');
+    const checked = document.querySelector('input[name="report-reason"]:checked');
     if (!checked) {
         showToast('신고 사유를 선택해주세요');
         return;
     }
 
     let reason = checked.value;
-    if (reason === '기타') {
-        const etc = document.getElementById('report-etc-input').value.trim();
-        if (etc) reason = '기타: ' + etc;
-    }
+    const etcText = document.getElementById('report-etc-input').value.trim();
+    if (reason === '기타' && etcText) reason = '기타: ' + etcText;
 
-    reportHistory.push({
+    const isAuto = AUTO_REPORT_REASONS.includes(checked.value);
+
+    const entry = {
+        id: 'RPT-' + Date.now(),
         msgId: reportTargetMsgId,
+        message: reportTargetMsgText || '',
         reason,
+        type: isAuto ? 'auto' : 'candidate',
         candidate: currentChatCandidate ? currentChatCandidate.name : '',
-        date: new Date().toISOString()
-    });
-    localStorage.setItem('reportHistory', JSON.stringify(reportHistory));
+        date: new Date().toLocaleDateString('ko-KR'),
+        status: isAuto ? '자동해결' : '검토중'
+    };
 
-    closeReportModal();
-    showToast('신고가 접수되었습니다.');
+    reportHistory.push(entry);
+    localStorage.setItem('reportHistory', JSON.stringify(reportHistory));
+    updateReportBadge();
+
+    // 완료 화면
+    document.getElementById('report-step1').classList.add('hidden');
+    document.getElementById('report-step2').classList.remove('hidden');
+    if (isAuto) {
+        document.getElementById('report-done-icon').textContent = '🤖';
+        document.getElementById('report-done-title').textContent = '자동 처리되었습니다';
+        document.getElementById('report-done-desc').textContent = 'AI가 즉시 반영 처리합니다.\n신고 내역에서 확인하세요.';
+    } else {
+        document.getElementById('report-done-icon').textContent = '✅';
+        document.getElementById('report-done-title').textContent = '신고가 접수되었습니다';
+        document.getElementById('report-done-desc').textContent = '후보자 검토 후 처리됩니다.\n마이페이지 신고 내역에서 확인하세요.';
+    }
+}
+
+// 마이페이지 신고 뱃지 업데이트
+function updateReportBadge() {
+    const badge = document.getElementById('my-report-badge');
+    if (!badge) return;
+    const pending = reportHistory.filter(r => r.status === '검토중').length;
+    if (pending > 0) {
+        badge.textContent = pending;
+        badge.classList.remove('hidden');
+    } else {
+        badge.classList.add('hidden');
+    }
+}
+
+// 신고 내역 시트
+function openMyReportsSheet() {
+    renderMyReportsList();
+    document.getElementById('my-reports-sheet').classList.remove('hidden');
+}
+
+function closeMyReportsSheet() {
+    document.getElementById('my-reports-sheet').classList.add('hidden');
+}
+
+const STATUS_STYLE = {
+    '자동해결': 'bg-green-50 text-green-600',
+    '검토중':   'bg-amber-50 text-amber-700',
+    '해결':     'bg-green-50 text-green-600',
+    '반려':     'bg-red-50 text-red-500',
+    '접수중':   'bg-slate-100 text-slate-500',
+};
+const STATUS_DOT = {
+    '자동해결': 'bg-green-400',
+    '검토중':   'bg-amber-400',
+    '해결':     'bg-green-400',
+    '반려':     'bg-red-400',
+    '접수중':   'bg-slate-400',
+};
+
+function renderMyReportsList() {
+    const el = document.getElementById('my-reports-list');
+    if (!reportHistory.length) {
+        el.innerHTML = '<p class="text-center text-sm text-slate-400 py-10">신고 내역이 없습니다.</p>';
+        return;
+    }
+    const sorted = [...reportHistory].reverse();
+    el.innerHTML = sorted.map(r => `
+        <div class="bg-slate-50 dark:bg-slate-700/50 rounded-2xl p-4 border border-[#e7ebf3] dark:border-gray-700">
+            <div class="flex items-center gap-2 mb-2 flex-wrap">
+                <span class="text-sm font-bold text-slate-800 dark:text-white flex-1">${r.reason}</span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold ${STATUS_STYLE[r.status] || 'bg-slate-100 text-slate-500'}">
+                    <span class="w-1.5 h-1.5 rounded-full ${STATUS_DOT[r.status] || 'bg-slate-400'}"></span>
+                    ${r.status}
+                </span>
+            </div>
+            ${r.message ? `<p class="text-xs text-slate-400 dark:text-slate-400 line-clamp-2 mb-2">"${r.message}"</p>` : ''}
+            <div class="flex items-center gap-2 text-[10px] text-slate-400">
+                <span>${r.candidate ? r.candidate + ' AI' : ''}</span>
+                <span>·</span>
+                <span>${r.date}</span>
+                <span class="ml-auto ${r.type === 'auto' ? 'text-sky-500' : 'text-amber-500'} font-semibold">${r.type === 'auto' ? 'AI자동처리' : '후보자검토'}</span>
+            </div>
+        </div>
+    `).join('');
 }
 
 // ============ LANGUAGE (한/영) ============
@@ -2662,9 +3630,9 @@ let currentLang = localStorage.getItem('lang') || 'ko';
 
 const translations = {
     ko: {
-        appTitle: '일군을찾다',
+        appTitle: '일꾼을찾다',
         appSub: 'AI 아바타와 함께하는 스마트한 선택',
-        viewCandidates: '일군 보기',
+        viewCandidates: '일꾼 보기',
         viewPolicy: '현 시행되고 있는 정책',
         latestNews: '최신 선거 뉴스',
         more: '더보기',
@@ -2681,7 +3649,7 @@ const translations = {
         eduCandidate: '교육감 후보',
         home: '홈',
         candidates: '후보자',
-        follow: '팔로우',
+        interest: '관심',
         my: '마이',
         all: '전체',
         detail: '상세보기',
@@ -2694,22 +3662,24 @@ const translations = {
         login: '로그인',
         loginRequired: '로그인이 필요합니다',
         loginDesc: '로그인하고 더 많은 기능을 이용하세요',
-        followTitle: '팔로우한 후보를 확인하세요',
-        followDesc: '로그인하면 관심 후보의 공약, 활동 소식을\n한 곳에서 모아볼 수 있습니다.',
+        interestTitle: '관심 후보를 확인하세요',
+        interestDesc: '로그인하면 관심 후보의 공약, 활동 소식을\n한 곳에서 모아볼 수 있습니다.',
         loginSignup: '로그인 / 회원가입',
         myActivity: '내 활동',
-        likes: '좋아요',
-        reports: '신고',
-        followList: '팔로우 목록',
-        likeHistory: '좋아요 내역',
-        reportHistory: '신고 내역',
+        interestCandidates: '관심후보',
+        empathyPolicies: '공감 공약',
+        savedPolicies: '북마크 정책',
+        myInterestCandidates: '내 관심 후보',
+        myEmpathyPolicies: '내가 공감한 정책',
+        mySavedPolicies: '내가 저장한 정책',
+        notificationSettings: '알림 설정',
         myVoteInfo: '내 투표 정보',
         findPollingStation: '투표소 찾기',
         electionSchedule: '선거 일정 보기',
         textChat: '채팅 대화',
         voiceChat: '음성 대화',
         typeMessage: '메시지를 입력하세요...',
-        reportTitle: '이 답변을 신고하시겠습니까?',
+        reportTitle: '신고하기',
         reportDesc: '부적절한 답변을 신고해주시면 검토 후 조치합니다.',
         falseInfo: '허위 정보',
         defamation: '비방 / 모욕',
@@ -2718,10 +3688,155 @@ const translations = {
         etc: '기타',
         cancel: '취소',
         submitReport: '신고 제출',
-        digitalTwin: '디지털 트윈'
+        digitalTwin: '디지털 트윈',
+        addInterest: '관심추가',
+        interested: '관심중',
+        empathy: '공감',
+        save: '저장',
+        saved: '저장됨',
+        report: '신고하기',
+        blockCandidate: '후보 차단',
+        share: '공유하기',
+        close: '닫기',
+        byAge: '연령별',
+        byCategory: '정책 분야별',
+        recent: '최근 시행',
+        youth: '청년',
+        middleAge: '중장년',
+        senior: '노년',
+        childTeen: '아동·청소년',
+        economy: '경제',
+        welfare: '복지',
+        education: '교육',
+        environment: '환경',
+        safety: '안전',
+        sortByDate: '시행일순',
+        sortByInterest: '관심도순',
+        sortByBeneficiary: '수혜대상순',
+        sortByBudget: '예산규모순',
+        chatWithAvatar: 'AI 아바타 대화',
+        backToList: '목록으로',
+        noCandidates: '해당 지역의 후보자 정보가 준비 중입니다',
+        logout: '로그아웃',
+        darkMode: '다크모드',
+        // 홈
+        currentPolicies: '현 시행되고 있는 정책',
+        // 선거 종류
+        whichElectionTitle: '선거 종류 선택',
+        // 후보 카드
+        aiChat: 'AI 대화',
+        viewPledges: '공약보기',
+        no: '기호',
+        age: '세',
+        // 후보 상세
+        portfolio: '포트폴리오',
+        keyPledges: '핵심공약',
+        greetingLabel: '인사말',
+        careerLabel: '주요 약력',
+        achievementsLabel: '주요 성과',
+        empathyReflect: '공약에 공감하면 후보 총 공감수에 반영됩니다',
+        totalEmpathy: '총 공감',
+        noPledges: '등록된 공약이 없습니다',
+        chatWithAI: 'AI 아바타와 대화',
+        // 관심후보
+        interestCandidatesTitle: '관심 후보',
+        manageInterest: '관심 후보를 관리하세요',
+        interestLoginDesc: '로그인하면 관심 후보의 정책 업데이트를\n한 곳에서 확인할 수 있습니다.',
+        interestCount: '명의 관심 후보',
+        noInterestYet: '아직 관심 후보가 없습니다',
+        browseCandidates: '후보자 둘러보기',
+        // 마이
+        myPageTitle: '마이',
+        loginNeeded: '로그인이 필요합니다',
+        loginForMore: '로그인하고 더 많은 기능을 이용하세요',
+        myActivityLabel: '내 활동',
+        interestCandidatesLabel: '관심후보',
+        empathyPledgesLabel: '공감 공약',
+        bookmarkPoliciesLabel: '북마크 정책',
+        myInterest: '내 관심 후보',
+        pledgeUpdates: '공약 업데이트를 확인할 수 있습니다',
+        myEmpathyPledges: '내가 공감한 공약',
+        empathyPledgeDesc: '후보자 핵심공약에 공감한 목록',
+        myBookmarkedPolicies: '내가 북마크한 현정책',
+        bookmarkDesc: '나중에 다시 볼 현행 정책',
+        notifSettings: '알림 설정',
+        notifDesc: '관심 후보 공약 업데이트 알림',
+        myVotingInfo: '내 투표 정보',
+        findPolling2: '투표소 찾기',
+        viewElectionSchedule: '선거 일정 보기',
+        // 정책
+        currentPolicyTitle: '현 시행 정책',
+        publicDataApi: '공공데이터 API 연동',
+        apiGuide: '공공데이터 API 연동 안내',
+        apiDesc: '실시간 정책 데이터를 보려면 data.go.kr에서 API 키를 발급받아 아래에 입력하세요. 현재는 샘플 데이터를 표시합니다.',
+        apiKeyPlaceholder: 'API 키 입력...',
+        saveSetting: '저장',
+        goToDataPortal: '공공데이터포털 바로가기',
+        noFilteredPolicy: '해당 조건의 정책이 없습니다',
+        bookmark: '북마크',
+        bookmarked: '북마크됨',
+        sortByDateLabel: '시행일 순',
+        sortByInterestLabel: '관심도 순',
+        sortByBeneficiaryLabel: '수혜 대상 순',
+        sortByBudgetLabel: '예산 규모 순',
+        // 정책 상세
+        detailContent: '상세 내용',
+        beneficiaryExpected: '수혜 예상: 약',
+        people: '명',
+        budgetScale: '예산 규모:',
+        billion: '억 원',
+        canIReceive: '내가 받을 수 있을까?',
+        ageInput: '나이',
+        ageInputPlaceholder: '만 나이 입력',
+        regionSelect: '거주 지역',
+        selectPlease: '선택하세요',
+        checkCondition: '조건 확인하기',
+        eligible: '신청 가능성이 높습니다',
+        eligibleDesc: '입력하신 조건이 수혜 기준에 부합합니다. 세부 자격은 담당 부서에서 확인하세요.',
+        notEligible: '조건을 다시 확인하세요',
+        mismatch: '불일치 항목:',
+        deptLink: '담당 부서 바로가기',
+        applyLink: '신청 페이지 이동',
+        // 공약 상세
+        isThisForMe: '나에게 해당되는 공약일까?',
+        checkIfApplicable: '해당 여부 확인',
+        pledgeEligible: '이 공약의 수혜 대상에 해당됩니다',
+        pledgeEligibleDesc: '입력하신 조건이 공약의 대상 기준에 부합합니다.',
+        pledgeNotEligible: '수혜 대상이 아닐 수 있습니다',
+        cancelEmpathy: '공감 취소',
+        empathyThis: '이 공약에 공감하기',
+        sourceLink: '정책 원문 바로가기',
+        pledgeDetail: '세부 내용',
+        viewDetail: '상세 내용 보기',
+        // 채팅
+        typeMessagePlaceholder: '메시지를 입력하세요...',
+        avatarIntro: '반갑습니다. 후보자 {name}의 AI 아바타입니다.\n제가 가진 정책 비전이나 공약에 대해 무엇이든 물어보세요.',
+        // 뉴스
+        latestElectionNews: '최신 선거 뉴스',
+        // 비교
+        compareTitle: '후보 비교',
+        maxSelectToast: '최대 3명까지 선택 가능합니다',
+        // 공통 토스트
+        addedToInterest: '관심후보에 추가되었습니다',
+        removedFromInterest: '관심후보에서 해제되었습니다',
+        empathized: '공감했습니다',
+        bookmarkSaved: '북마크에 저장되었습니다',
+        bookmarkRemoved: '북마크가 해제되었습니다',
+        noEmpathyPledges: '공감한 공약이 없습니다',
+        noBookmarkedPolicies: '북마크한 정책이 없습니다',
+        myEmpathyPledgesTitle: '내가 공감한 공약',
+        candidate: '후보',
+        empathyLabel: '공감',
+        localElectionInfo: '제8회 전국동시지방선거',
+        localElectionDesc: '각 카테고리를 선택하면 내 지역에 출마한 후보자 목록을 확인할 수 있습니다. AI 아바타 대화를 통해 후보자의 공약을 자세히 알아보세요.',
+        newsSubHeader: '지방선거 실시간 뉴스',
+        typeMessagePlaceholder: '궁금한 내용을 입력하세요...',
+        compareCandidates: '선택한 후보자 비교하기',
+        loadingPolicies: '정책 데이터를 불러오는 중...',
+        loadingNews: '뉴스를 불러오는 중...'
     },
     en: {
-        appTitle: 'Find Leaders',
+        appTitle: 'Find Workers',
         appSub: 'Smart choices with AI avatars',
         viewCandidates: 'View Candidates',
         viewPolicy: 'Current Policies',
@@ -2740,7 +3855,7 @@ const translations = {
         eduCandidate: 'Superintendent',
         home: 'Home',
         candidates: 'Candidates',
-        follow: 'Follow',
+        interest: 'Interest',
         my: 'My',
         all: 'All',
         detail: 'Details',
@@ -2753,22 +3868,24 @@ const translations = {
         login: 'Login',
         loginRequired: 'Login required',
         loginDesc: 'Log in to access all features',
-        followTitle: 'Check your followed candidates',
-        followDesc: 'Log in to see your favorite candidates\u2019\npolicies and updates in one place.',
+        interestTitle: 'Check your saved candidates',
+        interestDesc: 'Log in to see your favorite candidates\u2019\npolicies and updates in one place.',
         loginSignup: 'Login / Sign up',
         myActivity: 'My Activity',
-        likes: 'Likes',
-        reports: 'Reports',
-        followList: 'Following',
-        likeHistory: 'Like History',
-        reportHistory: 'Report History',
+        interestCandidates: 'Interest',
+        empathyPolicies: 'Liked',
+        savedPolicies: 'Bookmarked',
+        myInterestCandidates: 'My Interest Candidates',
+        myEmpathyPolicies: 'Policies I Empathized',
+        mySavedPolicies: 'Policies I Saved',
+        notificationSettings: 'Notification Settings',
         myVoteInfo: 'My Voting Info',
         findPollingStation: 'Find Polling Station',
         electionSchedule: 'Election Schedule',
         textChat: 'Text Chat',
         voiceChat: 'Voice Chat',
         typeMessage: 'Type a message...',
-        reportTitle: 'Report this response?',
+        reportTitle: 'Report',
         reportDesc: 'We will review reported responses and take action.',
         falseInfo: 'False information',
         defamation: 'Defamation / Insult',
@@ -2777,7 +3894,139 @@ const translations = {
         etc: 'Other',
         cancel: 'Cancel',
         submitReport: 'Submit Report',
-        digitalTwin: 'Digital Twin'
+        digitalTwin: 'Digital Twin',
+        addInterest: 'Add Interest',
+        interested: 'Interested',
+        empathy: 'Empathy',
+        save: 'Save',
+        saved: 'Saved',
+        report: 'Report',
+        blockCandidate: 'Block Candidate',
+        share: 'Share',
+        close: 'Close',
+        byAge: 'By Age',
+        byCategory: 'By Category',
+        recent: 'Recent',
+        youth: 'Youth',
+        middleAge: 'Middle-aged',
+        senior: 'Senior',
+        childTeen: 'Children & Teens',
+        economy: 'Economy',
+        welfare: 'Welfare',
+        education: 'Education',
+        environment: 'Environment',
+        safety: 'Safety',
+        sortByDate: 'By Date',
+        sortByInterest: 'By Interest',
+        sortByBeneficiary: 'By Beneficiary',
+        sortByBudget: 'By Budget',
+        chatWithAvatar: 'Chat with AI Avatar',
+        backToList: 'Back to List',
+        noCandidates: 'Candidate info for this area is being prepared',
+        logout: 'Logout',
+        darkMode: 'Dark Mode',
+        currentPolicies: 'Current Policies in Effect',
+        whichElectionTitle: 'Election Type',
+        aiChat: 'AI Chat',
+        viewPledges: 'Pledges',
+        no: 'No.',
+        age: 'yrs',
+        portfolio: 'Portfolio',
+        keyPledges: 'Key Pledges',
+        greetingLabel: 'Greeting',
+        careerLabel: 'Career',
+        achievementsLabel: 'Achievements',
+        empathyReflect: 'Your empathy is reflected in the total count',
+        totalEmpathy: 'Total',
+        noPledges: 'No pledges registered',
+        chatWithAI: 'Chat with AI Avatar',
+        interestCandidatesTitle: 'My Candidates',
+        manageInterest: 'Manage your saved candidates',
+        interestLoginDesc: 'Log in to see policy updates\nfrom your favorite candidates.',
+        interestCount: ' saved candidates',
+        noInterestYet: 'No saved candidates yet',
+        browseCandidates: 'Browse Candidates',
+        myPageTitle: 'My Page',
+        loginNeeded: 'Login required',
+        loginForMore: 'Log in to access all features',
+        myActivityLabel: 'My Activity',
+        interestCandidatesLabel: 'Interest',
+        empathyPledgesLabel: 'Liked',
+        bookmarkPoliciesLabel: 'Bookmarked',
+        myInterest: 'My Interest Candidates',
+        pledgeUpdates: 'Check pledge updates',
+        myEmpathyPledges: 'Pledges I Liked',
+        empathyPledgeDesc: 'Pledges you empathized with',
+        myBookmarkedPolicies: 'Bookmarked Policies',
+        bookmarkDesc: 'Policies saved for later',
+        notifSettings: 'Notifications',
+        notifDesc: 'Get notified on pledge updates',
+        myVotingInfo: 'My Voting Info',
+        findPolling2: 'Find Polling Station',
+        viewElectionSchedule: 'Election Schedule',
+        currentPolicyTitle: 'Current Policies',
+        publicDataApi: 'Public Data API',
+        apiGuide: 'Public Data API Guide',
+        apiDesc: 'Enter your API key from data.go.kr to see real-time policy data. Currently showing sample data.',
+        apiKeyPlaceholder: 'Enter API key...',
+        saveSetting: 'Save',
+        goToDataPortal: 'Go to Data Portal',
+        noFilteredPolicy: 'No policies match this filter',
+        bookmark: 'Bookmark',
+        bookmarked: 'Bookmarked',
+        sortByDateLabel: 'By Date',
+        sortByInterestLabel: 'By Interest',
+        sortByBeneficiaryLabel: 'By Beneficiary',
+        sortByBudgetLabel: 'By Budget',
+        detailContent: 'Details',
+        beneficiaryExpected: 'Expected beneficiaries: ~',
+        people: '',
+        budgetScale: 'Budget:',
+        billion: 'B KRW',
+        canIReceive: 'Am I Eligible?',
+        ageInput: 'Age',
+        ageInputPlaceholder: 'Enter age',
+        regionSelect: 'Region',
+        selectPlease: 'Select',
+        checkCondition: 'Check Eligibility',
+        eligible: 'You are likely eligible',
+        eligibleDesc: 'Your info matches the eligibility criteria. Confirm with the department for details.',
+        notEligible: 'Please check conditions again',
+        mismatch: 'Mismatch:',
+        deptLink: 'Department Website',
+        applyLink: 'Apply Now',
+        isThisForMe: 'Does this pledge apply to me?',
+        checkIfApplicable: 'Check Eligibility',
+        pledgeEligible: 'You match this pledge\'s target group',
+        pledgeEligibleDesc: 'Your info matches the pledge criteria.',
+        pledgeNotEligible: 'You may not be in the target group',
+        cancelEmpathy: 'Unlike',
+        empathyThis: 'Empathize with this pledge',
+        sourceLink: 'View Original Policy',
+        pledgeDetail: 'Details',
+        viewDetail: 'View Details',
+        typeMessagePlaceholder: 'Type a message...',
+        avatarIntro: 'Hello! I am the AI avatar of candidate {name}.\nFeel free to ask about policies and pledges.',
+        latestElectionNews: 'Latest Election News',
+        compareTitle: 'Compare Candidates',
+        maxSelectToast: 'You can select up to 3 candidates',
+        addedToInterest: 'Added to interest candidates',
+        removedFromInterest: 'Removed from interest candidates',
+        empathized: 'Empathized',
+        bookmarkSaved: 'Bookmarked',
+        bookmarkRemoved: 'Bookmark removed',
+        noEmpathyPledges: 'No liked pledges',
+        noBookmarkedPolicies: 'No bookmarked policies',
+        myEmpathyPledgesTitle: 'Pledges I Liked',
+        candidate: 'Candidate',
+        empathyLabel: 'Empathy',
+        localElectionInfo: '8th Nationwide Local Elections',
+        localElectionDesc: 'Select a category to view candidates in your area. Chat with AI avatars to learn more about their pledges.',
+        newsSubHeader: 'Real-time Election News',
+        typeMessagePlaceholder: 'Ask anything...',
+        compareCandidates: 'Compare Selected Candidates',
+        loadingPolicies: 'Loading policy data...',
+        loadingNews: 'Loading news...'
     }
 };
 
@@ -2785,43 +4034,42 @@ function t(key) {
     return translations[currentLang]?.[key] || translations.ko[key] || key;
 }
 
-function toggleLang() {
-    currentLang = currentLang === 'ko' ? 'en' : 'ko';
+function setLang(lang) {
+    currentLang = lang;
     localStorage.setItem('lang', currentLang);
     applyLang();
 }
 
 function applyLang() {
-    const toggle = document.getElementById('lang-toggle');
-    const koLabel = document.getElementById('lang-label-ko');
-    const enLabel = document.getElementById('lang-label-en');
-
-    if (currentLang === 'en') {
-        toggle.classList.add('lang-en');
-        koLabel.className = 'text-slate-400';
-        enLabel.className = 'text-primary font-bold';
-    } else {
-        toggle.classList.remove('lang-en');
-        koLabel.className = 'text-primary font-bold';
-        enLabel.className = 'text-slate-400';
+    // KO/EN 세그먼트 스위치 업데이트
+    const koBtn = document.getElementById('lang-btn-ko');
+    const enBtn = document.getElementById('lang-btn-en');
+    if (koBtn && enBtn) {
+        if (currentLang === 'en') {
+            koBtn.className = 'px-3 rounded-md transition-all text-slate-400';
+            enBtn.className = 'px-3 rounded-md transition-all text-primary bg-white dark:bg-slate-700 shadow-sm';
+        } else {
+            koBtn.className = 'px-3 rounded-md transition-all text-primary bg-white dark:bg-slate-700 shadow-sm';
+            enBtn.className = 'px-3 rounded-md transition-all text-slate-400';
+        }
     }
 
-    // 홈
-    const titleEl = document.querySelector('#page-home h1');
-    if (titleEl) titleEl.textContent = t('appTitle');
-    const subEl = document.querySelector('#page-home p.text-slate-500');
-    if (subEl) subEl.textContent = t('appSub');
-
-    // 하단 네비
-    const navLabels = document.querySelectorAll('#main-bottom-nav span:not(.material-symbols-outlined)');
-    const navKeys = ['home', 'candidates', 'follow', 'my'];
-    navLabels.forEach((el, i) => { if (navKeys[i]) el.textContent = t(navKeys[i]); });
-
-    // 선거종류 페이지
+    // data-i18n 속성이 있는 모든 요소 번역
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         el.textContent = t(key);
     });
+
+    // data-i18n-placeholder 속성이 있는 입력 요소 번역
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        el.placeholder = t(key);
+    });
+
+    // 하단 네비
+    const navLabels = document.querySelectorAll('#main-bottom-nav span:not(.material-symbols-outlined)');
+    const navKeys = ['home', 'candidates', 'interest', 'my'];
+    navLabels.forEach((el, i) => { if (navKeys[i]) el.textContent = t(navKeys[i]); });
 
     // 채팅 모드 탭
     const tabText = document.getElementById('tab-text');
@@ -2832,8 +4080,201 @@ function applyLang() {
     // 신고 모달
     const reportTitleEl = document.querySelector('#report-modal h2');
     if (reportTitleEl) reportTitleEl.textContent = t('reportTitle');
-    const reportDescEl = document.querySelector('#report-modal p');
+    const reportDescEl = document.querySelector('#report-modal p.text-xs');
     if (reportDescEl) reportDescEl.textContent = t('reportDesc');
+
+    // 정책 정렬 메뉴
+    const sortItems = document.querySelectorAll('.policy-sort-item');
+    const sortKeys = ['sortByDateLabel', 'sortByInterestLabel', 'sortByBeneficiaryLabel', 'sortByBudgetLabel'];
+    const sortIcons = ['calendar_today', 'trending_up', 'groups', 'payments'];
+    sortItems.forEach((el, i) => {
+        if (sortKeys[i]) {
+            const iconColor = i === 0 ? 'text-primary' : 'text-slate-400';
+            el.innerHTML = `<span class="material-symbols-outlined text-sm ${iconColor}">${sortIcons[i]}</span>${t(sortKeys[i])}`;
+        }
+    });
+
+    // 음성 대화 영역
+    const voiceStatus = document.getElementById('voice-status-text');
+    if (voiceStatus) voiceStatus.textContent = currentLang === 'en' ? 'Tap the mic button to ask' : '마이크 버튼을 눌러 질문하세요';
+    const voiceTap = document.querySelector('#chat-mode-voice p.text-slate-400');
+    if (voiceTap) voiceTap.textContent = currentLang === 'en' ? 'Tap to speak' : '탭하여 말하기';
+
+    // 동적 페이지들 다시 렌더링
+    if (typeof renderCandidates === 'function') renderCandidates();
+    if (typeof renderFollowPage === 'function') renderFollowPage();
+    if (typeof renderMyPage === 'function') renderMyPage();
+    if (typeof renderPolicies === 'function') renderPolicies();
+}
+
+// ============ POLICY SYMPATHY ============
+const policySympathyData = {}; // { pledgeId: { count, liked } }
+
+// 공약 카테고리 매핑
+const pledgeCategoryMap = {
+    1001:'경제', 1002:'경제', 1003:'안전', 1004:'교육',
+    2001:'경제', 2002:'경제', 2003:'안전', 2004:'교육',
+    3001:'복지', 3002:'경제', 3003:'안전', 3004:'교육',
+    10101:'경제', 10102:'경제', 10103:'복지', 10104:'교육',
+    10201:'환경', 10202:'경제', 10203:'안전', 10204:'교육',
+    10301:'경제', 10302:'경제', 10303:'복지', 10304:'교육',
+    10401:'복지', 10402:'경제', 10403:'복지', 10404:'교육',
+};
+
+const catStyle = {
+    '경제': { pill: 'bg-blue-50 text-blue-600 border-blue-200',  tab: '#3b82f6' },
+    '복지': { pill: 'bg-rose-50 text-rose-600 border-rose-200',  tab: '#f43f5e' },
+    '교육': { pill: 'bg-purple-50 text-purple-700 border-purple-200', tab: '#7c3aed' },
+    '환경': { pill: 'bg-green-50 text-green-700 border-green-200', tab: '#16a34a' },
+    '안전': { pill: 'bg-orange-50 text-orange-600 border-orange-200', tab: '#ea580c' },
+};
+
+let activeSympathyCategory = '전체';
+
+function getSympathyForPledge(pledgeId) {
+    if (!policySympathyData[pledgeId]) policySympathyData[pledgeId] = { count: 0, liked: false };
+    return policySympathyData[pledgeId];
+}
+
+function buildSympathyCards(c, category) {
+    const pledges = c.pledges || [];
+    const filtered = category === '전체'
+        ? pledges
+        : pledges.filter(p => (pledgeCategoryMap[p.id] || '') === category);
+
+    if (!filtered.length) return `<div class="text-center py-10 text-slate-400 text-sm">해당 카테고리 공약이 없습니다</div>`;
+
+    return filtered.map(pledge => {
+        const cat = pledgeCategoryMap[pledge.id] || '기타';
+        const cs = catStyle[cat] || { pill: 'bg-slate-100 text-slate-500 border-slate-200' };
+        const s = getSympathyForPledge(pledge.id);
+        const total = (pledge.empathyCount || 0) + s.count;
+        const likedCls = s.liked
+            ? 'bg-primary/10 border-primary/30 text-primary'
+            : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400';
+        const fill = s.liked ? "'FILL' 1,'wght' 400" : "'FILL' 0,'wght' 400";
+        const icolor = s.liked ? 'color:#135bec;' : '';
+        return `
+        <div class="rounded-2xl border border-slate-100 dark:border-slate-700/60 p-4 bg-white dark:bg-slate-800/40">
+            <div class="flex items-start gap-3">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border ${cs.pill}">${cat}</span>
+                        <span class="text-sm font-bold text-slate-800 dark:text-white">${pledge.title}</span>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">${pledge.description}</p>
+                </div>
+                <button onclick="toggleSympathyPledge(${pledge.id})"
+                    id="sp-btn-${pledge.id}"
+                    class="flex flex-col items-center gap-0.5 min-w-[44px] px-2.5 py-2 rounded-xl border transition-all shrink-0 active:scale-90 ${likedCls}">
+                    <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:${fill};${icolor}">thumb_up</span>
+                    <span class="text-[11px] font-bold tabular-nums" id="sp-count-${pledge.id}">${total}</span>
+                </button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function showPolicySympathy() {
+    const existing = document.getElementById('policy-sympathy-sheet');
+    if (existing) { existing.remove(); return; }
+    const c = currentChatCandidate;
+    if (!c) return;
+    activeSympathyCategory = '전체';
+
+    const cats = ['전체', '경제', '복지', '교육', '환경', '안전'];
+    const filterBtns = cats.map(cat => {
+        const active = cat === '전체';
+        const activeCls = active ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700';
+        return `<button onclick="filterSympathyCategory('${cat}')" id="scat-${cat}" class="sympathy-cat-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold border transition-all ${activeCls}">${cat}</button>`;
+    }).join('');
+
+    const sheet = document.createElement('div');
+    sheet.id = 'policy-sympathy-sheet';
+    sheet.className = 'fixed inset-0 z-[100] flex items-end justify-center';
+    sheet.onclick = function(e) { if (e.target === this) this.remove(); };
+    sheet.innerHTML = `
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-[480px] bg-white dark:bg-slate-900 rounded-t-3xl animate-slideUp flex flex-col" style="max-height:85vh">
+            <div class="px-5 pt-5 pb-0 shrink-0">
+                <div class="w-10 h-1 bg-slate-200 dark:bg-slate-600 rounded-full mx-auto mb-4"></div>
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1,'wght' 400;color:#135bec;font-size:20px">thumb_up</span>
+                    <h3 class="text-base font-bold text-slate-800 dark:text-white">${c.name} 후보 공약 공감</h3>
+                    <span class="ml-auto text-[11px] text-slate-400">마음에 드는 공약에 공감해보세요</span>
+                </div>
+                <!-- 카테고리 필터 -->
+                <div class="flex gap-1.5 overflow-x-auto scrollbar-hide pb-3">${filterBtns}</div>
+            </div>
+            <!-- 공약 목록 -->
+            <div id="sympathy-pledge-list" class="flex-1 overflow-y-auto px-5 py-2 space-y-3 scrollbar-hide">
+                ${buildSympathyCards(c, '전체')}
+            </div>
+            <div class="px-5 py-3 shrink-0 border-t border-slate-100 dark:border-slate-800">
+                <button onclick="document.getElementById('policy-sympathy-sheet').remove()" class="w-full py-2.5 text-sm text-slate-400 font-medium rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">닫기</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(sheet);
+}
+
+function filterSympathyCategory(category) {
+    activeSympathyCategory = category;
+    const c = currentChatCandidate;
+    if (!c) return;
+    // 필터 버튼 업데이트
+    document.querySelectorAll('.sympathy-cat-btn').forEach(btn => {
+        const isActive = btn.textContent.trim() === category;
+        btn.className = btn.className
+            .replace(/bg-primary\s+text-white\s+border-primary/, '')
+            .replace(/bg-white\s+dark:bg-slate-800\s+text-slate-500\s+dark:text-slate-400\s+border-slate-200\s+dark:border-slate-700/, '');
+        if (isActive) {
+            btn.classList.remove('bg-white','dark:bg-slate-800','text-slate-500','dark:text-slate-400','border-slate-200','dark:border-slate-700');
+            btn.classList.add('bg-primary','text-white','border-primary');
+        } else {
+            btn.classList.remove('bg-primary','text-white','border-primary');
+            btn.classList.add('bg-white','dark:bg-slate-800','text-slate-500','dark:text-slate-400','border-slate-200','dark:border-slate-700');
+        }
+    });
+    document.getElementById('sympathy-pledge-list').innerHTML = buildSympathyCards(c, category);
+}
+
+function toggleSympathyPledge(pledgeId) {
+    const s = getSympathyForPledge(pledgeId);
+    s.liked = !s.liked;
+    s.count = s.liked ? s.count + 1 : Math.max(0, s.count - 1);
+
+    const c = currentChatCandidate;
+    const pledge = (c?.pledges || []).find(p => p.id === pledgeId);
+    const total = (pledge?.empathyCount || 0) + s.count;
+
+    const btn = document.getElementById(`sp-btn-${pledgeId}`);
+    const countEl = document.getElementById(`sp-count-${pledgeId}`);
+    if (!btn) return;
+    const icon = btn.querySelector('.material-symbols-outlined');
+
+    if (s.liked) {
+        btn.classList.remove('bg-white','dark:bg-slate-800','border-slate-200','dark:border-slate-700','text-slate-400');
+        btn.classList.add('bg-primary/10','border-primary/30','text-primary');
+        icon.style.fontVariationSettings = "'FILL' 1,'wght' 400";
+        icon.style.color = '#135bec';
+        showToast(`'${pledge?.title || '공약'}'에 공감했습니다!`);
+    } else {
+        btn.classList.remove('bg-primary/10','border-primary/30','text-primary');
+        btn.classList.add('bg-white','dark:bg-slate-800','border-slate-200','dark:border-slate-700','text-slate-400');
+        icon.style.fontVariationSettings = "'FILL' 0,'wght' 400";
+        icon.style.color = '';
+    }
+    countEl.textContent = total;
+
+    // 헤더 공감 버튼 상태 동기화
+    const anyLiked = Object.values(policySympathyData).some(v => v.liked);
+    const headerBtn = document.getElementById('policy-sympathy-btn');
+    if (headerBtn) {
+        const hi = headerBtn.querySelector('.material-symbols-outlined');
+        hi.style.fontVariationSettings = anyLiked ? "'FILL' 1,'wght' 400" : "'FILL' 0,'wght' 400";
+        hi.style.color = anyLiked ? '#fca5a5' : '';
+    }
 }
 
 // ============ CHAT MORE MENU ============
@@ -2851,7 +4292,7 @@ function showChatMoreMenu() {
         <div class="relative w-full max-w-[480px] bg-white dark:bg-slate-800 rounded-t-3xl p-5 pb-8 animate-slideUp">
             <div class="w-10 h-1 bg-slate-200 dark:bg-slate-600 rounded-full mx-auto mb-5"></div>
             <div class="space-y-1">
-                <button onclick="document.getElementById('chat-more-sheet').remove(); openReportModal()" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-left hover:bg-slate-50 dark:hover:bg-slate-700">
+                <button onclick="document.getElementById('chat-more-sheet').remove(); openReportModal(null, getLastBotMessageText())" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-left hover:bg-slate-50 dark:hover:bg-slate-700">
                     <span class="material-symbols-outlined text-red-400">flag</span>
                     <span class="text-sm font-medium text-slate-700 dark:text-slate-200">${isEn ? 'Report' : '신고하기'}</span>
                 </button>
@@ -2870,10 +4311,21 @@ function showChatMoreMenu() {
     document.body.appendChild(sheet);
 }
 
+// 가장 마지막 bot 메시지 원문 가져오기
+function getLastBotMessageText() {
+    const messages = document.getElementById('chat-messages');
+    if (!messages) return '';
+    const bubbles = messages.querySelectorAll('.flex.items-start.gap-3 .bg-white, .flex.items-start.gap-3 .bg-slate-800');
+    if (!bubbles.length) return '';
+    return bubbles[bubbles.length - 1].innerText.trim();
+}
+
 // ============ INIT ============
 renderCandidates();
+updateReportBadge();
 renderHomeNews(sampleNews.slice(0, 3));
 applyLang();
 </script>
 </body>
 </html>
+<!-- test -->
