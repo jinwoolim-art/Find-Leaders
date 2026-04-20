@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>관리자 대시보드 | 일꾼을찾다</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0}body{font-family:"Noto Sans KR",sans-serif;background:#f0f2f5;display:flex;height:100vh;overflow:hidden}
+.ms{font-family:"Material Symbols Outlined";font-variation-settings:"FILL" 0,"wght" 400,"GRAD" 0,"opsz" 24;line-height:1}.msf{font-variation-settings:"FILL" 1}
+.side{width:220px;background:#111827;display:flex;flex-direction:column;flex-shrink:0}
+.sn{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;color:#6b7280;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;margin:0 10px}
+.sn:hover{color:#d1d5db;background:rgba(255,255,255,.06)}.sn.on{color:#fff;background:#7c3aed}.sn .ms{font-size:18px}
+.bdg{min-width:18px;height:18px;border-radius:99px;background:#ef4444;color:#fff;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;margin-left:auto;padding:0 5px}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:#fff;border-bottom:1px solid #e5e7eb;padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.content{flex:1;overflow-y:auto;padding:24px 28px}
+.card{background:#fff;border-radius:14px;border:1px solid #e8edf3;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.sc{background:#fff;border-radius:14px;border:1px solid #e8edf3;padding:18px;text-align:center}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{text-align:left;padding:10px 12px;font-weight:700;color:#9ca3af;border-bottom:2px solid #e8edf3;white-space:nowrap}
+.tbl td{padding:10px 12px;border-bottom:1px solid #f3f4f6;color:#374151}
+.tbl tr:hover{background:#f8fafc}
+.st{font-size:10px;font-weight:900;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.st-sent{background:#dbeafe;color:#1d4ed8}.st-applied{background:#dcfce7;color:#15803d}.st-nosub{background:#f3f4f6;color:#6b7280}
+.st-new{background:#fef3c7;color:#92400e}.st-req{background:#fef2f2;color:#dc2626}.st-wait{background:#ede9fe;color:#7c3aed}.st-done{background:#dcfce7;color:#15803d}
+.st-open{background:#fef3c7;color:#92400e}.st-prog{background:#dbeafe;color:#1d4ed8}.st-closed{background:#dcfce7;color:#15803d}
+.pr{font-size:10px;font-weight:900;padding:2px 8px;border-radius:99px}
+.pr-urgent{background:#fef2f2;color:#dc2626}.pr-high{background:#fff7ed;color:#ea580c}.pr-mid{background:#fef9c3;color:#a16207}.pr-low{background:#f0fdf4;color:#16a34a}
+.cat{font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px}
+.cat-pay{background:#fef2f2;color:#dc2626}.cat-acct{background:#fff7ed;color:#ea580c}.cat-tech{background:#fef9c3;color:#a16207}.cat-svc{background:#f0fdf4;color:#16a34a}.cat-etc{background:#f3f4f6;color:#6b7280}
+.btn{padding:7px 16px;border:none;border-radius:10px;font-size:12px;font-weight:900;cursor:pointer;font-family:inherit;transition:all .15s;display:inline-flex;align-items:center;gap:4px}
+.btn-primary{background:#7c3aed;color:#fff}.btn-primary:hover{background:#6d28d9}
+.btn-danger{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+.btn-ghost{background:transparent;color:#6b7280;border:1px solid #e2e8f0}.btn-ghost:hover{background:#f3f4f6}
+.btn-success{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0}
+.inp{width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 13px;font-size:13px;outline:none;font-family:inherit;background:#fff}
+.inp:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+.sel{border:1.5px solid #e2e8f0;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:600;outline:none;font-family:inherit;background:#fff;color:#374151;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center;background-size:14px;padding-right:24px}
+.fr{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.panel{width:420px;background:#fff;border-left:1px solid #e5e7eb;display:none;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.panel.open{display:flex}
+.ov{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:999;display:none;align-items:center;justify-content:center}
+.ov.show{display:flex}
+.chk{accent-color:#7c3aed;cursor:pointer}
+.step-label{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:900;padding:2px 8px;border-radius:6px;background:#f5f3ff;color:#7c3aed}
+.funnel{display:flex;align-items:center;gap:0;margin-bottom:20px}
+.funnel-item{flex:1;text-align:center;padding:14px 8px;position:relative;background:#fff;border:1px solid #e8edf3}
+.funnel-item:first-child{border-radius:12px 0 0 12px}
+.funnel-item:last-child{border-radius:0 12px 12px 0}
+.funnel-item .fn{font-size:24px;font-weight:900;color:#111827;margin:0}
+.funnel-item .fl{font-size:10px;color:#9ca3af;font-weight:600;margin:2px 0 0}
+.funnel-arrow{color:#d1d5db;font-size:18px;flex-shrink:0;margin:0 -1px;z-index:1}
+</style>
+</head>
+<body>
+
+<!-- 로그인 -->
+<div class="ov show" id="login-screen" style="background:rgba(17,24,39,.95)">
+  <div style="background:#fff;border-radius:24px;padding:40px;width:380px;text-align:center">
+    <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;margin:0 auto 16px"><span class="ms msf" style="color:#fff;font-size:28px">admin_panel_settings</span></div>
+    <h2 style="font-size:20px;font-weight:900;color:#111827;margin:0 0 4px">관리자 대시보드</h2>
+    <p style="font-size:12px;color:#9ca3af;margin:0 0 24px">일꾼을찾다 · Admin</p>
+    <div style="text-align:left;margin-bottom:12px"><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">비밀번호</label><input type="password" id="login-pw" class="inp" placeholder="비밀번호" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+    <p id="login-err" style="font-size:11px;color:#dc2626;margin:0 0 12px;display:none">비밀번호가 틀렸습니다</p>
+    <button onclick="doLogin()" class="btn btn-primary" style="width:100%;padding:12px;font-size:14px;justify-content:center">로그인</button>
+  </div>
+</div>
+
+<!-- 사이드바 -->
+<div class="side">
+  <div style="padding:20px 16px 16px"><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center"><span class="ms msf" style="color:#fff;font-size:17px">admin_panel_settings</span></div><div><p style="color:#fff;font-weight:900;font-size:13px">일꾼을찾다</p><p style="color:#4b5563;font-size:10px">Admin Dashboard</p></div></div></div>
+  <nav style="flex:1;padding:0 6px;display:flex;flex-direction:column;gap:2px">
+    <p style="color:#4b5563;font-size:9px;font-weight:700;padding:12px 14px 4px;text-transform:uppercase;letter-spacing:.05em">고객 관리</p>
+    <div class="sn on" id="nav-inq" onclick="sw('inq')"><span class="ms">campaign</span>1단계 · 문의<span class="bdg" style="background:#3b82f6">5</span></div>
+    <div class="sn" id="nav-app" onclick="sw('app')"><span class="ms">assignment</span>2단계 · 신청<span class="bdg">3</span></div>
+    <p style="color:#4b5563;font-size:9px;font-weight:700;padding:16px 14px 4px;text-transform:uppercase;letter-spacing:.05em">운영</p>
+    <div class="sn" id="nav-cs" onclick="sw('cs')"><span class="ms">support_agent</span>CS 관리<span class="bdg" style="background:#f59e0b">2</span></div>
+    <div class="sn" id="nav-sent" onclick="sw('sent')"><span class="ms">send</span>발송 내역</div>
+    <div class="sn" id="nav-inbox" onclick="sw('inbox')"><span class="ms">inbox</span>수신 메일<span class="bdg" style="background:#3b82f6">4</span></div>
+    <div class="sn" id="nav-tpl" onclick="sw('tpl')"><span class="ms">draft</span>템플릿 관리</div>
+  </nav>
+  <div style="padding:12px;border-top:1px solid #1f2937">
+    <div class="sn" onclick="logout()"><span class="ms">logout</span>로그아웃</div>
+    <p style="color:#374151;font-size:9px;padding:4px 14px 0">admin v3.0</p>
+  </div>
+</div>
+
+<!-- 메인 -->
+<div class="main">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:8px"><span class="ms msf" style="color:#7c3aed;font-size:20px" id="ti">campaign</span><h1 style="font-size:15px;font-weight:900;color:#111827" id="tt">1단계 · 문의 관리</h1></div>
+    <div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;color:#9ca3af">관리자</span><div style="width:32px;height:32px;border-radius:50%;background:#7c3aed;display:flex;align-items:center;justify-content:center"><span style="color:#fff;font-size:12px;font-weight:900">A</span></div></div>
+  </div>
+
+  <div style="display:flex;flex:1;overflow:hidden">
+
+  <!-- ══════════════════════════════ -->
+  <!-- 1단계: 문의 관리 -->
+  <!-- ══════════════════════════════ -->
+  <div id="tab-inq" class="content" style="flex:1">
+    <!-- 퍼널 -->
+    <div class="funnel">
+      <div class="funnel-item" style="background:#eff6ff;border-color:#bfdbfe"><p class="fn" style="color:#1d4ed8">100</p><p class="fl">문의 접수</p></div>
+      <span class="funnel-arrow ms">arrow_forward</span>
+      <div class="funnel-item" style="background:#f0fdf4;border-color:#bbf7d0"><p class="fn" style="color:#15803d">60</p><p class="fl">신청 완료</p></div>
+      <span class="funnel-arrow ms">arrow_forward</span>
+      <div class="funnel-item" style="background:#fef3c7;border-color:#fde68a"><p class="fn" style="color:#92400e">35</p><p class="fl">미신청</p></div>
+      <span class="funnel-arrow ms">arrow_forward</span>
+      <div class="funnel-item" style="background:#fef2f2;border-color:#fecaca"><p class="fn" style="color:#dc2626">5</p><p class="fl">만료</p></div>
+    </div>
+    <div class="fr">
+      <select class="sel"><option>접수일 전체</option><option>4/20</option><option>4/19</option><option>4/18</option><option>4/17</option><option>4/16</option></select>
+      <select class="sel"><option>관심상품 전체</option><option>Lite</option><option>Standard</option><option>Premium</option></select>
+      <select class="sel"><option>상태 전체</option><option>📩 안내 발송</option><option>✅ 신청 접수</option><option>⚫ 미신청</option><option>🔴 만료</option></select>
+      <input type="text" class="inp" placeholder="이름, 이메일 검색..." style="width:180px;padding:6px 10px;font-size:11px"/>
+      <button class="btn btn-primary" onclick="openBulk()"><span class="ms" style="font-size:14px">forward_to_inbox</span>단체 발송</button>
+    </div>
+    <div class="card" style="overflow:hidden">
+      <table class="tbl">
+        <thead><tr><th><input type="checkbox" class="chk" onclick="togAll(this,'inq')"/></th><th>접수일</th><th>이름</th><th>이메일</th><th>관심상품</th><th>자동 발송</th><th>상태</th><th>액션</th></tr></thead>
+        <tbody>
+          <tr><td><input type="checkbox" class="chk rc-inq"/></td><td>4/20</td><td style="font-weight:700">홍길동</td><td style="font-size:11px">hong@gmail.com</td><td>Standard</td><td><span class="st st-sent">📩 발송됨</span></td><td><span class="st st-applied">✅ 신청 접수</span></td><td><span style="font-size:11px;color:#15803d;font-weight:700">→ 2단계</span></td></tr>
+          <tr><td><input type="checkbox" class="chk rc-inq"/></td><td>4/20</td><td style="font-weight:700">박서준</td><td style="font-size:11px">park@naver.com</td><td>Premium</td><td><span class="st st-sent">📩 발송됨</span></td><td><span class="st st-applied">✅ 신청 접수</span></td><td><span style="font-size:11px;color:#15803d;font-weight:700">→ 2단계</span></td></tr>
+          <tr style="background:#fffbeb"><td><input type="checkbox" class="chk rc-inq"/></td><td>4/20</td><td style="font-weight:700">이수진</td><td style="font-size:11px">sujin@gmail.com</td><td>Standard</td><td><span class="st st-sent">📩 발송됨</span></td><td><span class="st st-nosub">⏳ 대기 중</span></td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:10px" onclick="alert('리마인더 발송')"><span class="ms" style="font-size:13px">schedule_send</span>리마인더</button></td></tr>
+          <tr style="background:#fffbeb"><td><input type="checkbox" class="chk rc-inq"/></td><td>4/19</td><td style="font-weight:700">최유리</td><td style="font-size:11px">choi@gmail.com</td><td>Standard</td><td><span class="st st-sent">📩 발송됨</span></td><td><span class="st st-applied">✅ 신청 접수</span></td><td><span style="font-size:11px;color:#15803d;font-weight:700">→ 2단계</span></td></tr>
+          <tr><td><input type="checkbox" class="chk rc-inq"/></td><td>4/18</td><td style="font-weight:700">김영수</td><td style="font-size:11px">kimys@gmail.com</td><td>Lite</td><td><span class="st st-sent">📩 발송됨</span></td><td><span class="st st-nosub">⚫ 미신청 (3일)</span></td><td><button class="btn btn-danger" style="padding:4px 10px;font-size:10px" onclick="alert('리마인더 재발송')"><span class="ms" style="font-size:13px">mail</span>재발송</button></td></tr>
+          <tr><td><input type="checkbox" class="chk rc-inq"/></td><td>4/17</td><td style="font-weight:700">이지은</td><td style="font-size:11px">jieun@naver.com</td><td>Standard</td><td><span class="st st-sent">📩 발송됨</span></td><td><span class="st st-nosub">⚫ 미신청 (4일)</span></td><td><button class="btn btn-danger" style="padding:4px 10px;font-size:10px"><span class="ms" style="font-size:13px">mail</span>재발송</button></td></tr>
+          <tr><td><input type="checkbox" class="chk rc-inq"/></td><td>4/14</td><td style="font-weight:700">장민철</td><td style="font-size:11px">jang@daum.net</td><td>Lite</td><td><span class="st st-sent">📩 발송됨</span></td><td><span class="st" style="background:#fef2f2;color:#dc2626">🔴 만료 (7일+)</span></td><td><span style="font-size:11px;color:#9ca3af">만료</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px">
+      <span class="ms" style="color:#3b82f6;font-size:16px">info</span>
+      <p style="font-size:11px;color:#1d4ed8;font-weight:600;margin:0">랜딩페이지 문의 시 안내서 + 신청서 링크가 자동 발송됩니다. 3일 미신청 시 리마인더, 7일 초과 시 만료 처리됩니다.</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ -->
+  <!-- 2단계: 신청 관리 -->
+  <!-- ══════════════════════════════ -->
+  <div id="tab-app" class="content" style="flex:1;display:none">
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px">
+      <div class="sc"><p style="font-size:24px;font-weight:900;color:#111827">21</p><p style="font-size:11px;color:#9ca3af;font-weight:600">전체</p></div>
+      <div class="sc" style="border-color:#fef3c7"><p style="font-size:24px;font-weight:900;color:#92400e">3</p><p style="font-size:11px;color:#92400e;font-weight:600">신규</p></div>
+      <div class="sc" style="border-color:#fecaca"><p style="font-size:24px;font-weight:900;color:#dc2626">1</p><p style="font-size:11px;color:#dc2626;font-weight:600">증명서 요청</p></div>
+      <div class="sc" style="border-color:#c4b5fd"><p style="font-size:24px;font-weight:900;color:#7c3aed">2</p><p style="font-size:11px;color:#7c3aed;font-weight:600">승인 대기</p></div>
+      <div class="sc" style="border-color:#bbf7d0"><p style="font-size:24px;font-weight:900;color:#15803d">15</p><p style="font-size:11px;color:#15803d;font-weight:600">발급 완료</p></div>
+    </div>
+    <div class="fr">
+      <select class="sel"><option>접수일 전체</option><option>4/20</option><option>4/19</option><option>4/18</option><option>4/17</option></select>
+      <select class="sel"><option>직급 전체</option><option>광역단체장</option><option>기초단체장</option><option>광역의원</option><option>기초의원</option><option>교육감</option></select>
+      <select class="sel"><option>증명서 전체</option><option>📎 있음</option><option>❌ 없음</option></select>
+      <select class="sel"><option>상태 전체</option><option>🟡 신규</option><option>🔴 증명서 요청</option><option>🟣 승인 대기</option><option>✅ 발급 완료</option></select>
+      <input type="text" class="inp" placeholder="검색..." style="width:160px;padding:6px 10px;font-size:11px"/>
+      <button class="btn btn-primary" onclick="openBulk()"><span class="ms" style="font-size:14px">forward_to_inbox</span>단체 발송</button>
+    </div>
+    <div class="card" style="overflow:hidden">
+      <table class="tbl">
+        <thead><tr><th><input type="checkbox" class="chk" onclick="togAll(this,'app')"/></th><th>접수일</th><th>이름</th><th>직급</th><th>이메일</th><th>증명서</th><th>상태</th><th>액션</th></tr></thead>
+        <tbody>
+          <tr onclick="openPanel('app',0)" style="cursor:pointer"><td><input type="checkbox" class="chk rc-app"/></td><td>4/20</td><td style="font-weight:700">홍길동</td><td>기초의원</td><td style="font-size:11px">hong@gmail.com</td><td><span class="ms msf" style="color:#22c55e;font-size:16px">attach_file</span></td><td><span class="st st-new">🟡 신규</span></td><td><button class="btn btn-primary" onclick="event.stopPropagation()"><span class="ms" style="font-size:14px">check</span>확인</button></td></tr>
+          <tr onclick="openPanel('app',1)" style="cursor:pointer"><td><input type="checkbox" class="chk rc-app"/></td><td>4/20</td><td style="font-weight:700">박서준</td><td>광역의원</td><td style="font-size:11px">park@naver.com</td><td><span class="ms msf" style="color:#22c55e;font-size:16px">attach_file</span></td><td><span class="st st-new">🟡 신규</span></td><td><button class="btn btn-primary" onclick="event.stopPropagation()"><span class="ms" style="font-size:14px">check</span>확인</button></td></tr>
+          <tr onclick="openPanel('app',2)" style="cursor:pointer"><td><input type="checkbox" class="chk rc-app"/></td><td>4/19</td><td style="font-weight:700">최유리</td><td>기초단체장</td><td style="font-size:11px">choi@gmail.com</td><td><span class="ms msf" style="color:#22c55e;font-size:16px">attach_file</span></td><td><span class="st st-new">🟡 신규</span></td><td><button class="btn btn-primary" onclick="event.stopPropagation()"><span class="ms" style="font-size:14px">check</span>확인</button></td></tr>
+          <tr onclick="openPanel('app',3)" style="cursor:pointer"><td><input type="checkbox" class="chk rc-app"/></td><td>4/19</td><td style="font-weight:700">김철수</td><td>광역의원</td><td style="font-size:11px">kim@hanmail.net</td><td><span class="ms" style="color:#dc2626;font-size:16px">close</span></td><td><span class="st st-req">🔴 증명서 요청</span></td><td><button class="btn btn-danger" onclick="event.stopPropagation()"><span class="ms" style="font-size:14px">mail</span>재발송</button></td></tr>
+          <tr onclick="openPanel('app',4)" style="cursor:pointer"><td><input type="checkbox" class="chk rc-app"/></td><td>4/18</td><td style="font-weight:700">이영희</td><td>기초단체장</td><td style="font-size:11px">lee@gmail.com</td><td><span class="ms msf" style="color:#22c55e;font-size:16px">attach_file</span></td><td><span class="st st-wait">🟣 승인 대기</span></td><td><button class="btn btn-success" onclick="event.stopPropagation()"><span class="ms" style="font-size:14px">send</span>승인</button></td></tr>
+          <tr onclick="openPanel('app',5)" style="cursor:pointer"><td><input type="checkbox" class="chk rc-app"/></td><td>4/17</td><td style="font-weight:700">강민호</td><td>기초의원</td><td style="font-size:11px">kang@gmail.com</td><td><span class="ms msf" style="color:#22c55e;font-size:16px">attach_file</span></td><td><span class="st st-wait">🟣 승인 대기</span></td><td><button class="btn btn-success" onclick="event.stopPropagation()"><span class="ms" style="font-size:14px">send</span>승인</button></td></tr>
+          <tr><td><input type="checkbox" class="chk rc-app"/></td><td>4/15</td><td style="font-weight:700">박민수</td><td>기초의원</td><td style="font-size:11px">parkms@gmail.com</td><td><span class="ms msf" style="color:#22c55e;font-size:16px">attach_file</span></td><td><span class="st st-done">✅ 발급 완료</span></td><td style="font-size:11px;color:#9ca3af">4/15 발급</td></tr>
+          <tr><td><input type="checkbox" class="chk rc-app"/></td><td>4/14</td><td style="font-weight:700">정수빈</td><td>광역단체장</td><td style="font-size:11px">jung@daum.net</td><td><span class="ms msf" style="color:#22c55e;font-size:16px">attach_file</span></td><td><span class="st st-done">✅ 발급 완료</span></td><td style="font-size:11px;color:#9ca3af">4/14 발급</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ -->
+  <!-- CS 관리 -->
+  <!-- ══════════════════════════════ -->
+  <div id="tab-cs" class="content" style="flex:1;display:none">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+      <div class="sc"><p style="font-size:24px;font-weight:900;color:#111827">15</p><p style="font-size:11px;color:#9ca3af;font-weight:600">전체</p></div>
+      <div class="sc" style="border-color:#fef3c7"><p style="font-size:24px;font-weight:900;color:#92400e">2</p><p style="font-size:11px;color:#92400e;font-weight:600">접수</p></div>
+      <div class="sc" style="border-color:#bfdbfe"><p style="font-size:24px;font-weight:900;color:#1d4ed8">1</p><p style="font-size:11px;color:#1d4ed8;font-weight:600">처리 중</p></div>
+      <div class="sc" style="border-color:#bbf7d0"><p style="font-size:24px;font-weight:900;color:#15803d">12</p><p style="font-size:11px;color:#15803d;font-weight:600">완료</p></div>
+    </div>
+    <div class="fr">
+      <select class="sel"><option>접수일 전체</option><option>4/20</option><option>4/19</option><option>4/18</option></select>
+      <select class="sel"><option>분류 전체</option><option>🔴 결제</option><option>🟠 계정</option><option>🟡 기술</option><option>🟢 서비스</option></select>
+      <select class="sel"><option>우선순위 전체</option><option>긴급</option><option>높음</option><option>보통</option><option>일반</option></select>
+      <select class="sel"><option>담당자 전체</option><option>관리자A</option><option>관리자B</option></select>
+      <select class="sel"><option>상태 전체</option><option>접수</option><option>처리 중</option><option>완료</option></select>
+      <input type="text" class="inp" placeholder="검색..." style="width:140px;padding:6px 10px;font-size:11px"/>
+    </div>
+    <div class="card" style="overflow:hidden">
+      <table class="tbl">
+        <thead><tr><th>접수일</th><th>후보자</th><th>분류</th><th>제목</th><th>우선순위</th><th>담당자</th><th>상태</th></tr></thead>
+        <tbody>
+          <tr onclick="openPanel('cs',0)" style="cursor:pointer"><td>4/20</td><td style="font-weight:700">홍길동</td><td><span class="cat cat-pay">결제</span></td><td>토큰 충전 오류</td><td><span class="pr pr-urgent">긴급</span></td><td>관리자A</td><td><span class="st st-open">접수</span></td></tr>
+          <tr onclick="openPanel('cs',1)" style="cursor:pointer"><td>4/20</td><td style="font-weight:700">박민수</td><td><span class="cat cat-acct">계정</span></td><td>비밀번호 분실</td><td><span class="pr pr-high">높음</span></td><td>관리자A</td><td><span class="st st-open">접수</span></td></tr>
+          <tr onclick="openPanel('cs',2)" style="cursor:pointer"><td>4/19</td><td style="font-weight:700">이영희</td><td><span class="cat cat-tech">기술</span></td><td>통계 페이지 빈 화면</td><td><span class="pr pr-mid">보통</span></td><td>관리자B</td><td><span class="st st-prog">처리 중</span></td></tr>
+          <tr><td>4/18</td><td style="font-weight:700">강민호</td><td><span class="cat cat-svc">서비스</span></td><td>답변 길이 변경법</td><td><span class="pr pr-low">일반</span></td><td>관리자A</td><td><span class="st st-closed">완료</span></td></tr>
+          <tr><td>4/17</td><td style="font-weight:700">정수빈</td><td><span class="cat cat-pay">결제</span></td><td>가입비 영수증 요청</td><td><span class="pr pr-low">일반</span></td><td>관리자B</td><td><span class="st st-closed">완료</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ -->
+  <!-- 발송 / 수신 / 템플릿 (간략) -->
+  <!-- ══════════════════════════════ -->
+  <div id="tab-sent" class="content" style="flex:1;display:none">
+    <div class="card" style="padding:20px;margin-bottom:20px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><div style="display:flex;align-items:center;gap:8px"><span class="ms msf" style="color:#7c3aed;font-size:20px">forward_to_inbox</span><p style="font-size:15px;font-weight:900;color:#111827;margin:0">메일 발송</p></div><button class="btn btn-primary" onclick="alert('발송 완료 (데모)')"><span class="ms" style="font-size:14px">send</span>발송</button></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px"><div><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">수신자</label><input type="text" class="inp" placeholder="이름 또는 이메일" style="font-size:12px;padding:8px 12px"/></div><div><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">템플릿</label><select class="inp" style="font-size:12px;padding:8px 12px"><option>-- 템플릿 선택 --</option><option>📩 임시 비밀번호 발급</option><option>📩 증명서 요청</option><option>📩 증명서 재요청</option><option>📩 CS 답변</option><option>📩 서비스 안내</option><option>📩 이벤트 할인</option><option>📩 토큰 부족 알림</option><option>📩 선거일 리마인더</option></select></div></div>
+      <div style="margin-bottom:10px"><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">제목</label><input type="text" class="inp" style="font-size:12px;padding:8px 12px"/></div>
+      <div><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">내용 <span style="color:#a78bfa">{{이름}} {{이메일}} {{비밀번호}} {{대시보드링크}} 자동 치환</span></label><textarea class="inp" rows="6" style="font-size:12px;resize:vertical;line-height:1.8"></textarea></div>
+    </div>
+    <div class="card" style="overflow:hidden">
+      <div style="padding:14px 16px 0"><p style="font-size:14px;font-weight:900;color:#111827;margin-bottom:10px">발송 기록</p>
+        <div class="fr" style="margin-bottom:10px"><select class="sel"><option>발송일 전체</option><option>4/20</option><option>4/19</option><option>4/15</option></select><select class="sel"><option>유형 전체</option><option>자동 안내</option><option>계정 발급</option><option>증명서 요청</option><option>CS 답변</option></select><select class="sel"><option>상태 전체</option><option>완료</option><option>실패</option></select></div>
+      </div>
+      <table class="tbl"><thead><tr><th>발송일</th><th>수신자</th><th>단계</th><th>유형</th><th>제목</th><th>상태</th></tr></thead>
+        <tbody>
+          <tr><td>4/20</td><td style="font-weight:700">이수진</td><td><span class="step-label">1단계</span></td><td><span class="cat" style="background:#dbeafe;color:#1d4ed8">자동 안내</span></td><td style="font-size:11px">안내서 + 신청서 링크</td><td><span class="st st-done">완료</span></td></tr>
+          <tr><td>4/20</td><td style="font-weight:700">홍길동</td><td><span class="step-label">2단계</span></td><td><span class="cat" style="background:#dcfce7;color:#15803d">계정 발급</span></td><td style="font-size:11px">대시보드 + 임시 비밀번호</td><td><span class="st st-done">완료</span></td></tr>
+          <tr><td>4/19</td><td style="font-weight:700">김철수</td><td><span class="step-label">2단계</span></td><td><span class="cat" style="background:#fef2f2;color:#dc2626">증명서</span></td><td style="font-size:11px">후보자 확인증 요청</td><td><span class="st st-done">완료</span></td></tr>
+          <tr><td>4/18</td><td style="font-weight:700">김영수</td><td><span class="step-label">1단계</span></td><td><span class="cat" style="background:#fef9c3;color:#a16207">리마인더</span></td><td style="font-size:11px">신청서 제출 리마인더</td><td><span class="st st-done">완료</span></td></tr>
+          <tr><td>4/15</td><td style="font-weight:700">박민수</td><td><span class="step-label">2단계</span></td><td><span class="cat" style="background:#dcfce7;color:#15803d">계정 발급</span></td><td style="font-size:11px">대시보드 + 임시 비밀번호</td><td><span class="st st-done">완료</span></td></tr>
+          <tr><td>4/14</td><td style="font-weight:700">정수빈</td><td><span class="step-label">CS</span></td><td><span class="cat" style="background:#e0f2fe;color:#1d4ed8">CS 답변</span></td><td style="font-size:11px">가입비 영수증 발송</td><td><span class="st st-done">완료</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="tab-inbox" class="content" style="flex:1;display:none">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px"><span class="ms msf" style="color:#3b82f6;font-size:20px">inbox</span><p style="font-size:15px;font-weight:900;color:#111827;margin:0">수신 메일</p><span style="font-size:11px;color:#9ca3af;margin-left:4px">ilkkun.official@gmail.com</span></div>
+    <div class="fr"><select class="sel"><option>수신일 전체</option><option>4/20</option><option>4/19</option></select><select class="sel"><option>분류 전체</option><option>신청서</option><option>증명서</option><option>문의</option></select><select class="sel"><option>처리 전체</option><option>미처리</option><option>처리 완료</option></select><input type="text" class="inp" placeholder="검색..." style="width:160px;padding:6px 10px;font-size:11px"/></div>
+    <div class="card" style="overflow:hidden">
+      <table class="tbl"><thead><tr><th>수신일</th><th>발신자</th><th>분류</th><th>제목</th><th>첨부</th><th>처리</th><th>연결</th></tr></thead>
+        <tbody>
+          <tr style="background:#f5f3ff"><td style="font-weight:700">4/20</td><td style="font-weight:700">홍길동<br><span style="font-size:10px;color:#9ca3af">hong@gmail.com</span></td><td><span class="cat cat-svc">신청서</span></td><td style="font-weight:700">서비스 신청합니다</td><td><span class="ms msf" style="color:#22c55e;font-size:16px">attach_file</span></td><td><span class="st st-open">미처리</span></td><td><span class="step-label">→ 2단계</span></td></tr>
+          <tr style="background:#f5f3ff"><td style="font-weight:700">4/20</td><td style="font-weight:700">김철수<br><span style="font-size:10px;color:#9ca3af">kim@hanmail.net</span></td><td><span class="cat" style="background:#ede9fe;color:#7c3aed">증명서</span></td><td style="font-weight:700">확인증 보냅니다</td><td><span class="ms msf" style="color:#22c55e;font-size:16px">attach_file</span></td><td><span class="st st-open">미처리</span></td><td><span class="step-label">→ 2단계</span></td></tr>
+          <tr style="background:#f5f3ff"><td style="font-weight:700">4/20</td><td style="font-weight:700">이영희<br><span style="font-size:10px;color:#9ca3af">lee@gmail.com</span></td><td><span class="cat cat-etc">문의</span></td><td style="font-weight:700">통계 페이지가 안 보여요</td><td>—</td><td><span class="st st-open">미처리</span></td><td><span class="step-label">→ CS</span></td></tr>
+          <tr><td>4/18</td><td>강민호<br><span style="font-size:10px;color:#9ca3af">kang@gmail.com</span></td><td><span class="cat cat-svc">신청서</span></td><td>이용 신청</td><td><span class="ms msf" style="color:#22c55e;font-size:16px">attach_file</span></td><td><span class="st st-done">처리 완료</span></td><td><span style="font-size:10px;color:#9ca3af">2단계 완료</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="tab-tpl" class="content" style="flex:1;display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><div style="display:flex;align-items:center;gap:8px"><span class="ms msf" style="color:#7c3aed;font-size:20px">draft</span><p style="font-size:15px;font-weight:900;color:#111827;margin:0">템플릿 관리</p></div><button class="btn btn-primary" onclick="alert('새 템플릿')"><span class="ms" style="font-size:14px">add</span>새 템플릿</button></div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px">
+      <div class="card" style="padding:16px;cursor:pointer" onclick="alert('편집')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#3b82f6;font-size:18px">auto_awesome</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">1단계 · 자동 안내</p><span class="step-label" style="margin-left:auto">자동</span></div><p style="font-size:11px;color:#6b7280;margin:0">안내서 + 신청서 링크 발송</p></div>
+      <div class="card" style="padding:16px;cursor:pointer" onclick="alert('편집')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#22c55e;font-size:18px">key</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">2단계 · 계정 발급</p></div><p style="font-size:11px;color:#6b7280;margin:0">대시보드 URL + ID + 임시 비밀번호</p></div>
+      <div class="card" style="padding:16px;cursor:pointer" onclick="alert('편집')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#dc2626;font-size:18px">description</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">2단계 · 증명서 요청</p></div><p style="font-size:11px;color:#6b7280;margin:0">후보자 확인증 미첨부 안내</p></div>
+      <div class="card" style="padding:16px;cursor:pointer" onclick="alert('편집')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#f59e0b;font-size:18px">schedule_send</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">리마인더 (1단계/2단계)</p></div><p style="font-size:11px;color:#6b7280;margin:0">미신청/미제출 리마인더</p></div>
+      <div class="card" style="padding:16px;cursor:pointer" onclick="alert('편집')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#3b82f6;font-size:18px">reply</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">CS 답변</p></div><p style="font-size:11px;color:#6b7280;margin:0">고객 문의 답변 기본 템플릿</p></div>
+      <div class="card" style="padding:16px;cursor:pointer" onclick="alert('편집')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#f59e0b;font-size:18px">local_fire_department</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">이벤트 할인 안내</p></div><p style="font-size:11px;color:#6b7280;margin:0">할인 프로모션 메일</p></div>
+      <div class="card" style="padding:16px;cursor:pointer" onclick="alert('편집')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#ef4444;font-size:18px">warning</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">토큰 부족 알림</p></div><p style="font-size:11px;color:#6b7280;margin:0">토큰 잔여 부족 충전 안내</p></div>
+      <div class="card" style="padding:16px;cursor:pointer" onclick="alert('편집')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#7c3aed;font-size:18px">event</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">선거일 D-day</p></div><p style="font-size:11px;color:#6b7280;margin:0">선거일 카운트다운 안내</p></div>
+      <div class="card" style="padding:16px;cursor:pointer;border:2px dashed #c4b5fd;background:#faf5ff" onclick="alert('팸플릿 에디터')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms msf" style="color:#7c3aed;font-size:18px">palette</span><p style="font-size:13px;font-weight:900;color:#7c3aed;margin:0">팸플릿 만들기</p></div><p style="font-size:11px;color:#7c3aed;margin:0">이미지 + 텍스트 + CTA 버튼 조합</p></div>
+      <div class="card" style="padding:16px;cursor:pointer;border:2px dashed #e2e8f0" onclick="alert('새 템플릿')"><div style="text-align:center;padding:8px 0"><span class="ms" style="color:#d1d5db;font-size:28px">add_circle_outline</span><p style="font-size:12px;color:#9ca3af;font-weight:700;margin:6px 0 0">새 템플릿 추가</p></div></div>
+    </div>
+  </div>
+
+  <!-- 상세 패널 -->
+  <div class="panel" id="dp">
+    <div style="padding:20px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between"><p style="font-size:14px;font-weight:900;color:#111827" id="dp-t">상세</p><button onclick="closeP()" class="btn btn-ghost" style="padding:4px 8px"><span class="ms" style="font-size:18px">close</span></button></div>
+    <div style="flex:1;overflow-y:auto;padding:20px" id="dp-b"></div>
+  </div>
+
+  </div>
+</div>
+
+<!-- 단체발송 -->
+<div class="ov" id="bulk-ov">
+  <div style="background:#fff;border-radius:20px;width:520px;max-height:80vh;overflow-y:auto;padding:28px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px"><div style="display:flex;align-items:center;gap:8px"><span class="ms msf" style="color:#7c3aed;font-size:22px">group</span><p style="font-size:16px;font-weight:900;color:#111827;margin:0">단체 발송</p></div><button onclick="document.getElementById('bulk-ov').classList.remove('show')" class="btn btn-ghost" style="padding:4px 8px"><span class="ms" style="font-size:18px">close</span></button></div>
+    <div style="background:#f5f3ff;border-radius:12px;padding:14px;margin-bottom:16px"><p style="font-size:12px;font-weight:900;color:#7c3aed;margin:0">체크박스로 수신자를 선택한 후 발송하세요</p></div>
+    <div style="margin-bottom:12px"><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">템플릿</label><select class="inp" style="font-size:12px;padding:8px 12px"><option>-- 선택 --</option><option>자동 안내</option><option>계정 발급</option><option>증명서 요청</option><option>리마인더</option><option>이벤트 할인</option></select></div>
+    <div style="margin-bottom:12px"><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">제목</label><input type="text" class="inp" style="font-size:12px;padding:8px 12px"/></div>
+    <div style="margin-bottom:16px"><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">내용 ({{이름}} 개별 치환)</label><textarea class="inp" rows="5" style="font-size:12px;resize:vertical;line-height:1.8"></textarea></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px;font-size:14px" onclick="alert('단체 발송 완료 (데모)');document.getElementById('bulk-ov').classList.remove('show')"><span class="ms" style="font-size:16px">send</span>선택 인원에게 발송</button>
+  </div>
+</div>
+
+<script>
+function doLogin(){if(document.getElementById('login-pw').value==='admin1234'){document.getElementById('login-screen').classList.remove('show')}else{document.getElementById('login-err').style.display='block'}}
+function logout(){document.getElementById('login-screen').classList.add('show');document.getElementById('login-pw').value=''}
+var TABS=['inq','app','cs','sent','inbox','tpl'];
+var TI={inq:{t:'1단계 · 문의 관리',i:'campaign'},app:{t:'2단계 · 신청 관리',i:'assignment'},cs:{t:'CS 관리',i:'support_agent'},sent:{t:'발송 내역',i:'send'},inbox:{t:'수신 메일',i:'inbox'},tpl:{t:'템플릿 관리',i:'draft'}};
+function sw(tab){TABS.forEach(function(t){document.getElementById('tab-'+t).style.display=t===tab?'block':'none';document.getElementById('nav-'+t).classList.toggle('on',t===tab)});document.getElementById('tt').textContent=TI[tab].t;document.getElementById('ti').textContent=TI[tab].i;closeP()}
+function togAll(m,g){document.querySelectorAll('.rc-'+g).forEach(function(c){c.checked=m.checked})}
+function openBulk(){document.getElementById('bulk-ov').classList.add('show')}
+
+// 상세 패널
+var APPS=[
+  {name:'홍길동',pos:'기초의원',email:'hong@gmail.com',date:'4/20',cert:true,product:'Standard'},
+  {name:'박서준',pos:'광역의원',email:'park@naver.com',date:'4/20',cert:true,product:'Premium'},
+  {name:'최유리',pos:'기초단체장',email:'choi@gmail.com',date:'4/19',cert:true,product:'Standard'},
+  {name:'김철수',pos:'광역의원',email:'kim@hanmail.net',date:'4/19',cert:false,product:'Lite'},
+  {name:'이영희',pos:'기초단체장',email:'lee@gmail.com',date:'4/18',cert:true,product:'Standard'},
+  {name:'강민호',pos:'기초의원',email:'kang@gmail.com',date:'4/17',cert:true,product:'Standard'}
+];
+var CSS=[
+  {name:'홍길동',pos:'기초의원',email:'hong@gmail.com',cat:'결제',title:'토큰 충전 오류',pri:'긴급',content:'토큰 50,000개 충전했는데 반영이 안됩니다.'},
+  {name:'박민수',pos:'기초의원',email:'parkms@gmail.com',cat:'계정',title:'비밀번호 분실',pri:'높음',content:'초기 비밀번호를 잊어버렸습니다.'},
+  {name:'이영희',pos:'기초단체장',email:'lee@gmail.com',cat:'기술',title:'통계 페이지 빈 화면',pri:'보통',content:'크롬에서 통계 탭 클릭하면 아무것도 안 나옵니다.'}
+];
+function openPanel(type,i){
+  var p=document.getElementById('dp');p.classList.add('open');
+  var b=document.getElementById('dp-b');
+  if(type==='app'){
+    var d=APPS[i];document.getElementById('dp-t').textContent='신청 상세 (2단계)';
+    b.innerHTML='<div style="text-align:center;margin-bottom:20px"><div style="width:56px;height:56px;border-radius:50%;background:#f5f3ff;display:flex;align-items:center;justify-content:center;margin:0 auto 8px"><span class="ms msf" style="color:#7c3aed;font-size:28px">person</span></div><p style="font-size:16px;font-weight:900;color:#111827">'+d.name+'</p><p style="font-size:12px;color:#9ca3af">'+d.pos+' · '+d.date+'</p></div><div style="background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:16px"><div style="display:flex;justify-content:space-between;padding:4px 0"><span style="font-size:12px;color:#9ca3af">이메일</span><span style="font-size:12px;font-weight:700">'+d.email+'</span></div><div style="display:flex;justify-content:space-between;padding:4px 0"><span style="font-size:12px;color:#9ca3af">상품</span><span style="font-size:12px;font-weight:700">'+d.product+'</span></div><div style="display:flex;justify-content:space-between;padding:4px 0"><span style="font-size:12px;color:#9ca3af">증명서</span><span style="font-size:12px;font-weight:700;color:'+(d.cert?'#15803d':'#dc2626')+'">'+(d.cert?'📎 첨부됨':'❌ 미첨부')+'</span></div></div>'+(d.cert?'<button class="btn btn-success" style="width:100%;justify-content:center;padding:12px" onclick="alert(\'승인+발급 완료\')"><span class="ms msf" style="font-size:16px">send</span>승인 + 계정 발급</button>':'<button class="btn btn-danger" style="width:100%;justify-content:center;padding:12px" onclick="alert(\'증명서 요청 발송\')"><span class="ms msf" style="font-size:16px">mail</span>증명서 요청 메일</button>');
+  } else {
+    var d=CSS[i];var cc=d.cat==='결제'?'pay':d.cat==='계정'?'acct':d.cat==='기술'?'tech':'svc';var pp=d.pri==='긴급'?'urgent':d.pri==='높음'?'high':'mid';
+    document.getElementById('dp-t').textContent='CS 상세';
+    b.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px"><div style="width:40px;height:40px;border-radius:50%;background:#f5f3ff;display:flex;align-items:center;justify-content:center"><span class="ms msf" style="color:#7c3aed;font-size:22px">person</span></div><div><p style="font-size:14px;font-weight:900;color:#111827">'+d.name+'</p><p style="font-size:11px;color:#9ca3af">'+d.pos+' · '+d.email+'</p></div></div><div style="background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:16px"><div style="display:flex;gap:6px;margin-bottom:8px"><span class="cat cat-'+cc+'">'+d.cat+'</span><span class="pr pr-'+pp+'">'+d.pri+'</span></div><p style="font-size:14px;font-weight:900;color:#111827;margin-bottom:8px">'+d.title+'</p><p style="font-size:12px;color:#374151;line-height:1.6">'+d.content+'</p></div><p style="font-size:12px;font-weight:900;color:#374151;margin-bottom:8px">답변 작성</p><textarea class="inp" rows="4" placeholder="답변..." style="margin-bottom:12px;resize:vertical"></textarea><div style="display:flex;gap:8px"><button class="btn btn-primary" style="flex:1;justify-content:center" onclick="alert(\'답변 발송\')"><span class="ms" style="font-size:14px">send</span>답변 발송</button><button class="btn btn-ghost" onclick="alert(\'완료\')"><span class="ms" style="font-size:14px">check_circle</span>완료</button></div>';
+  }
+}
+function closeP(){document.getElementById('dp').classList.remove('open')}
+</script>
+</body>
+</html>
