@@ -237,16 +237,115 @@
   </div>
 
   <div id="tab-tpl" class="content" style="flex:1;display:none">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><div style="display:flex;align-items:center;gap:8px"><span class="ms msf" style="color:#7c3aed;font-size:20px">draft</span><p style="font-size:15px;font-weight:900;color:#111827;margin:0">템플릿 관리</p></div><button class="btn btn-primary" onclick="alert('새 템플릿')"><span class="ms" style="font-size:14px">add</span>새 템플릿</button></div>
+
+    <!-- ═══ 1차 자동발송 메일 편집 ═══ -->
+    <div class="card" style="padding:24px;margin-bottom:20px;border:2px solid #7c3aed">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="ms msf" style="color:#7c3aed;font-size:22px">auto_awesome</span>
+          <div>
+            <p style="font-size:15px;font-weight:900;color:#111827;margin:0">1차 자동 안내 메일</p>
+            <p style="font-size:11px;color:#9ca3af;margin:1px 0 0">랜딩페이지 문의 시 즉시 자동 발송</p>
+          </div>
+          <span class="step-label" style="margin-left:8px">자동</span>
+        </div>
+        <button class="btn btn-primary" onclick="saveAutoMail()"><span class="ms" style="font-size:14px">save</span>저장</button>
+      </div>
+      <div style="margin-bottom:12px">
+        <label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">메일 제목</label>
+        <input type="text" id="auto-subject" class="inp" value="[일꾼을찾다] 안내서 및 신청서를 보내드립니다" style="font-size:13px"/>
+      </div>
+      <div style="margin-bottom:12px">
+        <label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">메일 본문 <span style="color:#a78bfa">{{이름}} {{이메일}} 자동 치환</span></label>
+        <textarea id="auto-body" class="inp" rows="10" style="font-size:12px;line-height:1.8;resize:vertical">{{이름}}님 안녕하세요, 일꾼을찾다입니다.
+
+문의 감사합니다.
+안내서와 신청서를 보내드립니다.
+
+📎 첨부파일을 확인해주세요.
+
+신청서 작성 후 후보자 확인증과 함께
+📩 ilkkun.official@gmail.com 으로 보내주세요.
+
+접수 후 1영업일 내 대시보드를 발급해드립니다.
+
+감사합니다.
+일꾼을찾다 팀 드림</textarea>
+      </div>
+      <!-- 첨부파일 선택 -->
+      <div style="background:#f5f3ff;border:1px solid #ede9fe;border-radius:12px;padding:14px">
+        <p style="font-size:12px;font-weight:900;color:#7c3aed;margin:0 0 8px">📎 자동 첨부 파일</p>
+        <div id="auto-attach-list">
+          <label style="display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer;border-bottom:1px solid #ede9fe">
+            <input type="checkbox" class="chk" checked/><span class="ms" style="color:#dc2626;font-size:16px">picture_as_pdf</span>
+            <span style="font-size:12px;font-weight:600;color:#374151;flex:1">안내서_v2.pdf</span>
+            <span style="font-size:10px;color:#9ca3af">1.2MB</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer;border-bottom:1px solid #ede9fe">
+            <input type="checkbox" class="chk" checked/><span class="ms" style="color:#3b82f6;font-size:16px">description</span>
+            <span style="font-size:12px;font-weight:600;color:#374151;flex:1">신청서_양식.docx</span>
+            <span style="font-size:10px;color:#9ca3af">340KB</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer">
+            <input type="checkbox" class="chk"/><span class="ms" style="color:#22c55e;font-size:16px">image</span>
+            <span style="font-size:12px;font-weight:600;color:#374151;flex:1">서비스_가이드.png</span>
+            <span style="font-size:10px;color:#9ca3af">820KB</span>
+          </label>
+        </div>
+      </div>
+      <button class="btn btn-ghost" style="margin-top:10px;width:100%;justify-content:center" onclick="alert('미리보기:\n\n'+document.getElementById('auto-body').value.replace(/\{\{이름\}\}/g,'홍길동'))"><span class="ms" style="font-size:14px">visibility</span>미리보기</button>
+    </div>
+
+    <!-- ═══ 첨부파일 관리 ═══ -->
+    <div class="card" style="padding:24px;margin-bottom:20px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="ms msf" style="color:#7c3aed;font-size:20px">folder</span>
+          <p style="font-size:15px;font-weight:900;color:#111827;margin:0">첨부파일 관리</p>
+        </div>
+        <button class="btn btn-primary" onclick="document.getElementById('file-upload-input').click()"><span class="ms" style="font-size:14px">upload</span>파일 업로드</button>
+        <input type="file" id="file-upload-input" style="display:none" multiple onchange="handleFileUpload(this)"/>
+      </div>
+      <table class="tbl">
+        <thead><tr><th>파일명</th><th>크기</th><th>업로드일</th><th>용도</th><th>액션</th></tr></thead>
+        <tbody id="file-tbody">
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:6px"><span class="ms" style="color:#dc2626;font-size:16px">picture_as_pdf</span><span style="font-weight:700">안내서_v2.pdf</span></div></td>
+            <td>1.2MB</td><td>4/15</td>
+            <td><span class="step-label">1차 자동</span></td>
+            <td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px" onclick="alert('미리보기')"><span class="ms" style="font-size:13px">visibility</span></button> <button class="btn btn-ghost" style="padding:3px 8px;font-size:10px" onclick="alert('다운로드')"><span class="ms" style="font-size:13px">download</span></button> <button class="btn btn-ghost" style="padding:3px 8px;font-size:10px;color:#dc2626;border-color:#fecaca" onclick="if(confirm('삭제하시겠습니까?'))this.closest('tr').remove()"><span class="ms" style="font-size:13px">delete</span></button></td>
+          </tr>
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:6px"><span class="ms" style="color:#3b82f6;font-size:16px">description</span><span style="font-weight:700">신청서_양식.docx</span></div></td>
+            <td>340KB</td><td>4/10</td>
+            <td><span class="step-label">1차 자동</span></td>
+            <td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px" onclick="alert('미리보기')"><span class="ms" style="font-size:13px">visibility</span></button> <button class="btn btn-ghost" style="padding:3px 8px;font-size:10px" onclick="alert('다운로드')"><span class="ms" style="font-size:13px">download</span></button> <button class="btn btn-ghost" style="padding:3px 8px;font-size:10px;color:#dc2626;border-color:#fecaca" onclick="if(confirm('삭제하시겠습니까?'))this.closest('tr').remove()"><span class="ms" style="font-size:13px">delete</span></button></td>
+          </tr>
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:6px"><span class="ms" style="color:#22c55e;font-size:16px">image</span><span style="font-weight:700">서비스_가이드.png</span></div></td>
+            <td>820KB</td><td>4/10</td>
+            <td><span style="font-size:10px;color:#9ca3af">미지정</span></td>
+            <td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px" onclick="alert('미리보기')"><span class="ms" style="font-size:13px">visibility</span></button> <button class="btn btn-ghost" style="padding:3px 8px;font-size:10px" onclick="alert('다운로드')"><span class="ms" style="font-size:13px">download</span></button> <button class="btn btn-ghost" style="padding:3px 8px;font-size:10px;color:#dc2626;border-color:#fecaca" onclick="if(confirm('삭제하시겠습니까?'))this.closest('tr').remove()"><span class="ms" style="font-size:13px">delete</span></button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ═══ 수동 발송 템플릿 목록 ═══ -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="ms msf" style="color:#7c3aed;font-size:20px">draft</span>
+        <p style="font-size:15px;font-weight:900;color:#111827;margin:0">수동 발송 템플릿</p>
+      </div>
+      <button class="btn btn-primary" onclick="alert('새 템플릿')"><span class="ms" style="font-size:14px">add</span>새 템플릿</button>
+    </div>
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px">
-      <div class="card" style="padding:16px;cursor:pointer" onclick="alert('편집')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#3b82f6;font-size:18px">auto_awesome</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">1단계 · 자동 안내</p><span class="step-label" style="margin-left:auto">자동</span></div><p style="font-size:11px;color:#6b7280;margin:0">안내서 + 신청서 링크 발송</p></div>
-      <div class="card" style="padding:16px;cursor:pointer" onclick="alert('편집')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#22c55e;font-size:18px">key</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">2단계 · 계정 발급</p></div><p style="font-size:11px;color:#6b7280;margin:0">대시보드 URL + ID + 임시 비밀번호</p></div>
-      <div class="card" style="padding:16px;cursor:pointer" onclick="alert('편집')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#dc2626;font-size:18px">description</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">2단계 · 증명서 요청</p></div><p style="font-size:11px;color:#6b7280;margin:0">후보자 확인증 미첨부 안내</p></div>
-      <div class="card" style="padding:16px;cursor:pointer" onclick="alert('편집')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#f59e0b;font-size:18px">schedule_send</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">리마인더 (1단계/2단계)</p></div><p style="font-size:11px;color:#6b7280;margin:0">미신청/미제출 리마인더</p></div>
-      <div class="card" style="padding:16px;cursor:pointer" onclick="alert('편집')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#3b82f6;font-size:18px">reply</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">CS 답변</p></div><p style="font-size:11px;color:#6b7280;margin:0">고객 문의 답변 기본 템플릿</p></div>
-      <div class="card" style="padding:16px;cursor:pointer" onclick="alert('편집')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#f59e0b;font-size:18px">local_fire_department</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">이벤트 할인 안내</p></div><p style="font-size:11px;color:#6b7280;margin:0">할인 프로모션 메일</p></div>
-      <div class="card" style="padding:16px;cursor:pointer" onclick="alert('편집')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#ef4444;font-size:18px">warning</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">토큰 부족 알림</p></div><p style="font-size:11px;color:#6b7280;margin:0">토큰 잔여 부족 충전 안내</p></div>
-      <div class="card" style="padding:16px;cursor:pointer" onclick="alert('편집')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#7c3aed;font-size:18px">event</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">선거일 D-day</p></div><p style="font-size:11px;color:#6b7280;margin:0">선거일 카운트다운 안내</p></div>
+      <div class="card" style="padding:16px;cursor:pointer" onclick="openTplEdit('2단계 · 계정 발급','[일꾼을찾다] 대시보드 계정이 발급되었습니다','{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n대시보드 계정이 발급되었습니다.\n\n━━━━━━━━━━━━━━━━━━━━\n🔗 대시보드: {{대시보드링크}}\n📧 ID: {{이메일}}\n🔑 임시 비밀번호: {{비밀번호}}\n━━━━━━━━━━━━━━━━━━━━\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n\n감사합니다.\n일꾼을찾다 팀')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#22c55e;font-size:18px">key</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">2단계 · 계정 발급</p></div><p style="font-size:11px;color:#6b7280;margin:0">대시보드 URL + ID + 임시 비밀번호</p></div>
+      <div class="card" style="padding:16px;cursor:pointer" onclick="openTplEdit('2단계 · 증명서 요청','[일꾼을찾다] 후보자 확인증을 보내주세요','{{이름}}님 안녕하세요.\n\n신청서를 접수받았으나 후보자 확인증이 첨부되어 있지 않습니다.\n\n📩 ilkkun.official@gmail.com 으로 확인증을 보내주세요.\n\n감사합니다.\n일꾼을찾다 팀')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#dc2626;font-size:18px">description</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">2단계 · 증명서 요청</p></div><p style="font-size:11px;color:#6b7280;margin:0">후보자 확인증 미첨부 안내</p></div>
+      <div class="card" style="padding:16px;cursor:pointer" onclick="openTplEdit('리마인더','[일꾼을찾다] 신청서 제출 안내','{{이름}}님 안녕하세요.\n\n지난번 안내드린 신청서가 아직 접수되지 않았습니다.\n미제출 시 서비스 이용이 불가합니다.\n\n📩 ilkkun.official@gmail.com\n\n감사합니다.\n일꾼을찾다 팀')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#f59e0b;font-size:18px">schedule_send</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">리마인더</p></div><p style="font-size:11px;color:#6b7280;margin:0">미신청/미제출 리마인더</p></div>
+      <div class="card" style="padding:16px;cursor:pointer" onclick="openTplEdit('CS 답변','[일꾼을찾다] 문의 답변드립니다','{{이름}}님 안녕하세요.\n\n문의하신 내용에 답변드립니다.\n\n──────────────────\n(답변 내용)\n──────────────────\n\n추가 문의는 본 메일에 회신해주세요.\n\n감사합니다.\n일꾼을찾다 팀')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#3b82f6;font-size:18px">reply</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">CS 답변</p></div><p style="font-size:11px;color:#6b7280;margin:0">고객 문의 답변 기본 템플릿</p></div>
+      <div class="card" style="padding:16px;cursor:pointer" onclick="openTplEdit('이벤트 할인','[일꾼을찾다] 🔥 특별 할인 안내','{{이름}}님 안녕하세요.\n\n지금 토큰 충전 시 최대 45% 할인!\n\n🔥 1차 이벤트 (4월): 최대 혜택\n⏰ 2차 이벤트 (5/1~10): 마지막 기회\n\n👉 충전하기: {{대시보드링크}}\n\n감사합니다.\n일꾼을찾다 팀')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#f59e0b;font-size:18px">local_fire_department</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">이벤트 할인 안내</p></div><p style="font-size:11px;color:#6b7280;margin:0">할인 프로모션 메일</p></div>
+      <div class="card" style="padding:16px;cursor:pointer" onclick="openTplEdit('토큰 부족','[일꾼을찾다] ⚠️ 토큰 부족','{{이름}}님 안녕하세요.\n\n토큰 잔여량이 부족합니다.\n소진 시 AI 아바타 운영이 중단됩니다.\n\n👉 충전하기: {{대시보드링크}}\n\n감사합니다.\n일꾼을찾다 팀')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#ef4444;font-size:18px">warning</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">토큰 부족 알림</p></div><p style="font-size:11px;color:#6b7280;margin:0">토큰 잔여 부족 충전 안내</p></div>
       <div class="card" style="padding:16px;cursor:pointer;border:2px dashed #c4b5fd;background:#faf5ff" onclick="alert('팸플릿 에디터')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms msf" style="color:#7c3aed;font-size:18px">palette</span><p style="font-size:13px;font-weight:900;color:#7c3aed;margin:0">팸플릿 만들기</p></div><p style="font-size:11px;color:#7c3aed;margin:0">이미지 + 텍스트 + CTA 버튼 조합</p></div>
       <div class="card" style="padding:16px;cursor:pointer;border:2px dashed #e2e8f0" onclick="alert('새 템플릿')"><div style="text-align:center;padding:8px 0"><span class="ms" style="color:#d1d5db;font-size:28px">add_circle_outline</span><p style="font-size:12px;color:#9ca3af;font-weight:700;margin:6px 0 0">새 템플릿 추가</p></div></div>
     </div>
@@ -417,6 +516,54 @@ function openPanel(type,i){
   }
 }
 function closeP(){document.getElementById('dp').classList.remove('open')}
+
+// ═══ 자동발송 메일 저장 ═══
+function saveAutoMail(){
+  var subj=document.getElementById('auto-subject').value;
+  var body=document.getElementById('auto-body').value;
+  localStorage.setItem('autoMailSubject',subj);
+  localStorage.setItem('autoMailBody',body);
+  alert('✅ 자동 안내 메일 저장 완료\n\n제목: '+subj);
+}
+// 로드 시 복원
+window.addEventListener('DOMContentLoaded',function(){
+  var s=localStorage.getItem('autoMailSubject');
+  var b=localStorage.getItem('autoMailBody');
+  if(s) document.getElementById('auto-subject').value=s;
+  if(b) document.getElementById('auto-body').value=b;
+});
+
+// ═══ 파일 업로드 ═══
+function handleFileUpload(input){
+  var files=input.files;
+  if(!files.length) return;
+  var tb=document.getElementById('file-tbody');
+  for(var i=0;i<files.length;i++){
+    var f=files[i];
+    var ext=f.name.split('.').pop().toLowerCase();
+    var icon=ext==='pdf'?'picture_as_pdf':ext==='doc'||ext==='docx'?'description':ext==='png'||ext==='jpg'||ext==='jpeg'?'image':'insert_drive_file';
+    var color=ext==='pdf'?'#dc2626':ext==='doc'||ext==='docx'?'#3b82f6':'#22c55e';
+    var size=f.size>1024*1024?(f.size/1024/1024).toFixed(1)+'MB':(f.size/1024).toFixed(0)+'KB';
+    var today=new Date();var dateStr=(today.getMonth()+1)+'/'+today.getDate();
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><div style="display:flex;align-items:center;gap:6px"><span class="ms" style="color:'+color+';font-size:16px">'+icon+'</span><span style="font-weight:700">'+f.name+'</span></div></td><td>'+size+'</td><td>'+dateStr+'</td><td><span style="font-size:10px;color:#9ca3af">미지정</span></td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px" onclick="alert(\'미리보기\')"><span class="ms" style="font-size:13px">visibility</span></button> <button class="btn btn-ghost" style="padding:3px 8px;font-size:10px;color:#dc2626;border-color:#fecaca" onclick="if(confirm(\'삭제?\'))this.closest(\'tr\').remove()"><span class="ms" style="font-size:13px">delete</span></button></td>';
+    tb.appendChild(tr);
+  }
+  input.value='';
+  alert('✅ '+files.length+'개 파일 업로드 완료');
+}
+
+// ═══ 템플릿 편집 오버레이 ═══
+function openTplEdit(name,subj,body){
+  document.getElementById('dp').classList.add('open');
+  document.getElementById('dp-t').textContent=name+' 편집';
+  document.getElementById('dp-b').innerHTML=
+    '<div style="margin-bottom:12px"><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">템플릿 이름</label><input type="text" class="inp" value="'+name+'" style="font-size:13px"/></div>'+
+    '<div style="margin-bottom:12px"><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">메일 제목</label><input type="text" class="inp" value="'+subj+'" style="font-size:13px"/></div>'+
+    '<div style="margin-bottom:12px"><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">메일 본문 <span style="color:#a78bfa">{{이름}} {{이메일}} {{비밀번호}} {{대시보드링크}}</span></label><textarea class="inp" rows="12" style="font-size:12px;resize:vertical;line-height:1.8">'+body+'</textarea></div>'+
+    '<div style="margin-bottom:12px"><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">첨부파일 선택</label><div style="background:#f8fafc;border:1px solid #e8edf3;border-radius:10px;padding:10px"><label style="display:flex;align-items:center;gap:6px;padding:4px 0;cursor:pointer"><input type="checkbox" class="chk"/><span style="font-size:12px">안내서_v2.pdf</span></label><label style="display:flex;align-items:center;gap:6px;padding:4px 0;cursor:pointer"><input type="checkbox" class="chk"/><span style="font-size:12px">신청서_양식.docx</span></label><label style="display:flex;align-items:center;gap:6px;padding:4px 0;cursor:pointer"><input type="checkbox" class="chk"/><span style="font-size:12px">서비스_가이드.png</span></label></div></div>'+
+    '<div style="display:flex;gap:8px"><button class="btn btn-primary" style="flex:1;justify-content:center;padding:10px" onclick="alert(\'저장 완료\');closeP()"><span class="ms" style="font-size:14px">save</span>저장</button><button class="btn btn-ghost" style="padding:10px" onclick="closeP()">취소</button></div>';
+}
 </script>
 </body>
 </html>
