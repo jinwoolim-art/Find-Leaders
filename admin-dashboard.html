@@ -132,8 +132,9 @@
       </table>
     </div>
     <div style="margin-top:12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px">
-      <span class="ms" style="color:#3b82f6;font-size:16px">info</span>
-      <p style="font-size:11px;color:#1d4ed8;font-weight:600;margin:0">랜딩페이지 문의 시 안내서 + 신청서 링크가 자동 발송됩니다. 3일 미신청 시 리마인더, 7일 초과 시 만료 처리됩니다.</p>
+      <span class="ms" style="color:#3b82f6;font-size:16px">cloud_sync</span>
+      <p style="font-size:11px;color:#1d4ed8;font-weight:600;margin:0" id="inq-status">⏳ 구글 시트 연결 중...</p>
+      <button class="btn btn-ghost" style="margin-left:auto;padding:4px 10px;font-size:10px" onclick="loadAllData()"><span class="ms" style="font-size:13px">refresh</span>새로고침</button>
     </div>
   </div>
 
@@ -171,6 +172,11 @@
         </tbody>
       </table>
     </div>
+    <div style="margin-top:12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px">
+      <span class="ms" style="color:#3b82f6;font-size:16px">cloud_sync</span>
+      <p style="font-size:11px;color:#1d4ed8;font-weight:600;margin:0" id="app-status">⏳ 구글 시트 연결 중...</p>
+      <button class="btn btn-ghost" style="margin-left:auto;padding:4px 10px;font-size:10px" onclick="loadAllData()"><span class="ms" style="font-size:13px">refresh</span>새로고침</button>
+    </div>
   </div>
 
   <!-- ══════════════════════════════ -->
@@ -202,6 +208,11 @@
           <tr><td>4/17</td><td style="font-weight:700">정수빈</td><td><span class="cat cat-pay">결제</span></td><td>가입비 영수증 요청</td><td><span class="pr pr-low">일반</span></td><td>관리자B</td><td><span class="st st-closed">완료</span></td></tr>
         </tbody>
       </table>
+    </div>
+    <div style="margin-top:12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px">
+      <span class="ms" style="color:#3b82f6;font-size:16px">cloud_sync</span>
+      <p style="font-size:11px;color:#1d4ed8;font-weight:600;margin:0" id="cs-status">⏳ 구글 시트 연결 중...</p>
+      <button class="btn btn-ghost" style="margin-left:auto;padding:4px 10px;font-size:10px" onclick="loadAllData()"><span class="ms" style="font-size:13px">refresh</span>새로고침</button>
     </div>
   </div>
 
@@ -285,7 +296,72 @@
 </div>
 
 <script>
-function doLogin(){if(document.getElementById('login-pw').value==='admin1234'){document.getElementById('login-screen').classList.remove('show')}else{document.getElementById('login-err').style.display='block'}}
+// ═══ Google Sheets API ═══
+var API_KEY='AIzaSyCcecnzIyrLu4HCzxlhwx5LJbbey6YfJY4';
+var SHEET_ID='1LAIocXzfb1rLUrdBgqU9JNOpHUd90g9dKL5Xh4YiMeE';
+var SHEETS_URL='https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID+'/values/';
+
+function fetchSheet(tabName, callback){
+  fetch(SHEETS_URL+encodeURIComponent(tabName)+'!A:Z?key='+API_KEY)
+    .then(function(r){return r.json()})
+    .then(function(data){
+      if(data.values && data.values.length>1){
+        var headers=data.values[0];
+        var rows=data.values.slice(1).map(function(row){
+          var obj={};
+          headers.forEach(function(h,i){obj[h]=row[i]||''});
+          return obj;
+        });
+        callback(rows);
+      } else {
+        callback([]);
+      }
+    })
+    .catch(function(err){console.log('Sheet fetch error:',tabName,err);callback(null)});
+}
+
+function loadAllData(){
+  // 문의관리
+  fetchSheet('문의관리',function(rows){
+    if(!rows){document.getElementById('inq-status').textContent='시트 연결 실패';return}
+    if(rows.length===0){document.getElementById('inq-status').textContent='데이터 없음 (시트에 데이터를 추가하세요)';return}
+    document.getElementById('inq-status').textContent='✅ 시트 연결됨 · '+rows.length+'건';
+    renderInqTable(rows);
+  });
+  // 신청관리
+  fetchSheet('신청관리',function(rows){
+    if(!rows||rows.length===0) return;
+    document.getElementById('app-status').textContent='✅ '+rows.length+'건';
+    renderAppTable(rows);
+  });
+  // CS
+  fetchSheet('CS',function(rows){
+    if(!rows||rows.length===0) return;
+    document.getElementById('cs-status').textContent='✅ '+rows.length+'건';
+    renderCSTable(rows);
+  });
+  // 발송내역
+  fetchSheet('발송내역',function(rows){
+    if(!rows||rows.length===0) return;
+    document.getElementById('sent-status').textContent='✅ '+rows.length+'건';
+  });
+}
+
+function renderInqTable(rows){
+  var applied=rows.filter(function(r){return r['신청여부']==='Y'||r['상태']==='신청접수'}).length;
+  var nosub=rows.filter(function(r){return r['신청여부']!=='Y'&&r['상태']!=='신청접수'&&r['상태']!=='만료'}).length;
+  var expired=rows.filter(function(r){return r['상태']==='만료'}).length;
+  // 퍼널 업데이트
+  document.querySelectorAll('.funnel-item .fn')[0].textContent=rows.length;
+  document.querySelectorAll('.funnel-item .fn')[1].textContent=applied;
+  document.querySelectorAll('.funnel-item .fn')[2].textContent=nosub;
+  document.querySelectorAll('.funnel-item .fn')[3].textContent=expired;
+}
+
+function renderAppTable(rows){}
+function renderCSTable(rows){}
+
+function doLogin(){if(document.getElementById('login-pw').value==='admin1234'){document.getElementById('login-screen').classList.remove('show');loadAllData()}else{document.getElementById('login-err').style.display='block'}}
 function logout(){document.getElementById('login-screen').classList.add('show');document.getElementById('login-pw').value=''}
 var TABS=['inq','app','cs','sent','inbox','tpl'];
 var TI={inq:{t:'1단계 · 문의 관리',i:'campaign'},app:{t:'2단계 · 신청 관리',i:'assignment'},cs:{t:'CS 관리',i:'support_agent'},sent:{t:'발송 내역',i:'send'},inbox:{t:'수신 메일',i:'inbox'},tpl:{t:'템플릿 관리',i:'draft'}};
