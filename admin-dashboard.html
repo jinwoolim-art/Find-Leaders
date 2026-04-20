@@ -76,6 +76,7 @@
     <div class="sn on" id="nav-inq" onclick="sw('inq')"><span class="ms">campaign</span>1단계 · 문의<span class="bdg" style="background:#3b82f6">5</span></div>
     <div class="sn" id="nav-app" onclick="sw('app')"><span class="ms">assignment</span>2단계 · 신청<span class="bdg">3</span></div>
     <p style="color:#4b5563;font-size:9px;font-weight:700;padding:16px 14px 4px;text-transform:uppercase;letter-spacing:.05em">운영</p>
+    <div class="sn" id="nav-acct" onclick="sw('acct')"><span class="ms">vpn_key</span>계정 발급<span class="bdg" style="background:#22c55e">2</span></div>
     <div class="sn" id="nav-cs" onclick="sw('cs')"><span class="ms">support_agent</span>CS 관리<span class="bdg" style="background:#f59e0b">2</span></div>
     <div class="sn" id="nav-sent" onclick="sw('sent')"><span class="ms">send</span>발송 내역</div>
     <div class="sn" id="nav-inbox" onclick="sw('inbox')"><span class="ms">inbox</span>수신 메일<span class="bdg" style="background:#3b82f6">4</span></div>
@@ -160,6 +161,103 @@
       <span class="ms" style="color:#3b82f6;font-size:16px">cloud_sync</span>
       <p style="font-size:11px;color:#1d4ed8;font-weight:600;margin:0" id="app-status">⏳ 구글 시트 연결 중...</p>
       <button class="btn btn-ghost" style="margin-left:auto;padding:4px 10px;font-size:10px" onclick="loadAllData()"><span class="ms" style="font-size:13px">refresh</span>새로고침</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ -->
+  <!-- 계정 발급 -->
+  <!-- ══════════════════════════════ -->
+  <div id="tab-acct" class="content" style="flex:1;display:none">
+    <!-- 요약 카드 -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+      <div class="sc"><p style="font-size:24px;font-weight:900;color:#111827" id="acct-total">0</p><p style="font-size:11px;color:#9ca3af;font-weight:600">전체</p></div>
+      <div class="sc" style="border-color:#fef3c7"><p style="font-size:24px;font-weight:900;color:#92400e" id="acct-pending">0</p><p style="font-size:11px;color:#92400e;font-weight:600">생성 대기</p></div>
+      <div class="sc" style="border-color:#bfdbfe"><p style="font-size:24px;font-weight:900;color:#1d4ed8" id="acct-sent">0</p><p style="font-size:11px;color:#1d4ed8;font-weight:600">관리자 전달</p></div>
+      <div class="sc" style="border-color:#bbf7d0"><p style="font-size:24px;font-weight:900;color:#15803d" id="acct-done">0</p><p style="font-size:11px;color:#15803d;font-weight:600">활성화 완료</p></div>
+    </div>
+
+    <!-- ID/PW 생성기 -->
+    <div class="card" style="padding:24px;margin-bottom:20px;border:2px solid #7c3aed">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:18px">
+        <span class="ms msf" style="color:#7c3aed;font-size:22px">vpn_key</span>
+        <div>
+          <p style="font-size:15px;font-weight:900;color:#111827;margin:0">계정 생성</p>
+          <p style="font-size:11px;color:#9ca3af;margin:1px 0 0">승인된 후보자의 ID/PW를 생성합니다</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">후보자명 *</label>
+          <input type="text" id="gen-name" class="inp" placeholder="홍길동" style="font-size:13px" oninput="previewAccount()"/>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">이메일 *</label>
+          <input type="text" id="gen-email" class="inp" placeholder="hong@gmail.com" style="font-size:13px"/>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">직급</label>
+          <select id="gen-pos" class="inp" style="font-size:13px"><option>기초의원</option><option>광역의원</option><option>기초단체장</option><option>광역단체장</option><option>교육감</option></select>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">플랫폼 관리자 이메일</label>
+          <input type="text" id="gen-admin-email" class="inp" value="" placeholder="플랫폼 관리자 이메일" style="font-size:13px"/>
+        </div>
+      </div>
+
+      <!-- 생성 결과 미리보기 -->
+      <div id="gen-preview" style="background:#f5f3ff;border:1px solid #ede9fe;border-radius:14px;padding:18px;margin-bottom:16px;display:none">
+        <p style="font-size:12px;font-weight:900;color:#7c3aed;margin:0 0 10px">생성된 계정 미리보기</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div style="background:#fff;border-radius:10px;padding:12px;border:1px solid #ede9fe">
+            <p style="font-size:10px;color:#9ca3af;margin:0 0 4px">ID</p>
+            <div style="display:flex;align-items:center;gap:6px">
+              <p style="font-size:15px;font-weight:900;color:#111827;margin:0;flex:1" id="gen-id-val">—</p>
+              <button class="btn btn-ghost" style="padding:2px 6px;font-size:9px" onclick="copyText('gen-id-val')"><span class="ms" style="font-size:13px">content_copy</span></button>
+            </div>
+          </div>
+          <div style="background:#fff;border-radius:10px;padding:12px;border:1px solid #ede9fe">
+            <p style="font-size:10px;color:#9ca3af;margin:0 0 4px">임시 비밀번호</p>
+            <div style="display:flex;align-items:center;gap:6px">
+              <p style="font-size:15px;font-weight:900;color:#111827;margin:0;flex:1" id="gen-pw-val">—</p>
+              <button class="btn btn-ghost" style="padding:2px 6px;font-size:9px" onclick="copyText('gen-pw-val')"><span class="ms" style="font-size:13px">content_copy</span></button>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-ghost" style="margin-top:8px;font-size:10px" onclick="regeneratePW()"><span class="ms" style="font-size:13px">refresh</span>비밀번호 재생성</button>
+      </div>
+
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-primary" style="flex:1;justify-content:center;padding:12px;font-size:14px" onclick="generateAccount()">
+          <span class="ms msf" style="font-size:16px">vpn_key</span>ID/PW 생성
+        </button>
+        <button class="btn btn-success" style="flex:1;justify-content:center;padding:12px;font-size:14px" id="btn-send-admin" onclick="sendToAdmin()" disabled>
+          <span class="ms" style="font-size:16px">send</span>플랫폼 관리자에게 전달
+        </button>
+      </div>
+    </div>
+
+    <!-- 발급 내역 테이블 -->
+    <div class="card" style="overflow:hidden">
+      <div style="padding:14px 16px 0">
+        <p style="font-size:14px;font-weight:900;color:#111827;margin-bottom:10px">계정 발급 내역</p>
+        <div class="fr" style="margin-bottom:10px">
+          <select class="sel"><option>상태 전체</option><option>생성 대기</option><option>관리자 전달</option><option>활성화 완료</option><option>후보자 발송</option></select>
+          <input type="text" class="inp" placeholder="이름, ID 검색..." style="width:180px;padding:6px 10px;font-size:11px"/>
+        </div>
+      </div>
+      <table class="tbl">
+        <thead><tr><th>발급일</th><th>후보자</th><th>직급</th><th>ID</th><th>PW</th><th>플랫폼 전달</th><th>활성화</th><th>후보자 발송</th></tr></thead>
+        <tbody id="acct-tbody">
+          <tr><td colspan="8" style="text-align:center;padding:40px;color:#9ca3af">생성된 계정이 없습니다</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px">
+      <span class="ms" style="color:#f59e0b;font-size:16px">info</span>
+      <p style="font-size:11px;color:#92400e;font-weight:600;margin:0">D안: 생성 → 시트 기록 → 플랫폼 관리자 전달 → 활성화 확인 → 후보자 발송 | API 연동 후 A안으로 자동 전환 예정</p>
     </div>
   </div>
 
@@ -481,10 +579,10 @@ function openCSFromSheet(i){
   document.getElementById('dp-b').innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px"><div style="width:40px;height:40px;border-radius:50%;background:#f5f3ff;display:flex;align-items:center;justify-content:center"><span class="ms msf" style="color:#7c3aed;font-size:22px">person</span></div><div><p style="font-size:14px;font-weight:900;color:#111827">'+d['후보자명']+'</p><p style="font-size:11px;color:#9ca3af">'+d['이메일']+'</p></div></div><div style="background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:16px"><div style="display:flex;gap:6px;margin-bottom:8px"><span class="cat cat-'+(catMap[d['분류']]||'etc')+'">'+(d['분류']||'')+'</span><span class="pr pr-'+(priMap[d['우선순위']]||'low')+'">'+(d['우선순위']||'')+'</span></div><p style="font-size:14px;font-weight:900;color:#111827;margin-bottom:8px">'+d['제목']+'</p><p style="font-size:12px;color:#374151;line-height:1.6">'+(d['내용']||'')+'</p></div><p style="font-size:12px;font-weight:900;color:#374151;margin-bottom:8px">답변 작성</p><textarea class="inp" rows="4" placeholder="답변..." style="margin-bottom:12px;resize:vertical">'+(d['답변']||'')+'</textarea><div style="display:flex;gap:8px"><button class="btn btn-primary" style="flex:1;justify-content:center" onclick="alert(\'답변 발송: '+d['후보자명']+'\')"><span class="ms" style="font-size:14px">send</span>답변 발송</button><button class="btn btn-ghost" onclick="alert(\'완료 처리\')"><span class="ms" style="font-size:14px">check_circle</span>완료</button></div>';
 }
 
-function doLogin(){if(document.getElementById('login-pw').value==='admin1234'){document.getElementById('login-screen').classList.remove('show');loadAllData()}else{document.getElementById('login-err').style.display='block'}}
+function doLogin(){if(document.getElementById('login-pw').value==='admin1234'){document.getElementById('login-screen').classList.remove('show');loadAllData();renderAcctTable()}else{document.getElementById('login-err').style.display='block'}}
 function logout(){document.getElementById('login-screen').classList.add('show');document.getElementById('login-pw').value=''}
-var TABS=['inq','app','cs','sent','inbox','tpl'];
-var TI={inq:{t:'1단계 · 문의 관리',i:'campaign'},app:{t:'2단계 · 신청 관리',i:'assignment'},cs:{t:'CS 관리',i:'support_agent'},sent:{t:'발송 내역',i:'send'},inbox:{t:'수신 메일',i:'inbox'},tpl:{t:'템플릿 관리',i:'draft'}};
+var TABS=['inq','app','acct','cs','sent','inbox','tpl'];
+var TI={inq:{t:'1단계 · 문의 관리',i:'campaign'},app:{t:'2단계 · 신청 관리',i:'assignment'},acct:{t:'계정 발급',i:'vpn_key'},cs:{t:'CS 관리',i:'support_agent'},sent:{t:'발송 내역',i:'send'},inbox:{t:'수신 메일',i:'inbox'},tpl:{t:'템플릿 관리',i:'draft'}};
 function sw(tab){TABS.forEach(function(t){document.getElementById('tab-'+t).style.display=t===tab?'block':'none';document.getElementById('nav-'+t).classList.toggle('on',t===tab)});document.getElementById('tt').textContent=TI[tab].t;document.getElementById('ti').textContent=TI[tab].i;closeP()}
 function togAll(m,g){document.querySelectorAll('.rc-'+g).forEach(function(c){c.checked=m.checked})}
 function openBulk(){document.getElementById('bulk-ov').classList.add('show')}
@@ -516,6 +614,127 @@ function openPanel(type,i){
   }
 }
 function closeP(){document.getElementById('dp').classList.remove('open')}
+
+// ═══ 한글 → 영타 변환 ═══
+var KO_EN={'ㄱ':'r','ㄲ':'R','ㄴ':'s','ㄷ':'e','ㄸ':'E','ㄹ':'f','ㅁ':'a','ㅂ':'q','ㅃ':'Q','ㅅ':'t','ㅆ':'T','ㅇ':'d','ㅈ':'w','ㅉ':'W','ㅊ':'c','ㅋ':'z','ㅌ':'x','ㅍ':'v','ㅎ':'g','ㅏ':'k','ㅐ':'o','ㅑ':'i','ㅒ':'O','ㅓ':'j','ㅔ':'p','ㅕ':'u','ㅖ':'P','ㅗ':'h','ㅘ':'hk','ㅙ':'ho','ㅚ':'hl','ㅛ':'y','ㅜ':'n','ㅝ':'nj','ㅞ':'np','ㅟ':'nl','ㅠ':'b','ㅡ':'m','ㅢ':'ml','ㅣ':'l'};
+var CHO='ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ'.split('');
+var JUNG='ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ'.split('');
+var JONG=['','ㄱ','ㄲ','ㄳ','ㄴ','ㄵ','ㄶ','ㄷ','ㄹ','ㄺ','ㄻ','ㄼ','ㄽ','ㄾ','ㄿ','ㅀ','ㅁ','ㅂ','ㅄ','ㅅ','ㅆ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+var JONG_EN={'ㄱ':'r','ㄲ':'R','ㄳ':'rt','ㄴ':'s','ㄵ':'sw','ㄶ':'sg','ㄷ':'e','ㄹ':'f','ㄺ':'fr','ㄻ':'fa','ㄼ':'fq','ㄽ':'ft','ㄾ':'fx','ㄿ':'fv','ㅀ':'fg','ㅁ':'a','ㅂ':'q','ㅄ':'qt','ㅅ':'t','ㅆ':'T','ㅇ':'d','ㅈ':'w','ㅊ':'c','ㅋ':'z','ㅌ':'x','ㅍ':'v','ㅎ':'g'};
+function koToEn(str){
+  var result='';
+  for(var i=0;i<str.length;i++){
+    var c=str.charCodeAt(i);
+    if(c>=0xAC00&&c<=0xD7A3){
+      var offset=c-0xAC00;
+      var cho=Math.floor(offset/588);
+      var jung=Math.floor((offset%588)/28);
+      var jong=offset%28;
+      result+=(KO_EN[CHO[cho]]||'')+(KO_EN[JUNG[jung]]||'')+(jong>0?(JONG_EN[JONG[jong]]||''):'');
+    } else {
+      result+=str[i];
+    }
+  }
+  return result;
+}
+
+// ═══ 계정 생성 ═══
+var generatedID='',generatedPW='';
+var acctHistory=JSON.parse(localStorage.getItem('acctHistory')||'[]');
+
+function previewAccount(){
+  var name=document.getElementById('gen-name').value.trim();
+  if(!name){document.getElementById('gen-preview').style.display='none';return}
+  var eng=koToEn(name);
+  var num=String(Math.floor(1000+Math.random()*9000));
+  document.getElementById('gen-id-val').textContent=eng+'_'+num;
+  document.getElementById('gen-preview').style.display='block';
+  var today=new Date();
+  var mm=String(today.getMonth()+1).padStart(2,'0');
+  var dd=String(today.getDate()).padStart(2,'0');
+  var rand='';var chars='abcdefghjkmnpqrstuvwxyz23456789';
+  for(var i=0;i<4;i++) rand+=chars[Math.floor(Math.random()*chars.length)];
+  document.getElementById('gen-pw-val').textContent='!'+mm+dd+'_'+rand+'#';
+}
+
+function generateAccount(){
+  var name=document.getElementById('gen-name').value.trim();
+  var email=document.getElementById('gen-email').value.trim();
+  if(!name||!email){alert('후보자명과 이메일을 입력하세요');return}
+  generatedID=document.getElementById('gen-id-val').textContent;
+  generatedPW=document.getElementById('gen-pw-val').textContent;
+  if(!generatedID||generatedID==='—'){previewAccount();generatedID=document.getElementById('gen-id-val').textContent;generatedPW=document.getElementById('gen-pw-val').textContent}
+  document.getElementById('btn-send-admin').disabled=false;
+  document.getElementById('btn-send-admin').style.opacity='1';
+  // 내역에 추가
+  var pos=document.getElementById('gen-pos').value;
+  var today=new Date();var dateStr=(today.getMonth()+1)+'/'+today.getDate();
+  var entry={date:dateStr,name:name,email:email,pos:pos,id:generatedID,pw:generatedPW,adminSent:'대기',activated:'대기',userSent:'대기'};
+  acctHistory.unshift(entry);
+  localStorage.setItem('acctHistory',JSON.stringify(acctHistory));
+  renderAcctTable();
+  alert('✅ 계정 생성 완료\n\nID: '+generatedID+'\nPW: '+generatedPW);
+}
+
+function regeneratePW(){
+  var today=new Date();
+  var mm=String(today.getMonth()+1).padStart(2,'0');
+  var dd=String(today.getDate()).padStart(2,'0');
+  var rand='';var chars='abcdefghjkmnpqrstuvwxyz23456789';
+  for(var i=0;i<4;i++) rand+=chars[Math.floor(Math.random()*chars.length)];
+  document.getElementById('gen-pw-val').textContent='!'+mm+dd+'_'+rand+'#';
+}
+
+function sendToAdmin(){
+  var name=document.getElementById('gen-name').value.trim();
+  var email=document.getElementById('gen-email').value.trim();
+  var adminEmail=document.getElementById('gen-admin-email').value.trim();
+  if(!adminEmail){alert('플랫폼 관리자 이메일을 입력하세요');return}
+  var msg='📩 플랫폼 관리자에게 전달 (데모)\n\n수신: '+adminEmail+'\n\n──────────────\n계정 생성 요청\n\n후보자: '+name+'\n이메일: '+email+'\nID: '+generatedID+'\nPW: '+generatedPW+'\n\n활성화 부탁드립니다.\n──────────────';
+  alert(msg);
+  // 상태 업데이트
+  if(acctHistory.length>0){acctHistory[0].adminSent='완료';localStorage.setItem('acctHistory',JSON.stringify(acctHistory));renderAcctTable()}
+}
+
+function sendToCandidate(idx){
+  var entry=acctHistory[idx];
+  var msg='📩 후보자에게 발송 (데모)\n\n수신: '+entry.email+'\n\n──────────────\n'+entry.name+'님 안녕하세요.\n\n대시보드 계정이 발급되었습니다.\n\n🔗 대시보드: https://sandbox.thisishilo.ir\n📧 ID: '+entry.id+'\n🔑 임시 비밀번호: '+entry.pw+'\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n──────────────';
+  alert(msg);
+  acctHistory[idx].userSent='완료';
+  localStorage.setItem('acctHistory',JSON.stringify(acctHistory));
+  renderAcctTable();
+}
+
+function markActivated(idx){
+  acctHistory[idx].activated='완료';
+  localStorage.setItem('acctHistory',JSON.stringify(acctHistory));
+  renderAcctTable();
+  alert('✅ 활성화 완료 처리됨');
+}
+
+function renderAcctTable(){
+  var tb=document.getElementById('acct-tbody');
+  if(acctHistory.length===0){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:40px;color:#9ca3af">생성된 계정이 없습니다</td></tr>';return}
+  var pending=0,sent=0,done=0;
+  tb.innerHTML=acctHistory.map(function(e,i){
+    if(e.activated==='완료') done++;
+    else if(e.adminSent==='완료') sent++;
+    else pending++;
+    var stAdmin=e.adminSent==='완료'?'<span class="st st-done">완료</span>':'<span class="st st-open">대기</span>';
+    var stAct=e.activated==='완료'?'<span class="st st-done">완료</span>':'<button class="btn btn-ghost" style="padding:2px 8px;font-size:10px" onclick="markActivated('+i+')">활성화</button>';
+    var stUser=e.userSent==='완료'?'<span class="st st-done">완료</span>':e.activated==='완료'?'<button class="btn btn-primary" style="padding:2px 8px;font-size:10px" onclick="sendToCandidate('+i+')"><span class="ms" style="font-size:12px">send</span>발송</button>':'<span style="font-size:10px;color:#9ca3af">활성화 대기</span>';
+    return '<tr><td>'+e.date+'</td><td style="font-weight:700">'+e.name+'</td><td>'+e.pos+'</td><td style="font-size:11px;font-weight:700;color:#7c3aed">'+e.id+'</td><td style="font-size:11px"><code style="background:#f3f4f6;padding:2px 6px;border-radius:4px">'+e.pw+'</code></td><td>'+stAdmin+'</td><td>'+stAct+'</td><td>'+stUser+'</td></tr>';
+  }).join('');
+  document.getElementById('acct-total').textContent=acctHistory.length;
+  document.getElementById('acct-pending').textContent=pending;
+  document.getElementById('acct-sent').textContent=sent;
+  document.getElementById('acct-done').textContent=done;
+}
+
+function copyText(id){
+  var text=document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(function(){alert('복사됨: '+text)});
+}
 
 // ═══ 자동발송 메일 저장 ═══
 function saveAutoMail(){
