@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html class="light" lang="ko">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>서울의 일꾼 박주민 | 일꾼을찾다</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Public+Sans:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: { extend: { colors: { primary: "#135bec", "primary-dark": "#0f47c4" }, fontFamily: { sans: ["Noto Sans KR","Public Sans","sans-serif"] } } }
+        };
+    </script>
+    <style>
+        * { -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Noto Sans KR','Public Sans',sans-serif; }
+        .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+        .hero-bg { background: linear-gradient(160deg,#0a1628 0%,#0d2460 40%,#135bec 100%); }
+        .dark .hero-bg { background: linear-gradient(160deg,#050d1a 0%,#091a40 40%,#0f47c4 100%); }
+        .particle { position:absolute; border-radius:50%; background:rgba(255,255,255,0.06); animation:float 6s ease-in-out infinite; }
+        @keyframes float { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-20px) scale(1.05)} }
+        .reveal { opacity:0; transform:translateY(24px); transition:opacity .6s ease,transform .6s ease; }
+        .reveal.visible { opacity:1; transform:translateY(0); }
+        .heart-btn { transition:all .15s cubic-bezier(.34,1.56,.64,1); }
+        .heart-btn:active { transform:scale(.88); }
+        @keyframes heartPop { 0%{transform:scale(1)} 50%{transform:scale(1.4)} 100%{transform:scale(1)} }
+        .heart-btn.popped { animation:heartPop .35s cubic-bezier(.34,1.56,.64,1); }
+        .chat-bubble-typing span { display:inline-block; width:7px; height:7px; border-radius:50%; background:#94a3b8; animation:typing 1.4s infinite; }
+        .chat-bubble-typing span:nth-child(2){animation-delay:.2s} .chat-bubble-typing span:nth-child(3){animation-delay:.4s}
+        @keyframes typing { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
+        .pulse-dot { width:8px; height:8px; background:#22c55e; border-radius:50%; display:inline-block; animation:pulseDot 2s ease-in-out infinite; }
+        @keyframes pulseDot { 0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4)} 50%{box-shadow:0 0 0 6px rgba(34,197,94,0)} }
+        .voice-active .voice-bar { animation:voiceWave .7s ease-in-out infinite; }
+        .voice-active .voice-bar:nth-child(1){animation-delay:0s} .voice-active .voice-bar:nth-child(2){animation-delay:.1s}
+        .voice-active .voice-bar:nth-child(3){animation-delay:.2s} .voice-active .voice-bar:nth-child(4){animation-delay:.1s}
+        .voice-active .voice-bar:nth-child(5){animation-delay:0s}
+        @keyframes voiceWave { 0%,100%{height:6px} 50%{height:28px} }
+        .scrollbar-hide::-webkit-scrollbar{display:none} .scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none}
+        .cheer-input:focus{outline:none;border-color:#135bec;box-shadow:0 0 0 3px rgba(19,91,236,.12)}
+        .cta-secondary{border:1.5px solid #135bec;background:transparent;color:#135bec;transition:all .2s}
+        .cta-secondary:hover{background:rgba(19,91,236,.06)}
+        @keyframes slideUpIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+        .cheer-item-new { animation:slideUpIn .4s ease-out; }
+        /* Bottom sheet modal */
+        .sheet-overlay { position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:60;opacity:0;pointer-events:none;transition:opacity .3s; }
+        .sheet-overlay.open { opacity:1;pointer-events:auto; }
+        .sheet-panel { position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:480px;background:white;border-radius:20px 20px 0 0;z-index:61;transition:transform .35s cubic-bezier(.32,.72,0,1);max-height:90vh;overflow-y:auto; }
+        .dark .sheet-panel { background:#1e293b; }
+        .sheet-panel.open { transform:translateX(-50%) translateY(0); }
+        /* Toast */
+        .toast { position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:#1e293b;color:white;padding:12px 24px;border-radius:12px;z-index:100;transition:transform .3s;font-size:14px;font-weight:500;white-space:nowrap; }
+        .toast.show { transform:translateX(-50%) translateY(0); }
+        /* Share FAB */
+        .share-fab { position:fixed;bottom:24px;z-index:50; }
+        /* Profile tab active */
+        .ptab.active { color:#135bec; border-bottom:2px solid #135bec; }
+        .ptab { border-bottom:2px solid transparent; }
+        /* Timeline dot */
+        .tl-dot { width:10px;height:10px;border-radius:50%;background:#135bec;flex-shrink:0;margin-top:4px; }
+        /* Policy horizontal card */
+        .policy-h-card { min-width:260px; cursor:pointer; transition:transform .2s,box-shadow .2s; }
+        .policy-h-card:active { transform:scale(.97); }
+        /* News horizontal card */
+        .news-h-card { min-width:200px; cursor:pointer; }
+        /* Cheer horizontal card */
+        .cheer-h-card { min-width:200px; cursor:pointer; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+
+<div id="toast" class="toast"></div>
+
+<!-- ===== BOTTOM SHEET OVERLAY ===== -->
+<div id="sheet-overlay" class="sheet-overlay" onclick="closeAllSheets()"></div>
+
+<!-- ===== 프로필 시트 ===== -->
+<div id="profile-sheet" class="sheet-panel">
+    <div class="flex justify-center pt-3 pb-1"><div class="w-10 h-1 bg-slate-200 dark:bg-slate-600 rounded-full"></div></div>
+    <div class="flex items-center justify-between px-5 py-3 border-b border-slate-100 dark:border-slate-700">
+        <button onclick="closeSheet('profile-sheet')" class="text-slate-400 flex items-center gap-1 text-sm"><span class="material-symbols-outlined text-[18px]">arrow_back_ios</span></button>
+        <span class="font-bold text-sm text-slate-700 dark:text-slate-200">박주민 후보</span>
+        <div class="w-8"></div>
+    </div>
+    <!-- 프로필 헤더 -->
+    <div class="px-5 py-4 flex items-center gap-4">
+        <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/20 flex-shrink-0">
+            <img src="avatar_candidate.jpg" class="w-full h-full object-cover object-top"/>
+        </div>
+        <div class="flex-1">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+                <span class="bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded">기호 1</span>
+                <span class="font-black text-lg text-slate-900 dark:text-white">박주민</span>
+                <span class="text-xs bg-blue-50 dark:bg-blue-900/30 text-primary px-2 py-0.5 rounded-full">더불어민주당</span>
+            </div>
+            <p class="text-xs text-slate-500 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">location_on</span>서울특별시 마포구을 · 55세</p>
+            <p class="text-xs text-slate-400 mt-0.5">서울대학교 법학과 / 변호사</p>
+        </div>
+    </div>
+    <p class="px-5 pb-3 text-sm font-medium text-primary italic">"당신의 마포를 바꿀 사람이 되겠습니다"</p>
+    <!-- 탭 -->
+    <div class="flex border-b border-slate-100 dark:border-slate-700 px-5">
+        <button class="ptab active flex-1 py-2.5 text-sm font-bold text-center" onclick="switchProfileTab('portfolio')">포트폴리오</button>
+        <button class="ptab flex-1 py-2.5 text-sm font-medium text-slate-400 text-center" onclick="switchProfileTab('policy')">핵심공약 <span class="text-xs bg-primary text-white rounded-full px-1.5 py-0.5 ml-1">3</span></button>
+    </div>
+    <!-- 포트폴리오 탭 -->
+    <div id="ptab-portfolio" class="px-5 py-4">
+        <h3 class="font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2 mb-3"><span class="material-symbols-outlined text-[18px] text-primary">waving_hand</span>인사말</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed bg-slate-50 dark:bg-slate-800 rounded-xl p-4 mb-5">존경하는 마포구 시민 여러분, 기호 1번 박주민입니다. 변호사 시절부터 쌓아온 법률 전문성을 바탕으로, 마포구민의 주거 안정과 공정한 사법 환경을 만들기 위해 이 자리에 섰습니다. 시민의 목소리가 정치에 제대로 반영되는 마포를 약속드립니다.</p>
+        <h3 class="font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2 mb-3"><span class="material-symbols-outlined text-[18px] text-primary">timeline</span>주요 약력</h3>
+        <div class="flex flex-col gap-0">
+            <div class="flex gap-3"><div class="flex flex-col items-center"><div class="tl-dot"></div><div class="w-0.5 bg-slate-200 dark:bg-slate-700 flex-1 mt-1"></div></div><div class="pb-4"><p class="text-xs text-primary font-bold mb-0.5">2020 – 현재</p><p class="text-sm font-bold text-slate-800 dark:text-slate-100">제21·22대 국회의원</p><p class="text-xs text-slate-400">더불어민주당 서울 마포구을</p></div></div>
+            <div class="flex gap-3"><div class="flex flex-col items-center"><div class="tl-dot"></div><div class="w-0.5 bg-slate-200 dark:bg-slate-700 flex-1 mt-1"></div></div><div class="pb-4"><p class="text-xs text-primary font-bold mb-0.5">2016 – 2020</p><p class="text-sm font-bold text-slate-800 dark:text-slate-100">제20대 국회의원</p><p class="text-xs text-slate-400">더불어민주당 서울 마포구을</p></div></div>
+            <div class="flex gap-3"><div class="flex flex-col items-center"><div class="tl-dot"></div><div class="w-0.5 bg-slate-200 dark:bg-slate-700 flex-1 mt-1"></div></div><div class="pb-4"><p class="text-xs text-primary font-bold mb-0.5">2000 – 2016</p><p class="text-sm font-bold text-slate-800 dark:text-slate-100">민변 변호사</p><p class="text-xs text-slate-400">민주사회를 위한 변호사모임</p></div></div>
+            <div class="flex gap-3"><div class="flex flex-col items-center"><div class="tl-dot"></div></div><div class="pb-4"><p class="text-xs text-primary font-bold mb-0.5">1998</p><p class="text-sm font-bold text-slate-800 dark:text-slate-100">서울대학교 법학과 졸업</p></div></div>
+        </div>
+    </div>
+    <!-- 공약 탭 (숨김) -->
+    <div id="ptab-policy" class="hidden px-5 py-4">
+        <p class="text-xs text-slate-400 mb-3">공약에 공감하면 후보 총 공감수에 반영됩니다</p>
+        <div id="profile-policy-list" class="flex flex-col gap-3"></div>
+    </div>
+    <div class="h-8"></div>
+</div>
+
+<!-- ===== 공약 상세 시트 ===== -->
+<div id="policy-sheet" class="sheet-panel">
+    <div class="flex justify-center pt-3 pb-2"><div class="w-10 h-1 bg-slate-200 dark:bg-slate-600 rounded-full"></div></div>
+    <div class="px-5 pb-6">
+        <div id="policy-detail-content"></div>
+    </div>
+</div>
+
+<!-- ===== 응원글 상세 시트 ===== -->
+<div id="cheer-sheet" class="sheet-panel">
+    <div class="flex justify-center pt-3 pb-2"><div class="w-10 h-1 bg-slate-200 dark:bg-slate-600 rounded-full"></div></div>
+    <div class="px-5 pb-8">
+        <h3 class="font-bold text-slate-800 dark:text-slate-100 mb-4">응원 메시지</h3>
+        <div id="cheer-detail-content"></div>
+    </div>
+</div>
+
+<!-- ===== 뉴스 상세 시트 ===== -->
+<div id="news-sheet" class="sheet-panel">
+    <div class="flex justify-center pt-3 pb-2"><div class="w-10 h-1 bg-slate-200 dark:bg-slate-600 rounded-full"></div></div>
+    <div class="px-5 pb-8">
+        <div id="news-detail-content"></div>
+    </div>
+</div>
+
+<div class="max-w-[480px] mx-auto bg-white dark:bg-slate-900 shadow-2xl min-h-screen relative overflow-x-hidden">
+
+    <!-- ===== HERO ===== -->
+    <section class="hero-bg relative overflow-hidden pb-10" style="min-height: 460px;">
+        <div class="particle w-48 h-48 top-[-40px] right-[-30px]"></div>
+        <div class="particle w-24 h-24 bottom-[60px] left-[-20px]" style="animation-delay:2s"></div>
+        <div class="particle w-16 h-16 top-[120px] right-[40px]" style="animation-delay:1s"></div>
+
+        <div class="flex items-center justify-between px-5 pt-6 pb-2 relative z-10">
+            <span class="text-white/50 text-xs font-medium tracking-wider">일꾼을찾다</span>
+            <div class="flex items-center gap-2">
+                <button onclick="toggleLang()" id="lang-btn" class="flex items-center gap-1 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full px-3 py-1.5 text-white/80 text-xs font-bold transition-colors">
+                    <span class="material-symbols-outlined text-[14px]">translate</span>
+                    <span id="lang-label">EN</span>
+                </button>
+                <button onclick="toggleLike()" id="hero-like-btn" class="heart-btn flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full px-3 py-1.5 transition-colors">
+                    <span id="hero-heart-icon" class="material-symbols-outlined text-white/60 text-[16px]" style="font-variation-settings:'FILL' 0">favorite</span>
+                    <span id="hero-like-count" class="text-white/80 text-xs font-bold">1,247</span>
+                </button>
+                <button onclick="toggleDark()" class="p-2 rounded-full bg-white/10 text-white/70 hover:bg-white/20 transition-colors">
+                    <span class="material-symbols-outlined block dark:hidden text-[20px]">dark_mode</span>
+                    <span class="material-symbols-outlined hidden dark:block text-[20px]">light_mode</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex flex-col items-center px-6 pt-4 pb-2 relative z-10">
+            <div class="relative mb-4 cursor-pointer" onclick="openSheet('profile-sheet')">
+                <div class="w-32 h-32 rounded-full shadow-2xl border-4 border-white/20 overflow-hidden bg-white/10">
+                    <img src="avatar_candidate.jpg" alt="박주민 후보" class="w-full h-full object-cover object-top"/>
+                </div>
+                <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-[10px] font-bold px-3 py-0.5 rounded-full shadow-lg whitespace-nowrap">더불어민주당</div>
+            </div>
+            <div class="text-center mt-2">
+                <p class="text-white/60 text-xs font-medium tracking-widest mb-1">서울의 일꾼</p>
+                <div class="flex items-center justify-center gap-2 mb-1">
+                    <span class="bg-white/20 text-white text-[11px] font-bold px-2.5 py-1 rounded-lg">기호 1</span>
+                    <h1 class="text-white font-black text-5xl tracking-tight">박주민</h1>
+                </div>
+                <p class="text-white/40 text-xs">서울특별시 마포구을 · 제22대 국회의원선거</p>
+            </div>
+            <div class="mt-4 text-center">
+                <p class="text-white/85 text-base font-medium leading-relaxed">당신의 마포를 바꿀 사람을<br>지금 만나보세요</p>
+            </div>
+            <button onclick="openSheet('profile-sheet')" class="mt-4 flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full px-4 py-2 text-white/70 text-xs font-medium transition-colors">
+                <span class="material-symbols-outlined text-[14px]">person</span>후보자 프로필 보기
+            </button>
+            <div class="mt-3 flex items-center gap-2 bg-white/10 rounded-full px-4 py-1.5">
+                <span class="pulse-dot" style="width:6px;height:6px"></span>
+                <span data-i18n="live-text" class="text-white/60 text-xs">일꾼을찾다에 실시간 반영 중</span>
+            </div>
+        </div>
+        <div class="flex justify-center mt-4 relative z-10">
+            <span class="material-symbols-outlined text-white/25 animate-bounce text-[22px]">expand_more</span>
+        </div>
+    </section>
+
+    <!-- ===== 핵심 공약 (가로 스크롤 · 동적) ===== -->
+    <section class="py-6 reveal">
+        <div class="flex items-center justify-between px-5 mb-3">
+            <h2 data-i18n="sec-policy" class="text-lg font-black text-slate-900 dark:text-white">핵심 공약</h2>
+            <span data-i18n="swipe-hint" class="text-xs text-slate-400">← 스와이프</span>
+        </div>
+        <div id="policy-card-scroll" class="flex gap-3 overflow-x-auto scrollbar-hide px-5 pb-1"></div>
+    </section>
+
+    <!-- ===== 후보자와 채팅하기 (흰 배경) ===== -->
+    <section class="px-5 pb-6 reveal">
+        <div class="rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-700 shadow-sm">
+            <!-- 흰 배경 아바타 헤더 -->
+            <div class="relative bg-white dark:bg-slate-800 pt-5 pb-0 flex flex-col items-center">
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div class="w-64 h-64 rounded-full bg-primary/5 blur-3xl"></div>
+                </div>
+                <div class="relative z-10 flex items-center gap-2 mb-0.5">
+                    <span class="bg-primary text-white text-[10px] font-bold px-2.5 py-0.5 rounded-lg">기호 1</span>
+                    <p class="text-slate-900 dark:text-white font-black text-xl tracking-tight">박주민</p>
+                    <div class="flex items-center gap-1">
+                        <span class="pulse-dot" style="width:6px;height:6px"></span>
+                        <span class="text-slate-400 text-[11px]">온라인</span>
+                    </div>
+                </div>
+                <p class="relative z-10 text-slate-400 text-[11px] mb-4">공약 AI · AI가 생성한 응답입니다</p>
+                <div class="relative z-10 w-full flex justify-center">
+                    <img src="avatar_candidate.jpg" alt="박주민 후보" class="object-cover object-top" style="width:80%;max-width:300px;display:block;"/>
+                </div>
+            </div>
+            <!-- Text / Voice 탭 -->
+            <div class="flex bg-white dark:bg-slate-800 border-y border-slate-100 dark:border-slate-700">
+                <button id="tab-text" onclick="switchChatTab('text')" class="flex-1 flex items-center justify-center gap-1.5 py-3 text-sm font-bold text-primary border-b-2 border-primary">
+                    <span class="material-symbols-outlined text-[16px]" style="font-variation-settings:'FILL' 1">chat_bubble</span>Text
+                </button>
+                <button id="tab-voice" onclick="switchChatTab('voice')" class="flex-1 flex items-center justify-center gap-1.5 py-3 text-sm font-medium text-slate-400 border-b-2 border-transparent hover:text-slate-600 transition-colors">
+                    <span class="material-symbols-outlined text-[16px]">mic</span>Voice Chat
+                </button>
+            </div>
+            <!-- Text 채팅 -->
+            <div id="chat-tab-text" class="bg-slate-50 dark:bg-slate-900">
+                <div id="chat-messages" class="px-4 pt-4 pb-2 flex flex-col gap-4" style="min-height:200px;max-height:320px;overflow-y:auto">
+                    <div class="flex items-end gap-2.5">
+                        <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-slate-100 shadow-sm">
+                            <img src="avatar_candidate.jpg" class="w-full h-full object-cover object-top"/>
+                        </div>
+                        <div>
+                            <p class="text-[11px] text-slate-400 mb-1 ml-1 font-medium">박주민</p>
+                            <div class="bg-white dark:bg-slate-700 rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm" style="max-width:240px">
+                                <p class="text-sm text-slate-700 dark:text-slate-200 leading-relaxed">안녕하세요! 저의 공약에 대해 궁금한 점을 편하게 물어보세요 😊</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-4 py-2.5 border-t border-slate-100 dark:border-slate-800">
+                    <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-0.5">
+                        <button onclick="askPreset('주거 정책이 뭔가요?')" class="flex-shrink-0 text-xs bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600 rounded-full px-3 py-1.5 font-medium hover:border-primary hover:text-primary transition-colors shadow-sm">🏠 주거 정책</button>
+                        <button onclick="askPreset('마포구 발전 계획은?')" class="flex-shrink-0 text-xs bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600 rounded-full px-3 py-1.5 font-medium hover:border-primary hover:text-primary transition-colors shadow-sm">🌳 마포 발전</button>
+                        <button onclick="askPreset('검찰 개혁 입장은?')" class="flex-shrink-0 text-xs bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600 rounded-full px-3 py-1.5 font-medium hover:border-primary hover:text-primary transition-colors shadow-sm">⚖️ 사법 개혁</button>
+                        <button onclick="askPreset('경력이 어떻게 되세요?')" class="flex-shrink-0 text-xs bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600 rounded-full px-3 py-1.5 font-medium hover:border-primary hover:text-primary transition-colors shadow-sm">👤 경력</button>
+                    </div>
+                </div>
+                <div class="flex gap-2 px-4 py-3 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700">
+                    <input id="chat-input" type="text" placeholder="궁금한 내용을 입력하세요..."
+                        class="cheer-input flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 transition-all"
+                        onkeydown="if(event.key==='Enter') sendChat()"/>
+                    <button onclick="sendChat()" class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center flex-shrink-0 hover:bg-primary-dark transition-colors">
+                        <span class="material-symbols-outlined text-white text-[20px]">send</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Voice Chat -->
+            <div id="chat-tab-voice" class="hidden bg-slate-50 dark:bg-slate-900 py-10 flex flex-col items-center gap-5">
+                <div id="voice-waves" class="flex items-center gap-2 h-10">
+                    <div class="voice-bar w-2 bg-primary/30 rounded-full" style="height:8px"></div>
+                    <div class="voice-bar w-2 bg-primary/50 rounded-full" style="height:8px"></div>
+                    <div class="voice-bar w-2 bg-primary/70 rounded-full" style="height:8px"></div>
+                    <div class="voice-bar w-2 bg-primary rounded-full" style="height:8px"></div>
+                    <div class="voice-bar w-2 bg-primary/70 rounded-full" style="height:8px"></div>
+                    <div class="voice-bar w-2 bg-primary/50 rounded-full" style="height:8px"></div>
+                    <div class="voice-bar w-2 bg-primary/30 rounded-full" style="height:8px"></div>
+                </div>
+                <button onclick="toggleVoice()" id="voice-btn" class="w-16 h-16 rounded-full bg-primary hover:bg-primary-dark flex items-center justify-center shadow-lg transition-all active:scale-95">
+                    <span class="material-symbols-outlined text-white text-[28px]">mic</span>
+                </button>
+                <p id="voice-status" class="text-sm text-slate-400 font-medium">버튼을 눌러 말씀해주세요</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 응원하기 (가로 스크롤 + 클릭 팝업) ===== -->
+    <section class="pb-6 reveal">
+        <div class="flex items-center justify-between px-5 mb-3">
+            <div class="flex items-center gap-2">
+                <h2 class="text-lg font-black text-slate-900 dark:text-white">응원하기</h2>
+                <span class="text-xs text-slate-400 bg-white dark:bg-slate-700 rounded-full px-2.5 py-1 border border-slate-100 dark:border-slate-600">💬 <span id="stat-cheers" class="font-bold text-slate-600 dark:text-slate-300">384</span></span>
+            </div>
+            <span class="text-xs text-slate-400">← 스와이프</span>
+        </div>
+        <!-- 카카오 인증 -->
+        <div id="kakao-gate" class="px-5 mb-3">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-100 dark:border-slate-700">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-yellow-400">💬</span>
+                    <p class="text-sm font-bold text-slate-700 dark:text-slate-200">카카오로 응원글 남기기</p>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed mb-3">인증 후 응원글 작성 · <span class="font-semibold text-slate-500 dark:text-slate-300">홍** · 마포구민</span> 형태 표시</p>
+                <button onclick="kakaoLogin()" class="w-full bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-bold py-2.5 rounded-xl text-sm transition-colors flex items-center justify-center gap-2">
+                    <span>💬</span>카카오로 1초 인증
+                </button>
+            </div>
+        </div>
+        <div id="cheer-input-area" class="hidden px-5 mb-3">
+            <div class="flex items-center gap-2 mb-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl px-3 py-2">
+                <span>💬</span>
+                <p class="text-xs text-slate-600 dark:text-slate-300"><span id="kakao-display-name" class="font-bold">홍**</span> · <span id="kakao-display-area" class="text-slate-400">마포구민</span></p>
+                <span class="ml-auto text-[10px] bg-yellow-200 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200 px-2 py-0.5 rounded-full font-medium">인증됨</span>
+            </div>
+            <div class="flex gap-2">
+                <input id="cheer-input" type="text" placeholder="응원 한마디... (최대 50자)" maxlength="50"
+                    class="cheer-input flex-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 transition-all"
+                    onkeydown="if(event.key==='Enter') submitCheer()"/>
+                <button onclick="submitCheer()" class="bg-primary hover:bg-primary-dark text-white rounded-xl px-4 transition-colors flex-shrink-0">
+                    <span class="material-symbols-outlined text-[20px]">send</span>
+                </button>
+            </div>
+        </div>
+        <!-- 가로 스크롤 응원 카드 -->
+        <div id="cheer-scroll" class="flex gap-3 overflow-x-auto scrollbar-hide px-5 pb-1"></div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="px-5 pb-6 reveal">
+        <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-center">
+            <div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span class="material-symbols-outlined text-primary text-[24px]" style="font-variation-settings:'FILL' 1">policy</span>
+            </div>
+            <h3 class="text-white font-black text-lg mb-1">더 많은 정책이 궁금하신가요?</h3>
+            <p class="text-slate-400 text-sm mb-5 leading-relaxed">서울 마포구을 모든 후보의 공약을<br>한 곳에서 비교해보세요</p>
+            <a href="#" onclick="goToPlatform(event)" class="block w-full bg-primary hover:bg-primary-dark text-white font-bold py-3.5 rounded-xl mb-3 transition-colors text-sm">더 많은 정책 보기 →</a>
+            <a href="#" onclick="goToCompare(event)" class="block w-full cta-secondary font-bold py-3.5 rounded-xl text-sm">다른 후보와 비교하기</a>
+        </div>
+    </section>
+
+    <!-- ===== 선거 기사 (가로 스크롤) ===== -->
+    <section class="pb-8 reveal">
+        <div class="flex items-center justify-between px-5 mb-3">
+            <h2 class="text-lg font-black text-slate-900 dark:text-white">선거 기사</h2>
+            <span class="text-xs text-slate-400">← 스와이프</span>
+        </div>
+        <div class="flex gap-3 overflow-x-auto scrollbar-hide px-5 pb-1">
+            <div class="news-h-card flex-shrink-0 bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-700 shadow-sm" onclick="openNews(0)" style="min-width:200px">
+                <div class="w-full h-24 bg-gradient-to-br from-blue-200 to-blue-400 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-white/60 text-[36px]">article</span>
+                </div>
+                <div class="p-3">
+                    <span class="text-[10px] bg-blue-50 dark:bg-blue-900/30 text-primary px-2 py-0.5 rounded-full font-medium">주거정책</span>
+                    <p class="text-sm font-bold text-slate-900 dark:text-white mt-1.5 leading-snug" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">박주민, 전월세 상한제 강화 법안 대표발의</p>
+                    <p class="text-xs text-slate-400 mt-1">한겨레 · 2026.03.15</p>
+                </div>
+            </div>
+            <div class="news-h-card flex-shrink-0 bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-700 shadow-sm" onclick="openNews(1)" style="min-width:200px">
+                <div class="w-full h-24 bg-gradient-to-br from-green-200 to-green-400 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-white/60 text-[36px]">park</span>
+                </div>
+                <div class="p-3">
+                    <span class="text-[10px] bg-green-50 dark:bg-green-900/30 text-green-600 px-2 py-0.5 rounded-full font-medium">지역발전</span>
+                    <p class="text-sm font-bold text-slate-900 dark:text-white mt-1.5 leading-snug" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">박주민 의원, 마포 재개발 주민설명회 개최</p>
+                    <p class="text-xs text-slate-400 mt-1">마포신문 · 2026.02.28</p>
+                </div>
+            </div>
+            <div class="news-h-card flex-shrink-0 bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-700 shadow-sm" onclick="openNews(2)" style="min-width:200px">
+                <div class="w-full h-24 bg-gradient-to-br from-purple-200 to-purple-400 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-white/60 text-[36px]">mic</span>
+                </div>
+                <div class="p-3">
+                    <span class="text-[10px] bg-purple-50 dark:bg-purple-900/30 text-purple-600 px-2 py-0.5 rounded-full font-medium">인터뷰</span>
+                    <p class="text-sm font-bold text-slate-900 dark:text-white mt-1.5 leading-snug" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">"마포를 서울의 중심으로" — 박주민 인터뷰</p>
+                    <p class="text-xs text-slate-400 mt-1">오마이뉴스 · 2026.02.10</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <div class="px-5 pb-10 text-center">
+        <p class="text-xs text-slate-400">일꾼을찾다 · AI Election Platform</p>
+        <p class="text-xs text-slate-300 dark:text-slate-600 mt-1">이 페이지는 선거 정보 제공 목적으로 제작되었습니다</p>
+    </div>
+    <div class="h-20"></div>
+</div>
+
+<!-- Share FAB -->
+<div class="share-fab" style="right:calc(max(20px,(100vw - 480px)/2 + 20px))">
+    <button onclick="shareKakao()" class="w-14 h-14 bg-yellow-400 hover:bg-yellow-300 rounded-full shadow-xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 text-2xl">💬</button>
+</div>
+
+<script>
+// ===== LANGUAGE =====
+let currentLang = 'ko';
+
+const T = {
+  ko: {
+    'sec-policy':       '핵심 공약',
+    'swipe-hint':       '← 스와이프',
+    'btn-view-detail':  '세부내용 보기',
+    'sympathize':       '공감하기',
+    'modal-candidate':  '후보',
+    'modal-ai-summary': 'AI 요약',
+    'modal-detail':     '세부 내용',
+    'modal-match':      '나에게 해당되는 공약일까?',
+    'modal-match-age':  '나이',
+    'modal-match-sido': '거주 지역',
+    'modal-match-btn':  '해당 여부 확인',
+    'profile-tab-port': '포트폴리오',
+    'profile-tab-pol':  '핵심공약',
+    'sido-placeholder': '선택하세요',
+    'live-text':        '일꾼을찾다에 실시간 반영 중',
+  },
+  en: {
+    'sec-policy':       'Key Pledges',
+    'swipe-hint':       '← Swipe',
+    'btn-view-detail':  'View Details',
+    'sympathize':       'Support',
+    'modal-candidate':  'Candidate',
+    'modal-ai-summary': 'AI Summary',
+    'modal-detail':     'Details',
+    'modal-match':      'Does this apply to me?',
+    'modal-match-age':  'Age',
+    'modal-match-sido': 'Region',
+    'modal-match-btn':  'Check',
+    'profile-tab-port': 'Portfolio',
+    'profile-tab-pol':  'Key Pledges',
+    'sido-placeholder': 'Select',
+    'live-text':        'Live on IlgunFinder',
+  }
+};
+
+function toggleLang() {
+  currentLang = currentLang === 'ko' ? 'en' : 'ko';
+  document.getElementById('lang-label').textContent = currentLang === 'ko' ? 'EN' : 'KO';
+  applyLang();
+  renderPolicyCrads();
+  renderProfilePolicies();
+}
+
+function applyLang() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (T[currentLang][key]) el.textContent = T[currentLang][key];
+  });
+  // 프로필 시트 탭 버튼 — textContent 직접 덮어쓰되 span(뱃지)은 보존
+  const tabPort = document.querySelector('button[onclick*="portfolio"]');
+  const tabPol  = document.querySelector('button[onclick*="policy"]');
+  if (tabPort) {
+    // 텍스트 노드만 교체 (자식 중 TEXT_NODE 첫 번째)
+    const tn = [...tabPort.childNodes].find(n => n.nodeType === 3);
+    if (tn) tn.textContent = T[currentLang]['profile-tab-port'];
+  }
+  if (tabPol) {
+    const tn = [...tabPol.childNodes].find(n => n.nodeType === 3);
+    if (tn) tn.textContent = T[currentLang]['profile-tab-pol'] + ' ';
+  }
+  // live 텍스트
+  const liveEl = document.querySelector('[data-i18n="live-text"]');
+  if (liveEl) liveEl.textContent = T[currentLang]['live-text'];
+}
+
+// ===== DATA =====
+const policies = [
+    { icon:'🏠',
+      title:'주거 안정',           title_en:'Housing Stability',
+      tag:'핵심',                  tag_en:'Core',
+      tagColor:'blue', sympathy:342,
+      cat:'주거·교통', detail:'주택 공급',
+      desc:'전월세 상한제를 강화해 집주인이 임의로 임대료를 올리지 못하도록 하고, 임차인 계약갱신청구권을 4년에서 6년으로 확대합니다.',
+      desc_en:'We will strengthen the rent cap to prevent landlords from arbitrarily raising rents, and extend tenants\' contract renewal rights from 4 to 6 years.',
+      steps:['전월세 상한제 인상률 5% → 3% 법개정 추진 (2026)', '임차인 계약갱신청구권 4년 → 6년 확대 시행', '공공임대주택 5,000세대 신규 공급'],
+      steps_en:['Amend rent cap: raise limit from 5% → 3% (2026)', 'Extend tenant renewal right: 4 → 6 years', 'Supply 5,000 new public rental housing units'],
+      budget:'3,500 억원', budget_en:'KRW 350 Billion',
+      schedule:'임기 3년내 완료', schedule_en:'Within 3 years in office',
+      target:'전 연령', target_en:'All residents',
+      targetAgeMin:null, targetAgeMax:null },
+    { icon:'⚖️',
+      title:'사법 개혁',           title_en:'Judicial Reform',
+      tag:'중점',                  tag_en:'Priority',
+      tagColor:'purple', sympathy:216,
+      cat:'행정·자치', detail:'규제 혁파',
+      desc:'검찰의 수사·기소권을 분리해 권력 남용을 막고, 공수처의 독립성을 강화하겠습니다. 누구에게나 공정하게 적용되는 법치주의를 실현합니다.',
+      desc_en:'We will separate prosecution\'s investigative and indictment powers to prevent abuse, and strengthen the independence of the Corruption Investigation Office.',
+      steps:['검찰 수사·기소권 분리 입법 추진', '공수처 인사·예산 독립성 강화', '형사사법 절차 디지털화 및 투명성 확보'],
+      steps_en:['Legislate separation of prosecution\'s investigative & indictment powers', 'Strengthen CIO personnel & budget independence', 'Digitize criminal justice procedures for transparency'],
+      budget:'', budget_en:'',
+      schedule:'임기 2년내 완료', schedule_en:'Within 2 years in office',
+      target:'전 시민', target_en:'All citizens',
+      targetAgeMin:null, targetAgeMax:null },
+    { icon:'🌳',
+      title:'마포 발전',           title_en:'Mapo Development',
+      tag:'지역',                  tag_en:'Local',
+      tagColor:'green', sympathy:190,
+      cat:'문화·체육·관광', detail:'공원/휴식 공간',
+      desc:'망원한강공원을 문화복합 공간으로 개발하고, 마포대로 BRT 도입으로 교통 혼잡을 줄이겠습니다. 공덕~홍대 상권 활성화와 청년 창업 거점도 조성합니다.',
+      desc_en:'We will redevelop Mangwon Hangang Park into a cultural complex, introduce BRT on Mapo-daero to ease traffic, and create youth startup hubs in the Gongdeok–Hongdae corridor.',
+      steps:['망원한강공원 문화복합 리모델링 착공 (2026~2027)', '마포대로 BRT 노선 신설 및 버스 우선 신호 도입', '공덕~홍대 청년 창업 거점 조성'],
+      steps_en:['Break ground on Mangwon Hangang Park cultural complex (2026–2027)', 'Launch BRT route on Mapo-daero with bus priority signals', 'Establish youth startup hub in Gongdeok–Hongdae area'],
+      budget:'1,200 억원', budget_en:'KRW 120 Billion',
+      schedule:'임기 4년내 완료', schedule_en:'Within 4 years in office',
+      target:'전 연령', target_en:'All residents',
+      targetAgeMin:null, targetAgeMax:null },
+];
+
+const newsList = [
+    { tag:'주거정책', tagColor:'blue', title:'박주민, 전월세 상한제 강화 법안 대표발의', press:'한겨레', date:'2026.03.15',
+      body:'박주민 의원이 전월세 상한제 강화를 골자로 하는 주택임대차보호법 개정안을 대표발의했다. 개정안은 임대료 인상 상한을 현행 5%에서 3%로 낮추는 내용을 담고 있다...', url:'#' },
+    { tag:'지역발전', tagColor:'green', title:'박주민 의원, 마포 재개발 주민설명회 개최', press:'마포신문', date:'2026.02.28',
+      body:'박주민 의원이 마포구 아현동 재개발 구역 주민들을 대상으로 설명회를 개최했다. 이번 설명회에서는 재개발 일정, 보상 기준, 세입자 지원 방안 등이 논의됐다...', url:'#' },
+    { tag:'인터뷰', tagColor:'purple', title:'"마포를 서울의 중심으로" — 박주민 인터뷰', press:'오마이뉴스', date:'2026.02.10',
+      body:'"저는 마포를 단순한 베드타운이 아닌, 문화와 경제가 살아 숨쉬는 서울의 중심으로 만들겠습니다." 박주민 의원이 오마이뉴스와의 인터뷰에서 밝힌 포부다...', url:'#' },
+];
+
+const aiResponses = {
+    '주거 정책이 뭔가요?': '전월세 상한제를 강화해 집주인이 임의로 임대료를 올리지 못하도록 하고, 임차인 계약갱신청구권을 4년→6년으로 확대하는 법안을 추진 중입니다. 서민이 안심하고 살 수 있는 주거 환경이 목표입니다 🏠',
+    '마포구 발전 계획은?': '망원한강공원을 문화복합 공간으로 개발하고, 마포대로 BRT 도입으로 교통 혼잡을 줄이겠습니다. 공덕~홍대 상권 활성화와 청년 창업 거점 조성도 계획 중입니다 🌳',
+    '검찰 개혁 입장은?': '검찰의 수사·기소권을 분리해 권력 남용을 막고, 공수처의 독립성을 강화하겠습니다. 누구에게나 공정하게 적용되는 법치주의를 실현하는 것이 핵심 입장입니다 ⚖️',
+    '경력이 어떻게 되세요?': '변호사 출신으로 민주사회를 위한 변호사모임(민변)에서 활동했습니다. 2016년 국회의원에 처음 당선된 이후 주거권·사법개혁 분야에서 꾸준히 활동해온 3선 의원입니다 👤',
+};
+
+// ===== 응원 데이터 =====
+let cheerData = [
+    { name:'김**', area:'마포구민', text:'꼭 당선되세요! 마포 바꿔주세요 💪', time:'방금 전' },
+    { name:'이**', area:'서울시민', text:'공수처 잘 지켜주세요! 응원합니다 🙏', time:'3분 전' },
+    { name:'박**', area:'신촌 거주', text:'전월세 문제 꼭 해결해주세요 🏠', time:'12분 전' },
+    { name:'최**', area:'합정 거주', text:'마포를 바꿔주실 분! 응원해요 ❤️', time:'18분 전' },
+    { name:'정**', area:'공덕 거주', text:'3선 의원님 믿습니다 💙', time:'25분 전' },
+];
+
+function renderCheers() {
+    const container = document.getElementById('cheer-scroll');
+    container.innerHTML = '';
+    cheerData.forEach((c, i) => {
+        const div = document.createElement('div');
+        div.className = 'cheer-h-card flex-shrink-0 bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-100 dark:border-slate-700 shadow-sm';
+        div.style.minWidth = '200px';
+        div.onclick = () => openCheer(i);
+        div.innerHTML = `
+            <div class="flex items-center gap-2 mb-2">
+                <div class="w-7 h-7 rounded-full bg-yellow-100 flex items-center justify-center text-xs">💬</div>
+                <div><p class="text-xs font-bold text-slate-700 dark:text-slate-200">${c.name}</p><p class="text-[10px] text-slate-400">${c.area}</p></div>
+            </div>
+            <p class="text-sm text-slate-700 dark:text-slate-200 leading-relaxed" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${escapeHtml(c.text)}</p>
+            <p class="text-[10px] text-slate-400 mt-2">${c.time}</p>
+        `;
+        container.appendChild(div);
+    });
+}
+
+// ===== Dark mode =====
+function toggleDark() { document.documentElement.classList.toggle('dark'); }
+
+// ===== Scroll reveal =====
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ===== Like =====
+let liked = false, likeCount = 1247;
+function toggleLike() {
+    liked = !liked;
+    likeCount += liked ? 1 : -1;
+    const icon = document.getElementById('hero-heart-icon');
+    const btn = document.getElementById('hero-like-btn');
+    icon.style.fontVariationSettings = liked ? "'FILL' 1" : "'FILL' 0";
+    icon.classList.toggle('text-red-400', liked);
+    icon.classList.toggle('text-white/60', !liked);
+    document.getElementById('hero-like-count').textContent = likeCount.toLocaleString();
+    btn.classList.add('popped');
+    setTimeout(() => btn.classList.remove('popped'), 400);
+    if (liked) showToast('좋아요를 눌렀습니다 ❤️');
+}
+
+// ===== Chat Tab =====
+function switchChatTab(tab) {
+    const isText = tab === 'text';
+    document.getElementById('chat-tab-text').classList.toggle('hidden', !isText);
+    document.getElementById('chat-tab-voice').classList.toggle('hidden', isText);
+    document.getElementById('tab-text').className = `flex-1 flex items-center justify-center gap-1.5 py-3 text-sm font-bold border-b-2 ${isText ? 'text-primary border-primary' : 'text-slate-400 border-transparent'}`;
+    document.getElementById('tab-voice').className = `flex-1 flex items-center justify-center gap-1.5 py-3 text-sm font-medium border-b-2 ${!isText ? 'text-primary border-primary' : 'text-slate-400 border-transparent'}`;
+}
+
+// ===== Chat =====
+function askPreset(q) { document.getElementById('chat-input').value = q; sendChat(); }
+function sendChat() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+    const msgs = document.getElementById('chat-messages');
+    const userBubble = document.createElement('div');
+    userBubble.className = 'flex justify-end';
+    userBubble.innerHTML = `<div class="bg-primary rounded-2xl rounded-tr-sm px-4 py-3 shadow-sm" style="max-width:240px"><p class="text-sm text-white leading-relaxed">${escapeHtml(text)}</p></div>`;
+    msgs.appendChild(userBubble);
+    const typing = document.createElement('div');
+    typing.id = 'typing-indicator';
+    typing.className = 'flex items-end gap-2.5';
+    typing.innerHTML = `<div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-slate-100 shadow-sm"><img src="avatar_candidate.jpg" class="w-full h-full object-cover object-top"/></div><div><p class="text-[11px] text-slate-400 mb-1 ml-1 font-medium">박주민</p><div class="bg-white dark:bg-slate-700 rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm"><div class="chat-bubble-typing flex gap-1"><span></span><span></span><span></span></div></div></div>`;
+    msgs.appendChild(typing);
+    msgs.scrollTop = msgs.scrollHeight;
+    input.value = '';
+    setTimeout(() => {
+        document.getElementById('typing-indicator')?.remove();
+        const answer = aiResponses[text] || '해당 질문에 대한 답변을 준비 중입니다. 더 자세한 내용은 박주민 후보 공식 홈페이지를 참고해주세요 😊';
+        const aiBubble = document.createElement('div');
+        aiBubble.className = 'flex items-end gap-2.5';
+        aiBubble.innerHTML = `<div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-slate-100 shadow-sm"><img src="avatar_candidate.jpg" class="w-full h-full object-cover object-top"/></div><div><p class="text-[11px] text-slate-400 mb-1 ml-1 font-medium">박주민</p><div class="bg-white dark:bg-slate-700 rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm" style="max-width:240px"><p class="text-sm text-slate-700 dark:text-slate-200 leading-relaxed">${answer}</p></div></div>`;
+        msgs.appendChild(aiBubble);
+        msgs.scrollTop = msgs.scrollHeight;
+    }, 1400);
+}
+
+// ===== Voice =====
+let voiceActive = false;
+function toggleVoice() {
+    if (!voiceActive) {
+        voiceActive = true;
+        document.getElementById('voice-waves').classList.add('voice-active');
+        document.getElementById('voice-status').textContent = '말씀해주세요...';
+        setTimeout(() => { stopVoice(); document.getElementById('chat-input').value = '마포구 발전 계획은?'; switchChatTab('text'); }, 3000);
+    }
+}
+function stopVoice() { voiceActive = false; document.getElementById('voice-waves').classList.remove('voice-active'); document.getElementById('voice-status').textContent = '버튼을 눌러 말씀해주세요'; }
+
+// ===== Cheer =====
+let cheerCount = 384;
+const mockNames = ['최','정','강','조','윤','장','임','한','오','서'];
+const mockAreas = ['마포구민','서울시민','공덕 거주','홍대 거주','합정 거주','망원 거주'];
+
+function kakaoLogin() {
+    const users = [{name:'홍**',area:'마포구민'},{name:'김**',area:'공덕 거주'},{name:'이**',area:'서울시민'},{name:'박**',area:'합정 거주'},{name:'최**',area:'망원 거주'}];
+    const u = users[Math.floor(Math.random()*users.length)];
+    document.getElementById('kakao-display-name').textContent = u.name;
+    document.getElementById('kakao-display-area').textContent = u.area;
+    document.getElementById('kakao-gate').classList.add('hidden');
+    document.getElementById('cheer-input-area').classList.remove('hidden');
+    showToast('카카오 인증 완료! 응원글을 남겨주세요 💬');
+}
+function submitCheer() {
+    const input = document.getElementById('cheer-input');
+    const text = input.value.trim();
+    if (!text) return;
+    const name = document.getElementById('kakao-display-name').textContent;
+    const area = document.getElementById('kakao-display-area').textContent;
+    cheerData.unshift({ name, area, text, time:'방금 전' });
+    cheerCount++;
+    document.getElementById('stat-cheers').textContent = cheerCount.toLocaleString();
+    renderCheers();
+    input.value = '';
+    showToast('응원이 전달되었습니다! 💙');
+}
+
+function openCheer(i) {
+    const c = cheerData[i];
+    document.getElementById('cheer-detail-content').innerHTML = `
+        <div class="flex items-center gap-3 mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl">
+            <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-lg">💬</div>
+            <div><p class="font-bold text-slate-800 dark:text-slate-100">${c.name}</p><p class="text-xs text-slate-400">${c.area} · ${c.time}</p></div>
+        </div>
+        <p class="text-base text-slate-700 dark:text-slate-200 leading-relaxed">${escapeHtml(c.text)}</p>
+    `;
+    openSheet('cheer-sheet');
+}
+
+// ===== Policy cards (horizontal scroll) =====
+function renderPolicyCrads() {
+    const L = currentLang;
+    const tagColors = { blue:'bg-blue-100 dark:bg-blue-900/40 text-primary', purple:'bg-purple-100 dark:bg-purple-900/40 text-purple-600', green:'bg-green-100 dark:bg-green-900/40 text-green-600' };
+    const iconBg    = { blue:'bg-blue-50 dark:bg-blue-900/30', purple:'bg-purple-50 dark:bg-purple-900/30', green:'bg-green-50 dark:bg-green-900/30' };
+    const container = document.getElementById('policy-card-scroll');
+    if (!container) return;
+    container.innerHTML = '';
+    policies.forEach((p, i) => {
+        const title    = L === 'en' && p.title_en ? p.title_en : p.title;
+        const tag      = L === 'en' && p.tag_en   ? p.tag_en   : p.tag;
+        const descShort = (L === 'en' && p.desc_en ? p.desc_en : p.desc).substring(0, 55) + '…';
+        const div = document.createElement('div');
+        div.className = 'policy-h-card bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col';
+        div.innerHTML = `
+            <div class="w-10 h-10 rounded-xl ${iconBg[p.tagColor] || 'bg-slate-50'} flex items-center justify-center mb-3 flex-shrink-0">
+                <span class="text-xl">${p.icon}</span>
+            </div>
+            <div class="flex items-center gap-2 mb-1">
+                <span class="text-sm font-bold text-slate-900 dark:text-white">${title}</span>
+                <span class="text-[10px] ${tagColors[p.tagColor] || ''} px-2 py-0.5 rounded-full font-medium flex-shrink-0">${tag}</span>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed flex-1">${descShort}</p>
+            <div class="flex items-center justify-between mt-3 pt-2 border-t border-slate-50 dark:border-slate-700">
+                <div class="flex items-center gap-1 text-xs text-slate-400">
+                    <span class="material-symbols-outlined text-[14px]">thumb_up</span>
+                    ${L === 'en' ? 'Support' : '공감'} ${p.sympathy.toLocaleString()}
+                </div>
+                <button onclick="openPolicy(${i})" class="text-xs font-bold text-primary flex items-center gap-0.5 hover:underline">
+                    ${T[L]['btn-view-detail']}
+                    <span class="material-symbols-outlined text-[13px]">chevron_right</span>
+                </button>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+// ===== Policy =====
+const SIDO_LIST = ['서울특별시','부산광역시','대구광역시','인천광역시','광주광역시','대전광역시','울산광역시','세종특별자치시','경기도','강원특별자치도','충청북도','충청남도','전북특별자치도','전라남도','경상북도','경상남도','제주특별자치도'];
+
+function openPolicy(i) {
+    const p = policies[i];
+    const L = currentLang;
+    const tagColors = { blue:'bg-blue-100 text-primary', purple:'bg-purple-100 text-purple-600', green:'bg-green-100 text-green-600' };
+
+    const title    = L === 'en' && p.title_en    ? p.title_en    : p.title;
+    const tag      = L === 'en' && p.tag_en      ? p.tag_en      : p.tag;
+    const desc     = L === 'en' && p.desc_en     ? p.desc_en     : p.desc;
+    const steps    = L === 'en' && p.steps_en    ? p.steps_en    : (p.steps || []);
+    const budget   = L === 'en' && p.budget_en   ? p.budget_en   : p.budget;
+    const schedule = L === 'en' && p.schedule_en ? p.schedule_en : p.schedule;
+    const target   = L === 'en' && p.target_en   ? p.target_en   : p.target;
+    const tx = T[L];
+
+    const stepsHtml = steps.map((s, idx) =>
+        `<div class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
+            <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary text-[10px] font-black flex-shrink-0 mt-0.5">${idx+1}</span>
+            <span class="leading-snug">${s}</span>
+        </div>`
+    ).join('');
+
+    const lBudget   = L === 'en' ? 'Est. Budget'  : '예상 예산';
+    const lSchedule = L === 'en' ? 'Timeline'     : '추진 일정';
+    const lTarget   = L === 'en' ? 'Beneficiaries': '수혜 대상';
+    const metaHtml = [
+        budget   ? `<div class="flex items-center gap-2"><span class="text-slate-400">💰</span><span class="text-slate-500 font-medium">${lBudget}</span><span class="ml-auto text-slate-700 dark:text-slate-300 font-semibold">${budget}</span></div>` : '',
+        schedule ? `<div class="flex items-center gap-2"><span class="text-slate-400">📅</span><span class="text-slate-500 font-medium">${lSchedule}</span><span class="ml-auto text-slate-700 dark:text-slate-300 font-semibold">${schedule}</span></div>` : '',
+        target   ? `<div class="flex items-center gap-2"><span class="text-slate-400">👥</span><span class="text-slate-500 font-medium">${lTarget}</span><span class="ml-auto text-slate-700 dark:text-slate-300 font-semibold">${target}</span></div>` : '',
+    ].filter(Boolean).join('');
+
+    const sidoOpts = SIDO_LIST.map(s => `<option value="${s}">${s}</option>`).join('');
+
+    const agePlaceholder = L === 'en' ? 'Enter age' : '만 나이 입력';
+    const matchYes = L === 'en'
+        ? (sido, age) => `✅ Yes! This pledge applies to you (${sido}, age ${age}).`
+        : (sido, age) => `✅ 해당됩니다! ${sido} 거주 ${age}세 시민에게 적용되는 공약입니다.`;
+    const matchNo = L === 'en'
+        ? '💡 Not a direct beneficiary, but you may be indirectly affected.'
+        : 'ℹ️ 직접 수혜 대상은 아니지만, 간접적으로 영향을 받을 수 있습니다.';
+    const matchWarn = L === 'en' ? 'Please enter both age and region.' : '나이와 거주 지역을 모두 입력해주세요.';
+
+    document.getElementById('policy-detail-content').innerHTML = `
+        <!-- 타이틀 -->
+        <div class="flex items-center justify-between mb-4 pt-1">
+            <h2 class="font-black text-xl text-slate-900 dark:text-white leading-snug">${title}</h2>
+            <span class="text-[11px] ${tagColors[p.tagColor]} px-2.5 py-1 rounded-full font-bold flex-shrink-0 ml-2">${tag}</span>
+        </div>
+
+        <!-- 후보자 정보 -->
+        <div class="flex items-center justify-between bg-slate-50 dark:bg-slate-800 rounded-2xl px-4 py-3 mb-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-black text-base flex-shrink-0">박</div>
+                <div>
+                    <p class="font-bold text-slate-800 dark:text-slate-100 text-sm">박주민 ${tx['modal-candidate']}</p>
+                    <p class="text-xs text-slate-400">${L === 'en' ? 'Democratic Party · No.1' : '더불어민주당 · 기호 1'}</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-1 text-primary font-bold text-sm">
+                <span class="material-symbols-outlined text-[16px]">thumb_up</span>
+                <span>${tx['sympathize']} ${p.sympathy.toLocaleString()}</span>
+            </div>
+        </div>
+
+        <!-- AI 요약 -->
+        <div class="mb-1.5">
+            <div class="flex items-center gap-1.5 mb-2">
+                <span class="material-symbols-outlined text-primary text-[15px]">smart_toy</span>
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wide">${tx['modal-ai-summary']}</span>
+            </div>
+        </div>
+        <div class="flex items-start gap-3 bg-blue-50 dark:bg-blue-900/20 rounded-2xl px-4 py-3 mb-4">
+            <div class="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 text-lg mt-0.5">${p.icon}</div>
+            <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">${desc}</p>
+        </div>
+
+        <!-- 세부 내용 -->
+        ${(stepsHtml || metaHtml) ? `
+        <div class="mb-4">
+            <div class="flex items-center gap-1.5 mb-2">
+                <span class="material-symbols-outlined text-primary text-[16px]">description</span>
+                <span class="font-bold text-slate-800 dark:text-slate-100 text-sm">${tx['modal-detail']}</span>
+            </div>
+            <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl p-4 space-y-2.5">
+                ${stepsHtml}
+                ${stepsHtml && metaHtml ? '<div class="border-t border-slate-100 dark:border-slate-700 my-1"></div>' : ''}
+                <div class="space-y-2 text-sm">${metaHtml}</div>
+            </div>
+        </div>` : ''}
+
+        <!-- 나에게 해당되는 공약일까? -->
+        <div class="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-4 mb-4">
+            <div class="flex items-center gap-1.5 mb-3">
+                <span class="material-symbols-outlined text-primary text-[16px]">fact_check</span>
+                <span class="font-bold text-slate-800 dark:text-slate-100 text-sm">${tx['modal-match']}</span>
+            </div>
+            <div class="space-y-2 mb-3">
+                <div>
+                    <label class="text-xs text-slate-500 font-medium mb-1 block">${tx['modal-match-age']}</label>
+                    <input id="policy-check-age-${i}" type="number" min="1" max="120" placeholder="${agePlaceholder}"
+                        class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 bg-white dark:bg-slate-800"/>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-500 font-medium mb-1 block">${tx['modal-match-sido']}</label>
+                    <select id="policy-check-sido-${i}"
+                        class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" style="appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 12px center;background-size:18px">
+                        <option value="">${tx['sido-placeholder']}</option>
+                        ${sidoOpts}
+                    </select>
+                </div>
+            </div>
+            <button onclick="checkPolicyMatch(${i}, ${JSON.stringify(matchYes).replace(/"/g,'&quot;')}, '${matchNo.replace(/'/g,"\\'")}', '${matchWarn.replace(/'/g,"\\'")}')"
+                class="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white font-bold py-2.5 rounded-xl text-sm transition-colors">
+                <span class="material-symbols-outlined text-[16px]">search</span>${tx['modal-match-btn']}
+            </button>
+            <div id="policy-match-result-${i}" class="hidden mt-3 text-sm text-center font-semibold rounded-xl py-2.5 px-4"></div>
+        </div>
+
+        <!-- 공감 버튼 -->
+        <button onclick="sympathizePolicy(${i})" id="sympathy-btn-${i}"
+            class="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white font-bold py-3.5 rounded-xl text-sm transition-colors">
+            <span class="material-symbols-outlined text-[18px]">thumb_up</span>
+            <span>${tx['sympathize']}</span>
+            <span class="bg-white/20 rounded-full px-2 py-0.5 text-xs" id="sympathy-count-${i}">${p.sympathy.toLocaleString()}</span>
+        </button>
+    `;
+    openSheet('policy-sheet');
+}
+
+function checkPolicyMatch(i, matchYesFn, matchNoMsg, matchWarnMsg) {
+    const p        = policies[i];
+    const ageEl    = document.getElementById('policy-check-age-' + i);
+    const sidoEl   = document.getElementById('policy-check-sido-' + i);
+    const resultEl = document.getElementById('policy-match-result-' + i);
+    const age      = parseInt(ageEl?.value);
+    const sido     = sidoEl?.value;
+
+    const warn  = matchWarnMsg  || '나이와 거주 지역을 모두 입력해주세요.';
+    const noMsg = matchNoMsg    || 'ℹ️ 직접 수혜 대상은 아니지만, 간접적으로 영향을 받을 수 있습니다.';
+    const yesFn = typeof matchYesFn === 'function'
+        ? matchYesFn
+        : (s, a) => `✅ 해당됩니다! ${s} 거주 ${a}세 시민에게 적용되는 공약입니다.`;
+
+    if (!age || !sido) {
+        resultEl.className = 'mt-3 text-sm text-center font-semibold rounded-xl py-2.5 px-4 bg-yellow-50 text-yellow-700';
+        resultEl.textContent = warn;
+        resultEl.classList.remove('hidden');
+        return;
+    }
+
+    let ageMatch = true;
+    if (p.targetAgeMin !== null && age < p.targetAgeMin) ageMatch = false;
+    if (p.targetAgeMax !== null && age > p.targetAgeMax) ageMatch = false;
+    const isAll = !p.target || p.target === '전 시민' || p.target === '전 연령' || p.target === 'All citizens' || p.target === 'All residents';
+
+    let msg, cls;
+    if (isAll || ageMatch) {
+        msg = yesFn(sido, age);
+        cls = 'mt-3 text-sm text-center font-semibold rounded-xl py-2.5 px-4 bg-green-50 text-green-700';
+    } else {
+        msg = noMsg;
+        cls = 'mt-3 text-sm text-center font-semibold rounded-xl py-2.5 px-4 bg-slate-100 text-slate-600';
+    }
+    resultEl.className = cls;
+    resultEl.textContent = msg;
+    resultEl.classList.remove('hidden');
+}
+function sympathizePolicy(i) {
+    policies[i].sympathy++;
+    const el = document.getElementById(`sympathy-count-${i}`);
+    if (el) el.textContent = policies[i].sympathy;
+    showToast('공감이 반영되었습니다 👍');
+}
+
+// ===== News =====
+function openNews(i) {
+    const n = newsList[i];
+    const tagColors = { blue:'bg-blue-50 text-primary', green:'bg-green-50 text-green-600', purple:'bg-purple-50 text-purple-600' };
+    document.getElementById('news-detail-content').innerHTML = `
+        <span class="text-[10px] ${tagColors[n.tagColor]} px-2 py-0.5 rounded-full font-medium">${n.tag}</span>
+        <h3 class="font-black text-lg text-slate-900 dark:text-white mt-3 mb-1 leading-snug">${n.title}</h3>
+        <p class="text-xs text-slate-400 mb-4">${n.press} · ${n.date}</p>
+        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">${n.body}</p>
+        <a href="${n.url}" onclick="showToast('원본 기사로 이동합니다');return false;" class="mt-5 flex items-center justify-center gap-2 bg-primary text-white font-bold py-3 rounded-xl text-sm">
+            <span class="material-symbols-outlined text-[18px]">open_in_new</span>원본 기사 보기
+        </a>
+    `;
+    openSheet('news-sheet');
+}
+
+// ===== Profile tab =====
+function switchProfileTab(tab) {
+    document.getElementById('ptab-portfolio').classList.toggle('hidden', tab !== 'portfolio');
+    document.getElementById('ptab-policy').classList.toggle('hidden', tab !== 'policy');
+    document.querySelectorAll('.ptab').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    if (tab === 'policy') renderProfilePolicies();
+}
+function renderProfilePolicies() {
+    const L = currentLang;
+    const container = document.getElementById('profile-policy-list');
+    container.innerHTML = '';
+    policies.forEach((p, i) => {
+        const title   = L === 'en' && p.title_en ? p.title_en : p.title;
+        const descFull = L === 'en' && p.desc_en  ? p.desc_en  : p.desc;
+        const div = document.createElement('div');
+        div.className = 'bg-white dark:bg-slate-700 rounded-2xl p-4 border border-slate-100 dark:border-slate-600 shadow-sm';
+        div.innerHTML = `
+            <div class="flex items-start gap-3">
+                <span class="text-2xl flex-shrink-0">${p.icon}</span>
+                <div class="flex-1 min-w-0">
+                    <p class="font-bold text-slate-800 dark:text-slate-100">${title}</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">${descFull.substring(0,65)}…</p>
+                    <div class="flex items-center justify-between mt-2">
+                        <div class="flex items-center gap-1 text-xs text-slate-400">
+                            <span class="material-symbols-outlined text-[14px]">thumb_up</span>
+                            ${L === 'en' ? 'Support' : '공감'} ${p.sympathy.toLocaleString()}
+                        </div>
+                        <button onclick="closeSheet('profile-sheet'); setTimeout(()=>openPolicy(${i}),300)"
+                            class="text-xs font-bold text-primary flex items-center gap-0.5 hover:underline">
+                            ${T[L]['btn-view-detail']}
+                            <span class="material-symbols-outlined text-[13px]">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+// ===== Sheet modal =====
+function openSheet(id) {
+    document.getElementById('sheet-overlay').classList.add('open');
+    document.getElementById(id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeSheet(id) {
+    document.getElementById('sheet-overlay').classList.remove('open');
+    document.getElementById(id).classList.remove('open');
+    document.body.style.overflow = '';
+}
+function closeAllSheets() {
+    document.getElementById('sheet-overlay').classList.remove('open');
+    document.querySelectorAll('.sheet-panel').forEach(el => el.classList.remove('open'));
+    document.body.style.overflow = '';
+}
+
+// ===== CTA =====
+function goToPlatform(e) { e.preventDefault(); showToast('일꾼을찾다 메인으로 이동합니다'); }
+function goToCompare(e) { e.preventDefault(); showToast('후보 비교 페이지로 이동합니다'); }
+
+// ===== Share =====
+function shareKakao() {
+    if (navigator.share) {
+        navigator.share({ title:'서울의 일꾼 박주민', text:'당신의 마포를 바꿀 사람을 만나보세요!', url:window.location.href }).catch(()=>{});
+    } else {
+        navigator.clipboard?.writeText(window.location.href).catch(()=>{});
+        showToast('링크가 복사되었습니다! 📋');
+    }
+}
+
+// ===== Toast =====
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ===== Util =====
+function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ===== Counter animation =====
+function animateCounter(id, to, duration) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const start = performance.now();
+    (function update(now) {
+        const p = Math.min((now - start) / duration, 1);
+        el.textContent = Math.floor(to * (1 - Math.pow(1-p, 3))).toLocaleString();
+        if (p < 1) requestAnimationFrame(update);
+    })(performance.now());
+}
+
+// ===== Init =====
+window.addEventListener('load', () => {
+    animateCounter('hero-like-count', 1247, 1000);
+    animateCounter('stat-cheers', 384, 900);
+    renderCheers();
+    renderPolicyCrads();
+});
+</script>
+</body>
+</html>
