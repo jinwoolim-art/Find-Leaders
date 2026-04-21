@@ -319,17 +319,26 @@
   </div>
 
   <div id="tab-inbox" class="content" style="flex:1;display:none">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px"><span class="ms msf" style="color:#3b82f6;font-size:20px">inbox</span><p style="font-size:15px;font-weight:900;color:#111827;margin:0">수신 메일</p><span style="font-size:11px;color:#9ca3af;margin-left:4px">ilkkun.official@gmail.com</span></div>
-    <div class="fr"><select class="sel"><option>수신일 전체</option><option>4/20</option><option>4/19</option></select><select class="sel"><option>분류 전체</option><option>신청서</option><option>증명서</option><option>문의</option></select><select class="sel"><option>처리 전체</option><option>미처리</option><option>처리 완료</option></select><input type="text" class="inp" placeholder="검색..." style="width:160px;padding:6px 10px;font-size:11px"/></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:8px"><span class="ms msf" style="color:#3b82f6;font-size:20px">inbox</span><p style="font-size:15px;font-weight:900;color:#111827;margin:0">수신 메일</p><span style="font-size:11px;color:#9ca3af;margin-left:4px">Gmail 실시간 연동</span></div>
+      <button class="btn btn-primary" onclick="loadInbox()"><span class="ms" style="font-size:14px">refresh</span>새로고침</button>
+    </div>
+    <div class="fr">
+      <select class="sel" id="inbox-filter-cat" onchange="renderInbox()"><option value="">분류 전체</option><option value="신청서">신청서</option><option value="증명서">증명서</option><option value="문의">문의</option></select>
+      <select class="sel" id="inbox-filter-read" onchange="renderInbox()"><option value="">처리 전체</option><option value="unread">미처리</option><option value="read">처리 완료</option></select>
+      <input type="text" class="inp" id="inbox-search" placeholder="검색..." style="width:160px;padding:6px 10px;font-size:11px" oninput="renderInbox()"/>
+      <span style="font-size:11px;color:#9ca3af;margin-left:auto" id="inbox-count">—</span>
+    </div>
     <div class="card" style="overflow:hidden">
-      <table class="tbl"><thead><tr><th>수신일</th><th>발신자</th><th>분류</th><th>제목</th><th>첨부</th><th>처리</th><th>연결</th></tr></thead>
-        <tbody>
-          <tr style="background:#f5f3ff"><td style="font-weight:700">4/20</td><td style="font-weight:700">홍길동<br><span style="font-size:10px;color:#9ca3af">hong@gmail.com</span></td><td><span class="cat cat-svc">신청서</span></td><td style="font-weight:700">서비스 신청합니다</td><td><span class="ms msf" style="color:#22c55e;font-size:16px">attach_file</span></td><td><span class="st st-open">미처리</span></td><td><span class="step-label">→ 2단계</span></td></tr>
-          <tr style="background:#f5f3ff"><td style="font-weight:700">4/20</td><td style="font-weight:700">김철수<br><span style="font-size:10px;color:#9ca3af">kim@hanmail.net</span></td><td><span class="cat" style="background:#ede9fe;color:#7c3aed">증명서</span></td><td style="font-weight:700">확인증 보냅니다</td><td><span class="ms msf" style="color:#22c55e;font-size:16px">attach_file</span></td><td><span class="st st-open">미처리</span></td><td><span class="step-label">→ 2단계</span></td></tr>
-          <tr style="background:#f5f3ff"><td style="font-weight:700">4/20</td><td style="font-weight:700">이영희<br><span style="font-size:10px;color:#9ca3af">lee@gmail.com</span></td><td><span class="cat cat-etc">문의</span></td><td style="font-weight:700">통계 페이지가 안 보여요</td><td>—</td><td><span class="st st-open">미처리</span></td><td><span class="step-label">→ CS</span></td></tr>
-          <tr><td>4/18</td><td>강민호<br><span style="font-size:10px;color:#9ca3af">kang@gmail.com</span></td><td><span class="cat cat-svc">신청서</span></td><td>이용 신청</td><td><span class="ms msf" style="color:#22c55e;font-size:16px">attach_file</span></td><td><span class="st st-done">처리 완료</span></td><td><span style="font-size:10px;color:#9ca3af">2단계 완료</span></td></tr>
+      <table class="tbl"><thead><tr><th>수신일</th><th>발신자</th><th>분류</th><th>제목</th><th>첨부</th><th>처리</th><th>액션</th></tr></thead>
+        <tbody id="inbox-tbody">
+          <tr><td colspan="7" style="text-align:center;padding:40px;color:#9ca3af">새로고침을 눌러 Gmail 수신함을 불러오세요</td></tr>
         </tbody>
       </table>
+    </div>
+    <div style="margin-top:12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px">
+      <span class="ms" style="color:#3b82f6;font-size:16px">cloud_sync</span>
+      <p style="font-size:11px;color:#1d4ed8;font-weight:600;margin:0" id="inbox-status">최근 30일 · 최대 50건</p>
     </div>
   </div>
 
@@ -472,11 +481,11 @@
 <script>
 // ═══ Google Sheets API (읽기) ═══
 var API_KEY='AIzaSyCcecnzIyrLu4HCzxlhwx5LJbbey6YfJY4';
-var SHEET_ID='1LAIocXzfb1rLUrdBgqU9JNOpHUd90g9dKL5Xh4YiMeE';
+var SHEET_ID='1b12nC5b4gKnuCPs-n5X3x5h2MXiFqQvPZcyMJM4BFoQ';
 var SHEETS_URL='https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID+'/values/';
 
 // ═══ Apps Script 웹앱 (쓰기 + Gmail 발송) ═══
-var WEB_APP_URL='https://script.google.com/macros/s/AKfycbxFqCs5V4EBW0rFSsi5dQ7RSkr6fxHGeMdZ6p_MlhRVUbu5L23zgpet-6f5bZjE6gLXQg/exec';
+var WEB_APP_URL='https://script.google.com/macros/s/AKfycby7xcDYmlJgXvriMkqi8ZUO9y1Q-Y7yrZYGiQoiLdE69tn8GzZ8UUbxlmX8gqiJxCQIYw/exec';
 
 function apiSend(payload, onDone){
   if(!WEB_APP_URL){
@@ -636,7 +645,7 @@ function openCSFromSheet(i){
   document.getElementById('dp-b').innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px"><div style="width:40px;height:40px;border-radius:50%;background:#f5f3ff;display:flex;align-items:center;justify-content:center"><span class="ms msf" style="color:#7c3aed;font-size:22px">person</span></div><div><p style="font-size:14px;font-weight:900;color:#111827">'+d['후보자명']+'</p><p style="font-size:11px;color:#9ca3af">'+d['이메일']+'</p></div></div><div style="background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:16px"><div style="display:flex;gap:6px;margin-bottom:8px"><span class="cat cat-'+(catMap[d['분류']]||'etc')+'">'+(d['분류']||'')+'</span><span class="pr pr-'+(priMap[d['우선순위']]||'low')+'">'+(d['우선순위']||'')+'</span></div><p style="font-size:14px;font-weight:900;color:#111827;margin-bottom:8px">'+d['제목']+'</p><p style="font-size:12px;color:#374151;line-height:1.6">'+(d['내용']||'')+'</p></div><p style="font-size:12px;font-weight:900;color:#374151;margin-bottom:8px">답변 작성</p><textarea class="inp" rows="4" placeholder="답변..." style="margin-bottom:12px;resize:vertical">'+(d['답변']||'')+'</textarea><div style="display:flex;gap:8px"><button class="btn btn-primary" style="flex:1;justify-content:center" onclick="alert(\'답변 발송: '+d['후보자명']+'\')"><span class="ms" style="font-size:14px">send</span>답변 발송</button><button class="btn btn-ghost" onclick="alert(\'완료 처리\')"><span class="ms" style="font-size:14px">check_circle</span>완료</button></div>';
 }
 
-function doLogin(){if(document.getElementById('login-pw').value==='admin1234'){document.getElementById('login-screen').classList.remove('show');loadAllData();renderAcctTable()}else{document.getElementById('login-err').style.display='block'}}
+function doLogin(){if(document.getElementById('login-pw').value==='0000'){document.getElementById('login-screen').classList.remove('show');loadAllData();renderAcctTable()}else{document.getElementById('login-err').style.display='block'}}
 function logout(){document.getElementById('login-screen').classList.add('show');document.getElementById('login-pw').value=''}
 var TABS=['inq','app','acct','cs','sent','inbox','tpl'];
 var TI={inq:{t:'1단계 · 문의 관리',i:'campaign'},app:{t:'2단계 · 신청 관리',i:'assignment'},acct:{t:'계정 발급',i:'vpn_key'},cs:{t:'CS 관리',i:'support_agent'},sent:{t:'발송 내역',i:'send'},inbox:{t:'수신 메일',i:'inbox'},tpl:{t:'템플릿 관리',i:'draft'}};
@@ -841,6 +850,119 @@ function handleFileUpload(input){
   }
   input.value='';
   alert('✅ '+files.length+'개 파일 업로드 완료');
+}
+
+// ═══ 수신 메일 Gmail 연동 ═══
+var inboxData=[];
+
+function loadInbox(){
+  document.getElementById('inbox-status').textContent='⏳ Gmail 수신함 불러오는 중...';
+  document.getElementById('inbox-tbody').innerHTML='<tr><td colspan="7" style="text-align:center;padding:40px;color:#9ca3af">로딩 중...</td></tr>';
+  apiSend({action:'getInbox',days:30},function(res){
+    if(!res.ok){document.getElementById('inbox-status').textContent='❌ 실패: '+(res.error||'');return}
+    inboxData=res.messages||[];
+    document.getElementById('inbox-status').textContent='✅ Gmail 연동됨 · '+inboxData.length+'건 (최근 30일)';
+    renderInbox();
+  });
+}
+
+function renderInbox(){
+  var cat=document.getElementById('inbox-filter-cat').value;
+  var readFilter=document.getElementById('inbox-filter-read').value;
+  var q=document.getElementById('inbox-search').value.toLowerCase();
+  var rows=inboxData.filter(function(m){
+    if(cat&&m.category!==cat) return false;
+    if(readFilter==='unread'&&!m.isUnread) return false;
+    if(readFilter==='read'&&m.isUnread) return false;
+    if(q){
+      var hay=(m.fromName+' '+m.fromEmail+' '+m.subject).toLowerCase();
+      if(hay.indexOf(q)<0) return false;
+    }
+    return true;
+  });
+  document.getElementById('inbox-count').textContent=rows.length+' / '+inboxData.length;
+  var tb=document.getElementById('inbox-tbody');
+  if(rows.length===0){tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:40px;color:#9ca3af">해당 조건의 메일이 없습니다</td></tr>';return}
+  var catCls={'신청서':'cat-svc','증명서':'','문의':'cat-etc'};
+  var catStyle={'증명서':'background:#ede9fe;color:#7c3aed'};
+  tb.innerHTML=rows.map(function(m,i){
+    var origIdx=inboxData.indexOf(m);
+    var rowStyle=m.isUnread?' style="background:#f5f3ff"':'';
+    var catBadge='<span class="cat '+(catCls[m.category]||'cat-etc')+'"'+(catStyle[m.category]?' style="'+catStyle[m.category]+'"':'')+'>'+m.category+'</span>';
+    var attach=m.hasAttachment?'<span class="ms msf" style="color:#22c55e;font-size:16px" title="첨부 있음">attach_file</span>':'—';
+    var st=m.isUnread?'<span class="st st-open">미처리</span>':'<span class="st st-done">처리 완료</span>';
+    var action;
+    if(!m.isUnread){
+      action='<span style="font-size:10px;color:#9ca3af">처리됨</span>';
+    } else if(m.category==='신청서'||m.category==='증명서'){
+      action='<button class="btn btn-success" style="padding:3px 8px;font-size:10px" onclick="registerToApp('+origIdx+')"><span class="ms" style="font-size:12px">assignment</span>2단계 등록</button>';
+    } else {
+      action='<button class="btn btn-primary" style="padding:3px 8px;font-size:10px" onclick="registerToCS('+origIdx+')"><span class="ms" style="font-size:12px">support_agent</span>CS 등록</button>';
+    }
+    return '<tr'+rowStyle+' style="cursor:pointer'+(m.isUnread?';background:#f5f3ff':'')+'" onclick="showInboxSnippet('+origIdx+')"><td'+(m.isUnread?' style="font-weight:700"':'')+'>'+m.date+'</td><td'+(m.isUnread?' style="font-weight:700"':'')+'>'+escapeHtml(m.fromName)+'<br><span style="font-size:10px;color:#9ca3af">'+escapeHtml(m.fromEmail)+'</span></td><td>'+catBadge+'</td><td'+(m.isUnread?' style="font-weight:700"':'')+'>'+escapeHtml(m.subject)+'</td><td>'+attach+'</td><td>'+st+'</td><td onclick="event.stopPropagation()">'+action+'</td></tr>';
+  }).join('');
+}
+
+function escapeHtml(s){
+  return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]});
+}
+
+function showInboxSnippet(idx){
+  var m=inboxData[idx];if(!m)return;
+  document.getElementById('dp').classList.add('open');
+  document.getElementById('dp-t').textContent='수신 메일';
+  var attachText=m.hasAttachment?'📎 첨부 있음':'첨부 없음';
+  document.getElementById('dp-b').innerHTML=
+    '<p style="font-size:14px;font-weight:900;color:#111827;margin-bottom:4px">'+escapeHtml(m.subject)+'</p>'+
+    '<p style="font-size:11px;color:#9ca3af;margin-bottom:12px">'+escapeHtml(m.fromName)+' &lt;'+escapeHtml(m.fromEmail)+'&gt; · '+m.date+' · '+attachText+'</p>'+
+    '<div id="mail-body-box" style="background:#f8fafc;border-radius:10px;padding:14px;font-size:12px;color:#374151;line-height:1.7;white-space:pre-wrap;word-break:break-word;max-height:60vh;overflow-y:auto">⏳ 본문 불러오는 중...</div>';
+  apiSend({action:'getMessage',messageId:m.id},function(res){
+    var box=document.getElementById('mail-body-box');
+    if(!box) return;
+    if(!res.ok){box.textContent='❌ 본문을 불러오지 못했습니다: '+(res.error||'');return}
+    box.textContent=res.body||'(본문 없음)';
+  });
+}
+
+function registerToApp(idx){
+  var m=inboxData[idx];if(!m)return;
+  var pos=prompt('직급을 입력하세요 (기초의원/광역의원/기초단체장/광역단체장/교육감)','기초의원');
+  if(!pos) return;
+  apiSend({
+    action:'registerApp',
+    messageId:m.id,
+    name:m.fromName,
+    email:m.fromEmail,
+    position:pos,
+    hasAttachment:m.hasAttachment
+  },function(res){
+    if(!res.ok) return;
+    alert('✅ 신청관리(2단계)에 등록 완료\n\n후보자: '+m.fromName+'\n직급: '+pos+'\n증명서: '+(m.hasAttachment?'Y':'N'));
+    inboxData[idx].isUnread=false;
+    renderInbox();
+    loadAllData();
+  });
+}
+
+function registerToCS(idx){
+  var m=inboxData[idx];if(!m)return;
+  var catMap={'신청서':'서비스','증명서':'서비스','문의':'기타'};
+  apiSend({
+    action:'registerCS',
+    messageId:m.id,
+    name:m.fromName,
+    email:m.fromEmail,
+    category:catMap[m.category]||'기타',
+    subject:m.subject,
+    content:m.snippet,
+    priority:'보통'
+  },function(res){
+    if(!res.ok) return;
+    alert('✅ CS 관리에 등록 완료\n\n후보자: '+m.fromName+'\n제목: '+m.subject);
+    inboxData[idx].isUnread=false;
+    renderInbox();
+    loadAllData();
+  });
 }
 
 // ═══ 메일 발송 폼 → Apps Script ═══
