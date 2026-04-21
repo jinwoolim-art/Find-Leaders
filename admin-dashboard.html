@@ -297,25 +297,24 @@
   <!-- ══════════════════════════════ -->
   <div id="tab-sent" class="content" style="flex:1;display:none">
     <div class="card" style="padding:20px;margin-bottom:20px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><div style="display:flex;align-items:center;gap:8px"><span class="ms msf" style="color:#7c3aed;font-size:20px">forward_to_inbox</span><p style="font-size:15px;font-weight:900;color:#111827;margin:0">메일 발송</p></div><button class="btn btn-primary" onclick="alert('발송 완료 (데모)')"><span class="ms" style="font-size:14px">send</span>발송</button></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px"><div><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">수신자</label><input type="text" class="inp" placeholder="이름 또는 이메일" style="font-size:12px;padding:8px 12px"/></div><div><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">템플릿</label><select class="inp" style="font-size:12px;padding:8px 12px"><option>-- 템플릿 선택 --</option><option>📩 임시 비밀번호 발급</option><option>📩 증명서 요청</option><option>📩 증명서 재요청</option><option>📩 CS 답변</option><option>📩 서비스 안내</option><option>📩 이벤트 할인</option><option>📩 토큰 부족 알림</option><option>📩 선거일 리마인더</option></select></div></div>
-      <div style="margin-bottom:10px"><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">제목</label><input type="text" class="inp" style="font-size:12px;padding:8px 12px"/></div>
-      <div><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">내용 <span style="color:#a78bfa">{{이름}} {{이메일}} {{비밀번호}} {{대시보드링크}} 자동 치환</span></label><textarea class="inp" rows="6" style="font-size:12px;resize:vertical;line-height:1.8"></textarea></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><div style="display:flex;align-items:center;gap:8px"><span class="ms msf" style="color:#7c3aed;font-size:20px">forward_to_inbox</span><p style="font-size:15px;font-weight:900;color:#111827;margin:0">메일 발송</p></div><button class="btn btn-primary" id="btn-send" onclick="sendFromForm()"><span class="ms" style="font-size:14px">send</span>발송</button></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px"><div><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">수신자 이메일</label><input type="text" id="f-to" class="inp" placeholder="recipient@example.com" style="font-size:12px;padding:8px 12px"/></div><div><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">템플릿</label><select id="f-tpl" class="inp" style="font-size:12px;padding:8px 12px" onchange="applyTpl(this.value)"><option value="">-- 템플릿 선택 --</option><option value="pw">📩 임시 비밀번호 발급</option><option value="cert">📩 증명서 요청</option><option value="cert2">📩 증명서 재요청</option><option value="cs">📩 CS 답변</option><option value="svc">📩 서비스 안내</option><option value="event">📩 이벤트 할인</option><option value="token">📩 토큰 부족 알림</option><option value="remind">📩 선거일 리마인더</option></select></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px"><div><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">수신자 이름 (선택, {{이름}} 치환)</label><input type="text" id="f-name" class="inp" placeholder="홍길동" style="font-size:12px;padding:8px 12px"/></div><div><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">유형 (기록용)</label><select id="f-type" class="inp" style="font-size:12px;padding:8px 12px"><option>수동 발송</option><option>자동 안내</option><option>계정 발급</option><option>증명서</option><option>리마인더</option><option>CS 답변</option><option>이벤트 할인</option><option>토큰 부족</option></select></div></div>
+      <div style="margin-bottom:10px"><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">제목</label><input type="text" id="f-subject" class="inp" style="font-size:12px;padding:8px 12px"/></div>
+      <div><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">내용 <span style="color:#a78bfa">{{이름}} {{이메일}} {{비밀번호}} {{대시보드링크}} 자동 치환</span></label><textarea id="f-body" class="inp" rows="6" style="font-size:12px;resize:vertical;line-height:1.8"></textarea></div>
     </div>
     <div class="card" style="overflow:hidden">
       <div style="padding:14px 16px 0"><p style="font-size:14px;font-weight:900;color:#111827;margin-bottom:10px">발송 기록</p>
         <div class="fr" style="margin-bottom:10px"><select class="sel"><option>발송일 전체</option><option>4/20</option><option>4/19</option><option>4/15</option></select><select class="sel"><option>유형 전체</option><option>자동 안내</option><option>계정 발급</option><option>증명서 요청</option><option>CS 답변</option></select><select class="sel"><option>상태 전체</option><option>완료</option><option>실패</option></select></div>
       </div>
       <table class="tbl"><thead><tr><th>발송일</th><th>수신자</th><th>단계</th><th>유형</th><th>제목</th><th>상태</th></tr></thead>
-        <tbody>
-          <tr><td>4/20</td><td style="font-weight:700">이수진</td><td><span class="step-label">1단계</span></td><td><span class="cat" style="background:#dbeafe;color:#1d4ed8">자동 안내</span></td><td style="font-size:11px">안내서 + 신청서 링크</td><td><span class="st st-done">완료</span></td></tr>
-          <tr><td>4/20</td><td style="font-weight:700">홍길동</td><td><span class="step-label">2단계</span></td><td><span class="cat" style="background:#dcfce7;color:#15803d">계정 발급</span></td><td style="font-size:11px">대시보드 + 임시 비밀번호</td><td><span class="st st-done">완료</span></td></tr>
-          <tr><td>4/19</td><td style="font-weight:700">김철수</td><td><span class="step-label">2단계</span></td><td><span class="cat" style="background:#fef2f2;color:#dc2626">증명서</span></td><td style="font-size:11px">후보자 확인증 요청</td><td><span class="st st-done">완료</span></td></tr>
-          <tr><td>4/18</td><td style="font-weight:700">김영수</td><td><span class="step-label">1단계</span></td><td><span class="cat" style="background:#fef9c3;color:#a16207">리마인더</span></td><td style="font-size:11px">신청서 제출 리마인더</td><td><span class="st st-done">완료</span></td></tr>
-          <tr><td>4/15</td><td style="font-weight:700">박민수</td><td><span class="step-label">2단계</span></td><td><span class="cat" style="background:#dcfce7;color:#15803d">계정 발급</span></td><td style="font-size:11px">대시보드 + 임시 비밀번호</td><td><span class="st st-done">완료</span></td></tr>
-          <tr><td>4/14</td><td style="font-weight:700">정수빈</td><td><span class="step-label">CS</span></td><td><span class="cat" style="background:#e0f2fe;color:#1d4ed8">CS 답변</span></td><td style="font-size:11px">가입비 영수증 발송</td><td><span class="st st-done">완료</span></td></tr>
-        </tbody>
+        <tbody id="sent-tbody"><tr><td colspan="6" style="text-align:center;padding:40px;color:#9ca3af">로그인 후 데이터를 불러옵니다</td></tr></tbody>
       </table>
+    </div>
+    <div style="margin-top:12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px">
+      <span class="ms" style="color:#3b82f6;font-size:16px">cloud_sync</span>
+      <p style="font-size:11px;color:#1d4ed8;font-weight:600;margin:0" id="sent-status">⏳ 구글 시트 연결 중...</p>
+      <button class="btn btn-ghost" style="margin-left:auto;padding:4px 10px;font-size:10px" onclick="loadAllData()"><span class="ms" style="font-size:13px">refresh</span>새로고침</button>
     </div>
   </div>
 
@@ -471,10 +470,39 @@
 </div>
 
 <script>
-// ═══ Google Sheets API ═══
+// ═══ Google Sheets API (읽기) ═══
 var API_KEY='AIzaSyCcecnzIyrLu4HCzxlhwx5LJbbey6YfJY4';
 var SHEET_ID='1LAIocXzfb1rLUrdBgqU9JNOpHUd90g9dKL5Xh4YiMeE';
 var SHEETS_URL='https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID+'/values/';
+
+// ═══ Apps Script 웹앱 (쓰기 + Gmail 발송) ═══
+var WEB_APP_URL='https://script.google.com/macros/s/AKfycbxFqCs5V4EBW0rFSsi5dQ7RSkr6fxHGeMdZ6p_MlhRVUbu5L23zgpet-6f5bZjE6gLXQg/exec';
+
+function apiSend(payload, onDone){
+  if(!WEB_APP_URL){
+    alert('⚠️ Apps Script 웹앱 URL이 설정되지 않았습니다.\n\napps-script.gs를 배포한 후 admin-dashboard.html의 WEB_APP_URL에 붙여넣으세요.');
+    if(onDone) onDone({ok:false,error:'WEB_APP_URL not set'});
+    return;
+  }
+  fetch(WEB_APP_URL,{
+    method:'POST',
+    body:JSON.stringify(payload),
+    headers:{'Content-Type':'text/plain;charset=utf-8'}
+  })
+  .then(function(r){return r.json()})
+  .then(function(res){
+    if(res.ok){
+      if(onDone) onDone(res);
+    } else {
+      alert('❌ 실패: '+(res.error||'unknown'));
+      if(onDone) onDone(res);
+    }
+  })
+  .catch(function(err){
+    alert('❌ 네트워크 오류: '+err);
+    if(onDone) onDone({ok:false,error:String(err)});
+  });
+}
 
 function fetchSheet(tabName, callback){
   fetch(SHEETS_URL+encodeURIComponent(tabName)+'!A:Z?key='+API_KEY)
@@ -518,9 +546,38 @@ function loadAllData(){
   });
   // 발송내역
   fetchSheet('발송내역',function(rows){
-    if(!rows||rows.length===0) return;
-    document.getElementById('sent-status').textContent='✅ '+rows.length+'건';
+    if(!rows){document.getElementById('sent-status').textContent='시트 연결 실패';return}
+    if(rows.length===0){document.getElementById('sent-status').textContent='데이터 없음';renderSentTable([]);return}
+    document.getElementById('sent-status').textContent='✅ 시트 연결됨 · '+rows.length+'건';
+    renderSentTable(rows);
   });
+}
+
+function renderSentTable(rows){
+  var tb=document.getElementById('sent-tbody');
+  if(rows.length===0){tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:#9ca3af">데이터가 없습니다</td></tr>';return}
+  var stepCls={'1단계':'','2단계':'','CS':''};
+  var typeColor={
+    '자동 안내':'background:#dbeafe;color:#1d4ed8',
+    '계정 발급':'background:#dcfce7;color:#15803d',
+    '증명서':'background:#fef2f2;color:#dc2626',
+    '증명서 요청':'background:#fef2f2;color:#dc2626',
+    '리마인더':'background:#fef9c3;color:#a16207',
+    'CS 답변':'background:#e0f2fe;color:#1d4ed8',
+    '이벤트':'background:#fff7ed;color:#ea580c',
+    '이벤트 할인':'background:#fff7ed;color:#ea580c',
+    '토큰 부족':'background:#fef2f2;color:#dc2626'
+  };
+  var stMap={'완료':'st-done','실패':'st-req','발송중':'st-prog','대기':'st-open'};
+  tb.innerHTML=rows.map(function(r){
+    var step=r['단계']||'-';
+    var type=r['유형']||'-';
+    var st=r['상태']||'완료';
+    var typeStyle=typeColor[type]||'background:#f3f4f6;color:#6b7280';
+    var email=r['이메일']||'';
+    var recipient='<span style="font-weight:700">'+(r['수신자']||'')+'</span>'+(email?'<br><span style="font-size:10px;color:#9ca3af">'+email+'</span>':'');
+    return '<tr><td>'+(r['발송일']||'')+'</td><td>'+recipient+'</td><td><span class="step-label">'+step+'</span></td><td><span class="cat" style="'+typeStyle+'">'+type+'</span></td><td style="font-size:11px">'+(r['제목']||'')+'</td><td><span class="st '+(stMap[st]||'st-done')+'">'+st+'</span></td></tr>';
+  }).join('');
 }
 
 function renderInqTable(rows){
@@ -698,11 +755,25 @@ function sendToAdmin(){
 
 function sendToCandidate(idx){
   var entry=acctHistory[idx];
-  var msg='📩 후보자에게 발송 (데모)\n\n수신: '+entry.email+'\n\n──────────────\n'+entry.name+'님 안녕하세요.\n\n대시보드 계정이 발급되었습니다.\n\n🔗 대시보드: https://sandbox.thisishilo.ir\n📧 ID: '+entry.id+'\n🔑 임시 비밀번호: '+entry.pw+'\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n──────────────';
-  alert(msg);
-  acctHistory[idx].userSent='완료';
-  localStorage.setItem('acctHistory',JSON.stringify(acctHistory));
-  renderAcctTable();
+  var subject='[일꾼을찾다] 대시보드 계정이 발급되었습니다';
+  var body='{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n대시보드 계정이 발급되었습니다.\n\n━━━━━━━━━━━━━━━━━━━━\n🔗 대시보드: https://sandbox.thisishilo.ir\n📧 ID: {{ID}}\n🔑 임시 비밀번호: {{비밀번호}}\n━━━━━━━━━━━━━━━━━━━━\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n\n감사합니다.\n일꾼을찾다 팀';
+  apiSend({
+    action:'send',
+    to:entry.email,
+    recipient:entry.name,
+    subject:subject,
+    body:body,
+    step:'2단계',
+    type:'계정 발급',
+    variables:{'이름':entry.name,'이메일':entry.email,'ID':entry.id,'비밀번호':entry.pw}
+  },function(res){
+    if(!res.ok) return;
+    acctHistory[idx].userSent='완료';
+    localStorage.setItem('acctHistory',JSON.stringify(acctHistory));
+    renderAcctTable();
+    loadAllData();
+    alert('✅ 후보자에게 발송 완료\n\n수신: '+entry.email);
+  });
 }
 
 function markActivated(idx){
@@ -770,6 +841,59 @@ function handleFileUpload(input){
   }
   input.value='';
   alert('✅ '+files.length+'개 파일 업로드 완료');
+}
+
+// ═══ 메일 발송 폼 → Apps Script ═══
+var TPL={
+  pw:    {subject:'[일꾼을찾다] 임시 비밀번호 안내', body:'{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n임시 비밀번호를 발급해드립니다.\n\n🔑 임시 비밀번호: {{비밀번호}}\n🔗 대시보드: {{대시보드링크}}\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n\n감사합니다.\n일꾼을찾다 팀', type:'계정 발급', step:'2단계'},
+  cert:  {subject:'[일꾼을찾다] 후보자 확인증을 보내주세요', body:'{{이름}}님 안녕하세요.\n\n신청서를 접수받았으나 후보자 확인증이 첨부되어 있지 않습니다.\n\n📩 ilkkun.official@gmail.com 으로 확인증을 보내주세요.\n\n감사합니다.\n일꾼을찾다 팀', type:'증명서', step:'2단계'},
+  cert2: {subject:'[일꾼을찾다] 후보자 확인증 재요청', body:'{{이름}}님 안녕하세요.\n\n확인증이 아직 접수되지 않았습니다. 서비스 제공을 위해 빠른 전달 부탁드립니다.\n\n📩 ilkkun.official@gmail.com\n\n감사합니다.\n일꾼을찾다 팀', type:'증명서', step:'2단계'},
+  cs:    {subject:'[일꾼을찾다] 문의 답변드립니다', body:'{{이름}}님 안녕하세요.\n\n문의하신 내용에 답변드립니다.\n\n──────────────────\n(답변 내용)\n──────────────────\n\n추가 문의는 본 메일에 회신해주세요.\n\n감사합니다.\n일꾼을찾다 팀', type:'CS 답변', step:'CS'},
+  svc:   {subject:'[일꾼을찾다] 서비스 안내', body:'{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n서비스 안내드립니다.\n\n감사합니다.\n일꾼을찾다 팀', type:'자동 안내', step:'1단계'},
+  event: {subject:'[일꾼을찾다] 🔥 특별 할인 안내', body:'{{이름}}님 안녕하세요.\n\n지금 토큰 충전 시 최대 45% 할인!\n\n🔥 1차 이벤트 (4월): 최대 혜택\n⏰ 2차 이벤트 (5/1~10): 마지막 기회\n\n👉 충전하기: {{대시보드링크}}\n\n감사합니다.\n일꾼을찾다 팀', type:'이벤트 할인', step:'-'},
+  token: {subject:'[일꾼을찾다] ⚠️ 토큰 부족', body:'{{이름}}님 안녕하세요.\n\n토큰 잔여량이 부족합니다.\n소진 시 AI 아바타 운영이 중단됩니다.\n\n👉 충전하기: {{대시보드링크}}\n\n감사합니다.\n일꾼을찾다 팀', type:'토큰 부족', step:'-'},
+  remind:{subject:'[일꾼을찾다] 선거일 리마인더', body:'{{이름}}님 안녕하세요.\n\n선거일이 다가오고 있습니다. 대시보드를 확인해주세요.\n\n👉 {{대시보드링크}}\n\n감사합니다.\n일꾼을찾다 팀', type:'리마인더', step:'-'}
+};
+
+function applyTpl(key){
+  if(!key||!TPL[key]) return;
+  var t=TPL[key];
+  document.getElementById('f-subject').value=t.subject;
+  document.getElementById('f-body').value=t.body;
+  document.getElementById('f-type').value=t.type;
+}
+
+function sendFromForm(){
+  var to=document.getElementById('f-to').value.trim();
+  var name=document.getElementById('f-name').value.trim();
+  var subject=document.getElementById('f-subject').value.trim();
+  var body=document.getElementById('f-body').value.trim();
+  var type=document.getElementById('f-type').value;
+  var tplKey=document.getElementById('f-tpl').value;
+  var step=tplKey&&TPL[tplKey]?TPL[tplKey].step:'-';
+  if(!to||!subject||!body){alert('수신자·제목·내용을 모두 입력하세요');return}
+  var btn=document.getElementById('btn-send');
+  btn.disabled=true;btn.textContent='발송 중...';
+  apiSend({
+    action:'send',
+    to:to,
+    recipient:name,
+    subject:subject,
+    body:body,
+    step:step,
+    type:type,
+    variables:{'이름':name,'이메일':to,'대시보드링크':'https://sandbox.thisishilo.ir'}
+  },function(res){
+    btn.disabled=false;btn.innerHTML='<span class="ms" style="font-size:14px">send</span>발송';
+    if(!res.ok) return;
+    alert('✅ 발송 완료\n\n수신: '+to+'\n제목: '+res.subject);
+    document.getElementById('f-to').value='';
+    document.getElementById('f-name').value='';
+    document.getElementById('f-subject').value='';
+    document.getElementById('f-body').value='';
+    document.getElementById('f-tpl').value='';
+    loadAllData();
+  });
 }
 
 // ═══ 템플릿 편집 오버레이 ═══
