@@ -1,0 +1,1999 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<title>일꾼을묻다 · 유권자는 묻고, 후보자는 답해야 합니다</title>
+<meta name="description" content="공약·정책·후보자 정보를 기반으로 시민 질문에 24시간 응답하는 대화형 선거 플랫폼. 캠프 인력 없이도 유권자 질문 대응을 자동화하세요."/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --purple:#7c3aed;
+    --purple-dark:#5b21b6;
+    --purple-50:#f5f3ff;
+    --purple-100:#ede9fe;
+    --purple-200:#ddd6fe;
+    --ink:#0f172a;
+    --ink-2:#334155;
+    --ink-3:#64748b;
+    --ink-4:#94a3b8;
+    --line:#e2e8f0;
+    --bg:#ffffff;
+    --soft:#fafbff;
+    --shadow:0 10px 30px rgba(15,23,42,.08);
+    --nav-h:64px;
+  }
+  *{box-sizing:border-box;margin:0}
+  html,body{margin:0;padding:0;scroll-behavior:smooth}
+  body{
+    font-family:"Noto Sans KR",-apple-system,BlinkMacSystemFont,sans-serif;
+    color:var(--ink);background:var(--bg);line-height:1.55;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  img,video{max-width:100%;display:block}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;padding:0}
+  input,select,textarea{font-family:inherit}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;width:100%}
+  .ms{font-family:"Material Symbols Outlined";font-variation-settings:"FILL" 0,"wght" 500,"GRAD" 0,"opsz" 24;line-height:1}
+  .msf{font-variation-settings:"FILL" 1}
+
+  /* ── Common ── */
+  .h1{font-size:clamp(32px,5vw,52px);font-weight:900;letter-spacing:-.02em;line-height:1.18;margin:0}
+  .h2{font-size:clamp(26px,3.6vw,40px);font-weight:900;letter-spacing:-.02em;line-height:1.25;margin:0 0 14px;text-align:center}
+  .h3{font-size:clamp(20px,2.4vw,26px);font-weight:900;letter-spacing:-.01em;line-height:1.35;margin:0 0 10px}
+  .lead{font-size:clamp(15px,1.3vw,17px);color:var(--ink-2);line-height:1.7;margin:0;text-align:center}
+  .lead.left{text-align:left}
+  .section{padding:96px 0;position:relative}
+  .section-head{text-align:center;margin-bottom:56px}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--purple);font-weight:900;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;padding:6px 14px;background:var(--purple-50);border-radius:999px}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:13px 22px;border-radius:12px;font-weight:800;font-size:14px;
+    background:var(--purple);color:#fff;border:1px solid var(--purple);
+    transition:all .15s ease;cursor:pointer;white-space:nowrap;
+  }
+  .btn:hover{background:var(--purple-dark);transform:translateY(-1px);box-shadow:0 10px 24px rgba(124,58,237,.25)}
+  .btn.lg{padding:16px 26px;font-size:15px;border-radius:14px}
+  .btn.ghost{background:#fff;color:var(--ink);border-color:var(--line)}
+  .btn.ghost:hover{background:#f8fafc;border-color:var(--ink-3)}
+  /* 서브 칼라(옐로우) ghost 변형 */
+  .btn.ghost.yellow{background:#fef9c3;color:var(--ink);border-color:#fde68a}
+  .btn.ghost.yellow:hover{background:#fef3c7;border-color:#fbbf24}
+  .btn.outline{background:transparent;color:var(--purple);border-color:var(--purple-200)}
+  .btn.outline:hover{background:var(--purple-50)}
+
+  /* ════════ NAV ════════ */
+  nav.top{
+    position:fixed;top:0;left:0;right:0;z-index:50;height:var(--nav-h);
+    background:rgba(255,255,255,.88);backdrop-filter:saturate(1.2) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:100%;max-width:1180px;margin:0 auto;padding:0 24px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px}
+  .logo img{width:38px;height:38px;border-radius:10px;object-fit:cover}
+  .nav-links{display:flex;gap:28px;align-items:center}
+  .nav-links a{color:var(--ink-2);font-weight:600;font-size:14px;transition:color .15s}
+  .nav-links a:hover{color:var(--purple)}
+  .nav-links .app-link{color:var(--purple);font-weight:700}
+  .nav-links a.btn{color:#fff}
+  .nav-links a.btn:hover{color:#fff}
+
+  /* ════════ HERO ════════ */
+  .hero{padding:calc(var(--nav-h) + 60px) 0 96px;background:linear-gradient(180deg,#fbfaff 0%,#fff 60%);position:relative;overflow:hidden}
+  .hero::before{
+    content:'';position:absolute;width:600px;height:600px;border-radius:50%;
+    background:radial-gradient(circle,rgba(124,58,237,.08) 0%,transparent 70%);
+    top:-200px;right:-200px;
+  }
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;position:relative}
+  .hero-copy .h1{margin-bottom:22px}
+  .hero-copy .h1 strong{color:var(--purple)}
+  .hero-copy .lead{margin-bottom:32px}
+  .hero-cta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+  .hero-cta .app-btn{display:inline-flex;align-items:center;gap:8px;padding:13px 18px;border-radius:12px;background:#fff;border:1px solid var(--line);font-weight:800;font-size:14px;color:var(--ink);transition:all .15s}
+  .hero-cta .app-btn:hover{border-color:var(--purple);color:var(--purple)}
+  .hero-cta .app-btn img{width:44px;height:44px;border-radius:10px;object-fit:cover}
+  .hero-bottom-note{font-weight:800;color:var(--ink);font-size:15px}
+
+  /* Hero phone mockup */
+  .hero-mockup{position:relative;display:flex;justify-content:center;align-items:center}
+  .phone{
+    width:300px;background:#0f172a;border-radius:36px;padding:10px;
+    box-shadow:0 25px 60px rgba(15,23,42,.25);
+    position:relative;
+  }
+  .phone-screen{
+    background:#fff;border-radius:28px;overflow:hidden;
+    height:580px;display:flex;flex-direction:column;font-size:11px;
+  }
+  .phone-header{
+    background:#1e1b4b;color:#fff;padding:8px 10px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .phone-header .num-badge{background:#3b82f6;color:#fff;width:22px;height:22px;border-radius:5px;display:grid;place-items:center;font-size:9px;font-weight:900}
+  .phone-header .name{font-weight:900;font-size:11px}
+  .phone-header .sub{font-size:9px;opacity:.7}
+  .phone-tabs{display:flex;border-bottom:1px solid #f1f5f9;background:#fafafa}
+  .phone-tabs > div{flex:1;text-align:center;padding:8px;font-size:9px;font-weight:700;color:#64748b}
+  .phone-tabs > div.active{background:#fff;color:var(--purple);border-bottom:2px solid var(--purple)}
+  .phone-body{flex:1;padding:14px;overflow:hidden;background:#fafbff}
+  .chat-msg{margin-bottom:8px}
+  .chat-msg.user{display:flex;justify-content:flex-end}
+  .chat-msg.user .bubble{background:var(--purple);color:#fff;border-radius:14px 14px 4px 14px;padding:8px 12px;font-size:10px;max-width:75%}
+  .chat-msg.bot{display:flex;align-items:flex-start;gap:6px}
+  .chat-msg.bot .avatar{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#a78bfa,#7c3aed);flex-shrink:0;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:900}
+  .chat-msg.bot .bubble{background:#fff;border:1px solid #e2e8f0;border-radius:14px 14px 14px 4px;padding:8px 12px;font-size:10px;max-width:75%;line-height:1.5}
+  .phone-input{padding:8px;border-top:1px solid #f1f5f9;background:#fff;display:flex;gap:6px;align-items:center}
+  .phone-input input{flex:1;padding:6px 10px;border-radius:14px;border:1px solid #e2e8f0;font-size:9px;background:#f8fafc}
+  .phone-input button{width:24px;height:24px;border-radius:50%;background:var(--purple);color:#fff;display:grid;place-items:center;font-size:14px}
+
+  /* Floating cards next to phone */
+  .float-card{
+    position:absolute;background:#fff;border:1px solid var(--line);border-radius:16px;
+    padding:14px 16px;box-shadow:var(--shadow);
+    animation:floatY 4s ease-in-out infinite;
+  }
+  @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .float-card.feed{top:80px;right:-50px;width:280px}
+  .float-card.feed .head{display:flex;align-items:center;gap:6px;margin-bottom:10px;font-size:11px;font-weight:800;color:var(--ink)}
+  .float-card.feed .dot{width:7px;height:7px;border-radius:50%;background:#10b981;animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .float-card.feed .item{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;font-size:11px}
+  .float-card.feed .item:last-child{margin-bottom:0}
+  .float-card.feed .item .time{color:var(--purple);font-weight:800;font-size:10px;min-width:30px}
+  .float-card.feed .item .text{color:var(--ink-2);line-height:1.45}
+  .float-card.top3{bottom:60px;left:-50px;width:260px;animation-delay:1s}
+  .float-card.top3 .title{font-size:11px;font-weight:900;display:flex;align-items:center;gap:5px;margin-bottom:10px}
+  .float-card.top3 .row{display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:10px}
+  .float-card.top3 .row:last-child{margin-bottom:0}
+  .float-card.top3 .label{font-weight:700;min-width:50px}
+  .float-card.top3 .bar-wrap{flex:1;height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden}
+  .float-card.top3 .bar{height:100%;background:linear-gradient(90deg,var(--purple),#a78bfa);border-radius:4px}
+  .float-card.top3 .pct{font-weight:800;font-size:9px;color:var(--ink-3);min-width:30px;text-align:right}
+
+  /* ════════ PAIN POINT ════════ */
+  .pain{background:#f8f9fc}
+  .pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+  .pain-list{margin-top:30px;display:flex;flex-direction:column;gap:18px}
+  .pain-list .item{display:flex;align-items:flex-start;gap:12px;font-size:15px;color:var(--ink-2);font-weight:600}
+  .pain-list .item::before{content:"";width:18px;height:18px;border-radius:50%;background:var(--purple-100);flex-shrink:0;margin-top:2px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M3 3l6 6M9 3l-6 6' stroke='%237c3aed' stroke-width='2' stroke-linecap='round'/></svg>");background-size:10px 10px;background-position:center;background-repeat:no-repeat}
+  .voice-side .voice-title{text-align:center;font-size:18px;font-weight:900;color:var(--ink);margin-bottom:24px}
+  .voice-list{display:flex;flex-direction:column;gap:14px}
+  .voice{
+    background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 18px;
+    box-shadow:0 4px 14px rgba(15,23,42,.04);display:flex;gap:12px;align-items:flex-start;
+  }
+  .voice:nth-child(2){margin-left:30px}
+  .voice:nth-child(3){margin-left:15px}
+  .voice:nth-child(4){margin-left:50px}
+  .voice .ava{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:900;flex-shrink:0;font-size:13px;color:#fff}
+  /* 각 아바타 고유 색상으로 가독성 향상 */
+  .voice:nth-child(1) .ava{background:linear-gradient(135deg,#7c3aed,#a78bfa)}
+  .voice:nth-child(2) .ava{background:linear-gradient(135deg,#10b981,#34d399)}
+  .voice:nth-child(3) .ava{background:linear-gradient(135deg,#f59e0b,#fbbf24)}
+  .voice:nth-child(4) .ava{background:linear-gradient(135deg,#ec4899,#f472b6)}
+  .voice .body{font-size:14px;color:var(--ink-2);line-height:1.55}
+  .voice .who{font-size:12px;color:var(--ink-3);margin-top:4px}
+
+  /* ════════ APP PREVIEW ════════ */
+  .app-preview .phones-row{display:flex;justify-content:center;align-items:center;gap:36px;flex-wrap:wrap;position:relative;margin-top:30px}
+  .app-preview .phone-cap{text-align:center;color:var(--purple);font-weight:800;font-size:14px;margin-top:14px}
+  .app-preview .phone-dots{display:flex;justify-content:center;gap:6px;margin-top:10px}
+  .app-preview .phone-dots span{width:6px;height:6px;border-radius:50%;background:var(--purple-200);transition:all .3s;cursor:pointer}
+  .app-preview .phone-dots span.active{background:var(--purple);width:18px;border-radius:4px}
+  .app-preview .app-link-side{
+    position:absolute;right:30px;top:50%;transform:translateY(-50%);
+    display:flex;align-items:center;gap:10px;
+    background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 18px;
+    box-shadow:var(--shadow);font-weight:800;color:var(--ink);font-size:14px;
+    cursor:pointer;transition:all .15s ease;
+  }
+  .app-preview .app-link-side:hover{border-color:var(--purple);color:var(--purple)}
+  .app-preview .app-link-side img{width:28px;height:28px;border-radius:7px}
+  .app-preview .app-link-side.big{
+    flex-direction:column;gap:10px;padding:18px 16px;
+    border-radius:18px;background:#fff;
+    width:130px;
+  }
+  .app-preview .app-link-side.big img{width:78px;height:78px;border-radius:18px;box-shadow:0 6px 18px rgba(124,58,237,.18)}
+  .app-preview .app-link-side.big span{font-size:13px;font-weight:900;color:var(--ink)}
+  .app-preview .app-link-side.icon-only{
+    background:transparent;border:none;box-shadow:none;padding:0;
+    width:auto;flex-direction:column;gap:10px;
+  }
+  .app-preview .app-link-side.icon-only:hover{border:none}
+  .app-preview .app-link-side.icon-only img{
+    width:96px;height:96px;border-radius:22px;
+    box-shadow:0 12px 30px rgba(124,58,237,.25);
+    transition:transform .15s ease,box-shadow .15s ease;
+  }
+  .app-preview .app-link-side.icon-only:hover img{transform:scale(1.05);box-shadow:0 16px 40px rgba(124,58,237,.32)}
+  .app-preview .app-link-side.icon-only .cap{font-size:13px;font-weight:900;color:var(--ink);text-align:center}
+
+  /* ── 후보자 list mockup ── */
+  .phone-list-screen{padding:14px;background:#fff;height:100%;overflow:hidden}
+  .phone-list-screen .header{font-weight:900;font-size:14px;margin-bottom:2px}
+  .phone-list-screen .header-sub{font-size:9px;color:var(--ink-3);margin-bottom:10px}
+  .phone-list-screen .seg{display:flex;gap:5px;margin-bottom:10px}
+  .phone-list-screen .seg span{padding:4px 10px;border-radius:999px;font-size:9px;font-weight:700;color:var(--ink-3);background:#f1f5f9}
+  .phone-list-screen .seg span.active{background:var(--purple);color:#fff}
+  .phone-list-screen .candidate-card{
+    background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:10px;
+    display:flex;gap:10px;align-items:flex-start;
+  }
+  .phone-list-screen .candidate-card .ava{width:36px;height:36px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#3b82f6,#1e40af);display:grid;place-items:center;color:#fff;font-weight:900;font-size:14px}
+  .phone-list-screen .candidate-card.red .ava{background:linear-gradient(135deg,#ef4444,#b91c1c)}
+  .phone-list-screen .candidate-card .info{flex:1}
+  .phone-list-screen .candidate-card .label{display:flex;gap:4px;align-items:center;margin-bottom:3px}
+  .phone-list-screen .candidate-card .label .num{font-size:8px;font-weight:700;color:#3b82f6}
+  .phone-list-screen .candidate-card.red .label .num{color:#ef4444}
+  .phone-list-screen .candidate-card .name{font-weight:900;font-size:11px}
+  .phone-list-screen .candidate-card .virt{font-size:7px;background:#f1f5f9;color:#64748b;padding:1px 4px;border-radius:3px;margin-left:3px}
+  .phone-list-screen .candidate-card .quote{font-size:9px;color:var(--ink-3);margin:3px 0 6px}
+  .phone-list-screen .candidate-card .actions{display:flex;gap:5px}
+  .phone-list-screen .candidate-card .actions .ctrl{font-size:8px;font-weight:700;padding:3px 8px;border-radius:6px}
+  .phone-list-screen .candidate-card .actions .ctrl.primary{background:var(--purple);color:#fff}
+  .phone-list-screen .candidate-card .actions .ctrl.outline{border:1px solid var(--line);color:var(--ink-3)}
+
+  /* ════════ 3 PROMISES ════════ */
+  .promises{background:#fff}
+  .promise-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:40px}
+  .promise{
+    background:#fff;border:1px solid var(--line);border-radius:22px;padding:32px;
+    transition:all .2s ease;position:relative;overflow:hidden;
+  }
+  .promise:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--purple-200)}
+  .promise .num{font-size:64px;font-weight:900;color:var(--purple-100);line-height:1;margin-bottom:8px}
+  .promise h3{font-size:19px;font-weight:900;margin-bottom:10px}
+  .promise h3 .accent{color:var(--purple)}
+  .promise p{color:var(--ink-2);font-size:14px;line-height:1.7;margin:0 0 16px}
+  .promise ul{margin:0;padding-left:18px;color:var(--ink-2);font-size:13px;line-height:1.8}
+
+  /* Control / Safety subsection */
+  .control{margin-top:80px;text-align:center}
+  .control .h2{margin-bottom:16px}
+  .control .lead{margin-bottom:32px}
+  .control .chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 14px;margin-bottom:28px;font-size:13px;color:var(--ink-3);font-weight:600}
+  .control .chips span{position:relative}
+  .control .chips span:not(:last-child)::after{content:'/';margin-left:14px;color:var(--ink-4)}
+  .control .highlight{display:inline-block;font-weight:900;font-size:16px;color:var(--ink);padding:8px 16px;background:var(--purple-50);border-radius:8px;margin-bottom:24px}
+  .control .disclaimer{color:var(--ink-3);font-size:13px;line-height:1.7;max-width:700px;margin:0 auto}
+  .control .legal-badge{display:inline-flex;align-items:center;gap:6px;color:var(--purple);font-weight:900;font-size:14px;margin-top:14px;padding:8px 16px;border:1px solid var(--purple-200);border-radius:999px;background:var(--purple-50)}
+
+  /* ════════ DASHBOARD PREVIEW ════════ */
+  .dashboard-section{background:linear-gradient(180deg,#fff 0%,#f8f9fc 100%)}
+  .dashboard-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-bottom:36px}
+  .dashboard-chips span{font-size:13px;color:var(--ink-3);font-weight:600}
+  .dashboard-chips span:not(:last-child)::after{content:'/';margin-left:6px;color:var(--ink-4)}
+  .dash-mockup{
+    background:#fff;border:1px solid var(--line);border-radius:24px;padding:28px;
+    box-shadow:var(--shadow);
+  }
+  .dash-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+  .dash-head h4{font-size:17px;font-weight:900}
+  .dash-pill{display:inline-flex;align-items:center;gap:6px;background:var(--purple-50);color:var(--purple);font-weight:800;font-size:11px;padding:5px 11px;border-radius:999px}
+  .dash-pill .dot{width:7px;height:7px;border-radius:50%;background:#10b981;animation:pulse 1.6s infinite}
+  .dash-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+  .kpi{background:#fafbff;border:1px solid var(--line);border-radius:14px;padding:14px}
+  .kpi-label{font-size:11px;color:var(--ink-3);font-weight:700}
+  .kpi-val{font-size:22px;font-weight:900;margin-top:4px}
+  .kpi-val small{color:var(--purple);font-size:12px;font-weight:800;margin-left:4px}
+  .dash-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
+  .wc-box{background:#fafbff;border:1px solid var(--line);border-radius:14px;padding:18px;min-height:170px}
+  .wc-box .label{font-size:11px;font-weight:800;color:var(--ink-3);margin-bottom:10px}
+  .wc{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 14px}
+  .wc span{color:var(--ink-2);font-weight:700}
+  .w-xl{font-size:30px;color:var(--purple)}
+  .w-lg{font-size:22px;color:var(--purple-dark)}
+  .w-md{font-size:18px}
+  .w-sm{font-size:15px;color:var(--ink-3)}
+  .w-xs{font-size:13px;color:var(--ink-3)}
+  .feed-box{background:#fafbff;border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;min-height:230px}
+  .feed-title{font-size:11px;font-weight:800;color:var(--ink-3);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+  .feed-list{flex:1;display:flex;flex-direction:column;gap:8px}
+  .feed-item{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-size:12px;color:var(--ink-2);animation:slideUp .4s ease}
+  @keyframes slideUp{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+  .feed-tag{display:inline-block;background:var(--purple-50);color:var(--purple);font-size:9px;font-weight:800;padding:2px 7px;border-radius:999px;margin-right:6px}
+  .feed-time{font-size:9px;color:var(--ink-3);margin-left:6px}
+  .dash-disc{margin-top:12px;font-size:11px;color:var(--ink-3);text-align:center}
+
+  /* ════════ VS COMPARISON ════════ */
+  .vs{background:#fff}
+  .vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:40px}
+  .vs-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:32px;position:relative}
+  .vs-card.win{border:2px solid var(--purple);background:linear-gradient(180deg,#faf5ff 0%,#fff 100%)}
+  .vs-card.win::before{
+    content:'👑 가입 후보';position:absolute;top:-14px;left:24px;
+    background:var(--purple);color:#fff;font-size:13px;font-weight:900;
+    padding:5px 14px;border-radius:999px;
+  }
+  .vs-card .vs-head{font-size:18px;font-weight:900;margin-bottom:18px}
+  .vs-card .vs-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+  .vs-card .vs-list li{font-size:14px;color:var(--ink-2);display:flex;gap:10px;align-items:flex-start;line-height:1.55}
+  .vs-card .vs-list li::before{content:"";width:18px;height:18px;border-radius:50%;flex-shrink:0;margin-top:1px;background-size:10px 10px;background-position:center;background-repeat:no-repeat}
+  .vs-card:not(.win) .vs-list li::before{background-color:#fee2e2;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M3 3l6 6M9 3l-6 6' stroke='%23dc2626' stroke-width='2' stroke-linecap='round'/></svg>")}
+  .vs-card.win .vs-list li::before{background-color:var(--purple-100);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M2 6l3 3 5-6' stroke='%237c3aed' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>")}
+  .vs-card .vs-sub{font-weight:900;font-size:14px;color:var(--purple);margin:18px 0 10px}
+  .vs-card .vs-sub.first{margin-top:0}
+
+  /* Dashboard slider */
+  .dash-slider-wrap{overflow:hidden;border-bottom:1px solid var(--line)}
+  .dash-slider{display:flex;transition:transform .6s cubic-bezier(.65,0,.35,1)}
+  .dash-slide{flex:0 0 100%;padding:22px 28px 16px}
+  .slide-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+  .slide-head h4{font-size:17px;font-weight:900}
+  .wc-big{background:#fafbff;border:1px solid var(--line);border-radius:14px;padding:32px 24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 18px;min-height:200px}
+  .wc-big span{color:var(--ink-2);font-weight:700}
+  .bars{padding:8px 0}
+  .feed-list-big{display:flex;flex-direction:column;gap:10px;background:#fafbff;border:1px solid var(--line);border-radius:14px;padding:18px;min-height:230px}
+
+  /* ── Rich KPI cards (slide 1) ── */
+  .dash-kpi-rich{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+  .kpi-r{background:#fafbff;border:1px solid var(--line);border-radius:14px;padding:14px 14px 12px;display:flex;flex-direction:column;gap:4px;position:relative}
+  .kpi-r-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .kpi-r-top .ms{font-size:18px}
+  .kpi-r-delta{font-size:10px;font-weight:800;padding:3px 7px;border-radius:999px;background:#ecfdf5;color:#059669;white-space:nowrap}
+  .kpi-r-delta.up::before{content:"▲ ";font-size:9px}
+  .kpi-r-delta.down{background:#fef2f2;color:#dc2626}
+  .kpi-r-val{font-size:22px;font-weight:900;letter-spacing:-.5px;margin-top:2px}
+  .kpi-r-lbl{font-size:11px;color:var(--ink-3);font-weight:700}
+  .kpi-r-emojis{font-size:10px;color:var(--ink-3);margin-top:3px;font-weight:600}
+
+  /* ── Line chart card ── */
+  .line-chart-card{background:#fafbff;border:1px solid var(--line);border-radius:14px;padding:18px}
+  .line-chart-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:10px}
+  .line-title{font-size:14px;font-weight:900}
+  .line-sub{font-size:11px;color:var(--ink-3);margin-top:2px}
+  .line-legend{display:flex;gap:14px;font-size:11px;color:var(--ink-2);font-weight:700}
+  .line-legend span{display:inline-flex;align-items:center;gap:5px}
+  .line-legend .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+  /* ── Insight head (slides 2-4) ── */
+  .insight-head{display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+  .insight-num{display:grid;place-items:center;width:32px;height:32px;background:var(--purple);color:#fff;border-radius:8px;font-weight:900;font-size:16px;flex-shrink:0}
+  .insight-title{font-size:16px;font-weight:900;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .insight-sub{font-size:11px;color:var(--ink-3);margin-top:2px}
+  .insight-badge{font-size:10px;font-weight:800;padding:3px 9px;border-radius:999px;display:inline-block}
+  .insight-badge.red{background:#fef2f2;color:#dc2626}
+  .insight-badge.green{background:#ecfdf5;color:#059669}
+  .insight-badge.purple{background:var(--purple-50);color:var(--purple)}
+  .insight-total{margin-left:auto;font-size:12px;color:var(--ink-3);font-weight:700}
+  .insight-total b{color:var(--purple);font-weight:900}
+
+  /* ── 2-column grid for slide 2 ── */
+  .insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px}
+  .block-title{font-size:12px;font-weight:900;color:var(--ink);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+
+  /* ── TOP 10 ranked list ── */
+  .rank-list{background:#fafbff;border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:4px}
+  .rank-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;font-size:12px;background:#fff;border:1px solid #f1f5f9}
+  .rank-item .rank{display:grid;place-items:center;width:20px;height:20px;background:var(--purple-100);color:var(--purple);border-radius:5px;font-weight:900;font-size:10px;flex-shrink:0}
+  .rank-text{flex:1;color:var(--ink-2);font-weight:600;line-height:1.4}
+  .rank-count{font-size:11px;color:var(--purple);font-weight:900}
+
+  /* ── Keyword chips ── */
+  .kw-chips{display:flex;flex-wrap:wrap;gap:6px;background:#fafbff;border:1px solid var(--line);border-radius:12px;padding:12px}
+  .kw-chip{display:inline-block;background:var(--purple-50);color:var(--purple);font-size:11px;font-weight:800;padding:5px 11px;border-radius:999px}
+
+  /* ── Warn / Info quote boxes ── */
+  .warn-box{background:#fef2f2;border-left:3px solid #dc2626;padding:8px 11px;border-radius:6px;font-size:12px;color:var(--ink-2);margin-bottom:5px;line-height:1.5}
+  .info-box{background:#eff6ff;border-left:3px solid #3b82f6;padding:8px 11px;border-radius:6px;font-size:12px;color:var(--ink-2);margin-bottom:5px;line-height:1.5}
+  .cnt{color:var(--ink-3);font-weight:700;font-size:11px;margin-left:4px}
+
+  /* ── Slide 3 extras ── */
+  .bar-row .pct{font-weight:800;font-size:11px;color:var(--purple);min-width:42px;text-align:right}
+  .tag-red{display:inline-block;background:#fef2f2;color:#dc2626;font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;margin-left:6px}
+
+  /* ── Ops KPI cards (slide 4) ── */
+  .ops-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+  .ops-card{background:#fafbff;border:1px solid var(--line);border-radius:14px;padding:18px 14px;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+  .ops-val{font-size:28px;font-weight:900;color:var(--purple);letter-spacing:-.5px}
+  .ops-val small{font-size:14px;font-weight:800;margin-left:2px;color:inherit}
+  .ops-lbl{font-size:11px;color:var(--ink-3);font-weight:700}
+
+  /* ── Compare card / table ── */
+  .compare-card{background:#fafbff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:18px}
+  .compare-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+  .compare-num{display:grid;place-items:center;width:28px;height:28px;background:#10b981;color:#fff;border-radius:7px;font-weight:900;font-size:14px}
+  .compare-title{font-size:15px;font-weight:900}
+  .compare-table{width:100%;border-collapse:collapse;font-size:12px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .compare-table th,.compare-table td{padding:9px 10px;text-align:left;border-bottom:1px solid #f1f5f9}
+  .compare-table th{background:#f8fafc;font-weight:900;color:var(--ink-2);font-size:11px}
+  .compare-table tbody tr:last-child td{border-bottom:none}
+  .compare-table .our{background:var(--purple-50);color:var(--purple)}
+  .compare-table th.our{background:var(--purple);color:#fff}
+  .compare-table td.our b{color:var(--purple)}
+
+  /* ── Satisfaction grid (slide 5) ── */
+  .sat-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:6px}
+  .sat-card{background:#fafbff;border:1px solid var(--line);border-radius:14px;padding:18px}
+  .sat-title{font-size:13px;font-weight:900;margin-bottom:14px;color:var(--ink)}
+  .donut-wrap{position:relative;display:flex;align-items:center;justify-content:center;margin:8px 0 14px}
+  .donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .donut-pct{font-size:24px;font-weight:900;color:var(--purple);letter-spacing:-.5px}
+  .donut-lbl{font-size:11px;color:var(--ink-3);font-weight:700}
+  .sat-bars{display:flex;flex-direction:column;gap:8px}
+  .sat-bar{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;font-size:12px}
+  .sat-lbl{font-weight:700;color:var(--ink-2);min-width:84px}
+  .sat-track{height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden}
+  .sat-fill{height:100%;border-radius:4px;animation:growBar 1.2s ease-out}
+  .sat-num{font-weight:900;color:var(--ink);font-size:12px;min-width:36px;text-align:right}
+
+  /* ── Length-based satisfaction ── */
+  .len-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .len-card{border-radius:12px;padding:16px 14px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;border:1px solid transparent}
+  .len-card.green{background:#ecfdf5;border-color:#a7f3d0}
+  .len-card.yellow{background:#fffbeb;border-color:#fde68a}
+  .len-pct{font-size:24px;font-weight:900;letter-spacing:-.5px}
+  .len-card.green .len-pct{color:#059669}
+  .len-card.yellow .len-pct{color:#d97706}
+  .len-lbl{font-size:11px;color:var(--ink-2);font-weight:700}
+  .len-tag{font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;margin-top:4px}
+  .len-card.green .len-tag{background:#10b981;color:#fff}
+  .len-card.yellow .len-tag{background:#f59e0b;color:#fff}
+  .len-tip{background:#fafbff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:11.5px;color:var(--ink-2);line-height:1.55}
+  .len-tip b{color:var(--purple);font-weight:900}
+
+  /* ════════ DATA RESPONSE ════════ */
+  .data-section{background:linear-gradient(180deg,#f8f9fc 0%,#fff 100%)}
+  .step-num{display:inline-grid;place-items:center;width:36px;height:36px;background:var(--purple);color:#fff;border-radius:10px;font-weight:900;font-size:18px;margin-right:8px;vertical-align:middle}
+  .data-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:24px 0 36px}
+  .data-chips .chip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700;color:var(--ink-2)}
+  .data-chips .chip .ms{font-size:14px;color:var(--purple)}
+  .browser-card{
+    background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;
+    box-shadow:0 16px 48px rgba(0,0,0,.06);max-width:900px;margin:0 auto;
+  }
+  .dash-stage{position:relative;max-width:1100px;margin:0 auto}
+  .dash-arrow{
+    position:absolute;top:50%;transform:translateY(-50%);
+    width:48px;height:48px;border-radius:50%;
+    background:#fff;border:1.5px solid var(--line);cursor:pointer;
+    display:grid;place-items:center;color:var(--purple);
+    box-shadow:0 6px 18px rgba(15,23,42,.08);
+    transition:background .15s,transform .15s,box-shadow .15s,border-color .15s;
+    z-index:5;
+  }
+  .dash-arrow:hover{background:var(--purple);color:#fff;border-color:var(--purple);box-shadow:0 10px 24px rgba(124,58,237,.28)}
+  .dash-arrow:active{transform:translateY(-50%) scale(.92)}
+  .dash-arrow.prev{left:-12px}
+  .dash-arrow.next{right:-12px}
+  .dash-arrow svg{width:20px;height:20px;display:block}
+  @media (max-width:960px){
+    .dash-arrow{width:40px;height:40px}
+    .dash-arrow.prev{left:6px}
+    .dash-arrow.next{right:6px}
+  }
+  .browser-bar{background:#f3f4f6;padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line)}
+  .browser-dots{display:flex;gap:5px}
+  .browser-dot{width:9px;height:9px;border-radius:50%}
+  .browser-url{flex:1;background:#fff;border-radius:5px;padding:4px 10px;font-size:10px;color:var(--ink-3);text-align:center}
+  .browser-body{padding:28px}
+  .browser-title{display:flex;align-items:center;gap:8px;margin-bottom:18px}
+  .browser-title .num{display:grid;place-items:center;width:28px;height:28px;background:var(--purple);color:#fff;border-radius:8px;font-weight:900;font-size:14px}
+  .browser-title h4{font-size:18px;font-weight:900;flex:1}
+  .browser-title .total{font-size:13px;color:var(--ink-3);font-weight:700}
+  .bar-row{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:8px 0}
+  .bar-row .rank{display:grid;place-items:center;width:24px;height:24px;background:var(--purple-100);color:var(--purple);border-radius:6px;font-weight:900;font-size:12px}
+  .bar-row .name-col{display:flex;align-items:center;gap:10px}
+  .bar-row .name{min-width:64px;font-weight:800;font-size:13px}
+  .bar-row .bar-track{flex:1;height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden}
+  .bar-row .bar-fill{height:100%;background:linear-gradient(90deg,var(--purple),#a78bfa);border-radius:4px;transform-origin:left;animation:growBar 1.4s ease-out}
+  @keyframes growBar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  .bar-row .count{font-weight:900;font-size:13px;color:var(--ink);min-width:36px;text-align:right}
+  .data-bottom{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+  .data-bottom .mini{background:#fafbff;border:1px solid var(--line);border-radius:12px;padding:14px}
+  .data-bottom .mini h5{font-size:12px;font-weight:900;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+  .data-bottom .mini .ms{color:var(--purple);font-size:14px}
+  .data-bottom .mini .row2{font-size:12px;color:var(--ink-2);margin-bottom:3px}
+  .data-bottom .mini .row2 b{color:var(--ink);font-weight:900}
+  .data-bottom .mini.warn .ms{color:#f59e0b}
+  .pagination{display:flex;justify-content:center;gap:6px;margin-top:18px}
+  .pagination span{width:7px;height:7px;border-radius:50%;background:var(--purple-200)}
+  .pagination span.active{background:var(--purple);width:18px;border-radius:4px;transition:all .3s}
+  .data-cap{text-align:center;color:var(--purple);font-weight:900;font-size:14px;margin-top:14px}
+
+  /* ════════ COUNTDOWN ════════ */
+  .countdown-section{padding:80px 0 40px;background:linear-gradient(180deg,#fff 0%,#f5f3ff 100%);text-align:center}
+  .sale-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:#fef3c7;color:#92400e;border:1px solid #fde68a;
+    padding:8px 18px;border-radius:999px;font-weight:900;font-size:14px;
+    margin-bottom:18px;
+  }
+  .countdown-section h2{font-size:clamp(32px,4.5vw,48px);font-weight:900;letter-spacing:-.02em;margin-bottom:14px}
+  .countdown-section .lead{margin-bottom:32px;color:var(--ink-3)}
+  .countdown{
+    display:inline-flex;gap:14px;
+    background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 24px;
+    box-shadow:var(--shadow);
+  }
+  .cd-unit{text-align:center;min-width:64px}
+  .cd-num{font-size:34px;font-weight:900;color:var(--purple);line-height:1;font-variant-numeric:tabular-nums}
+  .cd-lbl{font-size:11px;color:var(--ink-3);font-weight:700;margin-top:6px;letter-spacing:.05em}
+  .cd-colon{font-size:24px;font-weight:900;color:var(--purple-200);align-self:center}
+
+  /* ════════ PRICING ════════ */
+  .pricing{background:#fff}
+  .pricing-sub{text-align:center;color:var(--ink-3);font-size:14px;margin-bottom:36px}
+  .pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:920px;margin:0 auto}
+  /* 메인 칼라 = 바이올렛(보라), 서브 = 옐로우 */
+  .price-card{
+    position:relative;
+    background:linear-gradient(180deg,#faf5ff 0%,#fef3c7 100%);
+    border:2px solid var(--purple);border-radius:18px;padding:30px 24px 24px;
+    text-align:center;transition:all .15s;
+  }
+  .price-card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(124,58,237,.18)}
+  .price-card::before{
+    content:'추천';position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+    background:var(--purple);color:#fff;font-size:11px;font-weight:900;padding:4px 14px;border-radius:999px;
+    box-shadow:0 4px 10px rgba(124,58,237,.3);
+  }
+  .price-card .tier{font-size:14px;font-weight:900;color:var(--ink);margin-bottom:12px}
+  .price-card .amount{font-size:36px;font-weight:900;color:var(--ink);line-height:1}
+  .price-card .amount sup{font-size:18px;font-weight:800;margin-left:2px;color:var(--ink-3)}
+  .price-card{cursor:pointer}
+  .price-card .tier-hint{
+    margin-top:14px;font-size:11px;color:var(--purple);font-weight:800;
+    display:inline-flex;align-items:center;gap:4px;
+    padding:5px 11px;border-radius:999px;background:rgba(124,58,237,.08);
+    transition:all .15s
+  }
+  .price-card:hover .tier-hint{background:var(--purple);color:#fff}
+  .price-vat{text-align:center;font-size:12px;color:var(--ink-3);margin-top:18px}
+
+  /* ════════ TIER DETAIL MODAL ════════ */
+  .tier-modal{
+    position:fixed;inset:0;z-index:215;background:rgba(15,23,42,.78);
+    display:none;align-items:center;justify-content:center;
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    animation:apFade .2s ease;padding:20px;
+  }
+  .tier-modal.open{display:flex}
+  .tier-card{
+    background:#fff;border-radius:22px;width:100%;max-width:480px;
+    padding:30px 28px 26px;position:relative;
+    animation:apScale .35s cubic-bezier(.2,.8,.2,1);
+    box-shadow:0 30px 80px rgba(0,0,0,.4);
+  }
+  .tier-close{
+    position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;
+    background:#f1f5f9;border:none;cursor:pointer;display:grid;place-items:center;
+    color:#475569;transition:background .15s
+  }
+  .tier-close:hover{background:#e2e8f0}
+  .tier-close svg{width:16px;height:16px}
+  .tier-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px;flex-wrap:wrap}
+  .tier-head .name{font-size:20px;font-weight:900;letter-spacing:-.4px}
+  .tier-head .price{font-size:24px;font-weight:900;color:var(--purple)}
+  .tier-head .price sup{font-size:13px;color:var(--ink-3);margin-left:2px;font-weight:800}
+  .tier-desc{
+    background:#faf5ff;border-left:3px solid var(--purple);
+    padding:14px 16px;border-radius:8px;margin-bottom:16px;
+    font-size:13.5px;color:var(--ink-2);line-height:1.65
+  }
+  .tier-features{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+  .tier-features li{
+    display:flex;align-items:flex-start;gap:10px;
+    font-size:13.5px;color:var(--ink-2);line-height:1.55
+  }
+  .tier-features li::before{
+    content:"";width:18px;height:18px;flex-shrink:0;margin-top:1px;border-radius:50%;
+    background:var(--purple-100) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M2 6l3 3 5-6' stroke='%237c3aed' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/10px no-repeat;
+  }
+  .tier-foot{margin-top:18px;font-size:11px;color:var(--ink-3);text-align:center;line-height:1.55}
+
+  /* Token slider */
+  .token-card{
+    margin-top:48px;background:#fafbff;border:1px solid var(--line);border-radius:20px;padding:28px;
+    max-width:920px;margin-left:auto;margin-right:auto;
+  }
+  .token-card h4{font-size:14px;font-weight:900;margin-bottom:14px}
+  .token-toggles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
+  .token-toggle{
+    background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:14px;
+    text-align:center;cursor:pointer;transition:all .15s;
+  }
+  .token-toggle:hover{border-color:var(--purple-200)}
+  .token-toggle.active{border-color:var(--purple);background:var(--purple-50)}
+  .token-toggle .lbl{font-weight:900;font-size:14px;color:var(--ink);margin-bottom:4px}
+  .token-toggle.active .lbl{color:var(--purple)}
+  .token-toggle .desc{font-size:11px;color:var(--ink-3);font-weight:600}
+  .token-slider-row{display:flex;align-items:center;gap:14px;margin-top:6px}
+  .token-slider-row label{font-size:12px;color:var(--ink-3);font-weight:700;white-space:nowrap}
+  .token-slider-row input[type=range]{flex:1;-webkit-appearance:none;height:6px;background:#e2e8f0;border-radius:3px;outline:none}
+  .token-slider-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--purple);cursor:pointer;border:3px solid #fff;box-shadow:0 2px 6px rgba(124,58,237,.3)}
+  .token-slider-row input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--purple);cursor:pointer;border:3px solid #fff;box-shadow:0 2px 6px rgba(124,58,237,.3)}
+  .token-value{
+    min-width:80px;background:#fff;border:1px solid var(--line);border-radius:8px;
+    padding:6px 10px;font-weight:900;color:var(--purple);text-align:center;font-size:14px;
+  }
+  .pricing-bottom{text-align:center;margin-top:48px}
+  .pricing-bottom h3{font-size:clamp(24px,3vw,32px);font-weight:900;margin-bottom:14px;color:var(--ink)}
+  .pricing-bottom p{color:var(--ink-2);font-size:17px;line-height:1.75;font-weight:500}
+  .pricing-bottom .small{font-size:15px;color:var(--ink-3);margin-top:18px;line-height:1.7}
+
+  /* ════════ CONTACT (라이트 디자인) ════════ */
+  .contact{background:#f5f3ff;padding:0 0 80px}
+  .contact-protect{text-align:center;color:var(--ink-3);font-size:13px;padding:24px 16px 32px}
+  .contact-card{
+    max-width:1080px;margin:0 auto;background:#fff;
+    border:1px solid var(--line);border-radius:22px;padding:38px 44px;
+    box-shadow:var(--shadow);
+  }
+  .contact-title{font-size:22px;font-weight:900;color:var(--ink);margin-bottom:6px}
+  .contact-sub{font-size:14px;color:var(--ink-3);margin-bottom:26px}
+  .contact-form .row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:16px}
+  .contact-form .row.full{grid-template-columns:1fr}
+  .contact-form label{display:block;font-size:13px;color:var(--ink-2);margin-bottom:6px;font-weight:700}
+  .contact-form label .req{color:#ef4444;margin-left:2px}
+  .contact-form input,.contact-form select,.contact-form textarea{
+    width:100%;padding:12px 14px;border-radius:10px;
+    background:#fff;border:1px solid var(--line);
+    color:var(--ink);font-size:14px;
+  }
+  .contact-form input::placeholder,.contact-form textarea::placeholder{color:var(--ink-4)}
+  .contact-form input:focus,.contact-form select:focus,.contact-form textarea:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px var(--purple-100)}
+  .contact-form textarea{resize:vertical;min-height:110px}
+  .contact-form .submit-row{display:flex;align-items:center;gap:16px;margin-top:8px;flex-wrap:wrap}
+  .contact-form .submit-btn{
+    padding:14px 32px;border-radius:14px;background:var(--purple);color:#fff;
+    font-weight:900;font-size:16px;display:inline-flex;align-items:center;gap:8px;
+    cursor:pointer;transition:all .15s;
+  }
+  .contact-form .submit-btn:hover{background:var(--purple-dark);transform:translateY(-1px);box-shadow:0 10px 24px rgba(124,58,237,.25)}
+  .contact-form .submit-btn:disabled{opacity:.6;cursor:wait}
+  .contact-bottom{font-size:13px;color:var(--ink-3)}
+  @media (max-width:768px){
+    .contact-card{padding:28px 22px}
+    .contact-form .row{grid-template-columns:1fr;gap:14px}
+  }
+
+  /* ════════ FOOTER ════════ */
+  footer{background:#0b1220;color:#94a3b8;padding:48px 0 28px}
+  .footer-top{display:flex;justify-content:space-between;align-items:flex-start;gap:32px;flex-wrap:wrap;padding-bottom:28px;border-bottom:1px solid #1e293b}
+  .footer-top .brand{display:flex;align-items:center;gap:10px;color:#fff;font-weight:900;font-size:18px;margin-bottom:10px}
+  .footer-top .brand img{width:32px;height:32px;border-radius:8px;object-fit:cover}
+  .footer-top .tag{font-size:13px;line-height:1.7;color:#94a3b8;max-width:520px}
+  .footer-top .footer-contact{font-size:13px;color:#cbd5e1;line-height:2}
+  .footer-top .footer-contact .row{display:flex;align-items:center;gap:8px}
+  .footer-top .footer-contact .ms{font-size:16px;color:#a78bfa}
+  .footer-mid{padding:22px 0;font-size:11px;color:#64748b;line-height:1.9;text-align:center}
+  .footer-mid .pipe{margin:0 6px;color:#475569}
+  .footer-bot{padding-top:14px;font-size:11px;color:#475569;text-align:center}
+
+  /* ════════ BROCHURE MODAL (서비스 소개서 받기) ════════ */
+  .br-modal{
+    position:fixed;inset:0;z-index:210;background:rgba(15,23,42,.78);
+    display:none;align-items:center;justify-content:center;
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    animation:apFade .2s ease;padding:20px;
+  }
+  .br-modal.open{display:flex}
+  .br-card{
+    background:#fff;border-radius:22px;width:100%;max-width:460px;
+    padding:32px 30px 26px;position:relative;
+    animation:apScale .35s cubic-bezier(.2,.8,.2,1);
+    box-shadow:0 30px 80px rgba(0,0,0,.4);
+  }
+  .br-close{
+    position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;
+    background:#f1f5f9;border:none;cursor:pointer;display:grid;place-items:center;
+    color:#475569;transition:background .15s
+  }
+  .br-close:hover{background:#e2e8f0}
+  .br-close svg{width:16px;height:16px}
+  .br-badge{
+    display:inline-flex;align-items:center;gap:6px;background:#fef3c7;color:#b45309;
+    font-size:11px;font-weight:800;padding:5px 11px;border-radius:999px;margin-bottom:12px
+  }
+  .br-title{font-size:22px;font-weight:900;line-height:1.35;margin-bottom:8px;letter-spacing:-.4px}
+  .br-title strong{color:var(--purple)}
+  .br-sub{font-size:13px;color:var(--ink-3);line-height:1.6;margin-bottom:18px}
+  .br-form .field{margin-bottom:12px}
+  .br-form label{display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:5px}
+  .br-form label .req{color:#ef4444;margin-left:2px}
+  .br-form input{
+    width:100%;border:1.5px solid var(--line);border-radius:10px;padding:11px 13px;
+    font-size:14px;font-family:inherit;background:#fafbff;transition:all .15s
+  }
+  .br-form input:focus{outline:none;border-color:var(--purple);background:#fff;box-shadow:0 0 0 3px var(--purple-100)}
+  .br-form input::placeholder{color:var(--ink-4)}
+  .br-consent{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--ink-3);margin:14px 0 18px;line-height:1.5}
+  .br-consent input{width:16px;height:16px;flex-shrink:0;margin-top:2px;accent-color:var(--purple)}
+  .br-submit{
+    width:100%;padding:14px;border-radius:12px;border:none;background:var(--purple);color:#fff;
+    font-size:15px;font-weight:900;cursor:pointer;transition:transform .12s,background .15s;
+    display:flex;align-items:center;justify-content:center;gap:8px
+  }
+  .br-submit:hover:not(:disabled){background:#6d28d9}
+  .br-submit:active:not(:disabled){transform:scale(.98)}
+  .br-submit:disabled{background:#a78bfa;cursor:not-allowed;opacity:.7}
+  .br-submit .spinner{
+    width:16px;height:16px;border:2px solid rgba(255,255,255,.4);
+    border-top-color:#fff;border-radius:50%;animation:brSpin .7s linear infinite;display:none
+  }
+  .br-submit.loading .spinner{display:inline-block}
+  .br-submit.loading .label-default{display:none}
+  @keyframes brSpin{to{transform:rotate(360deg)}}
+  .br-foot{font-size:11px;color:var(--ink-4);text-align:center;margin-top:12px;line-height:1.5}
+  .br-success{
+    text-align:center;padding:20px 0 4px;animation:apFade .3s ease;
+  }
+  .br-success .icon{
+    width:64px;height:64px;border-radius:50%;background:#ecfdf5;
+    display:grid;place-items:center;margin:0 auto 16px;color:#10b981;font-size:32px
+  }
+  .br-success h3{font-size:20px;font-weight:900;margin-bottom:8px;letter-spacing:-.3px}
+  .br-success p{font-size:13.5px;color:var(--ink-2);line-height:1.65;margin-bottom:6px}
+  .br-success .email-tag{display:inline-block;background:var(--purple-50);color:var(--purple);font-weight:800;padding:3px 10px;border-radius:6px;font-size:13px}
+  .br-success .tip{font-size:11.5px;color:var(--ink-3);margin-top:14px;background:#f8fafc;border-radius:8px;padding:10px 12px;line-height:1.55}
+
+  /* ════════ APP PREVIEW MODAL (from landing-v3) ════════ */
+  .app-preview-modal{
+    position:fixed;inset:0;z-index:200;background:rgba(15,23,42,.78);
+    display:none;align-items:center;justify-content:center;
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    animation:apFade .2s ease;
+  }
+  .app-preview-modal.open{display:flex}
+  @keyframes apFade{from{opacity:0}to{opacity:1}}
+  .app-preview-frame{
+    width:440px;height:90vh;max-height:920px;
+    background:#111;border-radius:36px;padding:8px;
+    box-shadow:0 40px 100px rgba(0,0,0,.55);
+    animation:apScale .35s cubic-bezier(.2,.8,.2,1);position:relative;
+  }
+  @keyframes apScale{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:scale(1)}}
+  .app-preview-frame iframe{width:100%;height:100%;border:0;border-radius:28px;background:#fff;display:block}
+  .app-preview-close{
+    position:absolute;top:-52px;right:-4px;z-index:2;
+    width:42px;height:42px;border-radius:50%;
+    background:#fff;border:2.5px solid #000;color:#000;cursor:pointer;
+    display:grid;place-items:center;line-height:1;
+    transition:transform .15s ease,box-shadow .15s ease;
+  }
+  .app-preview-close:hover{transform:scale(1.05);box-shadow:0 6px 18px rgba(0,0,0,.25)}
+  .app-preview-close svg{width:18px;height:18px;display:block}
+
+  /* ════════ Responsive ════════ */
+  @media (max-width:960px){
+    .section{padding:64px 0}
+    .hero-grid,.pain-grid,.dash-grid,.vs-grid,.data-bottom{grid-template-columns:1fr;gap:36px}
+    .promise-grid{grid-template-columns:1fr;gap:14px}
+    .pricing-grid{grid-template-columns:repeat(2,1fr)}
+    .dash-kpi{grid-template-columns:repeat(2,1fr)}
+    .dash-kpi-rich{grid-template-columns:repeat(2,1fr)}
+    .insight-grid,.sat-grid,.len-grid{grid-template-columns:1fr;gap:14px}
+    .ops-kpi{grid-template-columns:1fr}
+    .compare-table{font-size:11px}
+    .compare-table th,.compare-table td{padding:7px 6px}
+    .nav-links{gap:14px}
+    .nav-links a:not(.btn):not(.app-link){display:none}
+    .float-card.feed{right:0;top:30px}
+    .float-card.top3{left:0;bottom:30px}
+    .voice:nth-child(n){margin-left:0}
+    .app-preview .app-link-side{position:static;margin-top:24px;transform:none;display:inline-flex}
+    .contact-form .row{grid-template-columns:1fr}
+    .app-preview-frame{width:100vw;height:100vh;border-radius:0;padding:0;max-height:none}
+    .app-preview-frame iframe{border-radius:0}
+    .app-preview-close{top:12px;right:12px;width:38px;height:38px}
+  }
+  @media (max-width:480px){
+    .pricing-grid{grid-template-columns:1fr}
+    .token-toggles{grid-template-columns:1fr}
+    .phone{width:280px}
+    .phone-screen{height:520px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════ NAV ══════ -->
+<nav class="top">
+  <div class="nav-in">
+    <a class="logo" href="#top">
+      <img src="assets/logo_ask03.png" alt="일꾼을묻다"/>
+      <span>일꾼을묻다</span>
+    </a>
+    <div class="nav-links">
+      <a href="#pain">시민 만남</a>
+      <a href="#tools">도구</a>
+      <a href="#dashboard">반응 대시보드</a>
+      <a href="#pricing">요금</a>
+      <a href="#" class="app-link" onclick="openAppPreview(event)">앱 보기 ↗</a>
+      <a class="btn" href="#contact">후보자 등록</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════ 1. HERO ══════ -->
+<section class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <h1 class="h1">유권자는 묻고, 후보자는<br/><strong>답해야 합니다</strong></h1>
+      <p class="lead left">공약·정책·후보자 정보를 기반으로 시민 질문에 24시간<br/>응답하는 대화형 선거 플랫폼</p>
+      <div class="hero-cta">
+        <a class="btn lg ghost yellow" href="#" onclick="openBrochure(event)">서비스 소개서 받기</a>
+        <a class="app-btn" href="#" onclick="openAppPreview(event)">
+          <img src="assets/logo_ask03.png" alt=""/>
+          <span>앱 샘플보기</span>
+        </a>
+      </div>
+      <p class="hero-bottom-note">반복 질문 대응을 줄이고, 더 중요한 선거운동에 집중하세요</p>
+    </div>
+
+    <div class="hero-mockup">
+      <div class="phone">
+        <div class="phone-screen" style="background:#fafbff">
+          <!-- 헤더 -->
+          <div style="padding:14px 14px 8px;background:#fff;border-bottom:1px solid #e5e7eb">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
+              <span class="ms" style="font-size:18px;color:#7c3aed">apartment</span>
+              <span style="font-size:13px;font-weight:900">우리지역 후보자</span>
+              <span class="ms" style="margin-left:auto;font-size:18px;color:#9ca3af">dark_mode</span>
+            </div>
+            <p style="font-size:9px;color:#9ca3af;margin:0 0 8px 26px">인천광역시 연수구 관할</p>
+            <div style="display:flex;gap:6px;background:#f3f4f6;border-radius:10px;padding:3px">
+              <span style="flex:1;text-align:center;padding:5px 0;border-radius:7px;font-size:9px;font-weight:900;background:#fff;color:#7c3aed;border:1.5px solid #7c3aed">시·도지사</span>
+              <span style="flex:1;text-align:center;padding:5px 0;font-size:9px;color:#9ca3af;font-weight:700">구청장</span>
+              <span style="flex:1;text-align:center;padding:5px 0;font-size:9px;color:#9ca3af;font-weight:700">시장</span>
+              <span style="flex:1;text-align:center;padding:5px 0;font-size:9px;color:#9ca3af;font-weight:700">군수</span>
+            </div>
+            <div style="display:flex;gap:5px;margin-top:8px">
+              <span style="background:#7c3aed;color:#fff;padding:3px 10px;border-radius:99px;font-size:9px;font-weight:700">전체</span>
+              <span style="display:flex;align-items:center;gap:3px;border:1px solid #e5e7eb;padding:3px 8px;border-radius:99px;font-size:9px;color:#4c669a;font-weight:600"><span style="width:5px;height:5px;border-radius:50%;background:#3b82f6"></span>더불어민주당</span>
+              <span style="display:flex;align-items:center;gap:3px;border:1px solid #e5e7eb;padding:3px 8px;border-radius:99px;font-size:9px;color:#4c669a;font-weight:600"><span style="width:5px;height:5px;border-radius:50%;background:#ef4444"></span>국민의힘</span>
+            </div>
+          </div>
+          <!-- 카드 리스트 -->
+          <div style="flex:1;overflow:hidden;padding:10px">
+            <!-- 김ㅇ준 -->
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:8px;margin-bottom:8px;display:flex;gap:8px;position:relative">
+              <div style="position:absolute;top:5px;right:5px;width:12px;height:12px;border:1.5px solid #d1d5db;border-radius:50%"></div>
+              <div style="width:42px;height:42px;border-radius:8px;background-image:url('assets/아바타_리얼증명사진/wa34정명사진_14.png');background-size:cover;background-position:center top;background-color:#f3f4f6;flex-shrink:0"></div>
+              <div style="flex:1;min-width:0">
+                <div style="display:flex;gap:4px;align-items:center;margin-bottom:1px"><span style="font-size:7px;font-weight:700;color:#3b82f6;background:#dbeafe;padding:1px 4px;border-radius:3px">기호 1</span><span style="font-size:8px;color:#3b82f6;font-weight:600">더불어민주당</span></div>
+                <div style="font-size:11px;font-weight:900">김ㅇ준 <span style="font-size:8px;color:#9ca3af;font-weight:500">(52세)</span></div>
+                <div style="font-size:8px;color:#7c3aed;font-weight:700;margin-top:1px">"시민의 삶을 바꾸는 스마트 시티 서울"</div>
+              </div>
+            </div>
+            <!-- 이ㅇ영 -->
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:8px;margin-bottom:8px;display:flex;gap:8px;position:relative">
+              <div style="position:absolute;top:5px;right:5px;width:12px;height:12px;border:1.5px solid #d1d5db;border-radius:50%"></div>
+              <div style="width:42px;height:42px;border-radius:8px;background-image:url('assets/아바타_리얼증명사진/wa33정명사진_14.png');background-size:cover;background-position:center top;background-color:#f3f4f6;flex-shrink:0"></div>
+              <div style="flex:1;min-width:0">
+                <div style="display:flex;gap:4px;align-items:center;margin-bottom:1px"><span style="font-size:7px;font-weight:700;color:#ef4444;background:#fee2e2;padding:1px 4px;border-radius:3px">기호 2</span><span style="font-size:8px;color:#ef4444;font-weight:600">국민의힘</span></div>
+                <div style="font-size:11px;font-weight:900">이ㅇ영 <span style="font-size:8px;color:#9ca3af;font-weight:500">(45세)</span></div>
+                <div style="font-size:8px;color:#ef4444;font-weight:700;margin-top:1px">"다시 뛰는 공정 도시, 새로운 서울"</div>
+              </div>
+            </div>
+            <!-- 박ㅇ성 -->
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:8px;display:flex;gap:8px;position:relative">
+              <div style="position:absolute;top:5px;right:5px;width:12px;height:12px;border:1.5px solid #d1d5db;border-radius:50%"></div>
+              <div style="width:42px;height:42px;border-radius:8px;background-image:url('assets/아바타_리얼증명사진/a30정명사진_38.jpeg');background-size:cover;background-position:center top;background-color:#f3f4f6;flex-shrink:0"></div>
+              <div style="flex:1;min-width:0">
+                <div style="display:flex;gap:4px;align-items:center;margin-bottom:1px"><span style="font-size:7px;font-weight:700;color:#6b7280;background:#f3f4f6;padding:1px 4px;border-radius:3px">기호 7</span><span style="font-size:8px;color:#6b7280;font-weight:600">무소속</span></div>
+                <div style="font-size:11px;font-weight:900">박ㅇ성 <span style="font-size:8px;color:#9ca3af;font-weight:500">(38세)</span></div>
+                <div style="font-size:8px;color:#6b7280;font-weight:700;margin-top:1px">"진영 논리 없는 오직 시민 중심 행정"</div>
+              </div>
+            </div>
+          </div>
+          <!-- 하단 네비 -->
+          <div style="display:flex;border-top:1px solid #e5e7eb;background:#fff;padding:6px 0">
+            <div style="flex:1;text-align:center;color:#7c3aed"><span class="ms msf" style="font-size:18px">home</span><div style="font-size:8px;font-weight:900">홈</div></div>
+            <div style="flex:1;text-align:center;color:#9ca3af"><span class="ms" style="font-size:18px">person_search</span><div style="font-size:8px;font-weight:600">후보자</div></div>
+            <div style="flex:1;text-align:center;color:#9ca3af"><span class="ms" style="font-size:18px">bookmark_border</span><div style="font-size:8px;font-weight:600">관심</div></div>
+            <div style="flex:1;text-align:center;color:#9ca3af"><span class="ms" style="font-size:18px">person</span><div style="font-size:8px;font-weight:600">마이</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- LIVE 반응 피드 -->
+      <div class="float-card feed">
+        <div class="head"><span class="dot"></span> LIVE · 실시간 반응 피드</div>
+        <div id="hero-feed"></div>
+      </div>
+      <!-- 오늘의 질문 TOP 3 (질문 횟수 기준) -->
+      <div class="float-card top3">
+        <div class="title">📊 오늘의 질문 TOP 3</div>
+        <div class="row"><span class="label">청년 주거</span><div class="bar-wrap"><div class="bar" style="width:100%"></div></div><span class="pct">234회</span></div>
+        <div class="row"><span class="label">일자리 창출</span><div class="bar-wrap"><div class="bar" style="width:85%"></div></div><span class="pct">198회</span></div>
+        <div class="row"><span class="label">교통 인프라</span><div class="bar-wrap"><div class="bar" style="width:80%"></div></div><span class="pct">187회</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 2. PAIN POINT ══════ -->
+<section class="section pain" id="pain">
+  <div class="wrap pain-grid">
+    <div>
+      <h2 class="h2" style="text-align:left;font-size:clamp(22px,3vw,32px)">선거운동은 하고 있지만,<br/>유권자 질문에는 답하고 있나요?</h2>
+      <div class="pain-list">
+        <div class="item">SNS 홍보는 하지만 대화는 어렵습니다</div>
+        <div class="item">공약은 있지만 유권자가 읽지 않습니다</div>
+        <div class="item">젊은층과의 접점이 부족합니다</div>
+        <div class="item">캠프 인력만으로 질문 대응이 어렵습니다</div>
+      </div>
+    </div>
+    <div class="voice-side">
+      <div class="voice-title">지금 답하지 않으면, 유권자는 다른 후보를 봅니다</div>
+      <div class="voice-list">
+        <div class="voice"><div class="ava">김</div><div><div class="body">"우리 골목 가로등 진짜 너무 어두워요. 누구한테 말해야 돼요?"</div><div class="who">— 50대 여성, 주택가</div></div></div>
+        <div class="voice"><div class="ava">박</div><div><div class="body">"아이 학교 앞 신호등, 후보 공약에 넣어줄 사람 없나요?"</div><div class="who">— 30대 학부모</div></div></div>
+        <div class="voice"><div class="ava">이</div><div><div class="body">"소상공인 임대료 지원, 말로만 말고 실제로 뭘 할 건지 궁금해요."</div><div class="who">— 40대 자영업자</div></div></div>
+        <div class="voice"><div class="ava">최</div><div><div class="body">"청년 일자리 공약, 어느 후보가 제일 구체적으로 말하는지 모르겠어요."</div><div class="who">— 20대 직장인</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 3. APP PREVIEW ══════ -->
+<section class="section app-preview" id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="h2">유권자는 이렇게 후보에게 질문합니다</h2>
+      <p class="lead">일꾼을묻다 는 후보자와 유권자를 연결하는 대화형 선거 플랫폼입니다</p>
+    </div>
+    <div class="phones-row">
+      <!-- 왼쪽 폰: 영상만 (헤더 제거) -->
+      <div>
+        <div class="phone">
+          <div class="phone-screen" style="background:#000">
+            <video src="assets/선거아바타_선정리(남자).mp4" autoplay muted loop playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block"></video>
+            <div style="position:absolute;bottom:18px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#fff;font-size:9px;font-weight:700;padding:4px 10px;border-radius:99px;backdrop-filter:blur(6px);white-space:nowrap;z-index:2">⚠ 샘플 · AI 가상 아바타 예시</div>
+          </div>
+        </div>
+        <div class="phone-cap">응답 인터페이스</div>
+        <div class="phone-dots"><span class="active"></span></div>
+      </div>
+
+      <!-- 오른쪽 폰: 5-슬라이드 슬라이더 -->
+      <div>
+        <div class="phone">
+          <div class="phone-screen" style="background:#000;padding:0">
+            <div id="appSlider" style="display:flex;transition:transform .6s ease;height:100%;width:100%">
+              <!-- 1. 메인 홈 -->
+              <div style="min-width:100%;height:100%;padding:20px;display:flex;flex-direction:column;align-items:center;background:#fff;font-size:11px">
+                <div style="width:64px;height:64px;border-radius:20px;overflow:hidden;margin:30px 0 12px;box-shadow:0 8px 20px rgba(124,58,237,.18)"><img src="assets/logo_ask03.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"/></div>
+                <p style="font-size:18px;font-weight:900;margin-bottom:4px">일꾼을묻다</p>
+                <p style="font-size:10px;color:#9ca3af;margin-bottom:24px;text-align:center">AI 아바타와 함께하는 스마트한 선택</p>
+                <div style="width:100%;background:#7c3aed;border-radius:12px;padding:12px;text-align:center;margin-bottom:10px"><span style="color:#fff;font-size:13px;font-weight:900">일꾼보기 →</span></div>
+                <div style="width:100%;border:1px solid #e5e7eb;border-radius:12px;padding:11px;text-align:center;margin-bottom:18px"><span style="font-size:11px;color:#6b7280">현 시행되고 있는 정책</span></div>
+                <p style="font-size:12px;font-weight:900;text-align:left;width:100%;margin-bottom:8px">실시간 선거 뉴스</p>
+                <div style="width:100%;border:1px solid #e8edf3;border-radius:10px;padding:10px;text-align:left;margin-bottom:6px"><p style="font-size:10px;font-weight:700;margin:0">제9회 전국동시지방선거, 5월 14일 후보자 등록 신청일</p><p style="font-size:9px;color:#9ca3af;margin:2px 0 0">1시간 전 · 중앙일보</p></div>
+                <div style="width:100%;border:1px solid #e8edf3;border-radius:10px;padding:10px;text-align:left"><p style="font-size:10px;font-weight:700;margin:0">서울시장 후보 3인, 첫 TV토론회</p><p style="font-size:9px;color:#9ca3af;margin:2px 0 0">2시간 전 · KBS</p></div>
+              </div>
+
+              <!-- 2. 선거 종류 선택 -->
+              <div style="min-width:100%;height:100%;padding:20px;background:#fff">
+                <p style="font-size:14px;font-weight:900;margin-bottom:14px;text-align:left">선거 종류 선택</p>
+                <div style="background:#f5f3ff;border-radius:12px;padding:14px;margin-bottom:14px">
+                  <p style="font-size:10px;color:#6b7280;margin-bottom:4px">거주 지역</p>
+                  <p style="font-size:13px;font-weight:900;margin:0">시·도 / 시·군·구를 선택하세요</p>
+                </div>
+                <div style="border:2px solid #7c3aed;border-radius:14px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:10px">
+                  <div style="width:36px;height:36px;border-radius:9px;background:#f5f3ff;display:flex;align-items:center;justify-content:center"><span class="ms msf" style="color:#7c3aed;font-size:20px">location_city</span></div>
+                  <div style="flex:1;text-align:left"><p style="font-size:13px;font-weight:900;margin:0">우리지역</p><p style="font-size:9px;color:#9ca3af;margin:2px 0 0">시·도지사 · 구청장 · 시장 · 군수</p></div>
+                  <span class="ms" style="color:#7c3aed;font-size:18px">arrow_forward</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                  <div style="border:1px solid #e5e7eb;border-radius:12px;padding:14px;text-align:left"><div style="width:28px;height:28px;border-radius:7px;background:#f5f3ff;display:flex;align-items:center;justify-content:center;margin-bottom:6px"><span class="ms" style="color:#7c3aed;font-size:16px">apartment</span></div><p style="font-size:11px;font-weight:900;margin:0">우리 골목</p><p style="font-size:8px;color:#9ca3af;margin:2px 0 0">시의원 · 구의원 · 도의원</p></div>
+                  <div style="border:1px solid #e5e7eb;border-radius:12px;padding:14px;text-align:left"><div style="width:28px;height:28px;border-radius:7px;background:#eff6ff;display:flex;align-items:center;justify-content:center;margin-bottom:6px"><span class="ms" style="color:#3b82f6;font-size:16px">school</span></div><p style="font-size:11px;font-weight:900;margin:0">우리교육</p><p style="font-size:8px;color:#9ca3af;margin:2px 0 0">교육감 후보</p></div>
+                </div>
+              </div>
+
+              <!-- 3. 후보자 목록 -->
+              <div style="min-width:100%;height:100%;padding:18px;background:#fff;overflow:hidden">
+                <p style="font-size:14px;font-weight:900;margin-bottom:2px;text-align:left">우리지역 후보자</p>
+                <p style="font-size:10px;color:#9ca3af;margin-bottom:12px;text-align:left">서울특별시 관할</p>
+                <div style="display:flex;gap:5px;margin-bottom:12px"><span style="font-size:10px;font-weight:700;color:#7c3aed;border-bottom:2px solid #7c3aed;padding:5px 8px">시·도지사</span><span style="font-size:10px;color:#9ca3af;padding:5px 8px">구청장</span><span style="font-size:10px;color:#9ca3af;padding:5px 8px">시장</span></div>
+                <div style="border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start">
+                  <div style="flex-shrink:0;width:42px;height:42px;border-radius:50%;background-image:url('assets/kim.png');background-size:280%;background-position:50% 3%;background-repeat:no-repeat;background-color:#f3f4f6;border:2px solid #3b82f6"></div>
+                  <div style="flex:1;text-align:left">
+                    <p style="font-size:9px;color:#3b82f6;font-weight:700;margin:0 0 3px">기호 1 · 더불어민주당</p>
+                    <p style="font-size:13px;font-weight:900;margin:0 0 2px">김ㅇ준 <span style="font-size:10px;color:#9ca3af">(52세)</span> <span style="font-size:8px;font-weight:700;color:#6b7280;background:#f3f4f6;padding:1px 5px;border-radius:3px">가상</span></p>
+                    <p style="font-size:9px;color:#6b7280;margin:0 0 8px">"시민의 삶을 바꾸는 스마트 시티 서울"</p>
+                    <div style="display:flex;gap:5px"><span style="font-size:9px;font-weight:900;color:#fff;background:#7c3aed;padding:5px 11px;border-radius:6px">대화</span><span style="font-size:9px;font-weight:700;color:#6b7280;border:1px solid #e5e7eb;padding:5px 11px;border-radius:6px">관심 등록</span></div>
+                  </div>
+                </div>
+                <div style="border:1px solid #e5e7eb;border-radius:12px;padding:12px;display:flex;gap:10px;align-items:flex-start">
+                  <div style="flex-shrink:0;width:42px;height:42px;border-radius:50%;background-image:url('assets/lee.png');background-size:280%;background-position:50% 3%;background-repeat:no-repeat;background-color:#f3f4f6;border:2px solid #ef4444"></div>
+                  <div style="flex:1;text-align:left">
+                    <p style="font-size:9px;color:#ef4444;font-weight:700;margin:0 0 3px">기호 2 · 국민의힘</p>
+                    <p style="font-size:13px;font-weight:900;margin:0 0 2px">이ㅇ영 <span style="font-size:10px;color:#9ca3af">(45세)</span> <span style="font-size:8px;font-weight:700;color:#6b7280;background:#f3f4f6;padding:1px 5px;border-radius:3px">가상</span></p>
+                    <p style="font-size:9px;color:#6b7280;margin:0 0 8px">"다시 뛰는 공정 도시, 새로운 서울"</p>
+                    <div style="display:flex;gap:5px"><span style="font-size:9px;font-weight:900;color:#fff;background:#7c3aed;padding:5px 11px;border-radius:6px">대화</span><span style="font-size:9px;font-weight:700;color:#6b7280;border:1px solid #e5e7eb;padding:5px 11px;border-radius:6px">관심 등록</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 4. AI 아바타 영상 -->
+              <div style="min-width:100%;height:100%;background:#000;position:relative;overflow:hidden">
+                <video id="appSliderVideo" src="assets/선거아바타_선정리(여자).mp4" muted loop playsinline preload="auto" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block"></video>
+                <div style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#fff;font-size:9px;font-weight:700;padding:4px 10px;border-radius:99px;backdrop-filter:blur(6px);white-space:nowrap">⚠ 샘플 · AI 가상 아바타 예시</div>
+              </div>
+
+              <!-- 5. 후보자 비교 -->
+              <div style="min-width:100%;height:100%;padding:14px 16px;background:#fff;overflow-y:auto">
+                <p style="font-size:13px;font-weight:900;margin-bottom:10px;text-align:left">후보자 비교</p>
+                <div style="display:flex;gap:18px;justify-content:center;margin-bottom:12px">
+                  <div style="text-align:center"><div style="width:42px;height:42px;border-radius:50%;background-image:url('assets/아바타_리얼증명사진/wa34정명사진_14.png');background-size:cover;background-position:center top;background-color:#f3f4f6;margin:0 auto 4px;border:2px solid #3b82f6"></div><p style="font-size:10px;font-weight:900;margin:0">김ㅇ준</p><p style="font-size:8px;color:#3b82f6;margin:0">더불어민주당</p></div>
+                  <div style="text-align:center"><div style="width:42px;height:42px;border-radius:50%;background-image:url('assets/아바타_리얼증명사진/wa33정명사진_14.png');background-size:cover;background-position:center top;background-color:#f3f4f6;margin:0 auto 4px;border:2px solid #ef4444"></div><p style="font-size:10px;font-weight:900;margin:0">이ㅇ영</p><p style="font-size:8px;color:#ef4444;margin:0">국민의힘</p></div>
+                </div>
+                <div style="margin-bottom:9px"><p style="font-size:10px;font-weight:900;margin:0 0 4px;text-align:left">📋 주요 정책</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:5px"><div style="background:#f8fafc;border-radius:7px;padding:6px;font-size:8px;color:#374151;line-height:1.45;text-align:left">스마트 시티 기반 시민 생활 혁신, 디지털 행정</div><div style="background:#f8fafc;border-radius:7px;padding:6px;font-size:8px;color:#374151;line-height:1.45;text-align:left">규제 혁파를 통한 경제 활성화, 공정한 기회</div></div></div>
+                <div style="margin-bottom:9px"><p style="font-size:10px;font-weight:900;margin:0 0 4px;text-align:left">💼 일자리</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:5px"><div style="background:#f8fafc;border-radius:7px;padding:6px;font-size:8px;color:#374151;line-height:1.45;text-align:left">지역 특화 산업 클러스터, 양질 일자리</div><div style="background:#f8fafc;border-radius:7px;padding:6px;font-size:8px;color:#374151;line-height:1.45;text-align:left">스타트업 규제 샌드박스, 청년 창업</div></div></div>
+                <div style="margin-bottom:9px"><p style="font-size:10px;font-weight:900;margin:0 0 4px;text-align:left">👁 비전</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:5px"><div style="background:#f8fafc;border-radius:7px;padding:6px;font-size:8px;color:#374151;line-height:1.45;text-align:left">시민이 주인인 디지털 행정 도시</div><div style="background:#f8fafc;border-radius:7px;padding:6px;font-size:8px;color:#374151;line-height:1.45;text-align:left">규제 완화·혁신으로 신성장 도시</div></div></div>
+                <div style="margin-bottom:9px"><p style="font-size:10px;font-weight:900;margin:0 0 4px;text-align:left">🎓 교육</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:5px"><div style="background:#f8fafc;border-radius:7px;padding:6px;font-size:8px;color:#374151;line-height:1.45;text-align:left">디지털 교육 지원 확대, 무상 돌봄</div><div style="background:#f8fafc;border-radius:7px;padding:6px;font-size:8px;color:#374151;line-height:1.45;text-align:left">기초학력 보장, 사교육 부담 감소</div></div></div>
+                <div><p style="font-size:10px;font-weight:900;margin:0 0 4px;text-align:left">🛡 안전·복지</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:5px"><div style="background:#f8fafc;border-radius:7px;padding:6px;font-size:8px;color:#374151;line-height:1.45;text-align:left">CCTV 사각지대 해소, 야간 안심귀가</div><div style="background:#f8fafc;border-radius:7px;padding:6px;font-size:8px;color:#374151;line-height:1.45;text-align:left">어르신 무료 건강검진·돌봄 강화</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-cap" id="appSliderCap">메인 홈</div>
+        <div class="phone-dots" id="appSliderDots">
+          <span class="active"></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <button class="app-link-side icon-only" onclick="openAppPreview(event)" aria-label="앱샘플보기">
+        <img src="assets/logo_ask03.png" alt=""/>
+        <span class="cap">앱샘플보기</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 4. 3 PROMISES ══════ -->
+<section class="section promises" id="tools">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="h2">유권자를 만날 준비를 하세요</h2>
+      <p class="lead">일꾼을찾다는 후보자의 도구입니다. 정책을 정리하고, 의견을 듣고, 반영할 준비를 도와드립니다.</p>
+    </div>
+    <div class="promise-grid">
+      <div class="promise">
+        <div class="num">1</div>
+        <h3><span class="accent">쉽다</span>: 정책자료를 업로드하세요.</h3>
+        <p>흩어진 공약 자료를 AI가 항목별로 정리해 주민이 쉽게 이해할 수 있는 형태로 제공합니다.</p>
+        <ul>
+          <li>공약 10개 AI 정리·요약</li>
+          <li>분야별 태그 자동 분류</li>
+          <li>핵심 메시지 추출</li>
+        </ul>
+      </div>
+      <div class="promise">
+        <div class="num">2</div>
+        <h3><span class="accent">편하다</span>: AI가 질문 대응을 지원합니다</h3>
+        <p>후보자가 등록한 정보를 기반으로 시민 질문에 자동으로 응답하고 기록합니다</p>
+        <ul>
+          <li>AI 아바타 채팅·음성 응대</li>
+          <li>모든 대화 로그 수집</li>
+          <li>지역구 태깅</li>
+        </ul>
+      </div>
+      <div class="promise">
+        <div class="num">3</div>
+        <h3><span class="accent">확실하다</span>: 데이터로 유권자 반응을 확인하고 반영합니다</h3>
+        <p>수집된 목소리를 대시보드에서 확인하고 실제 공약과 행보에 반영할 수 있습니다.</p>
+        <ul>
+          <li>반응 리포트 일·주간 제공</li>
+          <li>지역·연령별 키워드 분석</li>
+          <li>CSV 내보내기 · 공유</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 답변은 후보자가 통제할 수 있어야 합니다 -->
+    <div class="control">
+      <h2 class="h2" style="font-size:clamp(22px,2.6vw,30px)">답변은 후보자가 통제할 수 있어야 합니다</h2>
+      <p class="lead">일꾼을묻다는 후보자가 등록한 정보와 공약을 기준으로 답변합니다.<br/>답변 범위, 말투, 길이, 사용량을 조절할 수 있습니다.</p>
+      <div class="chips">
+        <span>후보자 자료 기반 답변</span>
+        <span>민감 질문 필터링</span>
+        <span>답변 길이 조절</span>
+        <span>사용량 제한 설정</span>
+        <span>신고 및 수정 요청 대응</span>
+        <span>관리자 검토 구조</span>
+      </div>
+      <div class="highlight">'실시간 모니터링 및 즉시 수정 가능'</div>
+      <p class="disclaimer">본 서비스는 후보자가 등록한 자료와 공개 가능한 정보를 기반으로 운영되며, 선거 관련 법령과 플랫폼 운영 기준을 준수합니다.</p>
+      <div class="legal-badge">✓ 선관위 유권해석 완료</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 5. UNIFIED DASHBOARD (KPI/워드클라우드/막대/피드 슬라이더) ══════ -->
+<section class="section dashboard-section" id="dashboard">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="h2">유권자 반응을 데이터로 확인합니다</h2>
+      <p class="lead">시민이 대화하고 반응할 때마다 <strong style="color:var(--ink)">데이터가 쌓입니다</strong>.<br/>어떤 공약이 통하는지, 시민이 무엇을 원하는지 — 대시보드에서 바로 확인할 수 있습니다.</p>
+      <div class="data-chips">
+        <div class="chip"><span class="ms" style="color:#3b82f6">forum</span> 시민 대화 로그 분석</div>
+        <div class="chip"><span class="ms" style="color:#ef4444">thumb_up</span> 공감·응원 반응 추적</div>
+        <div class="chip"><span class="ms" style="color:#f59e0b">priority_high</span> 우려 사항 → 공약 보완</div>
+        <div class="chip"><span class="ms" style="color:#10b981">analytics</span> 이슈 비교 분석</div>
+      </div>
+      <div class="dashboard-chips" style="margin-top:18px">
+        <span>후보자 프로필 페이지</span>
+        <span>공약·정책 등록</span>
+        <span>AI 질의응답</span>
+        <span>시민 관심 질문 확인</span>
+        <span>사용량·비용 관리</span>
+        <span>SNS 공유 링크 제공</span>
+      </div>
+    </div>
+
+    <div class="dash-stage">
+      <button class="dash-arrow prev" id="dashPrev" aria-label="이전 슬라이드">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 4 6 10 12 16"/></svg>
+      </button>
+      <button class="dash-arrow next" id="dashNext" aria-label="다음 슬라이드">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 4 14 10 8 16"/></svg>
+      </button>
+    <div class="browser-card">
+      <div class="browser-bar">
+        <div class="browser-dots">
+          <div class="browser-dot" style="background:#ef4444"></div>
+          <div class="browser-dot" style="background:#f59e0b"></div>
+          <div class="browser-dot" style="background:#22c55e"></div>
+        </div>
+        <div class="browser-url">findleaders.kr/dashboard — 후보자 전용 대시보드</div>
+      </div>
+      <div class="dash-slider-wrap">
+        <div class="dash-slider" id="dashSlider">
+          <!-- 1. 사용 현황 (KPI + 라인차트) -->
+          <div class="dash-slide">
+            <div class="dash-kpi-rich">
+              <div class="kpi-r"><div class="kpi-r-top"><span class="ms" style="color:var(--purple)">forum</span><span class="kpi-r-delta up">+84 vs 지난주</span></div><div class="kpi-r-val">312</div><div class="kpi-r-lbl">대화수</div></div>
+              <div class="kpi-r"><div class="kpi-r-top"><span class="ms" style="color:#f59e0b">celebration</span><span class="kpi-r-delta up">+234 vs 지난주</span></div><div class="kpi-r-val">1,380</div><div class="kpi-r-lbl">모션수</div><div class="kpi-r-emojis">👏 423 · 🌟 523 · 🦋 434</div></div>
+              <div class="kpi-r"><div class="kpi-r-top"><span class="ms" style="color:#7c3aed">deployed_code</span><span class="kpi-r-delta up">+57,400 vs 지난주</span></div><div class="kpi-r-val">365,100</div><div class="kpi-r-lbl">응답량 사용</div></div>
+              <div class="kpi-r"><div class="kpi-r-top"><span class="ms" style="color:#10b981">payments</span><span class="kpi-r-delta up">+₩3,200 vs 지난주</span></div><div class="kpi-r-val">₩16,380</div><div class="kpi-r-lbl">예상 비용</div></div>
+            </div>
+            <div class="line-chart-card">
+              <div class="line-chart-head">
+                <div><div class="line-title">사용 추이</div><div class="line-sub">대화·모션 변곡선</div></div>
+                <div class="line-legend"><span><span class="dot" style="background:var(--purple)"></span>대화</span><span><span class="dot" style="background:#c4b5fd"></span>모션</span></div>
+              </div>
+              <svg viewBox="0 0 600 200" preserveAspectRatio="none" style="width:100%;height:200px">
+                <defs>
+                  <linearGradient id="grad1" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#c4b5fd" stop-opacity=".3"/><stop offset="100%" stop-color="#c4b5fd" stop-opacity="0"/></linearGradient>
+                </defs>
+                <!-- grid -->
+                <line x1="0" y1="40" x2="600" y2="40" stroke="#f1f5f9"/>
+                <line x1="0" y1="90" x2="600" y2="90" stroke="#f1f5f9"/>
+                <line x1="0" y1="140" x2="600" y2="140" stroke="#f1f5f9"/>
+                <line x1="0" y1="180" x2="600" y2="180" stroke="#f1f5f9"/>
+                <!-- 모션 area -->
+                <path d="M 30 130 L 110 90 L 190 105 L 270 65 L 350 75 L 430 55 L 510 70 Z" fill="url(#grad1)"/>
+                <polyline points="30,130 110,90 190,105 270,65 350,75 430,55 510,70" fill="none" stroke="#c4b5fd" stroke-width="2.5"/>
+                <!-- 대화 line -->
+                <polyline points="30,165 110,160 190,162 270,150 350,155 430,158 510,160" fill="none" stroke="#7c3aed" stroke-width="2.5"/>
+                <!-- 대화 dots -->
+                <circle cx="30" cy="165" r="4" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+                <circle cx="110" cy="160" r="4" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+                <circle cx="190" cy="162" r="4" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+                <circle cx="270" cy="150" r="4" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+                <circle cx="350" cy="155" r="4" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+                <circle cx="430" cy="158" r="4" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+                <circle cx="510" cy="160" r="4" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+                <!-- 모션 dots -->
+                <circle cx="30" cy="130" r="4" fill="#fff" stroke="#c4b5fd" stroke-width="2"/>
+                <circle cx="110" cy="90" r="4" fill="#fff" stroke="#c4b5fd" stroke-width="2"/>
+                <circle cx="190" cy="105" r="4" fill="#fff" stroke="#c4b5fd" stroke-width="2"/>
+                <circle cx="270" cy="65" r="4" fill="#fff" stroke="#c4b5fd" stroke-width="2"/>
+                <circle cx="350" cy="75" r="4" fill="#fff" stroke="#c4b5fd" stroke-width="2"/>
+                <circle cx="430" cy="55" r="4" fill="#fff" stroke="#c4b5fd" stroke-width="2"/>
+                <circle cx="510" cy="70" r="4" fill="#fff" stroke="#c4b5fd" stroke-width="2"/>
+                <!-- x labels -->
+                <text x="30" y="195" font-size="10" fill="#94a3b8" text-anchor="middle">4/10</text>
+                <text x="110" y="195" font-size="10" fill="#94a3b8" text-anchor="middle">4/11</text>
+                <text x="190" y="195" font-size="10" fill="#94a3b8" text-anchor="middle">4/12</text>
+                <text x="270" y="195" font-size="10" fill="#94a3b8" text-anchor="middle">4/13</text>
+                <text x="350" y="195" font-size="10" fill="#94a3b8" text-anchor="middle">4/14</text>
+                <text x="430" y="195" font-size="10" fill="#94a3b8" text-anchor="middle">4/15</text>
+                <text x="510" y="195" font-size="10" fill="#94a3b8" text-anchor="middle">4/16</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 2. 시민 인사이트 -->
+          <div class="dash-slide">
+            <div class="insight-head">
+              <div class="insight-num">1</div>
+              <div><div class="insight-title">시민 인사이트 <span class="insight-badge red">유권자 반응도: 매우 높음</span></div><div class="insight-sub">질문 · 의견 · 요구사항 분석</div></div>
+            </div>
+            <div class="insight-grid">
+              <div>
+                <div class="block-title">📋 질문 TOP 10</div>
+                <div class="rank-list">
+                  <div class="rank-item"><span class="rank">1</span><span class="rank-text">청년 주거 지원 금액은 얼마인가요?</span><span class="rank-count">89회</span></div>
+                  <div class="rank-item"><span class="rank">2</span><span class="rank-text">마포구 교통 개선 계획이 무엇인가요?</span><span class="rank-count">76회</span></div>
+                  <div class="rank-item"><span class="rank">3</span><span class="rank-text">공약 재원 조달 방법은?</span><span class="rank-count">64회</span></div>
+                  <div class="rank-item"><span class="rank">4</span><span class="rank-text">노인 복지 정책은 어떻게 되나요?</span><span class="rank-count">52회</span></div>
+                  <div class="rank-item"><span class="rank">5</span><span class="rank-text">일자리 창출 구체적 방안이 있나요?</span><span class="rank-count">47회</span></div>
+                  <div class="rank-item"><span class="rank">6</span><span class="rank-text">교육 개선 예산은 얼마인가요?</span><span class="rank-count">41회</span></div>
+                  <div class="rank-item"><span class="rank">7</span><span class="rank-text">선거 공약 우선순위는?</span><span class="rank-count">38회</span></div>
+                  <div class="rank-item"><span class="rank">8</span><span class="rank-text">임기 내 달성 가능한가요?</span><span class="rank-count">32회</span></div>
+                  <div class="rank-item"><span class="rank">9</span><span class="rank-text">다른 후보와 차별점은?</span><span class="rank-count">28회</span></div>
+                  <div class="rank-item"><span class="rank">10</span><span class="rank-text">지역 개발 계획은?</span><span class="rank-count">25회</span></div>
+                </div>
+              </div>
+              <div>
+                <div class="block-title">🔑 반복 키워드</div>
+                <div class="kw-chips">
+                  <span class="kw-chip">청년 주거</span>
+                  <span class="kw-chip">교통 개선</span>
+                  <span class="kw-chip">재원 조달</span>
+                  <span class="kw-chip">노인 복지</span>
+                  <span class="kw-chip">일자리</span>
+                  <span class="kw-chip">교육 예산</span>
+                  <span class="kw-chip">실현 가능성</span>
+                </div>
+                <div class="block-title" style="margin-top:18px;color:#dc2626">🚨 반대/우려 의견 <span style="font-size:11px;color:var(--ink-3)">(12건)</span></div>
+                <div class="warn-box">"재원 조달이 현실적이지 않다" <span class="cnt">— 5회</span></div>
+                <div class="warn-box">"교통 개선 계획이 너무 추상적" <span class="cnt">— 4회</span></div>
+                <div class="warn-box">"임기 내 실현 어려워 보인다" <span class="cnt">— 3회</span></div>
+                <div class="block-title" style="margin-top:14px;color:#3b82f6">💬 추가 요구사항 <span style="font-size:11px;color:var(--ink-3)">(8건)</span></div>
+                <div class="info-box">"반려동물 관련 정책도 추가해주세요" <span class="cnt">— 3회</span></div>
+                <div class="info-box">"야간 버스 노선 확대 필요" <span class="cnt">— 3회</span></div>
+                <div class="info-box">"주차장 확충 공약도 원해요" <span class="cnt">— 2회</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. 정책 반응 분석 -->
+          <div class="dash-slide">
+            <div class="insight-head">
+              <div class="insight-num" style="background:#f59e0b">2</div>
+              <div><div class="insight-title">정책 반응 분석 <span class="insight-badge red">유권자 반응도: 매우 높음</span></div><div class="insight-sub">공약별 공감 · 질문 · 우려 분석</div></div>
+              <div class="insight-total">총 공감 <b>887건</b></div>
+            </div>
+            <div class="bars" style="margin-top:18px">
+              <div class="bar-row"><span class="rank">1</span><div class="name-col"><span class="name">청년 주거 지원</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div></div><span class="count">234</span><span class="pct">26.4%</span></div>
+              <div class="bar-row"><span class="rank">2</span><div class="name-col"><span class="name">일자리 창출</span><div class="bar-track"><div class="bar-fill" style="width:85%"></div></div></div><span class="count">198</span><span class="pct">22.3%</span></div>
+              <div class="bar-row"><span class="rank">3</span><div class="name-col"><span class="name">교통 인프라</span><div class="bar-track"><div class="bar-fill" style="width:80%"></div></div></div><span class="count">187</span><span class="pct">21.1%</span></div>
+              <div class="bar-row"><span class="rank">4</span><div class="name-col"><span class="name">복지 확대</span><div class="bar-track"><div class="bar-fill" style="width:67%"></div></div></div><span class="count">156</span><span class="pct">17.6%</span></div>
+              <div class="bar-row"><span class="rank">5</span><div class="name-col"><span class="name">교육 개선</span><div class="bar-track"><div class="bar-fill" style="width:48%"></div></div></div><span class="count">112</span><span class="pct">12.6%</span></div>
+            </div>
+            <p style="text-align:right;font-size:11px;color:var(--ink-3);margin-top:10px">※ 본 통계는 후보자 내부용 자료입니다</p>
+          </div>
+
+          <!-- 4. 운영 현황 요약 + 비교 분석 -->
+          <div class="dash-slide">
+            <div class="insight-head">
+              <div class="insight-num" style="background:#10b981">3</div>
+              <div><div class="insight-title">운영 현황 요약 <span class="insight-badge green">유권자 반응도: 높음</span></div><div class="insight-sub">오늘 기준 핵심 지표</div></div>
+            </div>
+            <div class="ops-kpi">
+              <div class="ops-card"><span class="ms" style="color:var(--purple);font-size:24px">help</span><div class="ops-val">45<small>건</small></div><div class="ops-lbl">오늘 질문 수</div></div>
+              <div class="ops-card"><span class="ms" style="color:#f59e0b;font-size:24px">mark_email_unread</span><div class="ops-val" style="color:#f59e0b">3<small>건</small></div><div class="ops-lbl">미확인 질문</div></div>
+              <div class="ops-card"><span class="ms" style="color:#10b981;font-size:24px">thumb_up</span><div class="ops-val" style="color:#10b981">87<small>%</small></div><div class="ops-lbl">답변 만족도</div></div>
+            </div>
+            <a style="font-size:12px;color:var(--purple);font-weight:700;margin-top:8px;display:inline-block">→ 운영현황에서 상세 보기</a>
+            <div class="compare-card">
+              <div class="compare-head"><span class="compare-num">4</span><span class="compare-title">비교 분석</span><span class="insight-badge purple">참고용</span><span style="margin-left:auto;font-size:11px;color:var(--ink-3)">타 후보 반응 비교 · 이슈 차이</span></div>
+              <div style="background:#faf5ff;border:1px solid var(--purple-100);color:var(--purple);font-size:11px;font-weight:700;padding:8px 12px;border-radius:8px;margin-bottom:10px;display:flex;align-items:center;gap:6px">
+                📌 후보자 본인 데이터 + 익명 표본 평균 비교 (개별 후보 식별 불가)
+              </div>
+              <table class="compare-table">
+                <thead><tr><th>항목</th><th class="our">후보자</th><th>A 후보 (익명)</th><th>B 후보 (익명)</th></tr></thead>
+                <tbody>
+                  <tr><td>시민 질문 수</td><td class="our"><b>492건</b></td><td>380건</td><td>215건</td></tr>
+                  <tr><td>공감 반응</td><td class="our"><b>887건</b></td><td>620건</td><td>340건</td></tr>
+                  <tr><td>답변 만족도</td><td class="our"><b style="color:#10b981">87%</b></td><td>72%</td><td>65%</td></tr>
+                  <tr><td>주요 이슈</td><td class="our"><span class="kw-chip" style="font-size:10px">청년 주거</span></td><td><span class="kw-chip" style="font-size:10px">경제 활성화</span></td><td><span class="kw-chip" style="font-size:10px">환경 정책</span></td></tr>
+                  <tr><td>우려 비율</td><td class="our"><b style="color:#10b981">2.4%</b></td><td><b style="color:#f59e0b">5.1%</b></td><td><b style="color:#dc2626">8.3%</b></td></tr>
+                </tbody>
+              </table>
+              <p style="font-size:11px;color:var(--ink-3);margin-top:10px">※ 타 후보 데이터는 익명화된 지표로 제공되며, 개별 후보 데이터는 외부에 공개되지 않습니다</p>
+            </div>
+          </div>
+
+          <!-- 5. 답변 만족도 + 길이별 -->
+          <div class="dash-slide">
+            <div class="slide-head">
+              <h4>💎 답변 만족도 분석</h4>
+              <div class="dash-pill"><span class="dot"></span> LIVE 샘플 데이터</div>
+            </div>
+            <div class="sat-grid">
+              <div class="sat-card">
+                <div class="sat-title">답변 만족도</div>
+                <div class="donut-wrap">
+                  <svg viewBox="0 0 100 100" style="width:120px;height:120px">
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="#f1f5f9" stroke-width="12"/>
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="#7c3aed" stroke-width="12" stroke-dasharray="263.9" stroke-dashoffset="52.78" transform="rotate(-90 50 50)" stroke-linecap="round"/>
+                  </svg>
+                  <div class="donut-center"><div class="donut-pct">80%</div><div class="donut-lbl">공감률</div></div>
+                </div>
+                <div class="sat-bars">
+                  <div class="sat-bar"><span class="sat-lbl">👍 공감함</span><div class="sat-track"><div class="sat-fill" style="width:80%;background:var(--purple)"></div></div><span class="sat-num">642</span></div>
+                  <div class="sat-bar"><span class="sat-lbl">👎 의견달라요</span><div class="sat-track"><div class="sat-fill" style="width:20%;background:#cbd5e1"></div></div><span class="sat-num">160</span></div>
+                </div>
+              </div>
+              <div class="sat-card">
+                <div class="sat-title">답변 길이별 만족도</div>
+                <div class="len-grid">
+                  <div class="len-card green"><div class="len-pct">92%</div><div class="len-lbl">긴 답변 (장문)</div><div class="len-tag">만족도 높음</div></div>
+                  <div class="len-card yellow"><div class="len-pct">64%</div><div class="len-lbl">짧은 답변 (200이하)</div><div class="len-tag">개선 필요</div></div>
+                </div>
+                <div class="len-tip">💡 답변 <b>중간 길이</b> 구간이 비용 대비 만족도가 가장 높습니다.</div>
+              </div>
+            </div>
+            <div class="data-bottom" style="margin-top:14px">
+              <div class="mini">
+                <h5>📊 공약별 질문 수</h5>
+                <div class="row2">청년 주거 지원 <b>89건</b></div>
+                <div class="row2">교통 인프라 <b>76건</b></div>
+                <div class="row2">일자리 창출 <b>47건</b></div>
+                <div class="row2">복지 확대 <b>52건</b></div>
+                <div class="row2">교육 개선 <b>41건</b></div>
+              </div>
+              <div class="mini warn">
+                <h5>⚡ 공약별 우려 의견</h5>
+                <div class="row2">청년 주거 지원 <span class="tag-red">재원 부족 5건</span></div>
+                <div class="row2">교통 인프라 <span class="tag-red">추상적 4건</span></div>
+                <div class="row2">일자리 창출 <span class="tag-red">실현성 3건</span></div>
+                <div class="row2">교육 개선 <span class="tag-red">예산 근거 2건</span></div>
+              </div>
+            </div>
+            <p style="text-align:right;font-size:11px;color:var(--ink-3);margin-top:8px">※ 본 통계는 후보자 내부용 자료입니다</p>
+          </div>
+        </div>
+      </div>
+      <div class="pagination" id="dashDots">
+        <span class="active"></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="data-cap" id="dashSlideLabel">사용 현황</div>
+    </div>
+    </div>
+    <p class="dash-disc">※ 위 수치와 피드는 UI 예시용 샘플입니다. 실제 데이터는 후보자 계정에 연동된 수집 결과만 집계됩니다.</p>
+  </div>
+</section>
+
+<!-- ══════ 6. VS COMPARISON (요금 안내 직전) ══════ -->
+<section class="section vs">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="h2">유권자 질문에 답할 수 있는 후보 <span style="color:var(--purple)">vs</span> 아닌 후보</h2>
+      <p class="lead">후보자의 선택으로 더 적은 예산과 시간으로, 더 많은 유권자에게 답할 수 있습니다<br/>이미지보다 중요한 것은, 유권자의 질문에 답할 수 있는 준비입니다.</p>
+    </div>
+    <div class="vs-grid">
+      <div class="vs-card">
+        <div class="vs-head">미가입 후보</div>
+        <ul class="vs-list">
+          <li>유세·행사 외에는 주민과 접점이 제한적이다</li>
+          <li>주민 의견을 SNS 댓글·소문에 의존한다</li>
+          <li>공약이 실제로 어떻게 반응되는지 알기 어렵다</li>
+          <li>반응 변화를 감으로 판단한다</li>
+          <li>데이터 없이 다음 운영 방향을 결정한다</li>
+        </ul>
+      </div>
+      <div class="vs-card win">
+        <div class="vs-sub first">✓ 운영 기능</div>
+        <ul class="vs-list">
+          <li>AI가 유권자 질문 대응을 24시간 지원</li>
+          <li>모든 질문·응답이 데이터로 자동 기록</li>
+          <li>공약별 반응과 키워드 실시간 확인</li>
+          <li>지역·연령별 관심도 분석</li>
+          <li>데이터 기반으로 메시지·일정·공약 조정</li>
+        </ul>
+        <div class="vs-sub">✓ 기대 효과</div>
+        <ul class="vs-list">
+          <li>유권자 질문 대응 공백 최소화</li>
+          <li>반복 질문 대응 감소</li>
+          <li>24시간 후보자 정보 제공</li>
+          <li>젊은층 접점 확대</li>
+          <li>공약 이해도 향상</li>
+          <li>선거운동 비용 절감</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 8a. COUNTDOWN ══════ -->
+<section class="countdown-section">
+  <div class="wrap">
+    <div class="sale-badge"><span>🎁</span> 사전 등록 후보자 한정 혜택 · 2026년 5월 20일 종료</div>
+    <h2>지금 등록하세요</h2>
+    <p class="lead">사전 등록 후보자에게만 제공되는 한정 혜택 — 할인된 가격으로 사전 구성 데이터를 먼저 확보하세요.</p>
+    <div class="countdown" id="countdown">
+      <div class="cd-unit"><div class="cd-num" id="cdD">00</div><div class="cd-lbl">DAYS</div></div>
+      <div class="cd-colon">:</div>
+      <div class="cd-unit"><div class="cd-num" id="cdH">00</div><div class="cd-lbl">HOURS</div></div>
+      <div class="cd-colon">:</div>
+      <div class="cd-unit"><div class="cd-num" id="cdM">00</div><div class="cd-lbl">MIN</div></div>
+      <div class="cd-colon">:</div>
+      <div class="cd-unit"><div class="cd-num" id="cdS">00</div><div class="cd-lbl">SEC</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 8. PRICING ══════ -->
+<section class="section pricing" id="pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="pricing-sub">가입비 + 기본 대화량 포함 (추가 사용 시 선택 과금)</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card" onclick="openTier('gov')" data-tier="gov">
+        <div class="tier">광역단체장</div>
+        <div class="amount">299<sup>만</sup></div>
+        <span class="tier-hint">자세히 보기 ⓘ</span>
+      </div>
+      <div class="price-card" onclick="openTier('mayor')" data-tier="mayor">
+        <div class="tier">기초단체장</div>
+        <div class="amount">129<sup>만</sup></div>
+        <span class="tier-hint">자세히 보기 ⓘ</span>
+      </div>
+      <div class="price-card" onclick="openTier('council')" data-tier="council">
+        <div class="tier">광역의원</div>
+        <div class="amount">39<sup>만</sup></div>
+        <span class="tier-hint">자세히 보기 ⓘ</span>
+      </div>
+      <div class="price-card featured" onclick="openTier('local')" data-tier="local">
+        <div class="tier">기초의원</div>
+        <div class="amount">19<sup>만</sup></div>
+        <span class="tier-hint">자세히 보기 ⓘ</span>
+      </div>
+    </div>
+    <div class="price-vat">※ 부가세 별도</div>
+
+    <div class="token-card">
+      <h4>답변 길이 설정</h4>
+      <div class="token-toggles">
+        <button class="token-toggle" data-len="35" type="button">
+          <div class="lbl">짧은답변</div>
+          <div class="desc">~ 50자 · 저비용</div>
+        </button>
+        <button class="token-toggle active" data-len="85" type="button">
+          <div class="lbl">보통답변</div>
+          <div class="desc">~ 100자 · 균형</div>
+        </button>
+        <button class="token-toggle" data-len="135" type="button">
+          <div class="lbl">긴답변</div>
+          <div class="desc">~ 150자 · 높은 만족</div>
+        </button>
+      </div>
+      <div class="token-slider-row">
+        <label>대화당 평균 글자 수</label>
+        <input id="tokenSlider" type="range" min="20" max="150" step="5" value="85"/>
+        <div class="token-value" id="tokenValue">85자</div>
+      </div>
+    </div>
+
+    <div class="pricing-bottom">
+      <h3>사용량을 직접 관리하는 합리적인 구조</h3>
+      <p>후보자는 사용량과 응답 방식을 조절하여 예산에 맞게 운영할 수 있습니다.</p>
+      <p class="small">기본 가입형 기본 사용량 제공 / 초과 사용량 기반 과금 / 1인당 사용 제한 설정 가능</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 9. CONTACT FORM (라이트 디자인) ══════ -->
+<section class="contact" id="contact">
+  <p class="contact-protect">🔒 수집된 반응 데이터는 후보자님께만 독점 제공됩니다 · SSL 암호화 · 선거 종료 후 안전 폐기</p>
+  <div class="wrap">
+    <div class="contact-card">
+      <h3 class="contact-title">후보자 등록 신청</h3>
+      <p class="contact-sub">작성 후 제출하시면 담당자가 영업일 기준 1일 이내에 연락드리며,<br/>선거운동 일정에 맞춰 빠르게 세팅을 도와드립니다.</p>
+      <form id="applyForm" class="contact-form" onsubmit="return submitApply(event)">
+        <div class="row">
+          <div>
+            <label>후보자명<span class="req">*</span></label>
+            <input type="text" name="name" required placeholder="홍길동"/>
+          </div>
+          <div>
+            <label>이메일<span class="req">*</span></label>
+            <input type="email" name="email" required placeholder="name@example.com"/>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label>후보 등록 범위<span class="req">*</span></label>
+            <select name="scope" required>
+              <option value="">선택</option>
+              <option>광역단체장 (시·도지사)</option>
+              <option>기초단체장 (시장·구청장·군수)</option>
+              <option>광역의원</option>
+              <option>기초의원</option>
+              <option>교육감</option>
+              <option>기타</option>
+            </select>
+          </div>
+          <div>
+            <label>지역구<span class="req">*</span></label>
+            <input type="text" name="region" required placeholder="예) 서울 강남구 갑"/>
+          </div>
+        </div>
+        <div class="row full">
+          <div>
+            <label>담당자 연락처<span class="req">*</span></label>
+            <input type="tel" name="contact" id="applyContact" required placeholder="010 0000 0000" maxlength="13" inputmode="numeric" oninput="formatPhone(this)"/>
+          </div>
+        </div>
+        <div class="row full">
+          <div>
+            <label>문의 내용</label>
+            <textarea name="message" placeholder="일정, 공약 자료, 기타 문의 내용을 자유롭게 적어주세요"></textarea>
+          </div>
+        </div>
+        <div class="submit-row">
+          <button type="submit" class="submit-btn" id="submitBtn">🚀 신청서 제출</button>
+          <p class="contact-bottom" id="formStatus">전송 후 담당자가 확인 후 연락드립니다.</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ FOOTER ══════ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <div class="brand">
+          <img src="assets/logo_ask03.png" alt=""/>
+          <span>일꾼을묻다</span>
+        </div>
+        <p class="tag">일꾼을묻다는 선거 캠페인 운영을 위한 최적의 AI 파트너입니다. 데이터에 기반한 운영 가이드와 24시간 소통 시스템을 제공합니다.</p>
+      </div>
+      <div class="footer-contact">
+        <div class="row"><span class="ms">mail</span><span>ilkkun.official@gmail.com</span></div>
+        <div class="row"><span class="ms">call</span><span>010-5372-9611</span></div>
+      </div>
+    </div>
+    <div class="footer-mid">
+      상호 : (주)플레이4<span class="pipe">|</span>대표이사 : 임진우<span class="pipe">|</span>사업자번호 : 267-86-00679<br/>
+      세종특별자치시 나성북로21 A-76<span class="pipe">|</span>이메일 : ilkkun.official@gmail.com
+    </div>
+    <div class="footer-bot">
+      © 2026 일꾼을묻다. All rights reserved. · 공직선거법 준수 · 개인정보 보호<br/>
+      ※ 본 페이지의 아바타·대화·수치는 서비스 이해를 돕기 위한 샘플입니다.
+    </div>
+  </div>
+</footer>
+
+<!-- Tier detail modal (요금 카드 자세히 보기) -->
+<div id="tierModal" class="tier-modal" aria-hidden="true" onclick="if(event.target===this)closeTier()">
+  <div class="tier-card">
+    <button class="tier-close" onclick="closeTier()" aria-label="닫기">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="4" y1="4" x2="16" y2="16"/><line x1="16" y1="4" x2="4" y2="16"/>
+      </svg>
+    </button>
+    <div class="tier-head">
+      <div class="name" id="tierName"></div>
+      <div class="price"><span id="tierPrice"></span><sup>만원~</sup></div>
+    </div>
+    <p class="tier-desc" id="tierDesc"></p>
+    <ul class="tier-features" id="tierFeatures"></ul>
+    <p class="tier-foot">※ 부가세 별도 · 기본 응답량 포함 · 추가 사용 시 선택 과금</p>
+  </div>
+</div>
+
+<!-- Brochure modal (서비스 소개서 받기) -->
+<div id="brochureModal" class="br-modal" aria-hidden="true" onclick="if(event.target===this)closeBrochure()">
+  <div class="br-card">
+    <button class="br-close" onclick="closeBrochure()" aria-label="닫기">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="4" y1="4" x2="16" y2="16"/><line x1="16" y1="4" x2="4" y2="16"/>
+      </svg>
+    </button>
+    <div id="brochureForm">
+      <div class="br-badge">⚡ 신청 후 10초 내 자동 발송</div>
+      <h3 class="br-title">서비스 <strong>소개서</strong>를 메일로 받아보세요</h3>
+      <p class="br-sub">이메일만 입력하시면, AI 후보자 챗봇 · 시민 응대 자동화 · 운영 비용 등 실제 도입에 필요한 정보를 즉시 보내드립니다.</p>
+      <form class="br-form" id="brochureFormEl" onsubmit="submitBrochure(event)">
+        <div class="field">
+          <label>이메일<span class="req">*</span></label>
+          <input type="email" id="brEmail" placeholder="example@email.com" required autocomplete="email"/>
+        </div>
+        <label class="br-consent">
+          <input type="checkbox" id="brConsent" required/>
+          <span>개인정보 수집·이용에 동의합니다 (소개서 발송 목적, 1회성 사용)</span>
+        </label>
+        <button type="submit" class="br-submit" id="brSubmitBtn">
+          <span class="spinner"></span>
+          <span class="label-default">📩 소개서 받기 (10초 소요)</span>
+          <span class="label-loading" style="display:none">발송 중…</span>
+        </button>
+        <p class="br-foot">입력하신 메일로만 발송되며, 마케팅 활용은 하지 않습니다.</p>
+      </form>
+    </div>
+    <div id="brochureSuccess" class="br-success" style="display:none">
+      <div class="icon">✓</div>
+      <h3>발송 완료!</h3>
+      <p>입력하신 메일로 소개서를 보내드렸습니다.</p>
+      <p><span class="email-tag" id="brSuccessEmail"></span></p>
+      <p class="tip">📬 1~2분 안에 도착하지 않으면 <b>스팸함</b>도 확인해주세요.<br/>여전히 안 오면 ilkkun.official@gmail.com로 문의 부탁드립니다.</p>
+    </div>
+  </div>
+</div>
+
+<!-- App preview modal -->
+<div id="appPreviewModal" class="app-preview-modal" aria-hidden="true" onclick="if(event.target===this)closeAppPreview()">
+  <div class="app-preview-frame">
+    <button class="app-preview-close" onclick="closeAppPreview()" aria-label="닫기">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="4" y1="4" x2="16" y2="16"/>
+        <line x1="16" y1="4" x2="4" y2="16"/>
+      </svg>
+    </button>
+    <iframe id="appPreviewIframe" src="" title="일꾼을묻다 미리보기" allow="autoplay"></iframe>
+  </div>
+</div>
+
+<script>
+/* ───── 1. App preview modal ───── */
+function openAppPreview(ev){
+  if (ev) ev.preventDefault();
+  const modal = document.getElementById('appPreviewModal');
+  const iframe = document.getElementById('appPreviewIframe');
+  if (!iframe.src.includes('ilgun-platform-v2')) iframe.src = 'ilgun-platform-v2.html';
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+function closeAppPreview(){
+  const modal = document.getElementById('appPreviewModal');
+  const iframe = document.getElementById('appPreviewIframe');
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  iframe.src = '';
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('appPreviewModal');
+    if (modal && modal.classList.contains('open')) closeAppPreview();
+    const brModal = document.getElementById('brochureModal');
+    if (brModal && brModal.classList.contains('open')) closeBrochure();
+    const tierModal = document.getElementById('tierModal');
+    if (tierModal && tierModal.classList.contains('open')) closeTier();
+  }
+});
+
+/* ───── 1-0. Tier detail modal (요금 카드 자세히 보기) ───── */
+const TIER_INFO = {
+  gov: {
+    name: '광역단체장', price: '299',
+    desc: '유권자 규모가 크기 때문에 질문 대응과 함께 유권자 반응 데이터를 기반으로 전략적으로 운영할 수 있습니다.',
+    features: [
+      '후보자 프로필 / 공약 등록',
+      '24시간 질문 자동 응답',
+      '유권자 반응 데이터 대시보드',
+      '질문 로그 / 반응 분석',
+      '지역별 분석',
+      '추가 옵션 제공'
+    ]
+  },
+  mayor: {
+    name: '기초단체장', price: '129',
+    desc: '지역 이슈 대응과 함께 유권자 반응 데이터를 빠르게 확인하고 공약에 반영할 수 있는 구조입니다.',
+    features: [
+      '후보자 프로필 / 공약 등록',
+      '24시간 질문 자동 응답',
+      '유권자 반응 데이터 대시보드',
+      '질문 로그 / 반응 분석'
+    ]
+  },
+  council: {
+    name: '광역의원', price: '39',
+    desc: '유권자 질문 대응과 함께 유권자 반응 데이터를 확인하며 효율적으로 운영할 수 있습니다.',
+    features: [
+      '후보자 프로필 / 공약 등록',
+      '24시간 질문 자동 응답',
+      '유권자 반응 데이터 대시보드',
+      '질문 로그 / 반응 분석'
+    ]
+  },
+  local: {
+    name: '기초의원', price: '19',
+    desc: '유권자 질문 대응과 함께 유권자 반응 데이터를 확인하며 필요한 만큼 확장할 수 있습니다.',
+    features: [
+      '후보자 프로필 / 공약 등록',
+      '24시간 질문 자동 응답',
+      '유권자 반응 데이터 대시보드',
+      '질문 로그 / 반응 분석'
+    ]
+  }
+};
+function openTier(key){
+  const info = TIER_INFO[key];
+  if (!info) return;
+  document.getElementById('tierName').textContent = info.name;
+  document.getElementById('tierPrice').textContent = info.price;
+  document.getElementById('tierDesc').textContent = info.desc;
+  document.getElementById('tierFeatures').innerHTML =
+    info.features.map(f => `<li>${f}</li>`).join('');
+  const modal = document.getElementById('tierModal');
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+function closeTier(){
+  const modal = document.getElementById('tierModal');
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+/* ───── 1-1. Brochure modal (서비스 소개서 받기) ───── */
+const BROCHURE_API = 'https://script.google.com/macros/s/AKfycby7xcDYmlJgXvriMkqi8ZUO9y1Q-Y7yrZYGiQoiLdE69tn8GzZ8UUbxlmX8gqiJxCQIYw/exec';
+
+function openBrochure(ev){
+  if (ev) ev.preventDefault();
+  const modal = document.getElementById('brochureModal');
+  document.getElementById('brochureForm').style.display = '';
+  document.getElementById('brochureSuccess').style.display = 'none';
+  document.getElementById('brochureFormEl').reset();
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => { document.getElementById('brEmail').focus(); }, 200);
+}
+function closeBrochure(){
+  const modal = document.getElementById('brochureModal');
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+async function submitBrochure(ev){
+  ev.preventDefault();
+  const email = document.getElementById('brEmail').value.trim();
+  const consent = document.getElementById('brConsent').checked;
+  if (!email || !consent) return;
+
+  const btn = document.getElementById('brSubmitBtn');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  btn.querySelector('.label-loading').style.display = 'inline';
+
+  try {
+    await fetch(BROCHURE_API, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'text/plain;charset=utf-8'},
+      body: JSON.stringify({ action: 'sendBrochure', email })
+    });
+    document.getElementById('brSuccessEmail').textContent = email;
+    document.getElementById('brochureForm').style.display = 'none';
+    document.getElementById('brochureSuccess').style.display = '';
+  } catch (err) {
+    alert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    btn.querySelector('.label-loading').style.display = 'none';
+  }
+}
+
+/* ───── 2. Hero LIVE feed (자동 회전) ───── */
+const heroFeedItems = [
+  { time:'방금', text:'안전 가로등 설치 요청 수신' },
+  { time:'2분',  text:'도서관 확충 요구 증가' },
+  { time:'5분',  text:'대중교통 배차 간격 불만 접수' },
+  { time:'8분',  text:'어린이 통학로 신호등 요청' },
+  { time:'12분', text:'재개발 구역 주민 의견 수렴' },
+  { time:'15분', text:'전세 대출 금리 문의 폭주' },
+  { time:'18분', text:'골목 청소 주기 개선 요청' }
+];
+let heroFeedIdx = 0;
+function renderHeroFeed(){
+  const wrap = document.getElementById('hero-feed');
+  if (!wrap) return;
+  const visible = [];
+  for (let i = 0; i < 3; i++) {
+    visible.push(heroFeedItems[(heroFeedIdx + i) % heroFeedItems.length]);
+  }
+  wrap.innerHTML = visible.map(it => `
+    <div class="item">
+      <span class="time">${it.time}</span>
+      <span class="text">${it.text}</span>
+    </div>
+  `).join('');
+}
+renderHeroFeed();
+setInterval(() => { heroFeedIdx = (heroFeedIdx + 1) % heroFeedItems.length; renderHeroFeed(); }, 3500);
+
+/* ───── 3. Dashboard feed (자동 회전, 새 메시지 위에 추가) ───── */
+const dashFeedMessages = [
+  { tag:'일자리', text:'청년 취업 지원 확대 요청' },
+  { tag:'도로',   text:'골목 포트홀 보수 요청' },
+  { tag:'소상공', text:'전통시장 주차장 확보 요청' },
+  { tag:'청년',   text:'청년 임대주택 공급 의견' },
+  { tag:'교통',   text:'출근길 버스 증차 의견' },
+  { tag:'주거',   text:'전세 대출 금리 문의' },
+  { tag:'교육',   text:'초등 돌봄 확대 요청' },
+  { tag:'복지',   text:'어르신 경로당 냉난방비 지원 문의' },
+  { tag:'안전',   text:'어린이 통학로 과속 단속 요청' },
+  { tag:'환경',   text:'재활용 분리수거 개선 의견' },
+  { tag:'의료',   text:'야간 소아과 진료 부족 문의' },
+  { tag:'문화',   text:'지역 작은 도서관 확충 요청' }
+];
+let dashFeedIdx = 4;
+function pushDashFeed(){
+  const m = dashFeedMessages[dashFeedIdx % dashFeedMessages.length];
+  const list = document.getElementById('dashFeed');
+  if (!list) return;
+  const node = document.createElement('div');
+  node.className = 'feed-item';
+  node.innerHTML = `<span class="feed-tag">${m.tag}</span>${m.text}<span class="feed-time">방금</span>`;
+  list.insertBefore(node, list.firstChild);
+  // 시간 자동 갱신
+  list.querySelectorAll('.feed-item').forEach((el, i) => {
+    const t = el.querySelector('.feed-time');
+    if (!t) return;
+    t.textContent = i === 0 ? '방금' : `${i}분 전`;
+  });
+  // 4개 유지
+  while (list.children.length > 4) list.removeChild(list.lastChild);
+  dashFeedIdx++;
+}
+// 초기 4개 채우기
+for (let i = 0; i < 4; i++) pushDashFeed();
+setInterval(pushDashFeed, 3500);
+
+/* ───── 4. App Preview 오른쪽 폰 슬라이더 (자동 회전) ───── */
+const appSliderLabels = ['메인 홈', '선거 종류 선택', '후보자 목록', '응답 인터페이스', '후보자 비교'];
+const appSlider = document.getElementById('appSlider');
+const appSliderDots = document.getElementById('appSliderDots');
+const appSliderCap = document.getElementById('appSliderCap');
+const appSliderVideo = document.getElementById('appSliderVideo');
+let appSlideIdx = 0;
+function showAppSlide(n){
+  appSlideIdx = n;
+  if (appSlider) appSlider.style.transform = `translateX(-${n*100}%)`;
+  if (appSliderDots) {
+    appSliderDots.querySelectorAll('span').forEach((s, i) => s.classList.toggle('active', i === n));
+  }
+  if (appSliderCap) appSliderCap.textContent = appSliderLabels[n];
+  if (appSliderVideo) {
+    if (n === 3) { try { appSliderVideo.currentTime = 0; appSliderVideo.play(); } catch(e){} }
+    else { try { appSliderVideo.pause(); } catch(e){} }
+  }
+}
+if (appSliderDots) {
+  appSliderDots.querySelectorAll('span').forEach((s, i) => {
+    s.addEventListener('click', () => showAppSlide(i));
+  });
+}
+setInterval(() => { showAppSlide((appSlideIdx + 1) % 5); }, 4000);
+
+/* ───── 5. Token slider — 자 단위 + 자동 순환 ───── */
+const slider = document.getElementById('tokenSlider');
+const tokenValue = document.getElementById('tokenValue');
+const toggles = document.querySelectorAll('.token-toggle');
+const TOGGLE_PRESETS = [35, 85, 135]; // 짧음/보통/길 (자 단위)
+let toggleIdx = 1; // 시작: 보통
+let toggleAutoStopped = false;
+function applyToggle(len, opts){
+  slider.value = len;
+  tokenValue.textContent = len + '자';
+  toggles.forEach(t => t.classList.toggle('active', parseInt(t.dataset.len) === len));
+}
+slider.addEventListener('input', () => {
+  toggleAutoStopped = true; // 사용자 조작 시 영구 정지
+  const val = parseInt(slider.value);
+  tokenValue.textContent = val + '자';
+  toggles.forEach(t => t.classList.toggle('active', parseInt(t.dataset.len) === val));
+});
+toggles.forEach(t => {
+  t.addEventListener('click', () => {
+    toggleAutoStopped = true;
+    applyToggle(parseInt(t.dataset.len));
+  });
+});
+// 자동 순환: 짧음 → 보통 → 길 → 짧음...
+setInterval(() => {
+  if (toggleAutoStopped) return;
+  toggleIdx = (toggleIdx + 1) % TOGGLE_PRESETS.length;
+  applyToggle(TOGGLE_PRESETS[toggleIdx]);
+}, 2500);
+
+/* ───── 5. Dashboard slider (자동 순환 + 좌우 화살표 수동 조작) ───── */
+const dashSlideLabels = ['사용 현황', '시민 인사이트', '정책 반응 분석', '운영 현황 + 비교 분석', '답변 만족도 분석'];
+const dashSlider = document.getElementById('dashSlider');
+const dashDots = document.getElementById('dashDots');
+const dashSlideLabel = document.getElementById('dashSlideLabel');
+const dashPrev = document.getElementById('dashPrev');
+const dashNext = document.getElementById('dashNext');
+const DASH_TOTAL = 5;
+let dashIdx = 0;
+let dashAutoStopped = false;
+function showDashSlide(n){
+  dashIdx = ((n % DASH_TOTAL) + DASH_TOTAL) % DASH_TOTAL;
+  if (dashSlider) dashSlider.style.transform = `translateX(-${dashIdx*100}%)`;
+  if (dashDots) {
+    dashDots.querySelectorAll('span').forEach((s, i) => s.classList.toggle('active', i === dashIdx));
+  }
+  if (dashSlideLabel) dashSlideLabel.textContent = dashSlideLabels[dashIdx];
+}
+if (dashDots) {
+  dashDots.querySelectorAll('span').forEach((s, i) => {
+    s.addEventListener('click', () => { dashAutoStopped = true; showDashSlide(i); });
+    s.style.cursor = 'pointer';
+  });
+}
+if (dashPrev) dashPrev.addEventListener('click', () => { dashAutoStopped = true; showDashSlide(dashIdx - 1); });
+if (dashNext) dashNext.addEventListener('click', () => { dashAutoStopped = true; showDashSlide(dashIdx + 1); });
+setInterval(() => {
+  if (dashAutoStopped) return;
+  showDashSlide(dashIdx + 1);
+}, 2000);
+
+/* ───── 6. 카운트다운 (사전 오픈 특가 2026-05-20 23:59:59 KST) ───── */
+const COUNTDOWN_TARGET = new Date('2026-05-20T23:59:59+09:00').getTime();
+function tickCountdown(){
+  const diff = Math.max(0, COUNTDOWN_TARGET - Date.now());
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  const pad = n => String(n).padStart(2,'0');
+  const dEl = document.getElementById('cdD');
+  const hEl = document.getElementById('cdH');
+  const mEl = document.getElementById('cdM');
+  const sEl = document.getElementById('cdS');
+  if (dEl) dEl.textContent = pad(d);
+  if (hEl) hEl.textContent = pad(h);
+  if (mEl) mEl.textContent = pad(m);
+  if (sEl) sEl.textContent = pad(s);
+}
+tickCountdown();
+setInterval(tickCountdown, 1000);
+
+/* ───── 7. 후보자 등록 신청 → Apps Script (문의관리 시트 직접 기록) ───── */
+const APPLY_API = 'https://script.google.com/macros/s/AKfycby7xcDYmlJgXvriMkqi8ZUO9y1Q-Y7yrZYGiQoiLdE69tn8GzZ8UUbxlmX8gqiJxCQIYw/exec';
+function formatPhone(el){
+  let v = el.value.replace(/\D/g, '');
+  if (v.length > 11) v = v.slice(0, 11);
+  if (v.length < 4)        el.value = v;
+  else if (v.length < 8)   el.value = v.slice(0, 3) + ' ' + v.slice(3);
+  else                     el.value = v.slice(0, 3) + ' ' + v.slice(3, 7) + ' ' + v.slice(7);
+}
+async function submitApply(ev){
+  ev.preventDefault();
+  const form = ev.target;
+  const data = {
+    action:  'applyCandidate',
+    name:    form.name.value.trim(),
+    email:   form.email.value.trim(),
+    scope:   form.scope.value.trim(),
+    region:  form.region.value.trim(),
+    contact: form.contact.value.replace(/\s+/g, ''),
+    message: form.message.value.trim(),
+  };
+  const btn = document.getElementById('submitBtn');
+  const status = document.getElementById('formStatus');
+  btn.disabled = true;
+  btn.textContent = '전송 중...';
+  try {
+    await fetch(APPLY_API, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'text/plain;charset=utf-8'},
+      body: JSON.stringify(data)
+    });
+    status.textContent = '✅ 접수 완료! 영업일 1일 이내 연락드립니다.';
+    status.style.color = '#059669';
+    form.reset();
+    btn.textContent = '신청 완료';
+  } catch (e) {
+    status.textContent = '⚠ 전송 실패 — 잠시 후 다시 시도해주세요.';
+    status.style.color = '#dc2626';
+    btn.disabled = false;
+    btn.textContent = '🚀 신청서 제출';
+  }
+  return false;
+}
+</script>
+</body>
+</html>
