@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"/>
 <title>일꾼을묻다 · 유권자는 묻고, 후보자는 답해야 합니다</title>
 <meta name="description" content="공약·정책·후보자 정보를 기반으로 시민 질문에 24시간 응답하는 대화형 선거 플랫폼. 캠프 인력 없이도 유권자 질문 대응을 자동화하세요."/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet"/>
@@ -25,11 +25,12 @@
     --nav-h:64px;
   }
   *{box-sizing:border-box;margin:0}
-  html,body{margin:0;padding:0;scroll-behavior:smooth}
+  html,body{margin:0;padding:0;scroll-behavior:smooth;width:100%;overflow-x:hidden}
   body{
     font-family:"Noto Sans KR",-apple-system,BlinkMacSystemFont,sans-serif;
     color:var(--ink);background:var(--bg);line-height:1.55;
-    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
   }
   a{color:inherit;text-decoration:none}
   img,video{max-width:100%;display:block}
@@ -567,7 +568,7 @@
   }
   .tier-close:hover{background:#e2e8f0}
   .tier-close svg{width:16px;height:16px}
-  .tier-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px;flex-wrap:wrap}
+  .tier-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px;flex-wrap:wrap;padding-right:44px}
   .tier-head .name{font-size:20px;font-weight:900;letter-spacing:-.4px}
   .tier-head .price{font-size:24px;font-weight:900;color:var(--purple)}
   .tier-head .price sup{font-size:13px;color:var(--ink-3);margin-left:2px;font-weight:800}
@@ -779,15 +780,72 @@
     .voice:nth-child(n){margin-left:0}
     .app-preview .app-link-side{position:static;margin-top:24px;transform:none;display:inline-flex}
     .contact-form .row{grid-template-columns:1fr}
-    .app-preview-frame{width:100vw;height:100vh;border-radius:0;padding:0;max-height:none}
-    .app-preview-frame iframe{border-radius:0}
-    .app-preview-close{top:12px;right:12px;width:38px;height:38px}
+    .app-preview-modal{padding:50px 14px 20px;align-items:flex-start}
+    .app-preview-frame{
+      width:min(80vw,340px);
+      height:min(calc(100vh - 80px),900px);
+      border-radius:32px;padding:8px;
+      margin:0 auto;
+      overflow:hidden;
+    }
+    .app-preview-frame iframe{
+      width:142.857%;height:142.857%;
+      transform:scale(.7);transform-origin:top left;
+      border-radius:34px;
+    }
+    .app-preview-close{
+      top:12px;right:12px;width:36px;height:36px;
+      z-index:10;background:rgba(255,255,255,.95);
+      box-shadow:0 4px 14px rgba(0,0,0,.25);
+      border-width:2px;
+    }
+  }
+  @media (max-width:640px){
+    .countdown{
+      display:flex;width:100%;
+      gap:4px;padding:14px 10px;
+      justify-content:space-between;align-items:center;
+    }
+    .cd-unit{min-width:0;flex:1}
+    .cd-num{font-size:24px}
+    .cd-lbl{font-size:9px;letter-spacing:0;margin-top:4px}
+    .cd-colon{font-size:18px;flex-shrink:0}
+    .dash-slide{padding:18px 14px 14px}
+    .dash-kpi-rich{gap:10px}
+    .kpi-r{padding:11px 10px 10px;min-width:0}
+    .kpi-r-top{flex-direction:column;align-items:flex-start;gap:5px}
+    .kpi-r-top .ms{font-size:16px}
+    .kpi-r-delta{font-size:9px;padding:2px 6px;line-height:1.3}
+    .kpi-r-val{font-size:18px}
+    .kpi-r-lbl{font-size:10px}
+    .kpi-r-emojis{font-size:9px}
+    .line-chart-card{padding:14px}
+    .line-title{font-size:12px}
+    .insight-head{gap:8px;margin-bottom:6px}
+    .insight-num{width:28px;height:28px;font-size:14px}
+    .insight-title{font-size:14px;gap:6px}
+    .insight-sub{font-size:10px}
+    .insight-badge{font-size:9px;padding:2px 7px}
+    .rank-list{padding:8px}
+    .rank-item{font-size:11px;gap:6px;padding:5px 7px}
+    .rank-text{min-width:0;flex:1}
+    .rank-count{font-size:10px;flex-shrink:0;white-space:nowrap}
+    .browser-body{padding:18px}
+    .ops-kpi{gap:10px}
+    .data-bottom{gap:10px}
+    .data-bottom .mini{padding:11px}
+    .browser-card{overflow:hidden}
+    .dash-slider-wrap{overflow:hidden}
   }
   @media (max-width:480px){
     .pricing-grid{grid-template-columns:1fr}
     .token-toggles{grid-template-columns:1fr}
     .phone{width:280px}
     .phone-screen{height:520px}
+    .dash-slide{padding:14px 10px 12px}
+    .browser-body{padding:14px}
+    .browser-url{font-size:9px}
+    .kpi-r-val{font-size:16px}
   }
 </style>
 </head>
@@ -1927,7 +1985,7 @@ if (dashNext) dashNext.addEventListener('click', () => { dashAutoStopped = true;
 setInterval(() => {
   if (dashAutoStopped) return;
   showDashSlide(dashIdx + 1);
-}, 2000);
+}, 5500);
 
 /* ───── 6. 카운트다운 (사전 오픈 특가 2026-05-20 23:59:59 KST) ───── */
 const COUNTDOWN_TARGET = new Date('2026-05-20T23:59:59+09:00').getTime();
