@@ -901,7 +901,7 @@ function downloadAcctCSV(){
 
 function sendReminderOne(name,email){
   if(!email){alert('이메일이 없습니다');return}
-  if(!confirm('"'+name+'"에게 리마인더를 발송할까요?')) return;
+  if(!confirm('"'+name+'"에게 리마인더를 발송할까요?\n\n· 메일 발송\n· 문의관리 안내발송 → 리마인더 업데이트')) return;
   var t=TPL['remind'];
   apiSend({
     action:'send',to:email,recipient:name,
@@ -909,7 +909,11 @@ function sendReminderOne(name,email){
     step:t.step,type:t.type,
     variables:{'이름':name,'이메일':email,'대시보드링크':'https://host.thisishilo.ir'}
   },function(res){
-    if(res.ok) alert('✅ 리마인더 발송 완료'); else alert('❌ 실패: '+(res.error||''));
+    if(!res.ok){alert('❌ 발송 실패: '+(res.error||''));return}
+    apiSend({action:'updateRow',sheet:'문의관리',keyCol:'이메일',keyValue:email,updates:{'안내발송':'리마인더'}},function(res2){
+      alert('✅ 리마인더 발송 완료'+(res2.ok?'\n· 시트 안내발송 컬럼 갱신됨':'\n⚠️ 시트 갱신 실패: '+(res2.error||'')));
+      loadAllData();
+    });
   });
 }
 
