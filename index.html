@@ -1714,7 +1714,7 @@ function openAppPreview(ev){
   if (ev) ev.preventDefault();
   const modal = document.getElementById('appPreviewModal');
   const iframe = document.getElementById('appPreviewIframe');
-  if (!iframe.src.includes('ilgun-platform-v3')) iframe.src = 'ilgun-platform-v3.html';
+  if (!iframe.src.includes('ilgun-platform-v2')) iframe.src = 'ilgun-platform-v2.html';
   modal.classList.add('open');
   modal.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
