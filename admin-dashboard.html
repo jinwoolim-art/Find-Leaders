@@ -52,6 +52,49 @@
 .funnel-item .fn{font-size:24px;font-weight:900;color:#111827;margin:0}
 .funnel-item .fl{font-size:10px;color:#9ca3af;font-weight:600;margin:2px 0 0}
 .funnel-arrow{color:#d1d5db;font-size:18px;flex-shrink:0;margin:0 -1px;z-index:1}
+.mobile-toggle{display:none;background:none;border:none;font-size:22px;cursor:pointer;padding:4px 8px;color:#111827}
+
+/* ══════════ 모바일 반응형 ══════════ */
+@media (max-width: 900px) {
+  body { height: auto; overflow: auto; }
+  .side {
+    position: fixed; top:0; left:0; bottom:0; z-index:100;
+    transform: translateX(-100%); transition: transform .25s;
+    width: 260px; box-shadow: 4px 0 20px rgba(0,0,0,.2);
+  }
+  .side.mobile-open { transform: translateX(0); }
+  .main { width: 100%; }
+  .mobile-toggle { display: inline-flex; align-items:center; gap:6px; }
+  .content { padding: 14px 12px; }
+  .topbar { padding: 0 12px; }
+
+  /* 홈 카드 4열 → 2열 */
+  #tab-home > div:first-child { grid-template-columns: repeat(2, 1fr) !important; }
+  #tab-home > div:nth-child(2) { grid-template-columns: 1fr !important; }
+
+  /* 대시보드 테이블 가로 스크롤 */
+  .card { overflow-x: auto; }
+  .tbl { min-width: 700px; }
+
+  /* 필터 바 스크롤 */
+  .fr { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
+  .sel, .inp { flex-shrink: 0; }
+
+  /* 결과 그리드 한 줄 */
+  [style*="grid-template-columns:repeat(5,1fr)"], [style*="grid-template-columns:repeat(4,1fr)"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* 상세 패널 전체 화면 */
+  .panel { position: fixed; top:0; right:0; bottom:0; width: 100%; z-index: 99; }
+}
+
+@media (max-width: 520px) {
+  .funnel { flex-direction: column; gap: 6px; }
+  .funnel-item { border-radius: 10px !important; }
+  .funnel-arrow { transform: rotate(90deg); }
+  #tab-home > div:first-child { grid-template-columns: 1fr !important; }
+}
 </style>
 </head>
 <body>
@@ -71,15 +114,17 @@
 <!-- 사이드바 -->
 <div class="side">
   <div style="padding:20px 16px 16px"><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center"><span class="ms msf" style="color:#fff;font-size:17px">admin_panel_settings</span></div><div><p style="color:#fff;font-weight:900;font-size:13px">일꾼을찾다</p><p style="color:#4b5563;font-size:10px">Admin Dashboard</p></div></div></div>
-  <nav style="flex:1;padding:0 6px;display:flex;flex-direction:column;gap:2px">
-    <p style="color:#4b5563;font-size:9px;font-weight:700;padding:12px 14px 4px;text-transform:uppercase;letter-spacing:.05em">고객 관리</p>
-    <div class="sn on" id="nav-inq" onclick="sw('inq')"><span class="ms">campaign</span>1단계 · 문의<span class="bdg" style="background:#3b82f6">5</span></div>
-    <div class="sn" id="nav-app" onclick="sw('app')"><span class="ms">assignment</span>2단계 · 신청<span class="bdg">3</span></div>
-    <p style="color:#4b5563;font-size:9px;font-weight:700;padding:16px 14px 4px;text-transform:uppercase;letter-spacing:.05em">운영</p>
-    <div class="sn" id="nav-acct" onclick="sw('acct')"><span class="ms">vpn_key</span>계정 발급<span class="bdg" style="background:#22c55e">2</span></div>
-    <div class="sn" id="nav-cs" onclick="sw('cs')"><span class="ms">support_agent</span>CS 관리<span class="bdg" style="background:#f59e0b">2</span></div>
+  <nav style="flex:1;padding:0 6px;display:flex;flex-direction:column;gap:2px;overflow-y:auto">
+    <div class="sn on" id="nav-home" onclick="sw('home')" style="margin-top:8px"><span class="ms">dashboard</span>홈 · 요약</div>
+    <p style="color:#4b5563;font-size:9px;font-weight:700;padding:16px 14px 4px;text-transform:uppercase;letter-spacing:.05em">고객 관리</p>
+    <div class="sn" id="nav-inq" onclick="sw('inq')"><span class="ms">campaign</span>1단계 · 문의<span class="bdg" id="bdg-inq" style="background:#3b82f6">0</span></div>
+    <div class="sn" id="nav-app" onclick="sw('app')"><span class="ms">assignment</span>2단계 · 신청<span class="bdg" id="bdg-app">0</span></div>
+    <div class="sn" id="nav-acct" onclick="sw('acct')"><span class="ms">vpn_key</span>계정 발급<span class="bdg" id="bdg-acct" style="background:#22c55e">0</span></div>
+    <p style="color:#4b5563;font-size:9px;font-weight:700;padding:16px 14px 4px;text-transform:uppercase;letter-spacing:.05em">메일 / CS</p>
+    <div class="sn" id="nav-inbox" onclick="sw('inbox')"><span class="ms">inbox</span>수신 메일<span class="bdg" id="bdg-inbox" style="background:#3b82f6">0</span></div>
+    <div class="sn" id="nav-cs" onclick="sw('cs')"><span class="ms">support_agent</span>CS 관리<span class="bdg" id="bdg-cs" style="background:#f59e0b">0</span></div>
     <div class="sn" id="nav-sent" onclick="sw('sent')"><span class="ms">send</span>발송 내역</div>
-    <div class="sn" id="nav-inbox" onclick="sw('inbox')"><span class="ms">inbox</span>수신 메일<span class="bdg" style="background:#3b82f6">4</span></div>
+    <p style="color:#4b5563;font-size:9px;font-weight:700;padding:16px 14px 4px;text-transform:uppercase;letter-spacing:.05em">시스템</p>
     <div class="sn" id="nav-tpl" onclick="sw('tpl')"><span class="ms">draft</span>템플릿 관리</div>
   </nav>
   <div style="padding:12px;border-top:1px solid #1f2937">
@@ -91,16 +136,78 @@
 <!-- 메인 -->
 <div class="main">
   <div class="topbar">
-    <div style="display:flex;align-items:center;gap:8px"><span class="ms msf" style="color:#7c3aed;font-size:20px" id="ti">campaign</span><h1 style="font-size:15px;font-weight:900;color:#111827" id="tt">1단계 · 문의 관리</h1></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="mobile-toggle" onclick="document.querySelector('.side').classList.toggle('mobile-open')"><span class="ms">menu</span></button>
+      <span class="ms msf" style="color:#7c3aed;font-size:20px" id="ti">dashboard</span>
+      <h1 style="font-size:15px;font-weight:900;color:#111827" id="tt">홈 · 요약</h1>
+    </div>
     <div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;color:#9ca3af">관리자</span><div style="width:32px;height:32px;border-radius:50%;background:#7c3aed;display:flex;align-items:center;justify-content:center"><span style="color:#fff;font-size:12px;font-weight:900">A</span></div></div>
   </div>
 
   <div style="display:flex;flex:1;overflow:hidden">
 
   <!-- ══════════════════════════════ -->
+  <!-- 홈 · 요약 -->
+  <!-- ══════════════════════════════ -->
+  <div id="tab-home" class="content" style="flex:1">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
+      <div class="card" style="padding:18px;cursor:pointer" onclick="sw('inq')">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><span class="ms msf" style="color:#3b82f6;font-size:24px">campaign</span><span style="font-size:10px;color:#9ca3af">→ 자세히</span></div>
+        <p id="home-inq-total" style="font-size:28px;font-weight:900;color:#111827;margin:0">0</p>
+        <p style="font-size:11px;color:#6b7280;font-weight:700;margin:2px 0 0">전체 문의</p>
+        <p id="home-inq-new" style="font-size:10px;color:#3b82f6;font-weight:700;margin-top:4px">신규 0 · 대기 0</p>
+      </div>
+      <div class="card" style="padding:18px;cursor:pointer" onclick="sw('app')">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><span class="ms msf" style="color:#7c3aed;font-size:24px">assignment</span><span style="font-size:10px;color:#9ca3af">→ 자세히</span></div>
+        <p id="home-app-total" style="font-size:28px;font-weight:900;color:#111827;margin:0">0</p>
+        <p style="font-size:11px;color:#6b7280;font-weight:700;margin:2px 0 0">2단계 신청</p>
+        <p id="home-app-pending" style="font-size:10px;color:#92400e;font-weight:700;margin-top:4px">승인 대기 0</p>
+      </div>
+      <div class="card" style="padding:18px;cursor:pointer" onclick="sw('acct')">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><span class="ms msf" style="color:#22c55e;font-size:24px">vpn_key</span><span style="font-size:10px;color:#9ca3af">→ 자세히</span></div>
+        <p id="home-acct-total" style="font-size:28px;font-weight:900;color:#111827;margin:0">0</p>
+        <p style="font-size:11px;color:#6b7280;font-weight:700;margin:2px 0 0">발급된 계정</p>
+        <p id="home-acct-active" style="font-size:10px;color:#15803d;font-weight:700;margin-top:4px">활성화 0</p>
+      </div>
+      <div class="card" style="padding:18px;cursor:pointer" onclick="sw('inbox')">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><span class="ms msf" style="color:#f59e0b;font-size:24px">inbox</span><span style="font-size:10px;color:#9ca3af">→ 자세히</span></div>
+        <p id="home-inbox-unread" style="font-size:28px;font-weight:900;color:#111827;margin:0">0</p>
+        <p style="font-size:11px;color:#6b7280;font-weight:700;margin:2px 0 0">미처리 메일</p>
+        <p id="home-inbox-apps" style="font-size:10px;color:#ea580c;font-weight:700;margin-top:4px">신청서 0</p>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">
+      <div class="card" style="padding:20px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><span class="ms" style="color:#7c3aed">flash_on</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">빠른 액션</p></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="btn btn-primary" style="justify-content:space-between;padding:12px 14px" onclick="loadInbox();sw('inbox')"><span><span class="ms" style="font-size:14px">refresh</span> 수신함 새로고침</span><span class="ms">arrow_forward</span></button>
+          <button class="btn btn-success" style="justify-content:space-between;padding:12px 14px" onclick="sw('inbox');setTimeout(autoRegisterApps,300)"><span><span class="ms" style="font-size:14px">flash_on</span> 신청서 일괄 자동 등록</span><span class="ms">arrow_forward</span></button>
+          <button class="btn btn-outline" style="justify-content:space-between;padding:12px 14px" onclick="sw('inq');openBulkFromTab()"><span><span class="ms" style="font-size:14px">forward_to_inbox</span> 1단계 단체 발송</span><span class="ms">arrow_forward</span></button>
+          <button class="btn btn-ghost" style="justify-content:space-between;padding:12px 14px" onclick="loadAllData()"><span><span class="ms" style="font-size:14px">sync</span> 전체 데이터 새로고침</span><span class="ms">arrow_forward</span></button>
+        </div>
+      </div>
+      <div class="card" style="padding:20px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><span class="ms" style="color:#7c3aed">trending_up</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">전환 현황</p></div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#eff6ff;border-radius:10px"><span style="font-size:12px;color:#1d4ed8;font-weight:700">📥 문의 접수 → 2단계 등록</span><span id="home-rate-1to2" style="font-size:14px;font-weight:900;color:#1d4ed8">—</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#f0fdf4;border-radius:10px"><span style="font-size:12px;color:#15803d;font-weight:700">📋 2단계 → 발급 완료</span><span id="home-rate-2todone" style="font-size:14px;font-weight:900;color:#15803d">—</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#fef3c7;border-radius:10px"><span style="font-size:12px;color:#92400e;font-weight:700">🔑 발급 → 활성화</span><span id="home-rate-done2act" style="font-size:14px;font-weight:900;color:#92400e">—</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#faf5ff;border-radius:10px"><span style="font-size:12px;color:#7c3aed;font-weight:700">⚡ 전체 전환율 (문의 → 활성화)</span><span id="home-rate-full" style="font-size:14px;font-weight:900;color:#7c3aed">—</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:20px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><span class="ms" style="color:#7c3aed">history</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">최근 발송 (5건)</p></div>
+      <div id="home-recent-sent" style="font-size:12px;color:#6b7280">로딩 중...</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ -->
   <!-- 1단계: 문의 관리 -->
   <!-- ══════════════════════════════ -->
-  <div id="tab-inq" class="content" style="flex:1">
+  <div id="tab-inq" class="content" style="flex:1;display:none">
     <!-- 퍼널 -->
     <div class="funnel">
       <div class="funnel-item" style="background:#eff6ff;border-color:#bfdbfe"><p class="fn" style="color:#1d4ed8">100</p><p class="fl">문의 접수</p></div>
@@ -112,17 +219,18 @@
       <div class="funnel-item" style="background:#fef2f2;border-color:#fecaca"><p class="fn" style="color:#dc2626">5</p><p class="fl">만료</p></div>
     </div>
     <div class="fr">
-      <select class="sel"><option>후보등록범위 전체</option><option>광역단체장</option><option>기초단체장</option><option>광역의원</option><option>기초의원</option><option>교육감</option></select>
-      <select class="sel"><option>안내발송 전체</option><option>📩 발송됨</option><option>미발송</option></select>
-      <select class="sel"><option>신청여부 전체</option><option>✅ 신청</option><option>⏳ 대기</option></select>
-      <select class="sel"><option>상태 전체</option><option>대기</option><option>만료</option></select>
-      <input type="text" class="inp" placeholder="이름, 이메일 검색..." style="width:180px;padding:6px 10px;font-size:11px"/>
-      <button class="btn btn-primary" onclick="openBulk()"><span class="ms" style="font-size:14px">forward_to_inbox</span>단체 발송</button>
+      <select class="sel" id="inq-f-scope" onchange="applyInqFilter()"><option value="">후보등록범위 전체</option><option>광역시장</option><option>도지사</option><option>구청장</option><option>시장</option><option>군수</option><option>광역시의원</option><option>도의원</option><option>구의원</option><option>시의원</option><option>군의원</option><option>교육감</option></select>
+      <select class="sel" id="inq-f-send" onchange="applyInqFilter()"><option value="">안내발송 전체</option><option value="Y">📩 발송됨</option><option value="미발송">미발송</option><option value="실패">❌ 실패</option></select>
+      <select class="sel" id="inq-f-sub" onchange="applyInqFilter()"><option value="">신청여부 전체</option><option value="Y">✅ 신청</option><option value="미신청">⏳ 대기</option></select>
+      <select class="sel" id="inq-f-status" onchange="applyInqFilter()"><option value="">상태 전체</option><option>신규</option><option>만료</option></select>
+      <input type="text" class="inp" id="inq-f-search" placeholder="이름, 이메일 검색..." style="width:180px;padding:6px 10px;font-size:11px" oninput="applyInqFilter()"/>
+      <button class="btn btn-ghost" onclick="downloadInqCSV()"><span class="ms" style="font-size:14px">download</span>CSV</button>
+      <button class="btn btn-primary" onclick="openBulkFromTab()"><span class="ms" style="font-size:14px">forward_to_inbox</span>단체 발송</button>
     </div>
     <div class="card" style="overflow:hidden">
       <table class="tbl">
-        <thead><tr><th><input type="checkbox" class="chk" onclick="togAll(this,'inq')"/></th><th>접수일</th><th>이름</th><th>이메일</th><th>후보등록범위</th><th>안내발송</th><th>신청여부</th><th>상태</th><th>액션</th></tr></thead>
-        <tbody id="inq-tbody"><tr><td colspan="9" style="text-align:center;padding:40px;color:#9ca3af">로그인 후 데이터를 불러옵니다</td></tr></tbody>
+        <thead><tr><th><input type="checkbox" class="chk" onclick="togAll(this,'inq')"/></th><th>접수일</th><th>이름</th><th>이메일</th><th>후보등록범위</th><th>안내발송</th><th>신청여부</th><th>상태</th><th>메모</th><th>액션</th></tr></thead>
+        <tbody id="inq-tbody"><tr><td colspan="10" style="text-align:center;padding:40px;color:#9ca3af">로그인 후 데이터를 불러옵니다</td></tr></tbody>
       </table>
     </div>
     <div style="margin-top:12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px">
@@ -137,19 +245,19 @@
   <!-- ══════════════════════════════ -->
   <div id="tab-app" class="content" style="flex:1;display:none">
     <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px">
-      <div class="sc"><p style="font-size:24px;font-weight:900;color:#111827">21</p><p style="font-size:11px;color:#9ca3af;font-weight:600">전체</p></div>
-      <div class="sc" style="border-color:#fef3c7"><p style="font-size:24px;font-weight:900;color:#92400e">3</p><p style="font-size:11px;color:#92400e;font-weight:600">신규</p></div>
-      <div class="sc" style="border-color:#fecaca"><p style="font-size:24px;font-weight:900;color:#dc2626">1</p><p style="font-size:11px;color:#dc2626;font-weight:600">증명서 요청</p></div>
-      <div class="sc" style="border-color:#c4b5fd"><p style="font-size:24px;font-weight:900;color:#7c3aed">2</p><p style="font-size:11px;color:#7c3aed;font-weight:600">승인 대기</p></div>
-      <div class="sc" style="border-color:#bbf7d0"><p style="font-size:24px;font-weight:900;color:#15803d">15</p><p style="font-size:11px;color:#15803d;font-weight:600">발급 완료</p></div>
+      <div class="sc"><p id="app-stat-total" style="font-size:24px;font-weight:900;color:#111827">0</p><p style="font-size:11px;color:#9ca3af;font-weight:600">전체</p></div>
+      <div class="sc" style="border-color:#fef3c7"><p id="app-stat-new" style="font-size:24px;font-weight:900;color:#92400e">0</p><p style="font-size:11px;color:#92400e;font-weight:600">신규</p></div>
+      <div class="sc" style="border-color:#fecaca"><p id="app-stat-req" style="font-size:24px;font-weight:900;color:#dc2626">0</p><p style="font-size:11px;color:#dc2626;font-weight:600">증명서 요청</p></div>
+      <div class="sc" style="border-color:#c4b5fd"><p id="app-stat-wait" style="font-size:24px;font-weight:900;color:#7c3aed">0</p><p style="font-size:11px;color:#7c3aed;font-weight:600">승인 대기</p></div>
+      <div class="sc" style="border-color:#bbf7d0"><p id="app-stat-done" style="font-size:24px;font-weight:900;color:#15803d">0</p><p style="font-size:11px;color:#15803d;font-weight:600">발급 완료</p></div>
     </div>
     <div class="fr">
-      <select class="sel"><option>접수일 전체</option><option>4/20</option><option>4/19</option><option>4/18</option><option>4/17</option></select>
-      <select class="sel"><option>직급 전체</option><option>광역단체장</option><option>기초단체장</option><option>광역의원</option><option>기초의원</option><option>교육감</option></select>
-      <select class="sel"><option>증명서 전체</option><option>📎 있음</option><option>❌ 없음</option></select>
-      <select class="sel"><option>상태 전체</option><option>🟡 신규</option><option>🔴 증명서 요청</option><option>🟣 승인 대기</option><option>✅ 발급 완료</option></select>
-      <input type="text" class="inp" placeholder="검색..." style="width:160px;padding:6px 10px;font-size:11px"/>
-      <button class="btn btn-primary" onclick="openBulk()"><span class="ms" style="font-size:14px">forward_to_inbox</span>단체 발송</button>
+      <select class="sel" id="app-f-pos" onchange="applyAppFilter()"><option value="">직급 전체</option><option>광역시장</option><option>도지사</option><option>구청장</option><option>시장</option><option>군수</option><option>광역시의원</option><option>도의원</option><option>구의원</option><option>시의원</option><option>군의원</option><option>교육감</option><option>기초의원</option></select>
+      <select class="sel" id="app-f-cert" onchange="applyAppFilter()"><option value="">증명서 전체</option><option value="Y">📎 있음</option><option value="N">❌ 없음</option></select>
+      <select class="sel" id="app-f-status" onchange="applyAppFilter()"><option value="">상태 전체</option><option>신규</option><option>증명서요청</option><option>승인대기</option><option>발급완료</option></select>
+      <input type="text" class="inp" id="app-f-search" placeholder="검색..." style="width:160px;padding:6px 10px;font-size:11px" oninput="applyAppFilter()"/>
+      <button class="btn btn-ghost" onclick="downloadAppCSV()"><span class="ms" style="font-size:14px">download</span>CSV</button>
+      <button class="btn btn-primary" onclick="openBulkFromTab()"><span class="ms" style="font-size:14px">forward_to_inbox</span>단체 발송</button>
     </div>
     <div class="card" style="overflow:hidden">
       <table class="tbl">
@@ -243,8 +351,9 @@
       <div style="padding:14px 16px 0">
         <p style="font-size:14px;font-weight:900;color:#111827;margin-bottom:10px">계정 발급 내역</p>
         <div class="fr" style="margin-bottom:10px">
-          <select class="sel"><option>상태 전체</option><option>생성 대기</option><option>관리자 전달</option><option>활성화 완료</option><option>후보자 발송</option></select>
-          <input type="text" class="inp" placeholder="이름, ID 검색..." style="width:180px;padding:6px 10px;font-size:11px"/>
+          <select class="sel" id="acct-f-status" onchange="applyAcctFilter()"><option value="">상태 전체</option><option value="활성화">활성화 완료</option><option value="관리자">관리자 전달</option><option value="후보자">후보자 발송</option><option value="대기">미처리</option></select>
+          <input type="text" class="inp" id="acct-f-search" placeholder="이름, ID 검색..." style="width:180px;padding:6px 10px;font-size:11px" oninput="applyAcctFilter()"/>
+          <button class="btn btn-ghost" onclick="downloadAcctCSV()" style="margin-left:8px"><span class="ms" style="font-size:14px">download</span>CSV</button>
         </div>
       </div>
       <table class="tbl">
@@ -321,7 +430,10 @@
   <div id="tab-inbox" class="content" style="flex:1;display:none">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
       <div style="display:flex;align-items:center;gap:8px"><span class="ms msf" style="color:#3b82f6;font-size:20px">inbox</span><p style="font-size:15px;font-weight:900;color:#111827;margin:0">수신 메일</p><span style="font-size:11px;color:#9ca3af;margin-left:4px">Gmail 실시간 연동</span></div>
-      <button class="btn btn-primary" onclick="loadInbox()"><span class="ms" style="font-size:14px">refresh</span>새로고침</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-success" onclick="autoRegisterApps()"><span class="ms" style="font-size:14px">flash_on</span>신청서 일괄 자동 등록</button>
+        <button class="btn btn-primary" onclick="loadInbox()"><span class="ms" style="font-size:14px">refresh</span>새로고침</button>
+      </div>
     </div>
     <div class="fr">
       <select class="sel" id="inbox-filter-cat" onchange="renderInbox()"><option value="">분류 전체</option><option value="신청서">신청서</option><option value="증명서">증명서</option><option value="문의">문의</option></select>
@@ -381,23 +493,7 @@
       <!-- 첨부파일 선택 -->
       <div style="background:#f5f3ff;border:1px solid #ede9fe;border-radius:12px;padding:14px">
         <p style="font-size:12px;font-weight:900;color:#7c3aed;margin:0 0 8px">📎 자동 첨부 파일</p>
-        <div id="auto-attach-list">
-          <label style="display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer;border-bottom:1px solid #ede9fe">
-            <input type="checkbox" class="chk" checked/><span class="ms" style="color:#dc2626;font-size:16px">picture_as_pdf</span>
-            <span style="font-size:12px;font-weight:600;color:#374151;flex:1">안내서_v2.pdf</span>
-            <span style="font-size:10px;color:#9ca3af">1.2MB</span>
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer;border-bottom:1px solid #ede9fe">
-            <input type="checkbox" class="chk" checked/><span class="ms" style="color:#3b82f6;font-size:16px">description</span>
-            <span style="font-size:12px;font-weight:600;color:#374151;flex:1">신청서_양식.docx</span>
-            <span style="font-size:10px;color:#9ca3af">340KB</span>
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer">
-            <input type="checkbox" class="chk"/><span class="ms" style="color:#22c55e;font-size:16px">image</span>
-            <span style="font-size:12px;font-weight:600;color:#374151;flex:1">서비스_가이드.png</span>
-            <span style="font-size:10px;color:#9ca3af">820KB</span>
-          </label>
-        </div>
+        <div id="auto-attach-list"></div>
       </div>
       <button class="btn btn-ghost" style="margin-top:10px;width:100%;justify-content:center" onclick="alert('미리보기:\n\n'+document.getElementById('auto-body').value.replace(/\{\{이름\}\}/g,'홍길동'))"><span class="ms" style="font-size:14px">visibility</span>미리보기</button>
     </div>
@@ -412,28 +508,15 @@
         <button class="btn btn-primary" onclick="document.getElementById('file-upload-input').click()"><span class="ms" style="font-size:14px">upload</span>파일 업로드</button>
         <input type="file" id="file-upload-input" style="display:none" multiple onchange="handleFileUpload(this)"/>
       </div>
+      <!-- 드래그&드롭 영역 -->
+      <div id="file-dropzone" style="border:2px dashed #c4b5fd;border-radius:12px;padding:24px;text-align:center;margin-bottom:16px;background:#faf5ff;transition:all .2s;cursor:pointer" onclick="document.getElementById('file-upload-input').click()">
+        <span class="ms" style="color:#7c3aed;font-size:32px">cloud_upload</span>
+        <p style="font-size:13px;font-weight:700;color:#7c3aed;margin:6px 0 2px">파일을 여기로 드래그하거나 클릭해서 업로드</p>
+        <p style="font-size:11px;color:#9ca3af;margin:0">PDF · DOCX · PNG · JPG 지원</p>
+      </div>
       <table class="tbl">
         <thead><tr><th>파일명</th><th>크기</th><th>업로드일</th><th>용도</th><th>액션</th></tr></thead>
-        <tbody id="file-tbody">
-          <tr>
-            <td><div style="display:flex;align-items:center;gap:6px"><span class="ms" style="color:#dc2626;font-size:16px">picture_as_pdf</span><span style="font-weight:700">안내서_v2.pdf</span></div></td>
-            <td>1.2MB</td><td>4/15</td>
-            <td><span class="step-label">1차 자동</span></td>
-            <td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px" onclick="alert('미리보기')"><span class="ms" style="font-size:13px">visibility</span></button> <button class="btn btn-ghost" style="padding:3px 8px;font-size:10px" onclick="alert('다운로드')"><span class="ms" style="font-size:13px">download</span></button> <button class="btn btn-ghost" style="padding:3px 8px;font-size:10px;color:#dc2626;border-color:#fecaca" onclick="if(confirm('삭제하시겠습니까?'))this.closest('tr').remove()"><span class="ms" style="font-size:13px">delete</span></button></td>
-          </tr>
-          <tr>
-            <td><div style="display:flex;align-items:center;gap:6px"><span class="ms" style="color:#3b82f6;font-size:16px">description</span><span style="font-weight:700">신청서_양식.docx</span></div></td>
-            <td>340KB</td><td>4/10</td>
-            <td><span class="step-label">1차 자동</span></td>
-            <td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px" onclick="alert('미리보기')"><span class="ms" style="font-size:13px">visibility</span></button> <button class="btn btn-ghost" style="padding:3px 8px;font-size:10px" onclick="alert('다운로드')"><span class="ms" style="font-size:13px">download</span></button> <button class="btn btn-ghost" style="padding:3px 8px;font-size:10px;color:#dc2626;border-color:#fecaca" onclick="if(confirm('삭제하시겠습니까?'))this.closest('tr').remove()"><span class="ms" style="font-size:13px">delete</span></button></td>
-          </tr>
-          <tr>
-            <td><div style="display:flex;align-items:center;gap:6px"><span class="ms" style="color:#22c55e;font-size:16px">image</span><span style="font-weight:700">서비스_가이드.png</span></div></td>
-            <td>820KB</td><td>4/10</td>
-            <td><span style="font-size:10px;color:#9ca3af">미지정</span></td>
-            <td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px" onclick="alert('미리보기')"><span class="ms" style="font-size:13px">visibility</span></button> <button class="btn btn-ghost" style="padding:3px 8px;font-size:10px" onclick="alert('다운로드')"><span class="ms" style="font-size:13px">download</span></button> <button class="btn btn-ghost" style="padding:3px 8px;font-size:10px;color:#dc2626;border-color:#fecaca" onclick="if(confirm('삭제하시겠습니까?'))this.closest('tr').remove()"><span class="ms" style="font-size:13px">delete</span></button></td>
-          </tr>
-        </tbody>
+        <tbody id="file-tbody"></tbody>
       </table>
     </div>
 
@@ -468,13 +551,48 @@
 
 <!-- 단체발송 -->
 <div class="ov" id="bulk-ov">
-  <div style="background:#fff;border-radius:20px;width:520px;max-height:80vh;overflow-y:auto;padding:28px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px"><div style="display:flex;align-items:center;gap:8px"><span class="ms msf" style="color:#7c3aed;font-size:22px">group</span><p style="font-size:16px;font-weight:900;color:#111827;margin:0">단체 발송</p></div><button onclick="document.getElementById('bulk-ov').classList.remove('show')" class="btn btn-ghost" style="padding:4px 8px"><span class="ms" style="font-size:18px">close</span></button></div>
-    <div style="background:#f5f3ff;border-radius:12px;padding:14px;margin-bottom:16px"><p style="font-size:12px;font-weight:900;color:#7c3aed;margin:0">체크박스로 수신자를 선택한 후 발송하세요</p></div>
-    <div style="margin-bottom:12px"><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">템플릿</label><select class="inp" style="font-size:12px;padding:8px 12px"><option>-- 선택 --</option><option>자동 안내</option><option>계정 발급</option><option>증명서 요청</option><option>리마인더</option><option>이벤트 할인</option></select></div>
-    <div style="margin-bottom:12px"><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">제목</label><input type="text" class="inp" style="font-size:12px;padding:8px 12px"/></div>
-    <div style="margin-bottom:16px"><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">내용 ({{이름}} 개별 치환)</label><textarea class="inp" rows="5" style="font-size:12px;resize:vertical;line-height:1.8"></textarea></div>
-    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px;font-size:14px" onclick="alert('단체 발송 완료 (데모)');document.getElementById('bulk-ov').classList.remove('show')"><span class="ms" style="font-size:16px">send</span>선택 인원에게 발송</button>
+  <div style="background:#fff;border-radius:20px;width:1040px;max-width:95vw;max-height:90vh;overflow-y:auto;padding:40px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="ms msf" style="color:#7c3aed;font-size:22px">group</span>
+        <p style="font-size:16px;font-weight:900;color:#111827;margin:0">단체 발송</p>
+        <span id="bulk-count" style="font-size:11px;color:#7c3aed;font-weight:700;margin-left:4px">0명 선택됨</span>
+      </div>
+      <button onclick="document.getElementById('bulk-ov').classList.remove('show')" class="btn btn-ghost" style="padding:4px 8px"><span class="ms" style="font-size:18px">close</span></button>
+    </div>
+    <div style="background:#f5f3ff;border-radius:12px;padding:14px;margin-bottom:16px"><p style="font-size:12px;font-weight:900;color:#7c3aed;margin:0">체크박스로 선택된 수신자에게 발송됩니다 · <span style="color:#a78bfa">{{이름}}</span>은 개별 치환됨</p></div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">템플릿 선택</label>
+      <select id="bulk-tpl" class="inp" style="font-size:12px;padding:8px 12px" onchange="applyBulkTpl(this.value)">
+        <option value="">-- 선택 --</option>
+        <option value="auto">1차 자동 안내 메일 (랜딩 문의 기본)</option>
+        <option value="acct">2단계 · 계정 발급</option>
+        <option value="cert">2단계 · 증명서 요청</option>
+        <option value="remind">리마인더 (미신청/미제출)</option>
+        <option value="cs">CS 답변</option>
+        <option value="event">이벤트 할인 안내</option>
+        <option value="token">토큰 부족 알림</option>
+      </select>
+    </div>
+    <div id="bulk-tpl-info" style="display:none;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:10px;padding:10px 14px;margin-bottom:12px;gap:8px;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="ms msf" style="color:#15803d;font-size:16px">mark_email_read</span>
+        <div>
+          <p style="font-size:10px;color:#15803d;font-weight:700;margin:0">선택된 템플릿</p>
+          <p id="bulk-tpl-name" style="font-size:13px;color:#111827;font-weight:900;margin:1px 0 0">—</p>
+        </div>
+      </div>
+      <button class="btn btn-ghost" style="padding:4px 10px;font-size:10px" onclick="goToTemplateEdit()"><span class="ms" style="font-size:12px">edit</span>템플릿 편집</button>
+    </div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">제목</label>
+      <input type="text" id="bulk-subject" class="inp" style="font-size:12px;padding:8px 12px"/>
+    </div>
+    <div style="margin-bottom:16px">
+      <label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">내용 (<span style="color:#a78bfa">{{이름}}</span> 개별 치환)</label>
+      <textarea id="bulk-body" class="inp" rows="12" style="font-size:13px;resize:vertical;line-height:1.9"></textarea>
+    </div>
+    <button class="btn btn-primary" id="btn-bulk-send" style="width:100%;justify-content:center;padding:12px;font-size:14px" onclick="sendBulk()"><span class="ms" style="font-size:16px">send</span>선택 인원에게 발송</button>
   </div>
 </div>
 
@@ -514,19 +632,18 @@ function apiSend(payload, onDone){
 }
 
 function fetchSheet(tabName, callback){
-  fetch(SHEETS_URL+encodeURIComponent(tabName)+'!A:Z?key='+API_KEY)
+  fetch(WEB_APP_URL,{
+    method:'POST',
+    body:JSON.stringify({action:'readSheet',tab:tabName}),
+    headers:{'Content-Type':'text/plain;charset=utf-8'}
+  })
     .then(function(r){return r.json()})
-    .then(function(data){
-      if(data.values && data.values.length>1){
-        var headers=data.values[0];
-        var rows=data.values.slice(1).map(function(row){
-          var obj={};
-          headers.forEach(function(h,i){obj[h]=row[i]||''});
-          return obj;
-        });
-        callback(rows);
+    .then(function(res){
+      if(res && res.ok){
+        callback(res.rows||[]);
       } else {
-        callback([]);
+        console.log('readSheet error:',tabName,res && res.error);
+        callback(null);
       }
     })
     .catch(function(err){console.log('Sheet fetch error:',tabName,err);callback(null)});
@@ -542,9 +659,16 @@ function loadAllData(){
   });
   // 신청관리
   fetchSheet('신청관리',function(rows){
-    if(!rows||rows.length===0) return;
+    if(!rows){document.getElementById('app-status').textContent='시트 연결 실패';return}
+    if(rows.length===0){
+      document.getElementById('app-status').textContent='데이터 없음 (수신 메일 탭에서 "2단계 등록" 후 표시됨)';
+      document.getElementById('app-tbody').innerHTML='<tr><td colspan="8" style="text-align:center;padding:40px;color:#9ca3af">아직 등록된 신청이 없습니다<br><span style="font-size:11px">수신 메일 탭에서 신청서 메일을 「2단계 등록」 하면 이 곳에 표시됩니다</span></td></tr>';
+      updateAppStats([]);
+      return;
+    }
     document.getElementById('app-status').textContent='✅ '+rows.length+'건';
     renderAppTable(rows);
+    updateAppStats(rows);
   });
   // CS
   fetchSheet('CS',function(rows){
@@ -560,6 +684,76 @@ function loadAllData(){
     document.getElementById('sent-status').textContent='✅ 시트 연결됨 · '+rows.length+'건';
     renderSentTable(rows);
   });
+  // 계정
+  fetchSheet('계정',function(rows){
+    if(!rows||rows.length===0){acctRows=[];renderAcctTable();updateHomeSummary();return}
+    acctRows=rows;
+    renderAcctTable();
+    updateHomeSummary();
+  });
+}
+
+function updateHomeSummary(){
+  var inq=inqAllRows||[], app=appAllRows||[], acct=acctRows||[];
+  // 1단계
+  var inqTotal=inq.length;
+  var inqNew=inq.filter(function(r){return (r['상태']||'')==='신규'}).length;
+  var inqWait=inq.filter(function(r){return (r['신청여부']||'').toUpperCase()!=='Y' && (r['상태']||'')!=='만료'}).length;
+  document.getElementById('home-inq-total').textContent=inqTotal;
+  document.getElementById('home-inq-new').textContent='신규 '+inqNew+' · 대기 '+inqWait;
+  setBadge('bdg-inq',inqWait);
+  // 2단계
+  var appTotal=app.length;
+  var appPending=app.filter(function(r){var s=(r['상태']||'').replace(/\s+/g,'');return s!=='발급완료'}).length;
+  document.getElementById('home-app-total').textContent=appTotal;
+  document.getElementById('home-app-pending').textContent='처리 대기 '+appPending;
+  setBadge('bdg-app',appPending);
+  // 계정
+  var acctTotal=acct.length;
+  var acctActive=acct.filter(function(r){return (r['활성화']||'').toUpperCase()==='Y'}).length;
+  document.getElementById('home-acct-total').textContent=acctTotal;
+  document.getElementById('home-acct-active').textContent='활성화 '+acctActive;
+  setBadge('bdg-acct',acctTotal-acctActive);
+  // 수신
+  var inbox=inboxData||[];
+  var inboxUnread=inbox.filter(function(m){return m.isUnread}).length;
+  var inboxApps=inbox.filter(function(m){return m.isUnread && m.category==='신청서'}).length;
+  document.getElementById('home-inbox-unread').textContent=inboxUnread;
+  document.getElementById('home-inbox-apps').textContent='미처리 신청서 '+inboxApps;
+  setBadge('bdg-inbox',inboxUnread);
+  // 전환율
+  var done=app.filter(function(r){return (r['상태']||'').replace(/\s+/g,'')==='발급완료'}).length;
+  setRate('home-rate-1to2',appTotal,inqTotal);
+  setRate('home-rate-2todone',done,appTotal);
+  setRate('home-rate-done2act',acctActive,done);
+  setRate('home-rate-full',acctActive,inqTotal);
+  // 최근 발송
+  fetchSheet('발송내역',function(rows){
+    var el=document.getElementById('home-recent-sent');
+    if(!rows||!rows.length){el.innerHTML='<span style="color:#9ca3af">발송 내역이 없습니다</span>';return}
+    var recent=rows.slice(-5).reverse();
+    el.innerHTML=recent.map(function(r){
+      var status=r['상태']||'완료';
+      var stColor=status==='완료'?'#15803d':'#dc2626';
+      return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f3f4f6">'+
+        '<span>'+(r['발송일']||'')+' · <strong>'+(r['수신자']||'')+'</strong> · '+(r['유형']||'')+'</span>'+
+        '<span style="color:'+stColor+';font-weight:700">'+status+'</span>'+
+        '</div>';
+    }).join('');
+  });
+}
+
+function setBadge(id,n){
+  var el=document.getElementById(id);
+  if(!el) return;
+  el.textContent=n;
+  el.style.display=n>0?'':'none';
+}
+function setRate(id,num,den){
+  var el=document.getElementById(id);
+  if(!el) return;
+  if(!den){el.textContent='—';return}
+  el.textContent=Math.round(num*100/den)+'% ('+num+'/'+den+')';
 }
 
 function renderSentTable(rows){
@@ -589,7 +783,36 @@ function renderSentTable(rows){
   }).join('');
 }
 
+var inqAllRows=[];
 function renderInqTable(rows){
+  inqAllRows=rows.slice();
+  _renderInqRows(rows);
+}
+function applyInqFilter(){
+  var fs=document.getElementById('inq-f-scope').value;
+  var fsend=document.getElementById('inq-f-send').value;
+  var fsub=document.getElementById('inq-f-sub').value;
+  var fst=document.getElementById('inq-f-status').value;
+  var q=(document.getElementById('inq-f-search').value||'').toLowerCase().trim();
+  var filtered=inqAllRows.filter(function(r){
+    if(fs && (r['후보등록범위']||'')!==fs) return false;
+    var sendVal=(r['안내발송']||'').toString();
+    if(fsend==='Y' && sendVal.toUpperCase()!=='Y' && sendVal!=='발송') return false;
+    if(fsend==='미발송' && sendVal!=='미발송' && sendVal!=='') return false;
+    if(fsend==='실패' && sendVal!=='실패') return false;
+    var subVal=(r['신청여부']||'').toString();
+    if(fsub==='Y' && subVal.toUpperCase()!=='Y') return false;
+    if(fsub==='미신청' && subVal==='Y') return false;
+    if(fst && (r['상태']||'')!==fst) return false;
+    if(q){
+      var hay=((r['후보자명']||'')+' '+(r['이메일']||'')).toLowerCase();
+      if(hay.indexOf(q)<0) return false;
+    }
+    return true;
+  });
+  _renderInqRows(filtered);
+}
+function _renderInqRows(rows){
   var applied=rows.filter(function(r){return (r['신청여부']||'').toLowerCase()==='y'}).length;
   var expired=rows.filter(function(r){return (r['상태']||'')==='만료'}).length;
   var nosub=rows.length-applied-expired;
@@ -598,18 +821,142 @@ function renderInqTable(rows){
   document.querySelectorAll('.funnel-item .fn')[2].textContent=nosub;
   document.querySelectorAll('.funnel-item .fn')[3].textContent=expired;
   var tb=document.getElementById('inq-tbody');
-  if(rows.length===0){tb.innerHTML='<tr><td colspan="9" style="text-align:center;padding:40px;color:#9ca3af">데이터가 없습니다</td></tr>';return}
+  if(rows.length===0){tb.innerHTML='<tr><td colspan="10" style="text-align:center;padding:40px;color:#9ca3af">조건에 맞는 데이터가 없습니다</td></tr>';return}
   tb.innerHTML=rows.map(function(r,i){
     var isSub=(r['신청여부']||'').toLowerCase()==='y';
-    var isSent=(r['안내발송']||'').toLowerCase()==='y';
+    var sendStatus=(r['안내발송']||'').toString();
+    var isSent=sendStatus.toLowerCase()==='y'||sendStatus==='발송';
+    var isFailed=sendStatus==='실패';
     var isExp=(r['상태']||'')==='만료';
     var stHtml=isSub?'<span class="st st-applied">✅ 신청 접수</span>':isExp?'<span class="st" style="background:#fef2f2;color:#dc2626">🔴 만료</span>':'<span class="st st-nosub">⏳ 대기</span>';
-    var actHtml=isSub?'<span style="font-size:11px;color:#15803d;font-weight:700">→ 2단계</span>':isExp?'<span style="font-size:11px;color:#9ca3af">만료</span>':'<button class="btn btn-ghost" style="padding:4px 10px;font-size:10px" onclick="alert(\'리마인더 발송: '+r['후보자명']+'\')"><span class="ms" style="font-size:13px">schedule_send</span>리마인더</button>';
-    return '<tr'+((!isSub&&!isExp)?' style="background:#fffbeb"':'')+'><td><input type="checkbox" class="chk rc-inq"/></td><td>'+r['접수일']+'</td><td style="font-weight:700">'+r['후보자명']+'</td><td style="font-size:11px">'+r['이메일']+'</td><td>'+r['후보등록범위']+'</td><td>'+(isSent?'<span class="st st-sent">📩 발송됨</span>':'<span class="st st-nosub">—</span>')+'</td><td>'+stHtml+'</td><td>'+actHtml+'</td></tr>';
+    var sendHtml=isSent?'<span class="st st-sent">📩 발송됨</span>':isFailed?'<span class="st" style="background:#fef2f2;color:#dc2626">❌ 실패</span>':'<span class="st st-nosub">—</span>';
+    var esN=escapeHtml(r['후보자명']||''),esE=escapeHtml(r['이메일']||'');
+    var memo=(r['메모']||'').replace(/"/g,'&quot;');
+    var actHtml=
+      (isSub?'<span style="font-size:11px;color:#15803d;font-weight:700;margin-right:6px">→ 2단계</span>'
+        :isExp?'<span style="font-size:11px;color:#9ca3af;margin-right:6px">만료</span>'
+        :'<button class="btn btn-ghost" style="padding:4px 8px;font-size:10px;margin-right:4px" onclick="sendReminderOne(\''+esN+'\',\''+esE+'\')"><span class="ms" style="font-size:13px">schedule_send</span>리마인더</button>')+
+      '<button class="btn btn-ghost" style="padding:4px 8px;font-size:10px;color:#dc2626;border-color:#fecaca" onclick="deleteInqRow(\''+esE+'\',\''+esN+'\')" title="삭제"><span class="ms" style="font-size:13px">delete</span></button>';
+    return '<tr'+((!isSub&&!isExp)?' style="background:#fffbeb"':'')+'>'+
+      '<td><input type="checkbox" class="chk rc-inq" data-name="'+esN+'" data-email="'+esE+'"/></td>'+
+      '<td>'+r['접수일']+'</td>'+
+      '<td style="font-weight:700">'+r['후보자명']+'</td>'+
+      '<td style="font-size:11px">'+r['이메일']+'</td>'+
+      '<td>'+r['후보등록범위']+'</td>'+
+      '<td>'+sendHtml+'</td>'+
+      '<td>'+stHtml+'</td>'+
+      '<td><input type="text" class="inp" style="font-size:11px;padding:4px 8px;width:140px" value="'+memo+'" placeholder="메모..." onblur="saveInqMemo(\''+esE+'\',this.value)"/></td>'+
+      '<td>'+actHtml+'</td>'+
+      '</tr>';
   }).join('');
 }
 
+function saveInqMemo(email,memo){
+  if(!email) return;
+  apiSend({action:'updateRow',sheet:'문의관리',keyCol:'이메일',keyValue:email,updates:{'메모':memo}},function(res){
+    if(!res.ok) alert('메모 저장 실패: '+(res.error||''));
+  });
+}
+
+function deleteInqRow(email,name){
+  if(!confirm('"'+name+'" ('+email+') 문의를 삭제할까요?\n\n시트에서 영구 제거됩니다.')) return;
+  apiSend({action:'deleteRow',sheet:'문의관리',keyCol:'이메일',keyValue:email},function(res){
+    if(!res.ok){alert('삭제 실패: '+(res.error||''));return}
+    loadAllData();
+  });
+}
+
+function downloadCSV(filename,rows,headers){
+  if(!rows||!rows.length){alert('내보낼 데이터가 없습니다');return}
+  var bom='﻿';
+  var csv=bom+headers.map(function(h){return '"'+String(h).replace(/"/g,'""')+'"'}).join(',')+'\n';
+  rows.forEach(function(r){
+    csv+=headers.map(function(h){
+      var v=r[h]==null?'':String(r[h]);
+      return '"'+v.replace(/"/g,'""').replace(/\r?\n/g,' ')+'"';
+    }).join(',')+'\n';
+  });
+  var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;
+  var d=new Date();
+  var dateStr=d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+  a.download=filename+'_'+dateStr+'.csv';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function downloadInqCSV(){
+  var headers=['접수일','후보자명','이메일','후보등록범위','지역구','담당자연락처','문의내용','안내발송','신청여부','상태','메모'];
+  downloadCSV('문의관리',inqAllRows,headers);
+}
+function downloadAppCSV(){
+  var headers=['접수일','후보자명','직급','이메일','증명서','상태','발급일'];
+  downloadCSV('신청관리',appAllRows||[],headers);
+}
+function downloadAcctCSV(){
+  var headers=['발급일','후보자명','직급','이메일','ID','PW','대시보드URL','관리자발송','후보자발송','활성화','메모'];
+  downloadCSV('계정',acctRows||[],headers);
+}
+
+function sendReminderOne(name,email){
+  if(!email){alert('이메일이 없습니다');return}
+  if(!confirm('"'+name+'"에게 리마인더를 발송할까요?')) return;
+  var t=TPL['remind'];
+  apiSend({
+    action:'send',to:email,recipient:name,
+    subject:t.subject,body:t.body,
+    step:t.step,type:t.type,
+    variables:{'이름':name,'이메일':email,'대시보드링크':'https://host.thisishilo.ir'}
+  },function(res){
+    if(res.ok) alert('✅ 리마인더 발송 완료'); else alert('❌ 실패: '+(res.error||''));
+  });
+}
+
+function updateAppStats(rows){
+  var total=rows.length;
+  var news=0,reqs=0,waits=0,dones=0;
+  rows.forEach(function(r){
+    var st=(r['상태']||'').replace(/\s+/g,'');
+    if(st==='발급완료') dones++;
+    else if(st==='증명서요청') reqs++;
+    else if(st==='승인대기') waits++;
+    else news++;
+  });
+  var set=function(id,v){var el=document.getElementById(id);if(el) el.textContent=v};
+  set('app-stat-total',total);
+  set('app-stat-new',news);
+  set('app-stat-req',reqs);
+  set('app-stat-wait',waits);
+  set('app-stat-done',dones);
+}
+
+var appAllRows=[];
 function renderAppTable(rows){
+  appAllRows=rows.slice();
+  updateAppStats(rows);
+  _renderAppRows(rows);
+}
+function applyAppFilter(){
+  var fp=document.getElementById('app-f-pos').value;
+  var fc=document.getElementById('app-f-cert').value;
+  var fs=document.getElementById('app-f-status').value;
+  var q=(document.getElementById('app-f-search').value||'').toLowerCase().trim();
+  var filtered=appAllRows.filter(function(r){
+    if(fp && (r['직급']||'')!==fp) return false;
+    var certVal=(r['증명서']||'').toUpperCase();
+    if(fc==='Y' && certVal!=='Y' && (r['증명서']||'')!=='있음') return false;
+    if(fc==='N' && (certVal==='Y' || (r['증명서']||'')==='있음')) return false;
+    if(fs && (r['상태']||'').replace(/\s+/g,'')!==fs) return false;
+    if(q){
+      var hay=((r['후보자명']||'')+' '+(r['이메일']||'')).toLowerCase();
+      if(hay.indexOf(q)<0) return false;
+    }
+    return true;
+  });
+  _renderAppRows(filtered);
+}
+function _renderAppRows(rows){
   var tb=document.getElementById('app-tbody');
   if(rows.length===0){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:40px;color:#9ca3af">데이터가 없습니다</td></tr>';return}
   tb.innerHTML=rows.map(function(r,i){
@@ -618,8 +965,20 @@ function renderAppTable(rows){
     var stCls=st==='발급완료'||st==='발급 완료'?'st-done':st==='승인대기'||st==='승인 대기'?'st-wait':st==='증명서요청'||st==='증명서 요청'?'st-req':'st-new';
     var stLabel=st==='발급완료'||st==='발급 완료'?'✅ 발급 완료':st==='승인대기'||st==='승인 대기'?'🟣 승인 대기':st==='증명서요청'||st==='증명서 요청'?'🔴 증명서 요청':'🟡 신규';
     var certIcon=hasCert?'<span class="ms msf" style="color:#22c55e;font-size:16px">attach_file</span>':'<span class="ms" style="color:#dc2626;font-size:16px">close</span>';
-    var actHtml=stCls==='st-done'?'<span style="font-size:11px;color:#9ca3af">'+(r['발급일']||'')+'</span>':stCls==='st-req'?'<button class="btn btn-danger" style="padding:4px 10px;font-size:10px" onclick="event.stopPropagation();alert(\'증명서 요청 재발송: '+r['후보자명']+'\')"><span class="ms" style="font-size:13px">mail</span>재발송</button>':hasCert?'<button class="btn btn-success" style="padding:4px 10px;font-size:10px" onclick="event.stopPropagation();alert(\'승인+발급: '+r['후보자명']+'\')"><span class="ms" style="font-size:13px">send</span>승인</button>':'<button class="btn btn-primary" style="padding:4px 10px;font-size:10px" onclick="event.stopPropagation();alert(\'확인: '+r['후보자명']+'\')"><span class="ms" style="font-size:13px">check</span>확인</button>';
-    return '<tr style="cursor:pointer"><td><input type="checkbox" class="chk rc-app"/></td><td>'+r['접수일']+'</td><td style="font-weight:700">'+r['후보자명']+'</td><td>'+r['직급']+'</td><td style="font-size:11px">'+r['이메일']+'</td><td>'+certIcon+'</td><td><span class="st '+stCls+'">'+stLabel+'</span></td><td>'+actHtml+'</td></tr>';
+    var safeName=(r['후보자명']||'').replace(/'/g,"\\'");
+    var safeEmail=(r['이메일']||'').replace(/'/g,"\\'");
+    var safePos=(r['직급']||'').replace(/'/g,"\\'");
+    var actHtml=stCls==='st-done'
+      ?'<span style="font-size:11px;color:#9ca3af">'+(r['발급일']||'')+'</span>'
+      :stCls==='st-req'
+        ?'<button class="btn btn-danger" style="padding:4px 10px;font-size:10px" onclick="event.stopPropagation();requestCertResend(\''+safeName+'\',\''+safeEmail+'\')"><span class="ms" style="font-size:13px">mail</span>증명서 재요청</button>'
+        :hasCert
+          ?'<button class="btn btn-success" style="padding:4px 10px;font-size:10px" onclick="event.stopPropagation();approveAndIssue(\''+safeName+'\',\''+safeEmail+'\',\''+safePos+'\')"><span class="ms" style="font-size:13px">send</span>승인</button>'
+          :'<button class="btn btn-danger" style="padding:4px 10px;font-size:10px" onclick="event.stopPropagation();requestCertResend(\''+safeName+'\',\''+safeEmail+'\')"><span class="ms" style="font-size:13px">mail</span>증명서 요청</button>';
+    var esN2=escapeHtml(r['후보자명']||''),esE2=escapeHtml(r['이메일']||'');
+    // 원본 인덱스 (필터된 후에도 appAllRows에서 찾을 수 있게)
+    var origIdx=appAllRows.indexOf(r);
+    return '<tr style="cursor:pointer" onclick="if(event.target.tagName!==\'BUTTON\'&&event.target.tagName!==\'INPUT\'&&!event.target.closest(\'button\'))openAppDetail('+origIdx+')"><td onclick="event.stopPropagation()"><input type="checkbox" class="chk rc-app" data-name="'+esN2+'" data-email="'+esE2+'"/></td><td>'+r['접수일']+'</td><td style="font-weight:700">'+r['후보자명']+'</td><td>'+r['직급']+'</td><td style="font-size:11px">'+r['이메일']+'</td><td>'+certIcon+'</td><td><span class="st '+stCls+'">'+stLabel+'</span></td><td>'+actHtml+'</td></tr>';
   }).join('');
 }
 
@@ -642,16 +1001,181 @@ function openCSFromSheet(i){
   document.getElementById('dp-t').textContent='CS 상세';
   var catMap={'결제':'pay','계정':'acct','기술':'tech','서비스':'svc'};
   var priMap={'긴급':'urgent','높음':'high','보통':'mid','일반':'low'};
-  document.getElementById('dp-b').innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px"><div style="width:40px;height:40px;border-radius:50%;background:#f5f3ff;display:flex;align-items:center;justify-content:center"><span class="ms msf" style="color:#7c3aed;font-size:22px">person</span></div><div><p style="font-size:14px;font-weight:900;color:#111827">'+d['후보자명']+'</p><p style="font-size:11px;color:#9ca3af">'+d['이메일']+'</p></div></div><div style="background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:16px"><div style="display:flex;gap:6px;margin-bottom:8px"><span class="cat cat-'+(catMap[d['분류']]||'etc')+'">'+(d['분류']||'')+'</span><span class="pr pr-'+(priMap[d['우선순위']]||'low')+'">'+(d['우선순위']||'')+'</span></div><p style="font-size:14px;font-weight:900;color:#111827;margin-bottom:8px">'+d['제목']+'</p><p style="font-size:12px;color:#374151;line-height:1.6">'+(d['내용']||'')+'</p></div><p style="font-size:12px;font-weight:900;color:#374151;margin-bottom:8px">답변 작성</p><textarea class="inp" rows="4" placeholder="답변..." style="margin-bottom:12px;resize:vertical">'+(d['답변']||'')+'</textarea><div style="display:flex;gap:8px"><button class="btn btn-primary" style="flex:1;justify-content:center" onclick="alert(\'답변 발송: '+d['후보자명']+'\')"><span class="ms" style="font-size:14px">send</span>답변 발송</button><button class="btn btn-ghost" onclick="alert(\'완료 처리\')"><span class="ms" style="font-size:14px">check_circle</span>완료</button></div>';
+  document.getElementById('dp-b').innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px"><div style="width:40px;height:40px;border-radius:50%;background:#f5f3ff;display:flex;align-items:center;justify-content:center"><span class="ms msf" style="color:#7c3aed;font-size:22px">person</span></div><div><p style="font-size:14px;font-weight:900;color:#111827">'+d['후보자명']+'</p><p style="font-size:11px;color:#9ca3af">'+d['이메일']+'</p></div></div><div style="background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:16px"><div style="display:flex;gap:6px;margin-bottom:8px"><span class="cat cat-'+(catMap[d['분류']]||'etc')+'">'+(d['분류']||'')+'</span><span class="pr pr-'+(priMap[d['우선순위']]||'low')+'">'+(d['우선순위']||'')+'</span></div><p style="font-size:14px;font-weight:900;color:#111827;margin-bottom:8px">'+d['제목']+'</p><p style="font-size:12px;color:#374151;line-height:1.6">'+(d['내용']||'')+'</p></div><p style="font-size:12px;font-weight:900;color:#374151;margin-bottom:8px">답변 작성</p><textarea id="cs-answer-'+i+'" class="inp" rows="4" placeholder="답변..." style="margin-bottom:12px;resize:vertical">'+(d['답변']||'')+'</textarea><div style="display:flex;gap:8px"><button class="btn btn-primary" style="flex:1;justify-content:center" onclick="replyToCSFromSheet('+i+')"><span class="ms" style="font-size:14px">send</span>답변 발송</button><button class="btn btn-ghost" onclick="closeCSFromSheet('+i+')"><span class="ms" style="font-size:14px">check_circle</span>완료</button></div>';
 }
 
-function doLogin(){if(document.getElementById('login-pw').value==='0000'){document.getElementById('login-screen').classList.remove('show');loadAllData();renderAcctTable()}else{document.getElementById('login-err').style.display='block'}}
+function replyToCSFromSheet(i){
+  var d=csSheetData[i];if(!d)return;
+  var answer=(document.getElementById('cs-answer-'+i)||{}).value;
+  answer=(answer||'').trim();
+  if(!answer){alert('답변 내용을 입력하세요');return}
+  if(!d['이메일']){alert('이메일 주소가 없어 발송할 수 없습니다');return}
+  if(!confirm('📧 '+d['후보자명']+'님께 답변을 발송하시겠습니까?\n\n· 메일 발송\n· CS 시트 답변/상태 업데이트')){return}
+  var subject='[일꾼을찾다] '+(d['제목']||'')+' 관련 답변드립니다';
+  var body='{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n문의하신 내용에 답변드립니다.\n\n━━━━━━━━━━━━━━━━━━━━\n원본 문의: '+(d['제목']||'')+'\n━━━━━━━━━━━━━━━━━━━━\n\n'+answer+'\n\n━━━━━━━━━━━━━━━━━━━━\n\n추가 문의는 본 메일에 회신해주세요.\n\n감사합니다.\n일꾼을찾다 팀';
+  apiSend({
+    action:'send',
+    to:d['이메일'],
+    recipient:d['후보자명'],
+    subject:subject,
+    body:body,
+    step:'CS',
+    type:'CS 답변',
+    variables:{'이름':d['후보자명'],'이메일':d['이메일']}
+  },function(res){
+    if(!res.ok) return;
+    apiSend({
+      action:'updateRow',
+      sheet:'CS',
+      keyCol:'후보자명',
+      keyValue:d['후보자명'],
+      updates:{'답변':answer,'상태':'완료'}
+    },function(){
+      alert('✅ 답변 발송 완료\n\n수신: '+d['이메일']);
+      closeP();
+      loadAllData();
+    });
+  });
+}
+
+function closeCSFromSheet(i){
+  var d=csSheetData[i];if(!d)return;
+  if(!confirm('"완료" 처리하시겠습니까?\n\nCS 시트 상태가 완료로 변경됩니다 (메일 발송 없음).')) return;
+  apiSend({
+    action:'updateRow',
+    sheet:'CS',
+    keyCol:'후보자명',
+    keyValue:d['후보자명'],
+    updates:{'상태':'완료'}
+  },function(res){
+    if(!res.ok) return;
+    alert('✅ 완료 처리됨');
+    closeP();
+    loadAllData();
+  });
+}
+
+function doLogin(){if(document.getElementById('login-pw').value==='0000'){document.getElementById('login-screen').classList.remove('show');loadAllData();renderAcctTable();loadAttachments();loadInbox();sw('home')}else{document.getElementById('login-err').style.display='block'}}
 function logout(){document.getElementById('login-screen').classList.add('show');document.getElementById('login-pw').value=''}
-var TABS=['inq','app','acct','cs','sent','inbox','tpl'];
-var TI={inq:{t:'1단계 · 문의 관리',i:'campaign'},app:{t:'2단계 · 신청 관리',i:'assignment'},acct:{t:'계정 발급',i:'vpn_key'},cs:{t:'CS 관리',i:'support_agent'},sent:{t:'발송 내역',i:'send'},inbox:{t:'수신 메일',i:'inbox'},tpl:{t:'템플릿 관리',i:'draft'}};
-function sw(tab){TABS.forEach(function(t){document.getElementById('tab-'+t).style.display=t===tab?'block':'none';document.getElementById('nav-'+t).classList.toggle('on',t===tab)});document.getElementById('tt').textContent=TI[tab].t;document.getElementById('ti').textContent=TI[tab].i;closeP()}
+var TABS=['home','inq','app','acct','cs','sent','inbox','tpl'];
+var TI={home:{t:'홈 · 요약',i:'dashboard'},inq:{t:'1단계 · 문의 관리',i:'campaign'},app:{t:'2단계 · 신청 관리',i:'assignment'},acct:{t:'계정 발급',i:'vpn_key'},cs:{t:'CS 관리',i:'support_agent'},sent:{t:'발송 내역',i:'send'},inbox:{t:'수신 메일',i:'inbox'},tpl:{t:'템플릿 관리',i:'draft'}};
+function sw(tab){TABS.forEach(function(t){var el=document.getElementById('tab-'+t);if(el)el.style.display=t===tab?'block':'none';var nav=document.getElementById('nav-'+t);if(nav)nav.classList.toggle('on',t===tab)});document.getElementById('tt').textContent=TI[tab].t;document.getElementById('ti').textContent=TI[tab].i;closeP();document.querySelector('.side').classList.remove('mobile-open');if(tab==='home'&&typeof updateHomeSummary==='function')updateHomeSummary()}
 function togAll(m,g){document.querySelectorAll('.rc-'+g).forEach(function(c){c.checked=m.checked})}
-function openBulk(){document.getElementById('bulk-ov').classList.add('show')}
+var bulkActiveTab='inq';
+function openBulkFromTab(){
+  var tabs=['inq','app'];
+  for(var i=0;i<tabs.length;i++){
+    if(document.getElementById('tab-'+tabs[i]).style.display!=='none'){bulkActiveTab=tabs[i];break}
+  }
+  openBulk();
+}
+function openBulk(){
+  var chks=document.querySelectorAll('.rc-'+bulkActiveTab+':checked');
+  document.getElementById('bulk-count').textContent=chks.length+'명 선택됨';
+  if(chks.length===0){
+    if(!confirm('선택된 수신자가 없습니다. 계속 열까요?')) return;
+  }
+  // 탭별 기본 템플릿 추천
+  var defaultKey = bulkActiveTab==='inq' ? 'auto' : bulkActiveTab==='app' ? 'acct' : '';
+  document.getElementById('bulk-tpl').value=defaultKey;
+  applyBulkTpl(defaultKey);
+  document.getElementById('bulk-ov').classList.add('show');
+}
+var bulkCurrentTpl='';
+function applyBulkTpl(key){
+  bulkCurrentTpl=key;
+  var info=document.getElementById('bulk-tpl-info');
+  if(!key||!TPL[key]){
+    info.style.display='none';
+    document.getElementById('bulk-subject').value='';
+    document.getElementById('bulk-body').value='';
+    return;
+  }
+  var t=TPL[key];
+  document.getElementById('bulk-subject').value=t.subject;
+  document.getElementById('bulk-body').value=t.body;
+  var tplLabel=t.name+' — '+t.subject;
+  if(key==='auto'){
+    var ids=getAutoAttachIds();
+    var names=ids.map(function(id){var f=FILES.filter(function(x){return x.id===id})[0];return f?f.name:''}).filter(Boolean);
+    if(names.length) tplLabel+='\n📎 자동 첨부('+names.length+'): '+names.join(', ');
+    else tplLabel+='\n📎 첨부파일 없음 (템플릿 관리에서 자동 첨부 파일을 체크하세요)';
+  }
+  document.getElementById('bulk-tpl-name').textContent=tplLabel;
+  document.getElementById('bulk-tpl-name').style.whiteSpace='pre-line';
+  info.style.display='flex';
+}
+
+function goToTemplateEdit(){
+  if(!bulkCurrentTpl||!TPL[bulkCurrentTpl]){alert('먼저 템플릿을 선택하세요');return}
+  document.getElementById('bulk-ov').classList.remove('show');
+  sw('tpl');
+  // 템플릿 편집 오버레이 바로 열기
+  var t=TPL[bulkCurrentTpl];
+  setTimeout(function(){openTplEdit(t.name,t.subject,t.body)},100);
+}
+function sendBulk(){
+  var chks=document.querySelectorAll('.rc-'+bulkActiveTab+':checked');
+  if(chks.length===0){alert('수신자를 먼저 체크박스로 선택하세요');return}
+  var subject=document.getElementById('bulk-subject').value.trim();
+  var body=document.getElementById('bulk-body').value.trim();
+  if(!subject||!body){alert('제목과 내용을 입력하세요');return}
+  var tplKey=document.getElementById('bulk-tpl').value;
+  var step=tplKey&&TPL[tplKey]?TPL[tplKey].step:'-';
+  var type=tplKey&&TPL[tplKey]?TPL[tplKey].type:'단체 발송';
+  var recipients=[];
+  for(var i=0;i<chks.length;i++){
+    var name=chks[i].getAttribute('data-name')||'';
+    var email=chks[i].getAttribute('data-email')||'';
+    if(email) recipients.push({name:name,email:email});
+  }
+  if(recipients.length===0){alert('이메일이 있는 수신자가 없습니다');return}
+  if(!confirm('📧 '+recipients.length+'명에게 발송하시겠습니까?\n\n· 각 수신자에게 개별 메일 발송\n· {{이름}} 자동 치환\n· 모든 발송이 발송내역 시트에 기록')){return}
+  var btn=document.getElementById('btn-bulk-send');
+  btn.disabled=true;
+  btn.innerHTML='<span class="ms" style="font-size:16px">hourglass_empty</span>발송 중... 0/'+recipients.length;
+  var sent=0,failed=0;
+  // 1차 자동 안내 메일 템플릿일 때만 자동 첨부 파일 포함
+  var attachmentIds=(tplKey==='auto')?getAutoAttachIds():[];
+  recipients.forEach(function(r){
+    apiSend({
+      action:'send',
+      to:r.email,
+      recipient:r.name,
+      subject:subject,
+      body:body,
+      step:step,
+      type:type,
+      attachmentIds:attachmentIds,
+      variables:{'이름':r.name,'이메일':r.email,'대시보드링크':'https://host.thisishilo.ir'}
+    },function(res){
+      if(res.ok){
+        sent++;
+        // 발송 성공 → 시트 상태 업데이트
+        if(bulkActiveTab==='inq'){
+          apiSend({action:'updateRow',sheet:'문의관리',keyCol:'이메일',keyValue:r.email,updates:{'안내발송':'Y'}},function(){});
+        } else if(bulkActiveTab==='app'){
+          apiSend({action:'updateRow',sheet:'신청관리',keyCol:'이메일',keyValue:r.email,updates:{'상태':'안내완료'}},function(){});
+        }
+      } else {
+        failed++;
+        // 발송 실패 → 안내발송 컬럼에 '실패' 기록
+        if(bulkActiveTab==='inq'){
+          apiSend({action:'updateRow',sheet:'문의관리',keyCol:'이메일',keyValue:r.email,updates:{'안내발송':'실패'}},function(){});
+        }
+      }
+      btn.innerHTML='<span class="ms" style="font-size:16px">hourglass_empty</span>발송 중... '+(sent+failed)+'/'+recipients.length;
+      if(sent+failed===recipients.length){
+        btn.disabled=false;
+        btn.innerHTML='<span class="ms" style="font-size:16px">send</span>선택 인원에게 발송';
+        alert('✅ 단체 발송 완료\n\n성공: '+sent+'건\n실패: '+failed+'건\n\n· 시트 안내발송 상태 자동 업데이트됨');
+        document.getElementById('bulk-ov').classList.remove('show');
+        // 시트 업데이트 반영까지 약간 대기 후 새로고침
+        setTimeout(loadAllData,800);
+      }
+    });
+  });
+}
 
 // 상세 패널
 var APPS=[
@@ -671,13 +1195,42 @@ function openPanel(type,i){
   var p=document.getElementById('dp');p.classList.add('open');
   var b=document.getElementById('dp-b');
   if(type==='app'){
-    var d=APPS[i];document.getElementById('dp-t').textContent='신청 상세 (2단계)';
-    b.innerHTML='<div style="text-align:center;margin-bottom:20px"><div style="width:56px;height:56px;border-radius:50%;background:#f5f3ff;display:flex;align-items:center;justify-content:center;margin:0 auto 8px"><span class="ms msf" style="color:#7c3aed;font-size:28px">person</span></div><p style="font-size:16px;font-weight:900;color:#111827">'+d.name+'</p><p style="font-size:12px;color:#9ca3af">'+d.pos+' · '+d.date+'</p></div><div style="background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:16px"><div style="display:flex;justify-content:space-between;padding:4px 0"><span style="font-size:12px;color:#9ca3af">이메일</span><span style="font-size:12px;font-weight:700">'+d.email+'</span></div><div style="display:flex;justify-content:space-between;padding:4px 0"><span style="font-size:12px;color:#9ca3af">상품</span><span style="font-size:12px;font-weight:700">'+d.product+'</span></div><div style="display:flex;justify-content:space-between;padding:4px 0"><span style="font-size:12px;color:#9ca3af">증명서</span><span style="font-size:12px;font-weight:700;color:'+(d.cert?'#15803d':'#dc2626')+'">'+(d.cert?'📎 첨부됨':'❌ 미첨부')+'</span></div></div>'+(d.cert?'<button class="btn btn-success" style="width:100%;justify-content:center;padding:12px" onclick="alert(\'승인+발급 완료\')"><span class="ms msf" style="font-size:16px">send</span>승인 + 계정 발급</button>':'<button class="btn btn-danger" style="width:100%;justify-content:center;padding:12px" onclick="alert(\'증명서 요청 발송\')"><span class="ms msf" style="font-size:16px">mail</span>증명서 요청 메일</button>');
+    openAppDetail(i);
+    return;
   } else {
     var d=CSS[i];var cc=d.cat==='결제'?'pay':d.cat==='계정'?'acct':d.cat==='기술'?'tech':'svc';var pp=d.pri==='긴급'?'urgent':d.pri==='높음'?'high':'mid';
     document.getElementById('dp-t').textContent='CS 상세';
     b.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px"><div style="width:40px;height:40px;border-radius:50%;background:#f5f3ff;display:flex;align-items:center;justify-content:center"><span class="ms msf" style="color:#7c3aed;font-size:22px">person</span></div><div><p style="font-size:14px;font-weight:900;color:#111827">'+d.name+'</p><p style="font-size:11px;color:#9ca3af">'+d.pos+' · '+d.email+'</p></div></div><div style="background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:16px"><div style="display:flex;gap:6px;margin-bottom:8px"><span class="cat cat-'+cc+'">'+d.cat+'</span><span class="pr pr-'+pp+'">'+d.pri+'</span></div><p style="font-size:14px;font-weight:900;color:#111827;margin-bottom:8px">'+d.title+'</p><p style="font-size:12px;color:#374151;line-height:1.6">'+d.content+'</p></div><p style="font-size:12px;font-weight:900;color:#374151;margin-bottom:8px">답변 작성</p><textarea class="inp" rows="4" placeholder="답변..." style="margin-bottom:12px;resize:vertical"></textarea><div style="display:flex;gap:8px"><button class="btn btn-primary" style="flex:1;justify-content:center" onclick="alert(\'답변 발송\')"><span class="ms" style="font-size:14px">send</span>답변 발송</button><button class="btn btn-ghost" onclick="alert(\'완료\')"><span class="ms" style="font-size:14px">check_circle</span>완료</button></div>';
   }
+}
+
+function openAppDetail(idx){
+  var d=appAllRows[idx];
+  if(!d) return;
+  document.getElementById('dp').classList.add('open');
+  document.getElementById('dp-t').textContent='신청 상세 (2단계)';
+  var hasCert=(d['증명서']||'').toUpperCase()==='Y'||(d['증명서']||'')==='있음';
+  var st=d['상태']||'신규';
+  var stCls=st.indexOf('발급')>=0?'st-done':st.indexOf('증명서')>=0?'st-req':st.indexOf('승인')>=0?'st-wait':'st-new';
+  var safeN=(d['후보자명']||'').replace(/'/g,"\\'");
+  var safeE=(d['이메일']||'').replace(/'/g,"\\'");
+  var safeP=(d['직급']||'').replace(/'/g,"\\'");
+  var actBtn=hasCert
+    ? '<button class="btn btn-success" style="width:100%;justify-content:center;padding:12px" onclick="approveAndIssue(\''+safeN+'\',\''+safeE+'\',\''+safeP+'\');closeP()"><span class="ms msf" style="font-size:16px">send</span>원클릭 승인 + 계정 발급</button>'
+    : '<button class="btn btn-danger" style="width:100%;justify-content:center;padding:12px" onclick="requestCertResend(\''+safeN+'\',\''+safeE+'\');closeP()"><span class="ms msf" style="font-size:16px">mail</span>증명서 요청 메일 발송</button>';
+  document.getElementById('dp-b').innerHTML=
+    '<div style="text-align:center;margin-bottom:20px">'+
+    '<div style="width:56px;height:56px;border-radius:50%;background:#f5f3ff;display:flex;align-items:center;justify-content:center;margin:0 auto 8px"><span class="ms msf" style="color:#7c3aed;font-size:28px">person</span></div>'+
+    '<p style="font-size:16px;font-weight:900;color:#111827">'+(d['후보자명']||'-')+'</p>'+
+    '<p style="font-size:12px;color:#9ca3af">'+(d['직급']||'-')+' · 접수 '+(d['접수일']||'-')+'</p>'+
+    '</div>'+
+    '<div style="background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:16px">'+
+    '<div style="display:flex;justify-content:space-between;padding:4px 0"><span style="font-size:12px;color:#9ca3af">이메일</span><span style="font-size:12px;font-weight:700">'+(d['이메일']||'-')+'</span></div>'+
+    '<div style="display:flex;justify-content:space-between;padding:4px 0"><span style="font-size:12px;color:#9ca3af">상태</span><span class="st '+stCls+'">'+st+'</span></div>'+
+    '<div style="display:flex;justify-content:space-between;padding:4px 0"><span style="font-size:12px;color:#9ca3af">증명서</span><span style="font-size:12px;font-weight:700;color:'+(hasCert?'#15803d':'#dc2626')+'">'+(hasCert?'📎 첨부됨':'❌ 미첨부')+'</span></div>'+
+    '<div style="display:flex;justify-content:space-between;padding:4px 0"><span style="font-size:12px;color:#9ca3af">발급일</span><span style="font-size:12px;font-weight:700">'+(d['발급일']||'-')+'</span></div>'+
+    '</div>'+
+    actBtn;
 }
 function closeP(){document.getElementById('dp').classList.remove('open')}
 
@@ -756,16 +1309,34 @@ function sendToAdmin(){
   var email=document.getElementById('gen-email').value.trim();
   var adminEmail=document.getElementById('gen-admin-email').value.trim();
   if(!adminEmail){alert('플랫폼 관리자 이메일을 입력하세요');return}
-  var msg='📩 플랫폼 관리자에게 전달 (데모)\n\n수신: '+adminEmail+'\n\n──────────────\n계정 생성 요청\n\n후보자: '+name+'\n이메일: '+email+'\nID: '+generatedID+'\nPW: '+generatedPW+'\n\n활성화 부탁드립니다.\n──────────────';
-  alert(msg);
-  // 상태 업데이트
-  if(acctHistory.length>0){acctHistory[0].adminSent='완료';localStorage.setItem('acctHistory',JSON.stringify(acctHistory));renderAcctTable()}
+  if(!generatedID||!generatedPW){alert('먼저 ID/PW를 생성하세요');return}
+  if(!confirm('📧 '+adminEmail+' 로 계정 생성 요청을 보낼까요?')) return;
+  var subject='[일꾼을찾다] 계정 활성화 요청 - '+name;
+  var body='플랫폼 관리자님,\n\n아래 후보자 계정을 활성화해주세요.\n\n━━━━━━━━━━━━━━━━━━━━\n후보자: '+name+'\n이메일: '+email+'\nID: '+generatedID+'\nPW: '+generatedPW+'\n━━━━━━━━━━━━━━━━━━━━\n\n활성화 완료 후 회신 부탁드립니다.\n\n감사합니다.\n일꾼을찾다 팀';
+  apiSend({
+    action:'send',
+    to:adminEmail,
+    recipient:'플랫폼 관리자',
+    subject:subject,
+    body:body,
+    step:'2단계',
+    type:'계정 발급',
+    variables:{}
+  },function(res){
+    if(!res.ok) return;
+    if(acctHistory.length>0){
+      acctHistory[0].adminSent='완료';
+      localStorage.setItem('acctHistory',JSON.stringify(acctHistory));
+      renderAcctTable();
+    }
+    alert('✅ 플랫폼 관리자에게 전달 완료\n\n수신: '+adminEmail);
+  });
 }
 
 function sendToCandidate(idx){
   var entry=acctHistory[idx];
   var subject='[일꾼을찾다] 대시보드 계정이 발급되었습니다';
-  var body='{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n대시보드 계정이 발급되었습니다.\n\n━━━━━━━━━━━━━━━━━━━━\n🔗 대시보드: https://sandbox.thisishilo.ir\n📧 ID: {{ID}}\n🔑 임시 비밀번호: {{비밀번호}}\n━━━━━━━━━━━━━━━━━━━━\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n\n감사합니다.\n일꾼을찾다 팀';
+  var body='{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n대시보드 계정이 발급되었습니다.\n\n━━━━━━━━━━━━━━━━━━━━\n🔗 대시보드: https://host.thisishilo.ir\n📧 ID: {{ID}}\n🔑 임시 비밀번호: {{비밀번호}}\n━━━━━━━━━━━━━━━━━━━━\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n\n감사합니다.\n일꾼을찾다 팀';
   apiSend({
     action:'send',
     to:entry.email,
@@ -792,23 +1363,187 @@ function markActivated(idx){
   alert('✅ 활성화 완료 처리됨');
 }
 
+function requestCertResend(name,email){
+  if(!name||!email){alert('후보자명과 이메일이 필요합니다');return}
+  if(!confirm('📧 '+name+'님께 증명서 재요청 메일을 보낼까요?\n\n· 메일 템플릿: 후보자 확인증 재요청\n· 발송내역 시트 자동 기록')){return}
+  var t=TPL.cert2;
+  apiSend({
+    action:'send',
+    to:email,
+    recipient:name,
+    subject:t.subject,
+    body:t.body,
+    step:t.step,
+    type:t.type,
+    variables:{'이름':name,'이메일':email}
+  },function(res){
+    if(!res.ok) return;
+    alert('✅ 증명서 재요청 메일 발송 완료\n\n수신: '+email);
+    loadAllData();
+  });
+}
+
+var DASHBOARD_URL='https://host.thisishilo.ir';
+var ADMIN_EMAIL_KEY='ilgun_admin_email';
+
+function getAdminEmail(){
+  var saved=localStorage.getItem(ADMIN_EMAIL_KEY);
+  if(saved) return saved;
+  var entered=prompt('플랫폼 관리자 이메일을 입력하세요\n(저장되어 다음부터 자동 사용됩니다)','');
+  if(!entered) return '';
+  localStorage.setItem(ADMIN_EMAIL_KEY,entered.trim());
+  return entered.trim();
+}
+
+function approveAndIssue(name,email,pos){
+  if(!name){alert('후보자명이 없습니다');return}
+  var adminEmail=getAdminEmail();
+  if(!adminEmail){alert('관리자 이메일이 없어 중단합니다');return}
+  if(!confirm('✅ '+name+' ('+pos+') 원클릭 계정 발급\n\n1) 신청관리 시트 → 발급완료\n2) ID/PW 자동 생성\n3) 계정 시트에 기록\n4) 관리자('+adminEmail+')에게 메일 발송\n5) 후보자('+(email||'?')+')에게 메일 발송\n\n계속할까요?')) return;
+
+  // ID/PW 생성
+  var eng=koToEn(name);
+  var num=String(Math.floor(1000+Math.random()*9000));
+  var id=eng+'_'+num;
+  var d=new Date();
+  var mm=String(d.getMonth()+1).padStart(2,'0');
+  var dd=String(d.getDate()).padStart(2,'0');
+  var rand='';var chars='abcdefghjkmnpqrstuvwxyz23456789';
+  for(var i=0;i<4;i++) rand+=chars[Math.floor(Math.random()*chars.length)];
+  var pw='!'+mm+dd+'_'+rand+'#';
+  var dateStr=(d.getMonth()+1)+'/'+d.getDate();
+
+  // STEP 1: 신청관리 상태 업데이트
+  apiSend({action:'updateRow',sheet:'신청관리',keyCol:'후보자명',keyValue:name,
+    updates:{'상태':'발급완료','발급일':dateStr}},function(res){
+    if(!res.ok){alert('❌ 시트 업데이트 실패: '+(res.error||''));return}
+
+    // STEP 2: 관리자 + 후보자 이메일 병렬 발송
+    var adminSubject='[일꾼을찾다] 계정 활성화 요청 - '+name;
+    var adminBody='플랫폼 관리자님,\n\n아래 후보자 계정을 활성화해주세요.\n\n━━━━━━━━━━━━━━━━━━━━\n후보자: '+name+'\n직급: '+pos+'\n이메일: '+email+'\nID: '+id+'\nPW: '+pw+'\n━━━━━━━━━━━━━━━━━━━━\n\n활성화 완료 후 회신 부탁드립니다.\n\n감사합니다.\n일꾼을찾다 팀';
+    var userSubject='[일꾼을찾다] 대시보드 계정이 발급되었습니다';
+    var userBody='{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n대시보드 계정이 발급되었습니다.\n\n━━━━━━━━━━━━━━━━━━━━\n🔗 대시보드: '+DASHBOARD_URL+'\n📧 ID: {{ID}}\n🔑 임시 비밀번호: {{비밀번호}}\n━━━━━━━━━━━━━━━━━━━━\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n⚠️ 관리자 활성화 후 로그인 가능합니다 (최대 1영업일 소요).\n\n감사합니다.\n일꾼을찾다 팀';
+
+    var adminOK=false,userOK=false,done=0;
+    var finish=function(){
+      done++;
+      if(done<2) return;
+      // STEP 3: 계정 시트에 기록
+      apiSend({action:'registerAccount',
+        name:name,position:pos,email:email,id:id,pw:pw,
+        dashboardUrl:DASHBOARD_URL,
+        adminSent:adminOK,userSent:userOK,activated:false
+      },function(r){
+        // localStorage 백업 유지 (레거시 테이블)
+        var entry={date:dateStr,name:name,email:email,pos:pos,id:id,pw:pw,
+          adminSent:adminOK?'완료':'실패',
+          userSent:userOK?'완료':'실패',
+          activated:'대기'};
+        acctHistory.unshift(entry);
+        localStorage.setItem('acctHistory',JSON.stringify(acctHistory));
+        renderAcctTable();
+        loadAllData();
+        sw('acct');
+        alert('✅ 원클릭 계정 발급 완료\n\n후보자: '+name+'\nID: '+id+'\nPW: '+pw+'\n\n· 관리자 발송: '+(adminOK?'✅':'❌')+'\n· 후보자 발송: '+(userOK?'✅':'❌')+'\n· 계정 시트 기록: '+(r&&r.ok?'✅':'❌'));
+      });
+    };
+
+    // 관리자 메일
+    apiSend({action:'send',to:adminEmail,recipient:'플랫폼 관리자',
+      subject:adminSubject,body:adminBody,step:'2단계',type:'계정 발급',
+      variables:{}},function(r){adminOK=!!r.ok;finish()});
+
+    // 후보자 메일
+    if(email){
+      apiSend({action:'send',to:email,recipient:name,
+        subject:userSubject,body:userBody,step:'2단계',type:'계정 발급',
+        variables:{'이름':name,'이메일':email,'ID':id,'비밀번호':pw}},
+        function(r){userOK=!!r.ok;finish()});
+    } else {
+      userOK=false;finish();
+    }
+  });
+}
+
+var acctRows=[];
+function applyAcctFilter(){renderAcctTable()}
 function renderAcctTable(){
   var tb=document.getElementById('acct-tbody');
-  if(acctHistory.length===0){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:40px;color:#9ca3af">생성된 계정이 없습니다</td></tr>';return}
+  var all=(acctRows&&acctRows.length)?acctRows:[];
+  var fs=(document.getElementById('acct-f-status')||{}).value||'';
+  var q=((document.getElementById('acct-f-search')||{}).value||'').toLowerCase().trim();
+  var rows=all.filter(function(r){
+    var adminY=(r['관리자발송']||'').toUpperCase()==='Y';
+    var userY=(r['후보자발송']||'').toUpperCase()==='Y';
+    var actY=(r['활성화']||'').toUpperCase()==='Y';
+    if(fs==='활성화' && !actY) return false;
+    if(fs==='관리자' && !adminY) return false;
+    if(fs==='후보자' && !userY) return false;
+    if(fs==='대기' && (adminY||userY||actY)) return false;
+    if(q){
+      var hay=((r['후보자명']||'')+' '+(r['ID']||'')+' '+(r['이메일']||'')).toLowerCase();
+      if(hay.indexOf(q)<0) return false;
+    }
+    return true;
+  });
+  if(!rows.length){
+    tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:40px;color:#9ca3af">발급된 계정이 없습니다<br><span style="font-size:11px">2단계 탭에서 「승인」 시 자동 기록됩니다</span></td></tr>';
+    document.getElementById('acct-total').textContent='0';
+    document.getElementById('acct-pending').textContent='0';
+    document.getElementById('acct-sent').textContent='0';
+    document.getElementById('acct-done').textContent='0';
+    return;
+  }
   var pending=0,sent=0,done=0;
-  tb.innerHTML=acctHistory.map(function(e,i){
-    if(e.activated==='완료') done++;
-    else if(e.adminSent==='완료') sent++;
+  tb.innerHTML=rows.map(function(e,i){
+    var adminY=(e['관리자발송']||'').toUpperCase()==='Y';
+    var userY=(e['후보자발송']||'').toUpperCase()==='Y';
+    var actY=(e['활성화']||'').toUpperCase()==='Y';
+    if(actY) done++;
+    else if(adminY) sent++;
     else pending++;
-    var stAdmin=e.adminSent==='완료'?'<span class="st st-done">완료</span>':'<span class="st st-open">대기</span>';
-    var stAct=e.activated==='완료'?'<span class="st st-done">완료</span>':'<button class="btn btn-ghost" style="padding:2px 8px;font-size:10px" onclick="markActivated('+i+')">활성화</button>';
-    var stUser=e.userSent==='완료'?'<span class="st st-done">완료</span>':e.activated==='완료'?'<button class="btn btn-primary" style="padding:2px 8px;font-size:10px" onclick="sendToCandidate('+i+')"><span class="ms" style="font-size:12px">send</span>발송</button>':'<span style="font-size:10px;color:#9ca3af">활성화 대기</span>';
-    return '<tr><td>'+e.date+'</td><td style="font-weight:700">'+e.name+'</td><td>'+e.pos+'</td><td style="font-size:11px;font-weight:700;color:#7c3aed">'+e.id+'</td><td style="font-size:11px"><code style="background:#f3f4f6;padding:2px 6px;border-radius:4px">'+e.pw+'</code></td><td>'+stAdmin+'</td><td>'+stAct+'</td><td>'+stUser+'</td></tr>';
+    var stAdmin=adminY?'<span class="st st-done">✅ 완료</span>':'<span class="st" style="background:#fef2f2;color:#dc2626">❌ 실패</span>';
+    var stAct=actY?'<span class="st st-done">✅ 완료</span>':'<button class="btn btn-ghost" style="padding:2px 8px;font-size:10px" onclick="markActivatedSheet(\''+escapeHtml(e['이메일']||'')+'\')">활성화</button>';
+    var stUser=userY?'<span class="st st-done">✅ 완료</span>':'<button class="btn btn-primary" style="padding:2px 8px;font-size:10px" onclick="resendToCandidate(\''+escapeHtml(e['이메일']||'')+'\',\''+escapeHtml(e['후보자명']||'')+'\',\''+escapeHtml(e['ID']||'')+'\',\''+escapeHtml(e['PW']||'')+'\')"><span class="ms" style="font-size:12px">send</span>재발송</button>';
+    return '<tr>'+
+      '<td>'+(e['발급일']||'')+'</td>'+
+      '<td style="font-weight:700">'+(e['후보자명']||'')+'</td>'+
+      '<td>'+(e['직급']||'')+'</td>'+
+      '<td style="font-size:11px;font-weight:700;color:#7c3aed">'+(e['ID']||'')+'</td>'+
+      '<td style="font-size:11px"><code style="background:#f3f4f6;padding:2px 6px;border-radius:4px">'+(e['PW']||'')+'</code></td>'+
+      '<td>'+stAdmin+'</td>'+
+      '<td>'+stAct+'</td>'+
+      '<td>'+stUser+'</td>'+
+      '</tr>';
   }).join('');
-  document.getElementById('acct-total').textContent=acctHistory.length;
+  document.getElementById('acct-total').textContent=rows.length;
   document.getElementById('acct-pending').textContent=pending;
   document.getElementById('acct-sent').textContent=sent;
   document.getElementById('acct-done').textContent=done;
+}
+
+function markActivatedSheet(email){
+  if(!email){alert('이메일이 없습니다');return}
+  apiSend({action:'updateRow',sheet:'계정',keyCol:'이메일',keyValue:email,updates:{'활성화':'Y'}},function(res){
+    if(!res.ok){alert('실패: '+(res.error||''));return}
+    loadAllData();
+  });
+}
+
+function resendToCandidate(email,name,id,pw){
+  if(!email||!id){alert('계정 정보가 부족합니다');return}
+  if(!confirm('"'+name+'"에게 계정 발급 메일을 (재)발송할까요?')) return;
+  var subject='[일꾼을찾다] 대시보드 계정이 발급되었습니다';
+  var body='{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n대시보드 계정이 발급되었습니다.\n\n━━━━━━━━━━━━━━━━━━━━\n🔗 대시보드: '+DASHBOARD_URL+'\n📧 ID: {{ID}}\n🔑 임시 비밀번호: {{비밀번호}}\n━━━━━━━━━━━━━━━━━━━━\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n\n감사합니다.\n일꾼을찾다 팀';
+  apiSend({action:'send',to:email,recipient:name,subject:subject,body:body,
+    step:'2단계',type:'계정 발급',
+    variables:{'이름':name,'이메일':email,'ID':id,'비밀번호':pw}},function(res){
+    if(!res.ok) return;
+    apiSend({action:'updateRow',sheet:'계정',keyCol:'이메일',keyValue:email,updates:{'후보자발송':'Y'}},function(){
+      alert('✅ 발송 완료');
+      loadAllData();
+    });
+  });
 }
 
 function copyText(id){
@@ -832,25 +1567,153 @@ window.addEventListener('DOMContentLoaded',function(){
   if(b) document.getElementById('auto-body').value=b;
 });
 
-// ═══ 파일 업로드 ═══
+// ═══ 첨부파일 (Drive 폴더 기반) ═══
+var FILES=[];
+// 자동 첨부로 체크된 파일 ID 목록 (1차 자동 안내 메일용)
+var AUTO_ATTACH=JSON.parse(localStorage.getItem('ilgun_auto_attach')||'[]');
+
+function iconFor(name){
+  var ext=(name.split('.').pop()||'').toLowerCase();
+  if(ext==='pdf') return {icon:'picture_as_pdf',color:'#dc2626'};
+  if(ext==='doc'||ext==='docx') return {icon:'description',color:'#3b82f6'};
+  if(ext==='png'||ext==='jpg'||ext==='jpeg') return {icon:'image',color:'#22c55e'};
+  return {icon:'insert_drive_file',color:'#6b7280'};
+}
+
+function loadAttachments(){
+  var tb=document.getElementById('file-tbody');
+  if(tb) tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:20px;color:#9ca3af">⏳ Drive 폴더 불러오는 중...</td></tr>';
+  apiSend({action:'listAttachments'},function(res){
+    if(!res.ok){
+      if(tb) tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:20px;color:#dc2626">Drive 연결 실패: '+(res.error||'')+'</td></tr>';
+      return;
+    }
+    FILES=res.files||[];
+    renderFileTable();
+    renderAutoAttachList();
+  });
+}
+
+function renderFileTable(){
+  var tb=document.getElementById('file-tbody');
+  if(!tb) return;
+  if(!FILES.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:20px;color:#9ca3af">Drive 폴더가 비어있습니다</td></tr>';return}
+  tb.innerHTML=FILES.map(function(f){
+    var ic=iconFor(f.name);
+    var isAuto=AUTO_ATTACH.indexOf(f.id)>=0;
+    var purposeHtml=isAuto
+      ? '<span class="step-label">1차 자동</span>'
+      : '<span style="font-size:10px;color:#9ca3af">미지정</span>';
+    return '<tr>'+
+      '<td><div style="display:flex;align-items:center;gap:6px"><span class="ms" style="color:'+ic.color+';font-size:16px">'+ic.icon+'</span><span style="font-weight:700">'+f.name+'</span></div></td>'+
+      '<td>'+f.size+'</td><td>'+f.date+'</td>'+
+      '<td>'+purposeHtml+'</td>'+
+      '<td>'+
+        '<a class="btn btn-ghost" style="padding:3px 8px;font-size:10px" href="'+f.url+'" target="_blank"><span class="ms" style="font-size:13px">open_in_new</span></a> '+
+        '<button class="btn btn-ghost" style="padding:3px 8px;font-size:10px;color:#dc2626;border-color:#fecaca" onclick="deleteAttachment(\''+f.id+'\',\''+escapeHtml(f.name).replace(/\x27/g,"\\\x27")+'\')"><span class="ms" style="font-size:13px">delete</span></button>'+
+      '</td></tr>';
+  }).join('');
+}
+
+function renderAutoAttachList(){
+  var el=document.getElementById('auto-attach-list');
+  if(!el) return;
+  if(!FILES.length){el.innerHTML='<p style="font-size:11px;color:#9ca3af;margin:0">Drive 폴더가 비어있습니다</p>';return}
+  el.innerHTML=FILES.map(function(f,i){
+    var ic=iconFor(f.name);
+    var last=i===FILES.length-1;
+    var checked=AUTO_ATTACH.indexOf(f.id)>=0?'checked':'';
+    return '<label style="display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer'+(last?'':';border-bottom:1px solid #ede9fe')+'">'+
+      '<input type="checkbox" class="chk" '+checked+' onchange="toggleAutoAttach(\''+f.id+'\',this.checked)"/>'+
+      '<span class="ms" style="color:'+ic.color+';font-size:16px">'+ic.icon+'</span>'+
+      '<span style="font-size:12px;font-weight:600;color:#374151;flex:1">'+f.name+'</span>'+
+      '<span style="font-size:10px;color:#9ca3af">'+f.size+'</span>'+
+      '</label>';
+  }).join('');
+}
+
+function toggleAutoAttach(id,checked){
+  var idx=AUTO_ATTACH.indexOf(id);
+  if(checked && idx<0) AUTO_ATTACH.push(id);
+  else if(!checked && idx>=0) AUTO_ATTACH.splice(idx,1);
+  try{localStorage.setItem('ilgun_auto_attach',JSON.stringify(AUTO_ATTACH))}catch(e){}
+  renderFileTable();
+}
+
+function getAutoAttachIds(){
+  // 실제 Drive에 존재하는 ID만 필터
+  return AUTO_ATTACH.filter(function(id){
+    return FILES.some(function(f){return f.id===id});
+  });
+}
+
+function deleteAttachment(id,name){
+  if(!confirm('"'+name+'" 파일을 Drive에서 삭제할까요?\n\n휴지통으로 이동됩니다.')) return;
+  apiSend({action:'deleteFile',id:id},function(res){
+    if(!res.ok) return;
+    // 자동 첨부 목록에서도 제거
+    var idx=AUTO_ATTACH.indexOf(id);
+    if(idx>=0){AUTO_ATTACH.splice(idx,1);try{localStorage.setItem('ilgun_auto_attach',JSON.stringify(AUTO_ATTACH))}catch(e){}}
+    loadAttachments();
+  });
+}
+
 function handleFileUpload(input){
   var files=input.files;
   if(!files.length) return;
   var tb=document.getElementById('file-tbody');
+  if(tb) tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:20px;color:#7c3aed">⏳ Drive 업로드 중...</td></tr>';
+  var uploaded=0,failed=0;
   for(var i=0;i<files.length;i++){
-    var f=files[i];
-    var ext=f.name.split('.').pop().toLowerCase();
-    var icon=ext==='pdf'?'picture_as_pdf':ext==='doc'||ext==='docx'?'description':ext==='png'||ext==='jpg'||ext==='jpeg'?'image':'insert_drive_file';
-    var color=ext==='pdf'?'#dc2626':ext==='doc'||ext==='docx'?'#3b82f6':'#22c55e';
-    var size=f.size>1024*1024?(f.size/1024/1024).toFixed(1)+'MB':(f.size/1024).toFixed(0)+'KB';
-    var today=new Date();var dateStr=(today.getMonth()+1)+'/'+today.getDate();
-    var tr=document.createElement('tr');
-    tr.innerHTML='<td><div style="display:flex;align-items:center;gap:6px"><span class="ms" style="color:'+color+';font-size:16px">'+icon+'</span><span style="font-weight:700">'+f.name+'</span></div></td><td>'+size+'</td><td>'+dateStr+'</td><td><span style="font-size:10px;color:#9ca3af">미지정</span></td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px" onclick="alert(\'미리보기\')"><span class="ms" style="font-size:13px">visibility</span></button> <button class="btn btn-ghost" style="padding:3px 8px;font-size:10px;color:#dc2626;border-color:#fecaca" onclick="if(confirm(\'삭제?\'))this.closest(\'tr\').remove()"><span class="ms" style="font-size:13px">delete</span></button></td>';
-    tb.appendChild(tr);
+    (function(f){
+      var reader=new FileReader();
+      reader.onload=function(){
+        var base64=reader.result.split(',')[1];
+        apiSend({action:'uploadFile',name:f.name,mime:f.type||'application/octet-stream',content:base64},function(res){
+          if(res.ok) uploaded++; else failed++;
+          if(uploaded+failed===files.length){
+            alert('✅ 업로드 완료: '+uploaded+'건'+(failed?'\n❌ 실패: '+failed+'건':''));
+            loadAttachments();
+          }
+        });
+      };
+      reader.readAsDataURL(f);
+    })(files[i]);
   }
   input.value='';
-  alert('✅ '+files.length+'개 파일 업로드 완료');
 }
+
+function addFileRows(files){
+  handleFileUpload({files:files,value:''});
+}
+
+// 초기 로드
+(function initFilesUI(){
+  function init(){
+    // Apps Script 호출은 로그인 후에만 의미 있음 (doLogin에서 호출되도록)
+    if(typeof WEB_APP_URL!=='undefined' && WEB_APP_URL) loadAttachments();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+})();
+
+// ═══ 드래그&드롭 바인딩 ═══
+(function initDropzone(){
+  function bind(){
+    var dz=document.getElementById('file-dropzone');
+    if(!dz) return;
+    ['dragenter','dragover'].forEach(function(ev){
+      dz.addEventListener(ev,function(e){e.preventDefault();e.stopPropagation();dz.style.background='#ede9fe';dz.style.borderColor='#7c3aed'});
+    });
+    ['dragleave','drop'].forEach(function(ev){
+      dz.addEventListener(ev,function(e){e.preventDefault();e.stopPropagation();dz.style.background='#faf5ff';dz.style.borderColor='#c4b5fd'});
+    });
+    dz.addEventListener('drop',function(e){
+      var files=e.dataTransfer&&e.dataTransfer.files;
+      if(files&&files.length) addFileRows(files);
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind); else bind();
+})();
 
 // ═══ 수신 메일 Gmail 연동 ═══
 var inboxData=[];
@@ -863,6 +1726,7 @@ function loadInbox(){
     inboxData=res.messages||[];
     document.getElementById('inbox-status').textContent='✅ Gmail 연동됨 · '+inboxData.length+'건 (최근 30일)';
     renderInbox();
+    if(typeof updateHomeSummary==='function') updateHomeSummary();
   });
 }
 
@@ -944,6 +1808,51 @@ function registerToApp(idx){
   });
 }
 
+// 미처리 신청서 일괄 자동 등록 (이메일로 중복 체크)
+function autoRegisterApps(){
+  if(!inboxData||!inboxData.length){alert('먼저 "새로고침"으로 수신 메일을 불러오세요');return}
+  // 신청서 카테고리 + 미처리만 추출
+  var candidates=inboxData.filter(function(m){
+    return m.category==='신청서' && m.isUnread;
+  });
+  if(!candidates.length){alert('미처리 신청서가 없습니다');return}
+  var defPos=prompt('모두에게 적용할 기본 직급을 입력하세요\n(등록 후 2단계 탭에서 개별 수정 가능)','기초의원');
+  if(!defPos) return;
+  // 먼저 신청관리 시트에서 이미 등록된 이메일 조회 (중복 방지)
+  apiSend({action:'readSheet',tab:'신청관리'},function(res){
+    var existing={};
+    if(res.ok && res.rows){
+      res.rows.forEach(function(r){if(r['이메일']) existing[r['이메일'].toLowerCase()]=true});
+    }
+    var toRegister=candidates.filter(function(m){return !existing[(m.fromEmail||'').toLowerCase()]});
+    var skipped=candidates.length-toRegister.length;
+    if(!toRegister.length){
+      alert('모두 이미 등록된 이메일입니다 ('+skipped+'건 중복 스킵)');
+      return;
+    }
+    if(!confirm('📋 '+toRegister.length+'건 일괄 자동 등록\n\n직급: '+defPos+'\n중복 스킵: '+skipped+'건\n\n계속할까요?')) return;
+    var done=0,ok=0,fail=0;
+    toRegister.forEach(function(m){
+      apiSend({
+        action:'registerApp',
+        messageId:m.id,
+        name:m.fromName,
+        email:m.fromEmail,
+        position:defPos,
+        hasAttachment:m.hasAttachment
+      },function(r){
+        done++;
+        if(r.ok){ok++;m.isUnread=false}else fail++;
+        if(done===toRegister.length){
+          alert('✅ 자동 등록 완료\n\n성공: '+ok+'건\n실패: '+fail+'건\n중복 스킵: '+skipped+'건');
+          renderInbox();
+          loadAllData();
+        }
+      });
+    });
+  });
+}
+
 function registerToCS(idx){
   var m=inboxData[idx];if(!m)return;
   var catMap={'신청서':'서비스','증명서':'서비스','문의':'기타'};
@@ -965,16 +1874,18 @@ function registerToCS(idx){
   });
 }
 
-// ═══ 메일 발송 폼 → Apps Script ═══
+// ═══ 메일 발송 템플릿 (템플릿 관리 탭과 동일 이름) ═══
 var TPL={
-  pw:    {subject:'[일꾼을찾다] 임시 비밀번호 안내', body:'{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n임시 비밀번호를 발급해드립니다.\n\n🔑 임시 비밀번호: {{비밀번호}}\n🔗 대시보드: {{대시보드링크}}\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n\n감사합니다.\n일꾼을찾다 팀', type:'계정 발급', step:'2단계'},
-  cert:  {subject:'[일꾼을찾다] 후보자 확인증을 보내주세요', body:'{{이름}}님 안녕하세요.\n\n신청서를 접수받았으나 후보자 확인증이 첨부되어 있지 않습니다.\n\n📩 ilkkun.official@gmail.com 으로 확인증을 보내주세요.\n\n감사합니다.\n일꾼을찾다 팀', type:'증명서', step:'2단계'},
-  cert2: {subject:'[일꾼을찾다] 후보자 확인증 재요청', body:'{{이름}}님 안녕하세요.\n\n확인증이 아직 접수되지 않았습니다. 서비스 제공을 위해 빠른 전달 부탁드립니다.\n\n📩 ilkkun.official@gmail.com\n\n감사합니다.\n일꾼을찾다 팀', type:'증명서', step:'2단계'},
-  cs:    {subject:'[일꾼을찾다] 문의 답변드립니다', body:'{{이름}}님 안녕하세요.\n\n문의하신 내용에 답변드립니다.\n\n──────────────────\n(답변 내용)\n──────────────────\n\n추가 문의는 본 메일에 회신해주세요.\n\n감사합니다.\n일꾼을찾다 팀', type:'CS 답변', step:'CS'},
-  svc:   {subject:'[일꾼을찾다] 서비스 안내', body:'{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n서비스 안내드립니다.\n\n감사합니다.\n일꾼을찾다 팀', type:'자동 안내', step:'1단계'},
-  event: {subject:'[일꾼을찾다] 🔥 특별 할인 안내', body:'{{이름}}님 안녕하세요.\n\n지금 토큰 충전 시 최대 45% 할인!\n\n🔥 1차 이벤트 (4월): 최대 혜택\n⏰ 2차 이벤트 (5/1~10): 마지막 기회\n\n👉 충전하기: {{대시보드링크}}\n\n감사합니다.\n일꾼을찾다 팀', type:'이벤트 할인', step:'-'},
-  token: {subject:'[일꾼을찾다] ⚠️ 토큰 부족', body:'{{이름}}님 안녕하세요.\n\n토큰 잔여량이 부족합니다.\n소진 시 AI 아바타 운영이 중단됩니다.\n\n👉 충전하기: {{대시보드링크}}\n\n감사합니다.\n일꾼을찾다 팀', type:'토큰 부족', step:'-'},
-  remind:{subject:'[일꾼을찾다] 선거일 리마인더', body:'{{이름}}님 안녕하세요.\n\n선거일이 다가오고 있습니다. 대시보드를 확인해주세요.\n\n👉 {{대시보드링크}}\n\n감사합니다.\n일꾼을찾다 팀', type:'리마인더', step:'-'}
+  auto:  {name:'1차 자동 안내 메일', subject:'[일꾼을찾다] 안내서 및 신청서를 보내드립니다', body:'{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n문의 감사합니다.\n안내서와 신청서를 보내드립니다.\n\n📎 첨부파일을 확인해주세요.\n\n신청서 작성 후 후보자 확인증과 함께\n📩 ilkkun.official@gmail.com 으로 보내주세요.\n\n접수 후 1영업일 내 대시보드를 발급해드립니다.\n\n감사합니다.\n일꾼을찾다 팀 드림', type:'자동 안내', step:'1단계'},
+  pw:    {name:'임시 비밀번호', subject:'[일꾼을찾다] 임시 비밀번호 안내', body:'{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n임시 비밀번호를 발급해드립니다.\n\n🔑 임시 비밀번호: {{비밀번호}}\n🔗 대시보드: {{대시보드링크}}\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n\n감사합니다.\n일꾼을찾다 팀', type:'계정 발급', step:'2단계'},
+  acct:  {name:'2단계 · 계정 발급', subject:'[일꾼을찾다] 대시보드 계정이 발급되었습니다', body:'{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n대시보드 계정이 발급되었습니다.\n\n━━━━━━━━━━━━━━━━━━━━\n🔗 대시보드: {{대시보드링크}}\n📧 ID: {{이메일}}\n🔑 임시 비밀번호: {{비밀번호}}\n━━━━━━━━━━━━━━━━━━━━\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n\n감사합니다.\n일꾼을찾다 팀', type:'계정 발급', step:'2단계'},
+  cert:  {name:'2단계 · 증명서 요청', subject:'[일꾼을찾다] 후보자 확인증을 보내주세요', body:'{{이름}}님 안녕하세요.\n\n신청서를 접수받았으나 후보자 확인증이 첨부되어 있지 않습니다.\n\n📩 ilkkun.official@gmail.com 으로 확인증을 보내주세요.\n\n감사합니다.\n일꾼을찾다 팀', type:'증명서', step:'2단계'},
+  cert2: {name:'증명서 재요청', subject:'[일꾼을찾다] 후보자 확인증 재요청', body:'{{이름}}님 안녕하세요.\n\n확인증이 아직 접수되지 않았습니다. 서비스 제공을 위해 빠른 전달 부탁드립니다.\n\n📩 ilkkun.official@gmail.com\n\n감사합니다.\n일꾼을찾다 팀', type:'증명서', step:'2단계'},
+  cs:    {name:'CS 답변', subject:'[일꾼을찾다] 문의 답변드립니다', body:'{{이름}}님 안녕하세요.\n\n문의하신 내용에 답변드립니다.\n\n──────────────────\n(답변 내용)\n──────────────────\n\n추가 문의는 본 메일에 회신해주세요.\n\n감사합니다.\n일꾼을찾다 팀', type:'CS 답변', step:'CS'},
+  svc:   {name:'서비스 안내', subject:'[일꾼을찾다] 서비스 안내', body:'{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n서비스 안내드립니다.\n\n감사합니다.\n일꾼을찾다 팀', type:'자동 안내', step:'1단계'},
+  event: {name:'이벤트 할인 안내', subject:'[일꾼을찾다] 🔥 특별 할인 안내', body:'{{이름}}님 안녕하세요.\n\n지금 토큰 충전 시 최대 45% 할인!\n\n🔥 1차 이벤트 (4월): 최대 혜택\n⏰ 2차 이벤트 (5/1~10): 마지막 기회\n\n👉 충전하기: {{대시보드링크}}\n\n감사합니다.\n일꾼을찾다 팀', type:'이벤트 할인', step:'-'},
+  token: {name:'토큰 부족 알림', subject:'[일꾼을찾다] ⚠️ 토큰 부족', body:'{{이름}}님 안녕하세요.\n\n토큰 잔여량이 부족합니다.\n소진 시 AI 아바타 운영이 중단됩니다.\n\n👉 충전하기: {{대시보드링크}}\n\n감사합니다.\n일꾼을찾다 팀', type:'토큰 부족', step:'-'},
+  remind:{name:'리마인더', subject:'[일꾼을찾다] 신청서 제출 안내', body:'{{이름}}님 안녕하세요.\n\n지난번 안내드린 신청서가 아직 접수되지 않았습니다.\n미제출 시 서비스 이용이 불가합니다.\n\n📩 ilkkun.official@gmail.com\n\n감사합니다.\n일꾼을찾다 팀', type:'리마인더', step:'-'}
 };
 
 function applyTpl(key){
@@ -1004,7 +1915,7 @@ function sendFromForm(){
     body:body,
     step:step,
     type:type,
-    variables:{'이름':name,'이메일':to,'대시보드링크':'https://sandbox.thisishilo.ir'}
+    variables:{'이름':name,'이메일':to,'대시보드링크':'https://host.thisishilo.ir'}
   },function(res){
     btn.disabled=false;btn.innerHTML='<span class="ms" style="font-size:14px">send</span>발송';
     if(!res.ok) return;

@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# 관리자 페이지는 검색 노출 차단
+Disallow: /admin-dashboard.html
+Disallow: /admin-dashboard-bundle.html
+Disallow: /candidate-dashboard-bundle.html
+Disallow: /candidate-dashboard-bundle_02.html
+
+Sitemap: https://www.illkkun.cloud/sitemap.xml
