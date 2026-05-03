@@ -746,13 +746,13 @@ function sendBrochure(data) {
       '<p>요청해주신 <b>서비스 소개서</b>를 보내드립니다.<br/>' +
       '아래 두 가지 방법으로 확인하실 수 있습니다.</p>' +
       '<p style="background:#faf5ff;border-left:3px solid #7c3aed;padding:12px 16px;border-radius:6px;margin:16px 0">' +
-      '📎 <b>첨부파일</b> — ' + fileName + '<br/>' +
+      '&#x1F4CE; <b>첨부파일</b> &mdash; ' + fileName + '<br/>' +
       '<span style="font-size:12px;color:#64748b">오프라인에서도 자유롭게 열람·공유하실 수 있습니다.</span>' +
       '</p>' +
       '<p style="margin:18px 0">' +
         '<a href="' + BROCHURE_VIEW_URL + '" ' +
         'style="display:inline-block;background:#7c3aed;color:#fff;text-decoration:none;' +
-        'padding:12px 22px;border-radius:8px;font-weight:700">🔗 온라인 보기 (인터랙티브)</a>' +
+        'padding:12px 22px;border-radius:8px;font-weight:700">&#x1F517; 온라인 보기 (인터랙티브)</a>' +
         '<span style="display:block;font-size:12px;color:#64748b;margin-top:6px">' +
         '※ FAQ 펼쳐보기·링크 클릭 등 모든 기능을 바로 사용하실 수 있습니다.</span>' +
       '</p>' +
