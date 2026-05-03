@@ -437,6 +437,39 @@
   .trust-hero .info p{font-size:12px;color:var(--ink-2);line-height:1.6;margin:0}
   .trust-hero .info .meta{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px 14px;font-size:10.5px;color:var(--ink-3);font-weight:700}
   .trust-hero .info .meta b{color:var(--ink)}
+
+  /* 운영사 이력 (NEW) */
+  .trust-portfolio{
+    margin-top:12px;background:#fff;border:1px solid var(--purple-100);border-radius:14px;
+    padding:13px 18px;
+  }
+  .trust-portfolio h4{
+    display:flex;align-items:center;gap:8px;
+    font-size:11.5px;font-weight:900;color:var(--purple);
+    letter-spacing:.06em;margin:0 0 8px;text-transform:uppercase;
+  }
+  .trust-portfolio h4 .ms{font-size:16px}
+  .portfolio-list{list-style:none;padding:0;margin:0}
+  .portfolio-list li{
+    display:grid;grid-template-columns:30px 60px 1fr;gap:10px;
+    align-items:center;padding:5px 0;border-top:1px dashed var(--line);
+  }
+  .portfolio-list li:first-of-type{border-top:none;padding-top:2px}
+  .port-num{
+    font-size:11px;font-weight:900;color:var(--purple);
+    font-style:italic;letter-spacing:.02em;
+  }
+  .port-when{font-size:10px;color:var(--ink-3);font-weight:800;font-variant-numeric:tabular-nums}
+  .port-content{display:flex;flex-direction:column;gap:1px;min-width:0}
+  .port-name{font-size:11px;font-weight:900;color:var(--ink);letter-spacing:.02em}
+  .port-detail{font-size:10px;color:var(--ink-3);line-height:1.45}
+  .portfolio-extra{
+    margin-top:8px;padding-top:8px;border-top:1px solid var(--purple-100);
+    font-size:10.5px;color:var(--ink-2);line-height:1.6;
+  }
+  .portfolio-extra b{color:var(--purple)}
+  .portfolio-extra .ms{font-size:11px;color:var(--purple);vertical-align:-1px;margin-right:3px}
+
   .trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
   .trust-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 18px;display:flex;flex-direction:column;gap:8px}
   .trust-card .icon{width:38px;height:38px;border-radius:10px;background:var(--purple-50);color:var(--purple);display:grid;place-items:center}
@@ -1414,19 +1447,77 @@
   <div>
     <div class="eyebrow"><span class="num">13</span> · 운영사 안내</div>
     <h2 class="h2">신뢰할 수 있는 운영사가<br/>함께합니다</h2>
-    <p class="lead">선거 데이터와 플랫폼 운영을 전문으로 하는 <b style="color:var(--purple)">(주)플레이4</b>가 일꾼을묻다를 운영합니다. 보안·개인정보 보호·선거 관련 운영 기준을 기본 원칙으로 삼습니다.</p>
+    <p class="lead">글로벌 K-콘텐츠 라이브 운영과 디지털 플랫폼 개발을 전문으로 하는 <b style="color:var(--purple)">(주)플레이4</b>가 일꾼을묻다를 운영합니다. KCON·BTS×부산엑스포 등 대규모 동시접속 운영 경험과 보안·개인정보 보호 기준을 기본 원칙으로 삼습니다.</p>
   </div>
 
   <div class="trust-hero">
     <div class="logo-mark"><img src="assets/logo_ask03.png" alt=""/></div>
     <div class="info">
       <h3>(주)플레이4</h3>
-      <p>선거 데이터·플랫폼 운영을 전문으로 하는 IT 기업입니다. 일꾼을묻다는 (주)플레이4가 직접 기획·개발·운영합니다.</p>
+      <p>K-콘텐츠 라이브·메타버스·XR 플랫폼 개발을 전문으로 하는 IT 기업입니다. 일꾼을묻다는 (주)플레이4가 직접 기획·개발·운영합니다.</p>
       <div class="meta">
         <span><b>대표이사</b> 임진우</span>
         <span><b>사업자번호</b> 267-86-00679</span>
         <span><b>본사</b> 세종특별자치시 나성북로21 A-76</span>
+        <span><b>사이트</b> play4.co.kr</span>
       </div>
+    </div>
+  </div>
+
+  <div class="trust-portfolio">
+    <h4><span class="ms">workspace_premium</span>주요 글로벌 K-콘텐츠 라이브 운영 이력</h4>
+    <ul class="portfolio-list">
+      <li>
+        <span class="port-num">1st</span>
+        <span class="port-when">2022.10</span>
+        <div class="port-content">
+          <span class="port-name">BTS × BUSAN 2030</span>
+          <span class="port-detail">2030 부산세계박람회 유치 BTS 콘서트 실시간 글로벌 생중계</span>
+        </div>
+      </li>
+      <li>
+        <span class="port-num">2nd</span>
+        <span class="port-when">2023.08</span>
+        <div class="port-content">
+          <span class="port-name">KCON 2023 LA</span>
+          <span class="port-detail">IVE · ITZY · (여자)아이들 · RIIZE · Stray Kids 외 다수</span>
+        </div>
+      </li>
+      <li>
+        <span class="port-num">3rd</span>
+        <span class="port-when">2023.10</span>
+        <div class="port-content">
+          <span class="port-name">KCON 2023 SAUDI</span>
+          <span class="port-detail">SUPER JUNIOR · 선미 · 효린 · STAYC · NewJeans 외 다수</span>
+        </div>
+      </li>
+      <li>
+        <span class="port-num">4th</span>
+        <span class="port-when">2024.03</span>
+        <div class="port-content">
+          <span class="port-name">ECO FRIEND 2024</span>
+          <span class="port-detail">기후위기 K-POP 콘서트 — 최예나 · 템페스트 · 루나 · 니엘</span>
+        </div>
+      </li>
+      <li>
+        <span class="port-num">5th</span>
+        <span class="port-when">2024.03</span>
+        <div class="port-content">
+          <span class="port-name">KCON 2024 HK</span>
+          <span class="port-detail">에스파 · ATEEZ · TWS · YENA · ZEROBASEONE 외 다수</span>
+        </div>
+      </li>
+      <li>
+        <span class="port-num">6th</span>
+        <span class="port-when">2024.05</span>
+        <div class="port-content">
+          <span class="port-name">KCON 2024 JAPAN</span>
+          <span class="port-detail">보이넥스트도어 · 레드벨벳 · 투어스 · 아일릿 · 태연 외 다수</span>
+        </div>
+      </li>
+    </ul>
+    <div class="portfolio-extra">
+      <span class="ms">add_circle</span><b>2025</b> Apple Vision Pro 콘텐츠 다수 · 일본 JR철도 <b>민트레인 메타버스 게임</b> 출시
     </div>
   </div>
 
