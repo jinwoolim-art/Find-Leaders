@@ -589,7 +589,13 @@
     .top-bar,.no-print{display:none !important}
     /* 모든 요소: 배경·그라디언트·컬러 강제 인쇄 (Chrome/Safari "배경 그래픽" 체크 여부와 무관) */
     *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important}
-    .page{margin:0;box-shadow:none;width:210mm;height:297mm;min-height:297mm;page-break-after:always;break-after:page;overflow:hidden}
+    /* box-shadow는 PDF에서 흐릿한 글로우가 아닌 하드 사각형으로 렌더됨 → 전부 제거 */
+    *,*::before,*::after{box-shadow:none !important}
+    /* 장식용 가짜 가장자리 그라디언트 원형들도 PDF에선 사각형으로 보일 수 있음 — 숨김 */
+    .cover::before,.cover::after,
+    .cta-page::before,.cta-page::after,
+    .golden-page::before,.golden-page::after{display:none !important}
+    .page{margin:0;width:210mm;height:297mm;min-height:297mm;page-break-after:always;break-after:page;overflow:hidden}
     .page:last-of-type{page-break-after:auto;break-after:auto}
     /* 인쇄 시 이미지가 컨테이너 넘치지 않게 */
     img{max-width:100%;height:auto;break-inside:avoid;page-break-inside:avoid}
