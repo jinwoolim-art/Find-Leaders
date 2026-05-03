@@ -331,6 +331,41 @@
   .contact-band .right{text-align:right;font-size:12px;font-weight:900;color:#fff;line-height:1.7}
   .contact-band .right b{color:var(--gold-50)}
 
+  /* P6 약관 안내 */
+  .terms-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+  .terms-card{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:16px 18px;display:flex;flex-direction:column;gap:8px;
+  }
+  .terms-card h4{
+    font-size:12px;font-weight:900;color:var(--purple);
+    letter-spacing:.06em;display:flex;align-items:center;gap:6px;margin-bottom:4px;
+  }
+  .terms-card h4 .ms{font-size:14px}
+  .terms-card ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px}
+  .terms-card li{
+    font-size:11px;color:var(--ink-2);line-height:1.5;
+    display:flex;gap:6px;align-items:flex-start;
+  }
+  .terms-card li::before{content:'·';color:var(--purple);font-weight:900;flex-shrink:0;font-size:14px;line-height:1}
+  .terms-card li b{color:var(--ink);font-weight:800}
+  .terms-card .link{
+    margin-top:auto;padding-top:10px;border-top:1px dashed var(--line);
+    font-size:10.5px;color:var(--ink-3);font-weight:700;
+  }
+  .terms-card .link a{color:var(--purple);text-decoration:none;font-weight:900}
+  .terms-card .link a:hover{text-decoration:underline}
+
+  .agree-note{
+    margin-top:14px;background:linear-gradient(135deg,var(--gold-100) 0%,var(--gold-50) 100%);
+    border:1px solid var(--gold-300);border-radius:12px;padding:14px 18px;
+    display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;
+  }
+  .agree-note .ms{color:#92400e;font-size:24px}
+  .agree-note h4{font-size:12.5px;font-weight:900;color:var(--ink);margin:0 0 4px}
+  .agree-note p{font-size:11px;color:var(--ink-2);line-height:1.55;margin:0}
+  .agree-note p b{color:var(--purple)}
+
   /* Top bar (no-print) */
   .top-bar{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.2) blur(10px);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
   .top-bar .ttl{font-weight:900;font-size:14px;color:var(--ink);display:flex;align-items:center;gap:8px}
@@ -381,7 +416,7 @@
 <div class="top-bar no-print">
   <div class="ttl">
     <img src="assets/logo_ask03.png" alt=""/>
-    <span>일꾼을묻다 · 후보자 가입 안내 (5p)</span>
+    <span>일꾼을묻다 · 후보자 가입 안내 (6p)</span>
   </div>
   <div class="actions">
     <a href="brochure-product.html" target="_self">📐 소개서</a>
@@ -423,7 +458,7 @@
   </div>
 
   <div class="cover-bottom">www.illkkun.cloud · ilkkun.official@gmail.com</div>
-  <div class="pg-num"><b>01</b> / 05</div>
+  <div class="pg-num"><b>01</b> / 06</div>
 </section>
 
 <!-- ═══════════════════ P3. 가입비 입금 ═══════════════════ -->
@@ -467,7 +502,7 @@
   </div>
 
   <div class="pg-foot">© 2026 일꾼을묻다 · 후보자 가입 안내</div>
-  <div class="pg-num"><b>02</b> / 05</div>
+  <div class="pg-num"><b>02</b> / 06</div>
 </section>
 
 <!-- ═══════════════════ P4. 입금 후 받는 도구 (대시보드 4) ═══════════════════ -->
@@ -520,7 +555,7 @@
   </div>
 
   <div class="pg-foot">© 2026 일꾼을묻다 · 후보자 가입 안내</div>
-  <div class="pg-num"><b>03</b> / 05</div>
+  <div class="pg-num"><b>03</b> / 06</div>
 </section>
 
 <!-- ═══════════════════ P5. 골든타임 (먼저 등록 = 유리) ═══════════════════ -->
@@ -576,7 +611,7 @@
   </a>
 
   <div class="pg-foot">© 2026 일꾼을묻다 · 후보자 가입 안내</div>
-  <div class="pg-num"><b>04</b> / 05</div>
+  <div class="pg-num"><b>04</b> / 06</div>
 </section>
 
 <!-- ═══════════════════ P7. FAQ + 체크리스트 + 연락처 ═══════════════════ -->
@@ -616,7 +651,73 @@
   </div>
 
   <div class="pg-foot">© 2026 일꾼을묻다 · 공직선거법 준수 · 개인정보 보호</div>
-  <div class="pg-num"><b>05</b> / 05</div>
+  <div class="pg-num"><b>05</b> / 06</div>
+</section>
+
+<!-- ═══════════════════ P6. 이용약관 + 개인정보 처리방침 요약 ═══════════════════ -->
+<section class="page">
+  <div class="pg-brand"><img src="assets/logo_ask03.png" alt=""/><b>일꾼을묻다</b><span>· 06 약관 안내</span></div>
+
+  <div>
+    <div class="eyebrow"><span class="num">06</span> · 결제 전 확인사항</div>
+    <h2 class="h2">이용약관 + 개인정보 처리방침</h2>
+    <p class="lead" style="margin-top:8px">결제 시 본 약관에 동의하신 것으로 간주됩니다. 핵심 내용은 아래 요약을 참고하시고, 전문은 링크를 통해 확인해주세요.</p>
+  </div>
+
+  <div class="terms-grid">
+    <!-- 이용약관 요약 -->
+    <div class="terms-card">
+      <h4><span class="ms">gavel</span>이용약관 핵심 요약</h4>
+      <ul>
+        <li><b>가입 자격</b> — 공직선거법상 입후보 자격 보유자 또는 권한 위임된 캠프 담당자</li>
+        <li><b>가입비</b> — 직급별 차등 (광역단체장 299만원 / 기초단체장 129 / 광역의원 39 / 기초의원 19, 부가세 별도)</li>
+        <li><b>환불</b> — <b>구축 전 안심 환불</b> 가능 / 구축 후(사전 답변 입력 시작) 제한</li>
+        <li><b>후보자 의무</b> — 등록 자료 정확성 보장, 사전 답변 본인 검토·승인</li>
+        <li><b>운영사 의무</b> — 시스템 안정성·정치적 중립·개인정보 보호</li>
+        <li><b>선거법 준수</b> — AI 안내 정보 자동 표시, 사칭이 아닌 대리인 설정, 상대 후보 비방 X</li>
+        <li><b>관할 법원</b> — 회사 본사 소재지(대전·세종) 관할 법원</li>
+      </ul>
+      <div class="link">전문: <a href="https://www.illkkun.cloud/terms.html" target="_blank" rel="noopener">www.illkkun.cloud/terms.html</a></div>
+    </div>
+
+    <!-- 개인정보 처리방침 요약 -->
+    <div class="terms-card">
+      <h4><span class="ms">lock</span>개인정보 처리방침 핵심 요약</h4>
+      <ul>
+        <li><b>후보자 수집 항목</b> — 이메일·연락처·후보자명·직급·지역구·정책자료(필수 6종)</li>
+        <li><b>시민(유권자) 정보</b> — <b>원칙적 비수집</b> · 질문 내용만 비식별화 통계로 활용</li>
+        <li><b>보유 기간</b> — 후보자 정보: 선거 종료 후 30일 폐기 / 결제 기록: 5년(법령)</li>
+        <li><b>제3자 제공</b> — 없음 (법령상 요청 외)</li>
+        <li><b>처리 위탁</b> — AWS(서버), Google(메일·시트), PG사(결제), AI 사업자(임베딩)</li>
+        <li><b>이용자 권리</b> — 열람·정정·삭제 요청 가능 (이메일 신청, 10일 내 처리)</li>
+        <li><b>보안 조치</b> — SSL/TLS 전구간 암호화, 접근 통제, 정기 보안 점검</li>
+      </ul>
+      <div class="link">전문: <a href="https://www.illkkun.cloud/privacy.html" target="_blank" rel="noopener">www.illkkun.cloud/privacy.html</a></div>
+    </div>
+  </div>
+
+  <div class="agree-note">
+    <span class="ms">verified</span>
+    <div>
+      <h4>결제 시 약관 동의 절차</h4>
+      <p>결제 페이지에서 <b>약관 동의 체크박스</b>를 확인 후 결제를 진행하시면 본 이용약관 및 개인정보 처리방침에 동의하신 것으로 간주됩니다. 동의 시점·IP는 PG사 결제 로그에 자동 기록되어 분쟁 발생 시 증빙 자료로 사용됩니다.</p>
+    </div>
+  </div>
+
+  <div class="contact-band">
+    <span class="ms">support_agent</span>
+    <div>
+      <h4>약관 관련 문의는 운영팀에 연락해주세요</h4>
+      <p>약관 해석·환불 절차·개인정보 권리 행사 등 모든 문의는 운영팀이 빠르게 도와드립니다.</p>
+    </div>
+    <div class="right">
+      <span class="ms">mail</span> ilkkun.official@gmail.com<br/>
+      <span class="ms">language</span> www.illkkun.cloud
+    </div>
+  </div>
+
+  <div class="pg-foot">© 2026 일꾼을묻다 · 공직선거법 준수 · 개인정보 보호</div>
+  <div class="pg-num"><b>06</b> / 06</div>
 </section>
 
 <script>

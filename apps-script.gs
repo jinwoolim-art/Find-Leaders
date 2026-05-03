@@ -760,6 +760,12 @@ function sendBrochure(data) {
       '· AI 후보자 챗봇 · 24시간 시민 응대 · 후보자 전용 대시보드<br/>' +
       '· 도입 문의: <a href="mailto:ilkkun.official@gmail.com">ilkkun.official@gmail.com</a>' +
       '</p>' +
+      '<p style="font-size:11.5px;color:#475569;margin-top:14px;background:#faf5ff;border-left:3px solid #7c3aed;padding:10px 14px;border-radius:6px">' +
+      '<b style="color:#7c3aed">결제 전 확인사항</b> &mdash; 본 소개서에 <b>이용약관</b> 및 <b>개인정보 처리방침</b> 요약이 포함되어 있습니다. ' +
+      '결제 진행 시 본 약관에 동의하신 것으로 간주됩니다. 전문은 ' +
+      '<a href="https://www.illkkun.cloud/terms.html" style="color:#7c3aed;font-weight:700">이용약관</a> · ' +
+      '<a href="https://www.illkkun.cloud/privacy.html" style="color:#7c3aed;font-weight:700">개인정보 처리방침</a>에서 확인 가능합니다.' +
+      '</p>' +
       '<hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0"/>' +
       '<p style="font-size:11px;color:#94a3b8">본 메일은 <b>일꾼을묻다 서비스 소개서</b> 신청에 따른 자동 발송 메일입니다.<br/>' +
       '문의가 필요하시면 본 메일에 회신해주세요.</p>' +
