@@ -27,8 +27,8 @@ var ATTACHMENT_FOLDER_ID = '19MhKlk18IiTuIzY3CMLfVLF3DA79_MQU';
 
 // 소개서 PDF — Drive 파일 ID로 직접 첨부 (파일 교체 시에도 ID는 유지됨)
 var BROCHURE_FILE_ID = '1VqQCoArjlLSjx9l2QI4NUTAoxKQDC01A';
-// 온라인 최신본 보기 URL — 같은 파일을 브라우저에서 바로 열람 (공유 권한: "링크 있는 모든 사용자(뷰어)" 필요)
-var BROCHURE_VIEW_URL = 'https://drive.google.com/file/d/' + BROCHURE_FILE_ID + '/view';
+// 온라인 최신본 보기 URL — 인터랙티브 HTML (FAQ 아코디언·CTA 링크 등 풀 기능)
+var BROCHURE_VIEW_URL = 'https://www.illkkun.cloud/brochure-product.html';
 var GCHAT_WEBHOOK = 'https://chat.googleapis.com/v1/spaces/AAQALGDXWjs/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=4rjAJKb2-n4xyUmrf4lQ11-p7tA8SiyHJvQJ6VzTrog';
 
 /**
@@ -752,9 +752,9 @@ function sendBrochure(data) {
       '<p style="margin:18px 0">' +
         '<a href="' + BROCHURE_VIEW_URL + '" ' +
         'style="display:inline-block;background:#7c3aed;color:#fff;text-decoration:none;' +
-        'padding:12px 22px;border-radius:8px;font-weight:700">🔗 온라인 최신본 보기</a>' +
+        'padding:12px 22px;border-radius:8px;font-weight:700">🔗 온라인 보기 (인터랙티브)</a>' +
         '<span style="display:block;font-size:12px;color:#64748b;margin-top:6px">' +
-        '※ 항상 최신 버전으로 자동 업데이트됩니다.</span>' +
+        '※ FAQ 펼쳐보기·링크 클릭 등 모든 기능을 바로 사용하실 수 있습니다.</span>' +
       '</p>' +
       '<p style="font-size:13px;color:#64748b;margin-top:18px">' +
       '· AI 후보자 챗봇 · 24시간 시민 응대 · 후보자 전용 대시보드<br/>' +
