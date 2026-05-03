@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>일꾼을묻다 · 후보자 사전 답변 등록 — 질문은행</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --purple:#7c3aed;--purple-50:#faf5ff;--purple-100:#f3e8ff;--purple-200:#e9d5ff;
+    --gold-50:#fef9c3;--gold-100:#fef3c7;--gold-300:#fde68a;
+    --green:#10b981;
+    --ink:#0f172a;--ink-2:#475569;--ink-3:#64748b;--ink-4:#94a3b8;
+    --line:#e2e8f0;--soft:#f8fafc;
+    --bg:#f1f5f9;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:"Noto Sans KR",-apple-system,sans-serif}
+  body{background:var(--bg);color:var(--ink);line-height:1.5;padding-bottom:60px}
+  .ms{font-family:"Material Symbols Outlined";font-variation-settings:"FILL" 0,"wght" 500,"GRAD" 0,"opsz" 24;line-height:1;vertical-align:-2px}
+
+  /* Top header */
+  .top{
+    background:#fff;border-bottom:1px solid var(--line);
+    padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+    position:sticky;top:0;z-index:50;
+  }
+  .top .ttl{display:flex;align-items:center;gap:10px;font-weight:900;font-size:15px;color:var(--ink)}
+  .top .ttl .ms{font-size:22px;color:var(--purple)}
+  .top .meta{font-size:12px;color:var(--ink-3);font-weight:700}
+  .top .meta b{color:var(--purple)}
+
+  /* Main wrapper */
+  .wrap{max-width:1080px;margin:0 auto;padding:24px}
+
+  /* Scope tabs */
+  .scope-tabs{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;
+  }
+  .scope-tab{
+    background:#fff;border:2px solid var(--line);border-radius:14px;
+    padding:18px 20px;cursor:pointer;text-align:left;transition:all .2s;
+    display:flex;align-items:center;gap:14px;
+  }
+  .scope-tab:hover{border-color:var(--purple-200)}
+  .scope-tab.active{border-color:var(--purple);background:linear-gradient(180deg,var(--purple-50) 0%,#fff 100%);box-shadow:0 6px 16px rgba(124,58,237,.15)}
+  .scope-tab .icon{
+    width:44px;height:44px;border-radius:12px;background:var(--purple-50);
+    display:grid;place-items:center;flex-shrink:0;
+  }
+  .scope-tab.active .icon{background:var(--purple);color:#fff}
+  .scope-tab .icon .ms{font-size:24px;color:var(--purple)}
+  .scope-tab.active .icon .ms{color:#fff}
+  .scope-tab .info h3{font-size:15px;font-weight:900;color:var(--ink);margin-bottom:2px}
+  .scope-tab .info p{font-size:11px;color:var(--ink-3);font-weight:600}
+  .scope-tab .count{margin-left:auto;font-size:13px;font-weight:900;color:var(--purple)}
+  .scope-tab.active .count{color:var(--purple)}
+
+  /* Stats bar */
+  .stats{
+    background:#fff;border:1px solid var(--line);border-radius:12px;
+    padding:14px 18px;margin-bottom:14px;
+    display:flex;flex-wrap:wrap;align-items:center;gap:18px;font-size:12.5px;color:var(--ink-2);
+  }
+  .stats .stat b{color:var(--purple);font-weight:900;font-size:14px}
+  .stats .progress-wrap{flex:1;min-width:200px;display:flex;align-items:center;gap:10px}
+  .stats .bar{flex:1;height:8px;background:var(--line);border-radius:999px;overflow:hidden}
+  .stats .bar > div{height:100%;background:linear-gradient(90deg,var(--purple) 0%,#a78bfa 100%);transition:width .3s}
+  .stats .actions{margin-left:auto;display:flex;gap:8px}
+  .stats button{
+    background:var(--purple);color:#fff;border:none;border-radius:8px;
+    padding:7px 14px;font-size:12px;font-weight:800;cursor:pointer;
+    display:inline-flex;align-items:center;gap:5px;
+  }
+  .stats button .ms{font-size:14px}
+  .stats button.ghost{background:#fff;color:var(--ink-2);border:1px solid var(--line)}
+  .stats button.ghost:hover{border-color:var(--purple);color:var(--purple)}
+  .stats button:hover{opacity:.9}
+
+  /* Section block */
+  .section{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    margin-bottom:14px;overflow:hidden;
+  }
+  .section-head{
+    padding:14px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;
+    border-bottom:1px solid transparent;background:var(--soft);
+  }
+  .section[open] .section-head{border-bottom-color:var(--line)}
+  .section-head:hover{background:var(--purple-50)}
+  .section-head .num{
+    display:inline-grid;place-items:center;
+    width:26px;height:26px;border-radius:50%;
+    background:var(--purple);color:#fff;font-size:11.5px;font-weight:900;flex-shrink:0;
+  }
+  .section-head .label{font-size:13px;font-weight:900;color:var(--ink);letter-spacing:.02em}
+  .section-head .sub{font-size:11px;color:var(--ink-3);font-weight:700;margin-left:auto}
+  .section-head .toggle{margin-left:8px;color:var(--purple);font-weight:900;font-size:18px;width:18px;text-align:center;line-height:1}
+
+  /* Question item */
+  .q-item{padding:12px 18px;border-bottom:1px solid var(--line)}
+  .q-item:last-child{border-bottom:none}
+  .q-meta{
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    margin-bottom:6px;font-size:10.5px;color:var(--ink-3);
+  }
+  .q-meta .id{font-family:ui-monospace,Menlo,monospace;color:var(--ink-4);font-weight:700}
+  .q-meta .priority{
+    padding:2px 8px;border-radius:999px;font-weight:900;letter-spacing:.04em;
+  }
+  .q-meta .priority.p1{background:#fef3c7;color:#92400e}
+  .q-meta .priority.p2{background:var(--purple-50);color:var(--purple)}
+  .q-meta .audience{
+    padding:2px 8px;border-radius:999px;font-weight:900;
+    background:#dcfce7;color:#15803d;
+  }
+  .q-meta .audience.operator{background:#dbeafe;color:#1e40af}
+  .q-meta .len{margin-left:auto;color:var(--ink-3);font-weight:700}
+  .q-text{
+    font-size:13px;font-weight:800;color:var(--ink);line-height:1.5;margin-bottom:8px;
+  }
+  .q-text::before{content:'Q. ';color:var(--purple)}
+  .q-answer{
+    width:100%;min-height:80px;
+    border:1px solid var(--line);border-radius:8px;
+    padding:10px 12px;font-size:12.5px;color:var(--ink);line-height:1.6;
+    resize:vertical;background:#fafafa;font-family:inherit;
+  }
+  .q-answer:focus{outline:none;border-color:var(--purple);background:#fff;box-shadow:0 0 0 3px var(--purple-50)}
+  .q-answer.filled{background:#f0fdf4;border-color:#86efac}
+  .q-status{
+    display:flex;align-items:center;gap:8px;margin-top:6px;
+    font-size:10.5px;color:var(--ink-3);
+  }
+  .q-status .ms{font-size:12px}
+  .q-status .saved{color:var(--green);font-weight:800}
+  .q-status .count-chars{margin-left:auto;font-variant-numeric:tabular-nums}
+
+  /* Common section header — different background */
+  .section.common .section-head{background:linear-gradient(90deg,var(--gold-100) 0%,var(--gold-50) 100%)}
+  .section.common .section-head .num{background:#d97706}
+
+  /* Operator audience tag highlights row */
+  .q-item.operator{background:#f0f9ff}
+  .q-item.operator .q-answer{background:#e0f2fe;color:var(--ink-3);cursor:not-allowed}
+
+  /* Filter bar */
+  .filter-bar{
+    display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+    margin-bottom:14px;font-size:12px;color:var(--ink-2);
+  }
+  .filter-bar .chip{
+    background:#fff;border:1px solid var(--line);border-radius:999px;
+    padding:6px 14px;cursor:pointer;font-weight:800;color:var(--ink-3);
+  }
+  .filter-bar .chip:hover{border-color:var(--purple);color:var(--purple)}
+  .filter-bar .chip.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+
+  /* Toast */
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);
+    background:#0f172a;color:#fff;padding:12px 20px;border-radius:10px;
+    font-size:13px;font-weight:800;display:flex;align-items:center;gap:8px;
+    transition:transform .3s;z-index:100;
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+  }
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  .toast .ms{font-size:18px;color:#86efac}
+
+  @media (max-width:840px){
+    .scope-tabs{grid-template-columns:1fr}
+    .stats{flex-direction:column;align-items:stretch}
+    .stats .actions{margin:0;justify-content:flex-end}
+    .top{padding:12px 16px}
+    .wrap{padding:16px}
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="ttl">
+    <span class="ms">quiz</span>
+    <span>일꾼을묻다 · 후보자 사전 답변 등록</span>
+  </div>
+  <div class="meta">
+    <b>Phase 1 미리보기</b> · localStorage 임시 저장 · Iran 백엔드 미연결
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- 직급 선택 탭 -->
+  <div class="scope-tabs" id="scope-tabs">
+    <button class="scope-tab active" data-scope="headOfLocal">
+      <div class="icon"><span class="ms">location_city</span></div>
+      <div class="info">
+        <h3>단체장</h3>
+        <p>도지사·시장·군수·구청장</p>
+      </div>
+      <span class="count">120문항</span>
+    </button>
+    <button class="scope-tab" data-scope="councilor">
+      <div class="icon"><span class="ms">groups</span></div>
+      <div class="info">
+        <h3>지방의원</h3>
+        <p>도의원·시의원·군의원·구의원</p>
+      </div>
+      <span class="count">120문항</span>
+    </button>
+    <button class="scope-tab" data-scope="superintendent">
+      <div class="icon"><span class="ms">school</span></div>
+      <div class="info">
+        <h3>교육감</h3>
+        <p>교육감 단독</p>
+      </div>
+      <span class="count">120문항</span>
+    </button>
+  </div>
+
+  <!-- 진행 상태 + 액션 -->
+  <div class="stats">
+    <div class="stat">전체 <b id="stat-total">0</b>개</div>
+    <div class="stat">필수 <b id="stat-priority1">0</b>개</div>
+    <div class="stat">작성 <b id="stat-filled">0</b>개</div>
+    <div class="progress-wrap">
+      <div class="bar"><div id="progress-bar" style="width:0"></div></div>
+      <span id="progress-pct" style="font-weight:900;color:var(--purple);font-size:13px;min-width:40px">0%</span>
+    </div>
+    <div class="actions">
+      <button class="ghost" onclick="exportJSON()"><span class="ms">download</span>JSON 내보내기</button>
+      <button onclick="saveAll()"><span class="ms">save</span>저장</button>
+    </div>
+  </div>
+
+  <!-- 우선순위 필터 -->
+  <div class="filter-bar">
+    <span><span class="ms" style="font-size:14px">filter_alt</span> 보기 필터:</span>
+    <button class="chip active" data-filter="all">전체</button>
+    <button class="chip" data-filter="p1">필수만 (priority 1)</button>
+    <button class="chip" data-filter="empty">미작성만</button>
+    <button class="chip" data-filter="filled">작성됨만</button>
+  </div>
+
+  <!-- 콘텐츠 영역 -->
+  <div id="content"></div>
+
+</div>
+
+<div class="toast" id="toast"><span class="ms">check_circle</span><span id="toast-text">저장됨</span></div>
+
+<script src="assets/question-bank.js"></script>
+<script>
+  /* ───── 상태 ───── */
+  let currentScope = 'headOfLocal';
+  let currentFilter = 'all';
+  const STORAGE_KEY = 'qb-answers-preview';
+
+  function loadAnswers() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+    catch (e) { return {}; }
+  }
+  function saveAnswers(answers) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(answers));
+  }
+  let answers = loadAnswers();
+
+  /* ───── 렌더링 ───── */
+  function render() {
+    const bank = window.QUESTION_BANK;
+    const scopeData = bank.byScope[currentScope];
+    const commonQs = bank.common;
+    const scopeQs = scopeData.questions;
+
+    // 카테고리별 그룹화
+    const commonGroups = groupBy(commonQs, q => q.category);
+    const scopeGroups = groupBy(scopeQs, q => q.category);
+
+    let html = '';
+
+    // 공통 섹션 헤더
+    html += '<h2 style="font-size:14px;font-weight:900;color:var(--ink-2);margin:6px 0 10px;letter-spacing:.04em">공통 질문 (전 직급 동일)</h2>';
+
+    let commonNum = 1;
+    for (const [cat, list] of Object.entries(commonGroups)) {
+      const filtered = filterQs(list);
+      if (filtered.length === 0) continue;
+      const label = list[0].categoryLabel;
+      const isOpen = commonNum <= 1;  // 첫 카테고리만 열어둠
+      html += renderSection(commonNum++, label, filtered, isOpen, true);
+    }
+
+    // 직급별 섹션 헤더
+    html += `<h2 style="font-size:14px;font-weight:900;color:var(--ink-2);margin:24px 0 10px;letter-spacing:.04em">${scopeData.label} 전용 질문</h2>`;
+    let scopeNum = 1;
+    for (const [cat, list] of Object.entries(scopeGroups)) {
+      const filtered = filterQs(list);
+      if (filtered.length === 0) continue;
+      const label = list[0].categoryLabel;
+      html += renderSection(scopeNum++, label, filtered, scopeNum === 2);
+    }
+
+    document.getElementById('content').innerHTML = html;
+    bindAnswerEvents();
+    updateStats();
+  }
+
+  function renderSection(num, label, questions, openByDefault, isCommon) {
+    const filledCount = questions.filter(q => answers[q.id] && answers[q.id].trim()).length;
+    return `
+      <details class="section ${isCommon ? 'common' : ''}" ${openByDefault ? 'open' : ''}>
+        <summary class="section-head">
+          <span class="num">${num}</span>
+          <span class="label">${label}</span>
+          <span class="sub">${filledCount}/${questions.length} 작성됨</span>
+          <span class="toggle">▾</span>
+        </summary>
+        <div>
+          ${questions.map(renderQuestion).join('')}
+        </div>
+      </details>
+    `;
+  }
+
+  function renderQuestion(q) {
+    const ans = answers[q.id] || '';
+    const isOperator = q.audience === 'operator';
+    const filled = ans.trim().length > 0;
+    return `
+      <div class="q-item ${isOperator ? 'operator' : ''}">
+        <div class="q-meta">
+          <span class="id">${q.id}</span>
+          <span class="priority p${q.priority}">P${q.priority}</span>
+          <span class="audience ${q.audience}">${q.audience === 'candidate' ? '후보자 답변' : '운영사 답변'}</span>
+          <span class="len">권장 ${q.recommendedLength}</span>
+        </div>
+        <div class="q-text">${q.text}</div>
+        <textarea class="q-answer ${filled ? 'filled' : ''}"
+          data-qid="${q.id}"
+          ${isOperator ? 'readonly placeholder="이 질문은 운영사(플레이4)가 답변합니다 — 후보자가 답하지 않습니다"' : 'placeholder="답변을 입력하세요..."'}
+        >${escapeHtml(ans)}</textarea>
+        <div class="q-status">
+          ${filled ? '<span class="saved"><span class="ms">check_circle</span>입력됨</span>' : '<span><span class="ms">edit</span>미작성</span>'}
+          <span class="count-chars" data-count-for="${q.id}">${ans.length}자</span>
+        </div>
+      </div>
+    `;
+  }
+
+  /* ───── 이벤트 바인딩 ───── */
+  function bindAnswerEvents() {
+    document.querySelectorAll('.q-answer').forEach(ta => {
+      if (ta.readOnly) return;
+      ta.addEventListener('input', e => {
+        const qid = e.target.dataset.qid;
+        const val = e.target.value;
+        answers[qid] = val;
+        saveAnswers(answers);
+        // 글자수 업데이트
+        const counter = document.querySelector(`[data-count-for="${qid}"]`);
+        if (counter) counter.textContent = val.length + '자';
+        // filled 클래스 토글
+        if (val.trim()) e.target.classList.add('filled');
+        else e.target.classList.remove('filled');
+        updateStats();
+      });
+    });
+  }
+
+  /* ───── 유틸 ───── */
+  function groupBy(arr, fn) {
+    const map = {};
+    arr.forEach(item => {
+      const key = fn(item);
+      if (!map[key]) map[key] = [];
+      map[key].push(item);
+    });
+    return map;
+  }
+
+  function filterQs(list) {
+    if (currentFilter === 'all') return list;
+    if (currentFilter === 'p1') return list.filter(q => q.priority === 1);
+    if (currentFilter === 'empty') return list.filter(q => !(answers[q.id] && answers[q.id].trim()));
+    if (currentFilter === 'filled') return list.filter(q => answers[q.id] && answers[q.id].trim());
+    return list;
+  }
+
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, m => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    })[m]);
+  }
+
+  function updateStats() {
+    const bank = window.QUESTION_BANK;
+    const allQs = [
+      ...bank.common.filter(q => q.audience === 'candidate'),
+      ...bank.byScope[currentScope].questions
+    ];
+    const total = allQs.length;
+    const p1 = allQs.filter(q => q.priority === 1).length;
+    const filled = allQs.filter(q => answers[q.id] && answers[q.id].trim()).length;
+    const pct = total ? Math.round((filled / total) * 100) : 0;
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-priority1').textContent = p1;
+    document.getElementById('stat-filled').textContent = filled;
+    document.getElementById('progress-bar').style.width = pct + '%';
+    document.getElementById('progress-pct').textContent = pct + '%';
+  }
+
+  function showToast(text) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-text').textContent = text;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  function saveAll() {
+    saveAnswers(answers);
+    showToast('localStorage에 저장됨 (' + Object.keys(answers).filter(k => answers[k].trim()).length + '개 답변)');
+  }
+
+  function exportJSON() {
+    const exportData = {
+      version: window.QUESTION_BANK.version,
+      exportedAt: new Date().toISOString(),
+      scope: currentScope,
+      answers: answers
+    };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `question-bank-answers-${currentScope}-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('JSON 파일 다운로드 시작');
+  }
+
+  /* ───── 탭/필터 핸들러 ───── */
+  document.getElementById('scope-tabs').addEventListener('click', e => {
+    const tab = e.target.closest('.scope-tab');
+    if (!tab) return;
+    document.querySelectorAll('.scope-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentScope = tab.dataset.scope;
+    render();
+  });
+
+  document.querySelectorAll('.filter-bar .chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.filter-bar .chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      currentFilter = chip.dataset.filter;
+      render();
+    });
+  });
+
+  /* ───── 초기 렌더 ───── */
+  render();
+</script>
+
+</body>
+</html>
