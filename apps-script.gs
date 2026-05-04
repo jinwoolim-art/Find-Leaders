@@ -821,32 +821,43 @@ function sendRegistrationKit(data) {
 
   if (!name || !email) return json({ok: false, error: '이름과 이메일은 필수'});
 
-  // 1) ID 발급
-  var id = data.id || ('req_' + Utilities.getUuid().split('-')[0]);
-  var formUrl = REGISTRATION_FORM_BASE_URL + '?id=' + encodeURIComponent(id);
-
-  // 2) 문의관리 시트에 ID 매핑 — row가 있으면 ID 컬럼만 업데이트, 없으면 새 row
+  // 1) 시트에서 기존 row + 기존 ID 확인 (ID 재사용 정책)
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var inq = ss.getSheetByName(INQUIRY_SHEET);
+  var existingId = '';
+  var matchedRow = -1;
+  var idCol = -1;
+
   if (inq) {
-    var found = false;
     var values = inq.getDataRange().getValues();
     var headers = values[0] || [];
-    var idCol = headers.indexOf('신청ID');
+    idCol = headers.indexOf('신청ID');
     if (idCol === -1) {
-      // 신청ID 컬럼 없으면 추가
       inq.getRange(1, headers.length + 1).setValue('신청ID');
       idCol = headers.length;
     }
     for (var r = 1; r < values.length; r++) {
       if ((values[r][2] || '').toString().trim() === email) {
-        inq.getRange(r + 1, idCol + 1).setValue(id);
-        found = true;
+        matchedRow = r;
+        if (idCol >= 0 && values[r][idCol]) {
+          existingId = String(values[r][idCol]).trim();
+        }
         break;
       }
     }
-    if (!found) {
-      // 새 row
+  }
+
+  // 2) ID 결정 — data.id (외부 명시) > 시트의 기존 ID (재사용) > 새로 발급
+  var id = (data.id && String(data.id).trim()) || existingId || ('req_' + Utilities.getUuid().split('-')[0]);
+  var formUrl = REGISTRATION_FORM_BASE_URL + '?id=' + encodeURIComponent(id);
+
+  // 3) 시트 업데이트 — matchedRow 있으면 ID만 갱신 (필요 시), 없으면 새 row 추가
+  if (inq) {
+    if (matchedRow >= 0) {
+      if (existingId !== id) {
+        inq.getRange(matchedRow + 1, idCol + 1).setValue(id);
+      }
+    } else {
       var newRow = [today(), name, email, scope, region, contact, '', '메일발송', '미신청', '신규'];
       while (newRow.length <= idCol) newRow.push('');
       newRow[idCol] = id;
@@ -854,37 +865,39 @@ function sendRegistrationKit(data) {
     }
   }
 
-  // 3) 메일 발송
-  var subject = '[일꾼을묻다] 가입 신청 안내 — ' + name + '님';
+  // 4) 메일 발송
+  var subject = '[일꾼을묻다] 가입 자료 안내 — ' + name + '님';
   var bodyHtml =
     '<div style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:#1e293b;line-height:1.7;max-width:580px;font-size:14px">' +
     '<h2 style="color:#0f172a;margin:0 0 6px;font-size:18px">안녕하세요, ' + name + '님.</h2>' +
-    '<p style="margin:0 0 18px">일꾼을묻다 가입 절차는 아래 두 단계로 간단히 진행됩니다.</p>' +
+    '<p style="margin:0 0 18px">가입을 위한 자료를 안내드립니다.</p>' +
 
-    // ── STEP 1 — 자료 검토 (자료 3종 텍스트 링크) ──
-    '<div style="margin:18px 0;padding:18px 20px;background:linear-gradient(135deg,#eff6ff 0%,#e0e7ff 100%);border-radius:10px">' +
-      '<div style="font-size:13px;font-weight:900;color:#1d4ed8;margin-bottom:10px">&#x2460; 자료 검토</div>' +
-      '<p style="margin:0 0 12px;font-size:13px;color:#1e293b">먼저 아래 자료를 확인해주세요.</p>' +
-      '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-size:13px;line-height:1.6">' +
-        '<tr><td style="padding:5px 8px 5px 0;white-space:nowrap">&#x1F310;&nbsp;<a href="' + LANDING_URL + '" style="color:#1d4ed8;font-weight:700;text-decoration:none">일꾼을묻다 홈페이지</a></td>' +
-            '<td style="padding:5px 0;color:#475569">&rarr; 종합 입구&middot;전체 둘러보기</td></tr>' +
-        '<tr><td style="padding:5px 8px 5px 0;white-space:nowrap">&#x1F4D8;&nbsp;<a href="' + BROCHURE_VIEW_URL + '" style="color:#1d4ed8;font-weight:700;text-decoration:none">서비스 소개서 (19p)</a></td>' +
-            '<td style="padding:5px 0;color:#475569">&rarr; 플랫폼 소개</td></tr>' +
-        '<tr><td style="padding:5px 8px 5px 0;white-space:nowrap">&#x1F4D2;&nbsp;<a href="' + REGISTRATION_GUIDE_URL + '" style="color:#1d4ed8;font-weight:700;text-decoration:none">가입 안내서 (5p)</a></td>' +
-            '<td style="padding:5px 0;color:#475569">&rarr; 가입 절차&middot;결제&middot;운영 흐름</td></tr>' +
-      '</table>' +
-    '</div>' +
+    // ── 메인 박스 — 가입 안내서 + 가입 신청서 ──
+    '<div style="margin:18px 0;padding:24px 22px;background:linear-gradient(135deg,#faf5ff 0%,#fef3c7 100%);border-radius:12px;text-align:center">' +
 
-    // ── STEP 2 — 신청서 작성 (메인 CTA) ──
-    '<div style="margin:18px 0;padding:20px 22px;background:linear-gradient(135deg,#faf5ff 0%,#fef3c7 100%);border-radius:10px;text-align:center">' +
-      '<div style="font-size:13px;font-weight:900;color:#7c3aed;margin-bottom:8px">&#x2461; 가입 신청서 작성</div>' +
-      '<p style="margin:0 0 14px;font-size:13px;color:#1e293b">가입 의사가 있으실 경우 아래 신청서를 작성해주세요.</p>' +
-      '<a href="' + formUrl + '" style="display:inline-block;background:#7c3aed;color:#fff;text-decoration:none;padding:13px 30px;border-radius:10px;font-weight:900;font-size:14px">&#x1F4DD; 가입 신청서 작성하기 &rarr;</a>' +
+      // 안내서 (보조 CTA)
+      '<a href="' + REGISTRATION_GUIDE_URL + '" style="display:inline-block;background:#fff;color:#7c3aed;border:1.5px solid #7c3aed;text-decoration:none;padding:11px 22px;border-radius:8px;font-weight:800;font-size:13px">&#x1F4D2; 가입 안내서 (5p) 보기</a>' +
+      '<div style="font-size:11px;color:#64748b;margin-top:6px">가입 절차 &middot; 결제 &middot; 운영 흐름</div>' +
+
+      '<div style="margin:18px 0;border-top:1px dashed rgba(124,58,237,.3)"></div>' +
+
+      // 신청서 (메인 CTA)
+      '<p style="margin:0 0 12px;font-size:13.5px;color:#1e293b;font-weight:600">가입 의사가 있으시면 아래 신청서를 작성해주세요.</p>' +
+      '<a href="' + formUrl + '" style="display:inline-block;background:#7c3aed;color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:900;font-size:15px;box-shadow:0 6px 16px rgba(124,58,237,.25)">&#x1F4DD; 가입 신청서 작성하기 &rarr;</a>' +
       '<p style="margin:10px 0 0;font-size:10.5px;color:#64748b;font-family:ui-monospace,SFMono-Regular,Menlo,monospace">신청 ID: ' + id + '</p>' +
+
     '</div>' +
 
-    '<p style="font-size:12px;color:#64748b;margin:14px 0 18px;text-align:center">' +
-      '신청서 제출 후, 운영팀이 자격을 검증한 뒤<br/>결제 링크가 별도 메일로 발송됩니다.' +
+    // ── 서브 — 홈페이지·소개서 (작은 보조 링크) ──
+    '<p style="text-align:center;margin:14px 0 4px;font-size:11.5px;color:#94a3b8">' +
+      '참고용 (이미 받으신 경우 생략 가능) &mdash;<br/>' +
+      '<a href="' + LANDING_URL + '" style="color:#475569;text-decoration:none;font-weight:600">&#x1F310; 일꾼을묻다 홈페이지</a>' +
+      '&nbsp;&nbsp;&middot;&nbsp;&nbsp;' +
+      '<a href="' + BROCHURE_VIEW_URL + '" style="color:#475569;text-decoration:none;font-weight:600">&#x1F4D8; 서비스 소개서 (19p)</a>' +
+    '</p>' +
+
+    '<p style="font-size:12px;color:#64748b;margin:18px 0;text-align:center">' +
+      '신청서 제출 후 운영팀이 자격을 검증하고 결제 안내를 드립니다.' +
     '</p>' +
 
     '<hr style="border:none;border-top:1px solid #e2e8f0;margin:18px 0"/>' +
@@ -919,17 +932,18 @@ function sendRegistrationKit(data) {
     '</div>';
 
   var bodyPlain = '안녕하세요, ' + name + '님.\n\n'
-    + '일꾼을묻다 가입 절차는 아래 두 단계로 간단히 진행됩니다.\n\n'
+    + '가입을 위한 자료를 안내드립니다.\n\n'
     + '─────────────────\n'
-    + '① 자료 검토\n'
-    + '   🌐 일꾼을묻다 홈페이지:  ' + LANDING_URL + '\n'
-    + '   📘 서비스 소개서 (19p): ' + BROCHURE_VIEW_URL + '\n'
-    + '   📒 가입 안내서 (5p):    ' + REGISTRATION_GUIDE_URL + '\n\n'
-    + '② 가입 신청서 작성\n'
-    + '   📝 ' + formUrl + '\n'
-    + '   신청 ID: ' + id + '\n\n'
-    + '─────────────────\n'
-    + '신청서 제출 후, 운영팀이 자격을 검증한 뒤 결제 링크가 별도 메일로 발송됩니다.\n\n'
+    + '📒 가입 안내서 (5p) — 가입 절차·결제·운영 흐름\n'
+    + '   ' + REGISTRATION_GUIDE_URL + '\n\n'
+    + '📝 가입 신청서 작성하기\n'
+    + '   ' + formUrl + '\n'
+    + '   신청 ID: ' + id + '\n'
+    + '─────────────────\n\n'
+    + '참고용 (이미 받으신 경우 생략 가능)\n'
+    + '  🌐 일꾼을묻다 홈페이지:  ' + LANDING_URL + '\n'
+    + '  📘 서비스 소개서 (19p): ' + BROCHURE_VIEW_URL + '\n\n'
+    + '신청서 제출 후 운영팀이 자격을 검증하고 결제 안내를 드립니다.\n\n'
     + '✔ 서비스 핵심 안내\n'
     + '  · 공약·후보자 정보 등록 시 → 유권자 관심·반응 데이터 확인 가능\n'
     + '  · 유권자와 직접 소통 원하시면 → 대화카드 구매 후 질문 응답 기능 사용\n\n'
