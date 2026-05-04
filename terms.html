@@ -37,14 +37,31 @@
   .toc a:hover{color:var(--purple)}
   .footer-note{margin-top:36px;padding-top:18px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink-3);line-height:1.7}
   .footer-note b{color:var(--purple)}
+
+  .top button{margin-left:8px;font-size:12px;font-weight:800;padding:7px 14px;border-radius:8px;border:1px solid var(--purple);background:var(--purple);color:#fff;cursor:pointer;font-family:inherit}
+  .top button:hover{background:#6d28d9}
+
+  @page{size:A4;margin:15mm}
+  @media print{
+    html,body{background:#fff}
+    body{padding:0}
+    .top,.no-print{display:none !important}
+    .wrap{margin:0;border:none;padding:0;max-width:100%;border-radius:0;box-shadow:none}
+    *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important}
+    *,*::before,*::after{box-shadow:none !important}
+    h2{page-break-after:avoid;break-after:avoid}
+    .toc{break-inside:avoid}
+    a{color:var(--purple) !important;text-decoration:none}
+  }
 </style>
 </head>
 <body>
 
-<div class="top">
+<div class="top no-print">
   <img src="assets/logo_ask03.png" alt="일꾼을묻다"/>
   <b>일꾼을묻다 · 이용약관</b>
   <a href="/">← 홈</a>
+  <button onclick="window.print()">🖨️ PDF 저장</button>
 </div>
 
 <div class="wrap">
@@ -140,9 +157,15 @@
     <li>기초의원: 190,000원 (기본 응답량 500건 포함)</li>
   </ul>
   <h3>2. 결제 방법</h3>
-  <p>결제는 카드·계좌이체·간편결제·가상계좌(PG) 방식으로 진행됩니다. 결제 시점에 본 약관 및 개인정보 처리방침 동의가 이루어진 것으로 간주됩니다.</p>
+  <p>결제는 PG(전자결제 대행) 방식으로 진행되며, 다음 수단 중 선택할 수 있습니다.</p>
+  <ul>
+    <li><b>가상계좌 (권장)</b> — 후보자 명의 또는 캠프 명의로 입금. 수수료가 가장 낮으며, 입금자명이 본인 확인 보조 자료로 활용됩니다. 입금 후 1~2시간 내 자동 확인.</li>
+    <li><b>카드</b> — 즉시 결제 확인. 카드사 수수료가 가상계좌보다 높습니다.</li>
+    <li><b>계좌이체 / 간편결제(카카오페이·네이버페이 등)</b> — 즉시 확인.</li>
+  </ul>
+  <p>결제 시점에 본 약관 및 개인정보 처리방침, 환불 약정에 동의하신 것으로 간주됩니다.</p>
   <h3>3. 세금계산서</h3>
-  <p>전자세금계산서가 자동 발행됩니다. 사업자번호 입력 시 즉시 발행되며, 미입력 시 추후 운영팀 문의로 처리합니다.</p>
+  <p>전자세금계산서가 자동 발행됩니다. 사업자번호 입력 시 즉시 발행되며, 미입력 시 추후 운영팀 문의로 처리합니다. 결제 수단(가상계좌·카드·간편결제)과 무관하게 동일하게 발행됩니다.</p>
   <h3>4. 추가 응답량</h3>
   <p>기본 응답량 초과 시 대시보드 내 "대화카드" 1클릭 추가 구매로 확장 가능합니다. 가격은 대시보드 내 안내를 따릅니다.</p>
 

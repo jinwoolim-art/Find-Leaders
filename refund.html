@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>일꾼을묻다 · 환불 약정</title>
+<link rel="icon" href="assets/logo_ask03.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --purple:#7c3aed;--purple-50:#faf5ff;--purple-100:#f3e8ff;
+    --ink:#0f172a;--ink-2:#475569;--ink-3:#64748b;
+    --line:#e2e8f0;--bg:#f8fafc;
+    --green:#059669;--amber:#b45309;--red:#dc2626;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:"Noto Sans KR",-apple-system,sans-serif}
+  body{background:var(--bg);color:var(--ink);line-height:1.7;padding-bottom:60px}
+  .top{background:#fff;border-bottom:1px solid var(--line);padding:14px 24px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50}
+  .top img{width:28px;height:28px;border-radius:7px}
+  .top b{font-size:14px;font-weight:900;color:var(--ink)}
+  .top a{margin-left:auto;font-size:12px;color:var(--ink-3);font-weight:700;text-decoration:none}
+  .top a:hover{color:var(--purple)}
+
+  .wrap{max-width:780px;margin:0 auto;padding:32px 24px;background:#fff;margin-top:24px;border:1px solid var(--line);border-radius:14px}
+  h1{font-size:24px;font-weight:900;color:var(--ink);margin-bottom:8px;letter-spacing:-.02em}
+  .meta{font-size:12px;color:var(--ink-3);margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+  .meta b{color:var(--purple)}
+  h2{font-size:16px;font-weight:900;color:var(--ink);margin:28px 0 10px;padding-left:10px;border-left:3px solid var(--purple);letter-spacing:-.01em}
+  h3{font-size:13px;font-weight:900;color:var(--ink-2);margin:14px 0 6px}
+  p{font-size:13px;color:var(--ink-2);margin-bottom:8px}
+  ul,ol{margin:6px 0 10px 20px}
+  li{font-size:13px;color:var(--ink-2);margin-bottom:4px}
+  b{color:var(--ink);font-weight:800}
+
+  .toc{background:var(--purple-50);border-radius:10px;padding:14px 18px;margin:18px 0 28px}
+  .toc-title{font-size:11px;font-weight:900;color:var(--purple);letter-spacing:.08em;margin-bottom:8px}
+  .toc ol{list-style:decimal;padding-left:18px;margin:0;column-count:2;column-gap:24px}
+  .toc li{font-size:12px;color:var(--ink-2);font-weight:700;break-inside:avoid;margin-bottom:3px}
+  .toc a{color:var(--ink-2);text-decoration:none}
+  .toc a:hover{color:var(--purple)}
+
+  .stage-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+  .stage{border:1.5px solid var(--line);border-radius:10px;padding:14px 14px;background:#fff}
+  .stage.full{border-color:#a7f3d0;background:linear-gradient(180deg,#ecfdf5 0%,#fff 60%)}
+  .stage.half{border-color:#fde68a;background:linear-gradient(180deg,#fffbeb 0%,#fff 60%)}
+  .stage.none{border-color:#fecaca;background:linear-gradient(180deg,#fef2f2 0%,#fff 60%)}
+  .stage .lbl{font-size:10.5px;font-weight:900;letter-spacing:.06em;margin-bottom:6px}
+  .stage.full .lbl{color:var(--green)}
+  .stage.half .lbl{color:var(--amber)}
+  .stage.none .lbl{color:var(--red)}
+  .stage .pct{font-size:18px;font-weight:900;color:var(--ink);margin-bottom:4px;letter-spacing:-.01em}
+  .stage .desc{font-size:11.5px;color:var(--ink-2);line-height:1.55}
+
+  .agree-box{margin:18px 0;background:var(--purple-50);border-left:3px solid var(--purple);border-radius:8px;padding:14px 18px}
+  .agree-box .lbl{font-size:11px;font-weight:900;color:var(--purple);letter-spacing:.08em;margin-bottom:6px}
+  .agree-box p{font-size:13px;color:var(--ink);font-weight:600;margin:0;line-height:1.7}
+
+  .footer-note{margin-top:36px;padding-top:18px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink-3);line-height:1.7}
+  .footer-note b{color:var(--purple)}
+
+  .top button{margin-left:8px;font-size:12px;font-weight:800;padding:7px 14px;border-radius:8px;border:1px solid var(--purple);background:var(--purple);color:#fff;cursor:pointer;font-family:inherit}
+  .top button:hover{background:#6d28d9}
+
+  @media (max-width:640px){
+    .stage-grid{grid-template-columns:1fr}
+    .top{padding:10px 14px}
+    .top b{font-size:13px}
+    .top button{padding:6px 10px;font-size:11px}
+  }
+
+  @page{size:A4;margin:15mm}
+  @media print{
+    html,body{background:#fff}
+    body{padding:0}
+    .top,.no-print{display:none !important}
+    .wrap{margin:0;border:none;padding:0;max-width:100%;border-radius:0;box-shadow:none}
+    *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important}
+    *,*::before,*::after{box-shadow:none !important}
+    h2{page-break-after:avoid;break-after:avoid}
+    .stage-grid{page-break-inside:avoid;break-inside:avoid}
+    .agree-box{page-break-inside:avoid;break-inside:avoid}
+    a{color:var(--purple) !important;text-decoration:none}
+    .toc{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+
+<div class="top no-print">
+  <img src="assets/logo_ask03.png" alt="일꾼을묻다"/>
+  <b>일꾼을묻다 · 환불 약정</b>
+  <a href="/">← 홈</a>
+  <button onclick="window.print()">🖨️ PDF 저장</button>
+</div>
+
+<div class="wrap">
+  <h1>환불 약정</h1>
+  <div class="meta">
+    <b>시행일</b> 2026년 5월 4일 ·
+    <b>최종 개정</b> 2026년 5월 4일 ·
+    제공자 (주)플레이4
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">목차</div>
+    <ol>
+      <li><a href="#a1">기본 원칙</a></li>
+      <li><a href="#a2">환불 기준</a></li>
+      <li><a href="#a3">대화카드 / 추가 응답량 환불</a></li>
+      <li><a href="#a4">환불 불가 사유</a></li>
+      <li><a href="#a5">회사 귀책 사유</a></li>
+      <li><a href="#a6">환불 신청 방법</a></li>
+      <li><a href="#a7">동의 문구</a></li>
+    </ol>
+  </div>
+
+  <h2 id="a1">제1조 (기본 원칙)</h2>
+  <p>본 서비스는 후보자별 공약 자료 등록, AI 응답 구조 세팅, 후보자 페이지 구성, 대시보드 제공 등 <b>맞춤형으로 구축되는 서비스</b>입니다.</p>
+  <p>따라서 결제 이후 작업 진행 단계에 따라 환불 기준이 달라집니다.</p>
+
+  <h2 id="a2">제2조 (환불 기준)</h2>
+  <p>결제 이후 작업 진행 단계에 따라 환불 비율이 다음과 같이 적용됩니다.</p>
+
+  <div class="stage-grid">
+    <div class="stage full">
+      <div class="lbl">① 시스템 세팅 시작 전</div>
+      <div class="pct">전액 환불</div>
+      <div class="desc">후보자 자료 등록·공약 세팅·AI 응답 구조 설정·후보자 페이지 구성 등 작업이 시작되기 전</div>
+    </div>
+    <div class="stage half">
+      <div class="lbl">② 시스템 세팅 시작 후</div>
+      <div class="pct">50% 환불</div>
+      <div class="desc">후보자 자료 분석·공약 등록·AI 응답 구조 설정·후보자 페이지 구성 등 맞춤형 작업이 시작된 경우</div>
+    </div>
+    <div class="stage none">
+      <div class="lbl">③ 서비스 오픈 후</div>
+      <div class="pct">환불 불가</div>
+      <div class="desc">후보자 페이지 개설·유권자 응답 기능 활성화·대시보드 제공 중 하나라도 완료된 시점부터</div>
+    </div>
+  </div>
+
+  <h3>① 시스템 세팅 시작 전</h3>
+  <p>후보자 자료 등록, 공약 세팅, AI 응답 구조 설정, 후보자 페이지 구성 등 작업이 시작되기 전에는 <b>전액 환불</b>됩니다.</p>
+
+  <h3>② 시스템 세팅 시작 후</h3>
+  <p>후보자 자료 분석, 공약 등록, AI 응답 구조 설정, 후보자 페이지 구성 등 맞춤형 작업이 시작된 경우에는 <b>결제금액의 50%만 환불</b>됩니다.</p>
+
+  <h3>③ 서비스 오픈 후</h3>
+  <p>후보자 페이지 개설, 유권자 응답 기능 활성화, 대시보드 제공 중 <b>하나라도 완료된 경우 서비스 오픈으로 보며, 이후에는 환불이 불가</b>합니다.</p>
+
+  <h2 id="a3">제3조 (대화카드 / 추가 응답량 환불)</h2>
+  <p>대화카드 및 추가 응답량은 사용량 기반 상품입니다.</p>
+  <ul>
+    <li>구매 후 사용이 시작된 경우 <b>환불이 불가</b>합니다.</li>
+    <li>단, <b>미사용 상태</b>인 경우에 한해 결제금액의 <b>50% 환불</b>이 가능합니다.</li>
+  </ul>
+
+  <h2 id="a4">제4조 (환불 불가 사유)</h2>
+  <p>다음 사유는 환불 대상이 아닙니다.</p>
+  <ul>
+    <li>후보자 또는 캠프의 단순 변심</li>
+    <li>자료 제출 지연</li>
+    <li>후보자 일정 변경</li>
+    <li>선거 전략 변경</li>
+    <li>후보 등록 취소 또는 사퇴</li>
+    <li>캠프 내부 사정</li>
+    <li>제공된 자료의 오류로 인한 수정 요청</li>
+    <li>서비스 오픈 이후 환불 요청</li>
+  </ul>
+
+  <h2 id="a5">제5조 (회사 귀책 사유)</h2>
+  <p>회사의 명백한 귀책으로 서비스 제공이 불가능한 경우, 제공 내역과 진행 상태를 기준으로 <b>환불 또는 보상 범위를 협의</b>합니다.</p>
+  <p>단, 다음과 같이 회사가 통제할 수 없는 사유는 회사 귀책으로 보지 않습니다.</p>
+  <ul>
+    <li>외부 API 장애</li>
+    <li>클라우드 장애</li>
+    <li>통신 장애</li>
+    <li>선거관리기관 정책 변경</li>
+    <li>법령 변경</li>
+  </ul>
+
+  <h3 style="margin-top:18px">결제 수단별 환불 처리</h3>
+  <ul>
+    <li><b>가상계좌</b> — 후보자가 등록한 환불 계좌로 이체 (영업일 기준 3~5일)</li>
+    <li><b>카드</b> — 결제 카드로 자동 승인 취소 (영업일 기준 3~7일)</li>
+    <li><b>계좌이체 / 간편결제</b> — 원 결제 수단으로 환불 (영업일 기준 3~5일)</li>
+  </ul>
+  <p style="font-size:12px;color:var(--ink-3);margin-top:6px">결제 수단별 환불 비율(전액·50%·불가) 기준은 위 제2조와 동일하게 적용됩니다.</p>
+
+  <h2 id="a6">제6조 (환불 신청 방법)</h2>
+  <p>환불 요청은 공식 이메일(<a href="mailto:ilkkun.official@gmail.com" style="color:var(--purple);font-weight:700">ilkkun.official@gmail.com</a>)을 통해 접수해야 합니다.</p>
+  <p>환불 요청 시, 신속한 처리를 위해 아래 정보를 함께 기재해 주시기 바랍니다.</p>
+  <ul>
+    <li>성함</li>
+    <li>핸드폰번호</li>
+    <li>선택한 플랜</li>
+  </ul>
+  <p>회사는 접수된 내용을 기준으로 확인 후 환불 가능 여부 및 절차를 안내합니다.</p>
+
+  <h2 id="a7">제7조 (동의 문구)</h2>
+  <div class="agree-box">
+    <div class="lbl">결제자 동의 사항</div>
+    <p>결제자는 본 서비스가 후보자별 <b>맞춤 구축형 서비스</b>이며, <b>시스템 세팅 시작 후에는 50% 환불</b>, <b>서비스 오픈 후에는 환불이 불가</b>함을 확인하고 동의합니다.</p>
+  </div>
+
+  <div class="footer-note">
+    <b>(주)플레이4</b><br/>
+    대표이사: 임진우 · 사업자등록번호: 267-86-00679<br/>
+    본사: 세종특별자치시 나성북로21 A-76<br/>
+    이메일: <a href="mailto:ilkkun.official@gmail.com" style="color:var(--purple)">ilkkun.official@gmail.com</a> · 사이트: <a href="https://www.illkkun.cloud" style="color:var(--purple)">www.illkkun.cloud</a><br/><br/>
+    본 환불 약정은 2026년 5월 4일부터 시행되며, 개정 시 본 페이지를 통해 즉시 공지됩니다.<br/>
+    이용약관은 <a href="terms.html" style="color:var(--purple)">terms.html</a>, 개인정보 처리방침은 <a href="privacy.html" style="color:var(--purple)">privacy.html</a>에서 확인하실 수 있습니다.
+  </div>
+</div>
+
+</body>
+</html>

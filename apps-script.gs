@@ -23,6 +23,13 @@ var CS_SHEET      = 'CS';
 var INQUIRY_SHEET = '문의관리';
 var ACCT_SHEET    = '계정';
 var BROCHURE_SHEET= '소개서신청';
+var REGISTRATION_SHEET = '가입신청';
+var REGISTRATION_DOCS_FOLDER_NAME = '가입신청_증빙자료';
+var REGISTRATION_FORM_BASE_URL = 'https://www.illkkun.cloud/registration-form.html';
+var REGISTRATION_GUIDE_URL = 'https://www.illkkun.cloud/registration-guide.html';
+var TERMS_URL   = 'https://www.illkkun.cloud/terms.html';
+var PRIVACY_URL = 'https://www.illkkun.cloud/privacy.html';
+var REFUND_URL  = 'https://www.illkkun.cloud/refund.html';
 var ATTACHMENT_FOLDER_ID = '19MhKlk18IiTuIzY3CMLfVLF3DA79_MQU';
 
 // 소개서 PDF — Drive 파일 ID로 직접 첨부 (파일 교체 시에도 ID는 유지됨)
@@ -54,6 +61,9 @@ function doPost(e) {
     if (action === 'send')           return sendMail(data);
     if (action === 'sendBrochure')   return sendBrochure(data);
     if (action === 'applyCandidate') return applyCandidate(data);
+    if (action === 'sendRegistrationKit')   return sendRegistrationKit(data);
+    if (action === 'getRegistrationPrefill')return getRegistrationPrefill(data);
+    if (action === 'submitRegistration')    return submitRegistration(data);
     if (action === 'log')         return logOnly(data);
     if (action === 'getInbox')    return getInbox(data);
     if (action === 'getMessage')  return getMessage(data);
@@ -789,6 +799,255 @@ function sendBrochure(data) {
     + (memo ? '\n• 사유: ' + memo : ''));
 
   return json({ok: sendStatus === '발송완료', sent: sendStatus === '발송완료', email: email});
+}
+
+/* ═══════════════════════ 가입 신청서 (3종 액션) ═══════════════════════ */
+
+/**
+ * 운영팀 admin-dashboard에서 호출. 후보자에게 신청서 작성 메일 발송.
+ *
+ * 1) 신청 ID 자동 생성 (req_xxx)
+ * 2) 문의관리 시트 row를 찾아 ID 컬럼에 저장 (없으면 새 row 추가)
+ * 3) 메일 발송 — 안내서/약관3종/신청서 링크 (PDF 첨부 X, 모두 링크)
+ * 4) Google Chat 알림
+ */
+function sendRegistrationKit(data) {
+  var name    = (data.name || '').trim();
+  var email   = (data.email || '').trim();
+  var contact = (data.contact || '').trim();
+  var scope   = (data.scope || '').trim();
+  var region  = (data.region || '').trim();
+
+  if (!name || !email) return json({ok: false, error: '이름과 이메일은 필수'});
+
+  // 1) ID 발급
+  var id = data.id || ('req_' + Utilities.getUuid().split('-')[0]);
+  var formUrl = REGISTRATION_FORM_BASE_URL + '?id=' + encodeURIComponent(id);
+
+  // 2) 문의관리 시트에 ID 매핑 — row가 있으면 ID 컬럼만 업데이트, 없으면 새 row
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var inq = ss.getSheetByName(INQUIRY_SHEET);
+  if (inq) {
+    var found = false;
+    var values = inq.getDataRange().getValues();
+    var headers = values[0] || [];
+    var idCol = headers.indexOf('신청ID');
+    if (idCol === -1) {
+      // 신청ID 컬럼 없으면 추가
+      inq.getRange(1, headers.length + 1).setValue('신청ID');
+      idCol = headers.length;
+    }
+    for (var r = 1; r < values.length; r++) {
+      if ((values[r][2] || '').toString().trim() === email) {
+        inq.getRange(r + 1, idCol + 1).setValue(id);
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      // 새 row
+      var newRow = [today(), name, email, scope, region, contact, '', '메일발송', '미신청', '신규'];
+      while (newRow.length <= idCol) newRow.push('');
+      newRow[idCol] = id;
+      inq.appendRow(newRow);
+    }
+  }
+
+  // 3) 메일 발송
+  var subject = '[일꾼을묻다] 가입 신청 안내 — ' + name + '님';
+  var bodyHtml =
+    '<div style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:#1e293b;line-height:1.65;max-width:560px">' +
+    '<h2 style="color:#7c3aed;margin:0 0 14px;font-size:18px">안녕하세요, ' + name + '님</h2>' +
+    '<p>일꾼을묻다 가입 절차를 안내드립니다.<br/>아래 4종 자료를 검토하신 후, <b>가입 신청서</b> 링크를 통해 정보를 입력해주세요.</p>' +
+
+    '<div style="margin:20px 0;padding:16px 18px;background:#faf5ff;border-left:3px solid #7c3aed;border-radius:6px">' +
+      '<div style="font-size:11px;font-weight:900;color:#7c3aed;letter-spacing:.06em;margin-bottom:6px">📌 STEP 1 — 자료 검토</div>' +
+      '<p style="margin:0 0 6px"><a href="' + REGISTRATION_GUIDE_URL + '" style="color:#7c3aed;font-weight:700">📘 가입 안내서</a> — 5페이지 (서비스·결제·운영 흐름)</p>' +
+      '<p style="margin:0;font-size:12px;color:#475569">📑 약관 3종 (제출 시 동의 필요)</p>' +
+      '<ul style="margin:6px 0 0 18px;font-size:12px;color:#475569">' +
+        '<li><a href="' + TERMS_URL   + '" style="color:#7c3aed">이용약관</a></li>' +
+        '<li><a href="' + PRIVACY_URL + '" style="color:#7c3aed">개인정보 처리방침</a></li>' +
+        '<li><a href="' + REFUND_URL  + '" style="color:#7c3aed">환불 약정</a></li>' +
+      '</ul>' +
+    '</div>' +
+
+    '<div style="margin:20px 0;padding:16px 18px;background:linear-gradient(135deg,#faf5ff 0%,#fef3c7 100%);border-radius:10px;text-align:center">' +
+      '<div style="font-size:11px;font-weight:900;color:#7c3aed;letter-spacing:.06em;margin-bottom:8px">📌 STEP 2 — 신청서 작성</div>' +
+      '<p style="margin:0 0 14px;font-size:13px">기본 정보가 일부 자동 입력되어 있습니다. 추가 정보 + 본인 증빙 서류 + 약관 동의 후 제출해주세요.</p>' +
+      '<a href="' + formUrl + '" style="display:inline-block;background:#7c3aed;color:#fff;text-decoration:none;padding:13px 28px;border-radius:10px;font-weight:900;font-size:14px">📝 가입 신청서 작성하기 →</a>' +
+      '<p style="margin:10px 0 0;font-size:10.5px;color:#64748b">신청 ID: ' + id + '</p>' +
+    '</div>' +
+
+    '<div style="margin:18px 0;padding:12px 14px;background:#fffbeb;border:1px dashed #b45309;border-radius:6px;font-size:12px;color:#b45309">' +
+      '<b>📎 준비물</b> — 후보자 등록증 사본, 본인 신분증 사본 (주민번호 뒷자리 마스킹 권장). 캠프 담당자 결제 시 위임장 + 담당자 신분증 추가.' +
+    '</div>' +
+
+    '<p style="font-size:11.5px;color:#64748b;margin-top:18px;line-height:1.7">' +
+      '· 신청서 제출 후 운영팀이 자격 검증 (1~2 영업일)<br/>' +
+      '· 검증 완료 시 결제 링크가 별도 메일로 발송됩니다<br/>' +
+      '· 결제 완료 후 후보자 대시보드 일괄 발급 (3일 단위)' +
+    '</p>' +
+
+    '<hr style="border:none;border-top:1px solid #e2e8f0;margin:22px 0"/>' +
+    '<p style="font-size:11px;color:#94a3b8">문의: <a href="mailto:ilkkun.official@gmail.com">ilkkun.official@gmail.com</a> · <a href="https://www.illkkun.cloud" style="color:#94a3b8">www.illkkun.cloud</a></p>' +
+    '</div>';
+
+  var bodyPlain = '안녕하세요, ' + name + '님\n\n'
+    + '일꾼을묻다 가입 절차 안내드립니다.\n\n'
+    + '📘 가입 안내서: ' + REGISTRATION_GUIDE_URL + '\n'
+    + '📑 약관 3종:\n  · 이용약관: ' + TERMS_URL + '\n  · 개인정보 처리방침: ' + PRIVACY_URL + '\n  · 환불 약정: ' + REFUND_URL + '\n\n'
+    + '📝 가입 신청서: ' + formUrl + '\n'
+    + '   (신청 ID: ' + id + ')\n\n'
+    + '준비물: 후보자 등록증 사본, 본인 신분증 사본\n\n'
+    + '문의: ilkkun.official@gmail.com';
+
+  GmailApp.sendEmail(email, subject, bodyPlain, { name: '일꾼을묻다', htmlBody: bodyHtml });
+
+  appendLog({
+    date: today(), recipient: name, email: email,
+    step: '가입신청서', type: '발송', subject: subject, status: '완료'
+  });
+
+  notifyChat('📨 *가입 신청서 발송*\n• 후보자: ' + name + ' (' + email + ')\n• 신청 ID: ' + id + '\n• URL: ' + formUrl);
+
+  return json({ok: true, id: id, formUrl: formUrl});
+}
+
+/**
+ * registration-form.html 페이지 로드 시 호출. ID로 prefill 데이터 조회.
+ */
+function getRegistrationPrefill(data) {
+  var id = (data.id || '').trim();
+  if (!id) return json({ok: false, error: 'id required'});
+
+  var inq = SpreadsheetApp.openById(SHEET_ID).getSheetByName(INQUIRY_SHEET);
+  if (!inq) return json({ok: false, error: '문의관리 시트 없음'});
+
+  var values = inq.getDataRange().getValues();
+  var headers = values[0] || [];
+  var idCol = headers.indexOf('신청ID');
+  if (idCol === -1) return json({ok: false, error: '신청ID 컬럼 없음 (먼저 sendRegistrationKit 실행 필요)'});
+
+  for (var r = 1; r < values.length; r++) {
+    if ((values[r][idCol] || '').toString().trim() === id) {
+      return json({
+        ok: true,
+        data: {
+          name:   values[r][1] || '',
+          email:  values[r][2] || '',
+          scope:  values[r][3] || '',
+          region: values[r][4] || '',
+          contact:values[r][5] || ''
+        }
+      });
+    }
+  }
+  return json({ok: false, error: 'not found'});
+}
+
+/**
+ * 후보자가 신청서 제출 시 호출.
+ * 1) 파일들을 Drive 업로드 (가입신청_증빙자료/{id}/ 폴더)
+ * 2) 가입신청 시트에 row 추가
+ * 3) 문의관리 시트의 신청상태 갱신
+ * 4) Google Chat 알림
+ */
+function submitRegistration(data) {
+  var id     = (data.id || '').trim() || ('req_' + Utilities.getUuid().split('-')[0]);
+  var name   = (data.name || '').trim();
+  var email  = (data.email || '').trim();
+  var contact= (data.contact || '').trim();
+  var position=(data.position || '').trim();
+  var region = (data.region || '').trim();
+
+  if (!name || !email || !position || !region)
+    return json({ok: false, error: '필수 정보 누락'});
+  if (!data.agreedTerms || !data.agreedPrivacy || !data.agreedRefund)
+    return json({ok: false, error: '약관 3종 모두 동의 필요'});
+
+  // 1) Drive 업로드
+  var folder = getOrCreateRegistrationFolder_(id, name);
+  var fileLinks = [];
+  var files = data.files || [];
+  for (var i = 0; i < files.length; i++) {
+    try {
+      var f = files[i];
+      var blob = Utilities.newBlob(Utilities.base64Decode(f.base64), f.type, f.name);
+      var saved = folder.createFile(blob);
+      fileLinks.push(saved.getName() + ' → ' + saved.getUrl());
+    } catch (e) {
+      fileLinks.push('업로드실패: ' + (files[i].name || '?') + ' (' + String(e) + ')');
+    }
+  }
+  var folderUrl = folder.getUrl();
+
+  // 2) 가입신청 시트에 row
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sh = ss.getSheetByName(REGISTRATION_SHEET);
+  if (!sh) {
+    sh = ss.insertSheet(REGISTRATION_SHEET);
+    sh.appendRow(['신청ID','신청일시','이름','이메일','연락처','직급','지역구','정당','등록번호','담당자명','담당자연락처','증빙폴더URL','파일목록','약관동의시각','상태','메모']);
+    sh.getRange(1, 1, 1, 16).setFontWeight('bold').setBackground('#f1f5f9');
+    sh.setFrozenRows(1);
+  }
+  sh.appendRow([
+    id,
+    new Date(),
+    name, email, contact,
+    position, region,
+    data.party || '',
+    data.regnum || '',
+    data.agentName || '',
+    data.agentContact || '',
+    folderUrl,
+    fileLinks.join('\n'),
+    data.agreedAt || new Date().toISOString(),
+    '신규접수',
+    ''
+  ]);
+
+  // 3) 문의관리 시트 상태 갱신
+  try {
+    var inq = ss.getSheetByName(INQUIRY_SHEET);
+    if (inq) {
+      var values = inq.getDataRange().getValues();
+      var headers = values[0] || [];
+      var idCol = headers.indexOf('신청ID');
+      var stateCol = 8; // I열 = 신청상태
+      if (idCol >= 0) {
+        for (var r = 1; r < values.length; r++) {
+          if ((values[r][idCol] || '').toString().trim() === id) {
+            inq.getRange(r + 1, stateCol + 1).setValue('신청완료');
+            break;
+          }
+        }
+      }
+    }
+  } catch (e) { /* skip */ }
+
+  // 4) Chat 알림
+  notifyChat('🎯 *가입 신청 접수*\n'
+    + '• 후보자: ' + name + ' (' + position + ')\n'
+    + '• 이메일: ' + email + '\n'
+    + '• 지역: ' + region + '\n'
+    + '• 신청 ID: ' + id + '\n'
+    + '• 증빙 자료 폴더: ' + folderUrl);
+
+  return json({ok: true, requestId: id, folderUrl: folderUrl});
+}
+
+function getOrCreateRegistrationFolder_(id, name) {
+  var root = null;
+  var rootIter = DriveApp.getFoldersByName(REGISTRATION_DOCS_FOLDER_NAME);
+  if (rootIter.hasNext()) { root = rootIter.next(); }
+  else { root = DriveApp.createFolder(REGISTRATION_DOCS_FOLDER_NAME); }
+
+  var subName = id + '_' + (name || '').replace(/[\\/:*?"<>|]/g, '_');
+  var sub = null;
+  var subIter = root.getFoldersByName(subName);
+  if (subIter.hasNext()) { sub = subIter.next(); }
+  else { sub = root.createFolder(subName); }
+  return sub;
 }
 
 /* ═══════════════════════ 유틸 ═══════════════════════ */

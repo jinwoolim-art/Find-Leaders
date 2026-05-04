@@ -226,6 +226,8 @@
       <input type="text" class="inp" id="inq-f-search" placeholder="이름, 이메일 검색..." style="width:180px;padding:6px 10px;font-size:11px" oninput="applyInqFilter()"/>
       <button class="btn btn-ghost" onclick="downloadInqCSV()"><span class="ms" style="font-size:14px">download</span>CSV</button>
       <button class="btn btn-primary" onclick="openBulkFromTab()"><span class="ms" style="font-size:14px">forward_to_inbox</span>단체 발송</button>
+      <button class="btn btn-primary" style="background:#7c3aed;border-color:#7c3aed" onclick="sendRegistrationKitFromTab()"><span class="ms" style="font-size:14px">how_to_reg</span>가입 신청서 발송</button>
+      <button class="btn btn-ghost" style="border-color:#a78bfa;color:#7c3aed" onclick="openElectionLookup()"><span class="ms" style="font-size:14px">how_to_vote</span>선관위 조회</button>
     </div>
     <div class="card" style="overflow:hidden">
       <table class="tbl">
@@ -629,6 +631,123 @@ function apiSend(payload, onDone){
     alert('❌ 네트워크 오류: '+err);
     if(onDone) onDone({ok:false,error:String(err)});
   });
+}
+
+// ═══ 선관위 후보자 조회 (data.go.kr OpenAPI) ═══
+// 시안 단계 — 백엔드 연결 전. Apps Script에 fetchElectionCandidates 액션 추가하고
+// DATA_GO_KR_API_KEY를 PropertiesService에 등록하면 실제 호출 가능.
+function openElectionLookup(){
+  var existing=document.getElementById('election-lookup-modal');
+  if(existing)existing.remove();
+  var modal=document.createElement('div');
+  modal.id='election-lookup-modal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:1000;display:flex;align-items:flex-start;justify-content:center;padding:60px 20px;overflow:auto';
+  modal.innerHTML='<div style="background:#fff;max-width:680px;width:100%;border-radius:14px;padding:24px 26px;box-shadow:0 20px 60px rgba(15,23,42,.3)">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">'
+      +'<h3 style="font-size:16px;font-weight:900;color:#0f172a">선관위 후보자 정보 조회</h3>'
+      +'<button onclick="document.getElementById(\'election-lookup-modal\').remove()" style="border:1px solid #e2e8f0;background:#fff;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px">닫기</button>'
+    +'</div>'
+    +'<p style="font-size:12px;color:#64748b;margin-bottom:14px">중앙선거관리위원회 OpenAPI를 통해 후보자 등록 정보를 조회합니다. 신청자가 제출한 정보와 대조하여 본인 확인 보조 자료로 활용하세요.</p>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">'
+      +'<div><label style="font-size:11px;font-weight:800;color:#475569;display:block;margin-bottom:4px">선거 (sgId)</label>'
+        +'<select id="el-sgid" style="width:100%;padding:8px 10px;font-size:12px;border:1px solid #e2e8f0;border-radius:6px">'
+          +'<option value="20260603">2026 제9회 전국동시지방선거</option>'
+        +'</select></div>'
+      +'<div><label style="font-size:11px;font-weight:800;color:#475569;display:block;margin-bottom:4px">선거 종류 (sgTypecode)</label>'
+        +'<select id="el-typecode" style="width:100%;padding:8px 10px;font-size:12px;border:1px solid #e2e8f0;border-radius:6px">'
+          +'<option value="3">3 · 광역단체장 (시·도지사)</option>'
+          +'<option value="4" selected>4 · 기초단체장 (시장·군수·구청장)</option>'
+          +'<option value="5">5 · 광역의원 (시·도의원)</option>'
+          +'<option value="7">7 · 기초의원 (시·군·구의원)</option>'
+          +'<option value="9">9 · 교육감</option>'
+        +'</select></div>'
+      +'<div><label style="font-size:11px;font-weight:800;color:#475569;display:block;margin-bottom:4px">시·도명 (sdName) — 정식 명칭</label>'
+        +'<input id="el-sdname" type="text" placeholder="예) 서울특별시 / 경기도" value="서울특별시" style="width:100%;padding:8px 10px;font-size:12px;border:1px solid #e2e8f0;border-radius:6px"/></div>'
+      +'<div><label style="font-size:11px;font-weight:800;color:#475569;display:block;margin-bottom:4px">검색어 (이름·지역구, 선택)</label>'
+        +'<input id="el-keyword" type="text" placeholder="후보자명 일부 또는 지역구" style="width:100%;padding:8px 10px;font-size:12px;border:1px solid #e2e8f0;border-radius:6px"/></div>'
+    +'</div>'
+    +'<button class="btn btn-primary" style="background:#7c3aed;border-color:#7c3aed;width:100%;margin-top:6px" onclick="runElectionLookup()"><span class="ms" style="font-size:14px">search</span>조회 실행</button>'
+    +'<div id="el-result" style="margin-top:14px;min-height:60px"></div>'
+    +'<div style="margin-top:14px;padding:10px 12px;background:#fffbeb;border-left:3px solid #b45309;border-radius:6px;font-size:11px;color:#b45309">'
+      +'<b>⚠️ 시안 단계</b> — Apps Script에 <code>fetchElectionCandidates</code> 액션과 <code>DATA_GO_KR_API_KEY</code> 등록 후 실제 호출됩니다. 현재는 UI만 동작합니다.'
+    +'</div>'
+  +'</div>';
+  document.body.appendChild(modal);
+}
+
+function runElectionLookup(){
+  var sgId=document.getElementById('el-sgid').value;
+  var sgTypecode=document.getElementById('el-typecode').value;
+  var sdName=document.getElementById('el-sdname').value.trim();
+  var keyword=document.getElementById('el-keyword').value.trim();
+  var result=document.getElementById('el-result');
+  result.innerHTML='<p style="font-size:12px;color:#64748b;text-align:center;padding:14px">조회 중...</p>';
+
+  // Apps Script로 호출 — 백엔드에서 data.go.kr API 호출하고 결과 반환
+  apiSend({action:'fetchElectionCandidates',sgId:sgId,sgTypecode:sgTypecode,sdName:sdName,keyword:keyword},function(res){
+    if(!res.ok){
+      // 시안용 mock 데이터 표시
+      if((res.error||'').indexOf('unknown action')>=0||(res.error||'').indexOf('API key')>=0){
+        result.innerHTML='<div style="background:#f1f5f9;border:1px dashed #94a3b8;border-radius:8px;padding:14px;font-size:11.5px;color:#64748b;text-align:center"><b>📋 시안 응답 — 실제 데이터는 Apps Script 액션 추가 후 표시됩니다</b><br/><br/>예시 응답 형식:<br/><pre style="text-align:left;background:#fff;padding:10px;border-radius:6px;margin-top:8px;font-size:11px;overflow-x:auto">{ candidates: [\n  { name: "홍길동", party: "○○당", district: "강남구갑", num: 1 },\n  { name: "김철수", party: "△△당", district: "강남구갑", num: 2 }\n] }</pre></div>';
+      } else {
+        result.innerHTML='<p style="font-size:12px;color:#dc2626;padding:8px">조회 실패: '+(res.error||'unknown')+'</p>';
+      }
+      return;
+    }
+    var list=res.candidates||[];
+    if(!list.length){result.innerHTML='<p style="font-size:12px;color:#64748b;padding:8px;text-align:center">검색 결과가 없습니다</p>';return}
+    var html='<div style="max-height:280px;overflow:auto"><table style="width:100%;font-size:12px;border-collapse:collapse"><thead><tr style="background:#f1f5f9">'
+      +'<th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">기호</th>'
+      +'<th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">이름</th>'
+      +'<th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">정당</th>'
+      +'<th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">지역구</th>'
+      +'</tr></thead><tbody>';
+    list.forEach(function(c){
+      html+='<tr><td style="padding:8px;border-bottom:1px solid #f1f5f9">'+(c.num||'-')+'</td>'
+        +'<td style="padding:8px;border-bottom:1px solid #f1f5f9;font-weight:700">'+(c.name||'-')+'</td>'
+        +'<td style="padding:8px;border-bottom:1px solid #f1f5f9">'+(c.party||'-')+'</td>'
+        +'<td style="padding:8px;border-bottom:1px solid #f1f5f9">'+(c.district||'-')+'</td></tr>';
+    });
+    html+='</tbody></table></div><p style="font-size:11px;color:#64748b;margin-top:8px">총 '+list.length+'건 (선관위 OpenAPI 응답)</p>';
+    result.innerHTML=html;
+  });
+}
+
+// ═══ 가입 신청서 발송 (선택된 row 일괄) ═══
+function sendRegistrationKitFromTab(){
+  var checked=document.querySelectorAll('#inq-tbody input.chk:checked');
+  if(!checked.length){alert('⚠️ 가입 신청서를 발송할 후보자를 체크해주세요 (좌측 체크박스).');return}
+  if(!confirm(checked.length+'명에게 가입 신청서 메일을 발송합니다.\n\n포함되는 자료:\n• 가입 안내서 링크\n• 약관 3종 링크 (이용약관/개인정보/환불약정)\n• prefill 신청서 링크 (자동 생성된 ID 포함)\n\n진행할까요?'))return;
+
+  var sent=0, failed=[];
+  var pending=checked.length;
+  var btn=event.target.closest('button');
+  if(btn){btn.disabled=true;btn.style.opacity='0.5';btn.textContent='발송 중...'}
+
+  checked.forEach(function(cb){
+    var tr=cb.closest('tr');
+    var tds=tr.querySelectorAll('td');
+    // 컬럼: 0=chk 1=접수일 2=이름 3=이메일 4=후보등록범위 5=안내발송 ...
+    var name=(tds[2]?tds[2].textContent:'').trim();
+    var email=(tds[3]?tds[3].textContent:'').trim();
+    var scope=(tds[4]?tds[4].textContent:'').trim();
+    if(!email){pending--;failed.push((name||'(이름없음)')+' — 이메일 없음');checkDone();return}
+
+    apiSend({action:'sendRegistrationKit',name:name,email:email,scope:scope}, function(res){
+      pending--;
+      if(res && res.ok)sent++; else failed.push(name+' — '+(res && res.error || 'unknown'));
+      checkDone();
+    });
+  });
+
+  function checkDone(){
+    if(pending>0)return;
+    if(btn){btn.disabled=false;btn.style.opacity='1';btn.innerHTML='<span class="ms" style="font-size:14px">how_to_reg</span>가입 신청서 발송'}
+    var msg='✅ 발송 완료: '+sent+'건';
+    if(failed.length)msg+='\n❌ 실패: '+failed.length+'건\n  '+failed.join('\n  ');
+    alert(msg);
+    if(typeof loadAllData==='function')loadAllData();
+  }
 }
 
 function fetchSheet(tabName, callback){

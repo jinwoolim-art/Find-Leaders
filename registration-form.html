@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>일꾼을묻다 · 가입 신청서</title>
+<link rel="icon" href="assets/logo_ask03.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --purple:#7c3aed;--purple-50:#faf5ff;--purple-100:#f3e8ff;--purple-200:#ddd6fe;
+    --ink:#0f172a;--ink-2:#475569;--ink-3:#64748b;--ink-4:#94a3b8;
+    --line:#e2e8f0;--bg:#f8fafc;--soft:#f1f5f9;
+    --green:#059669;--green-50:#d1fae5;
+    --amber:#b45309;--amber-50:#fef3c7;
+    --red:#dc2626;--red-50:#fee2e2;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:"Noto Sans KR",-apple-system,sans-serif}
+  body{background:var(--bg);color:var(--ink);line-height:1.6;padding-bottom:80px;-webkit-font-smoothing:antialiased}
+  a{color:var(--purple);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  .top{background:#fff;border-bottom:1px solid var(--line);padding:14px 24px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50}
+  .top img{width:28px;height:28px;border-radius:7px}
+  .top b{font-size:14px;font-weight:900;color:var(--ink)}
+
+  .wrap{max-width:760px;margin:0 auto;padding:24px 20px}
+
+  /* hero */
+  .hero{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px 26px;margin-bottom:14px}
+  .hero .eyebrow{display:inline-block;background:var(--purple-50);color:var(--purple);font-size:11px;font-weight:900;letter-spacing:.08em;padding:4px 10px;border-radius:999px;margin-bottom:10px}
+  .hero h1{font-size:22px;font-weight:900;letter-spacing:-.02em;color:var(--ink);margin-bottom:8px}
+  .hero p{font-size:13px;color:var(--ink-2)}
+  .hero .meta{margin-top:14px;font-size:11.5px;color:var(--ink-3);padding-top:12px;border-top:1px dashed var(--line)}
+  .hero .meta b{color:var(--purple)}
+
+  /* progress */
+  .progress{display:flex;gap:0;align-items:center;margin:18px 0 12px;padding:0 4px}
+  .progress .step{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:10.5px;color:var(--ink-3);font-weight:700}
+  .progress .step .dot{width:14px;height:14px;border-radius:50%;background:#e2e8f0;border:2px solid #fff;box-shadow:0 0 0 1.5px #cbd5e1}
+  .progress .step.done .dot{background:var(--green);box-shadow:0 0 0 1.5px var(--green)}
+  .progress .step.active .dot{background:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.22)}
+  .progress .step.active{color:var(--purple);font-weight:900}
+  .progress .step.done{color:var(--green)}
+  .progress .bar{flex:0 0 14px;height:2px;background:#e2e8f0;align-self:center;margin-top:-13px}
+  .progress .bar.done{background:var(--green)}
+
+  /* card */
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:14px}
+  .card-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+  .step-badge{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--purple);color:#fff;font-size:13px;font-weight:900;flex-shrink:0}
+  .card-head h2{font-size:15px;font-weight:900;color:var(--ink);letter-spacing:-.01em}
+  .card-head .sub{font-size:11.5px;color:var(--ink-3);margin-left:auto;font-weight:700}
+
+  /* form */
+  .field{margin-bottom:12px}
+  .field label{display:block;font-size:12px;font-weight:800;color:var(--ink-2);margin-bottom:5px}
+  .field label .req{color:var(--red);margin-left:3px}
+  .field input,.field select,.field textarea{
+    width:100%;padding:10px 12px;font-size:13px;font-family:inherit;
+    border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);
+    transition:border-color .15s,box-shadow .15s;
+  }
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.12)}
+  .field input[disabled],.field input[readonly]{background:var(--soft);color:var(--ink-3);cursor:not-allowed}
+  .field textarea{resize:vertical;min-height:60px;line-height:1.5}
+  .field .hint{font-size:11px;color:var(--ink-3);margin-top:4px}
+  .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+  /* file upload */
+  .uploader{border:2px dashed var(--line);border-radius:10px;padding:18px;text-align:center;background:var(--soft);cursor:pointer;transition:all .15s}
+  .uploader:hover{border-color:var(--purple);background:var(--purple-50)}
+  .uploader.has-files{border-style:solid;background:#fff;text-align:left}
+  .uploader p{font-size:12.5px;color:var(--ink-3);margin:0}
+  .uploader p b{color:var(--purple)}
+  .uploader input[type=file]{display:none}
+  .file-list{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+  .file-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--soft);border-radius:6px;font-size:11.5px}
+  .file-item .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink-2)}
+  .file-item .size{color:var(--ink-3);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .file-item .rm{background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;padding:0 4px}
+
+  /* docs checklist */
+  .doc-row{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:var(--ink-2);padding:6px 0}
+  .doc-row .req{color:var(--red);font-weight:900;font-size:10.5px;margin-top:2px}
+  .doc-row b{color:var(--ink);font-weight:800}
+
+  /* agreements */
+  .agree-all{display:flex;align-items:center;gap:8px;padding:12px 14px;background:var(--purple-50);border:1px solid var(--purple-200);border-radius:8px;margin-bottom:10px}
+  .agree-all label{font-size:13px;font-weight:900;color:var(--purple);cursor:pointer;display:flex;align-items:center;gap:8px;flex:1}
+  .agree-row{display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--line);border-radius:8px;margin-bottom:6px;background:#fff}
+  .agree-row label{font-size:12.5px;color:var(--ink-2);font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;flex:1}
+  .agree-row .view{margin-left:auto;font-size:11px;color:var(--purple);font-weight:800;text-decoration:none;padding:4px 10px;border:1px solid var(--purple-200);border-radius:6px}
+  .agree-row .view:hover{background:var(--purple-50)}
+  .agree-row input[type=checkbox],.agree-all input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--purple);flex-shrink:0}
+
+  /* price table */
+  .price-table{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+  .price-cell{border:1.5px solid var(--line);border-radius:8px;padding:10px 8px;text-align:center;background:#fff;cursor:pointer;transition:all .15s}
+  .price-cell:hover{border-color:var(--purple-200)}
+  .price-cell.selected{border-color:var(--purple);background:var(--purple-50)}
+  .price-cell .t{font-size:11px;font-weight:800;color:var(--ink-2);margin-bottom:4px}
+  .price-cell .a{font-size:15px;font-weight:900;color:var(--ink);letter-spacing:-.01em}
+  .price-cell .a sup{font-size:10px;color:var(--ink-3);font-weight:700;margin-left:1px}
+  .price-cell .q{font-size:9.5px;color:var(--purple);font-weight:800;margin-top:3px}
+
+  /* payment methods */
+  .pay-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 8px}
+  .pay-method{border:1.5px solid var(--line);border-radius:10px;padding:14px 12px;text-align:center;background:#fff;position:relative;display:flex;flex-direction:column;gap:4px}
+  .pay-method.featured{border-color:var(--purple);background:linear-gradient(180deg,#faf5ff 0%,#fff 60%)}
+  .pay-method .badge{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:9.5px;font-weight:900;letter-spacing:.06em;padding:3px 10px;border-radius:999px}
+  .pay-method .ico{font-size:22px;margin-bottom:2px}
+  .pay-method .t{font-size:12px;font-weight:900;color:var(--ink)}
+  .pay-method .fee{font-size:10.5px;color:var(--ink-3);font-weight:700}
+  .pay-method .fee b{color:var(--green)}
+  .pay-method.featured .fee b{color:var(--purple)}
+  .pay-method .when{font-size:10px;color:var(--ink-4);margin-top:2px}
+
+  /* placeholder */
+  .pay-notice{background:linear-gradient(135deg,#fef3c7 0%,#fef9c3 100%);border:1px dashed var(--amber);border-radius:10px;padding:14px 16px;font-size:12.5px;color:var(--amber);line-height:1.6;margin-top:10px}
+  .pay-notice b{color:var(--amber)}
+
+  /* submit */
+  .submit-bar{position:sticky;bottom:0;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-top:14px;box-shadow:0 -4px 20px rgba(15,23,42,.06);display:flex;align-items:center;gap:12px;justify-content:space-between}
+  .submit-bar .info{font-size:12px;color:var(--ink-3)}
+  .submit-bar button{background:var(--purple);color:#fff;border:none;padding:13px 26px;border-radius:10px;font-size:14px;font-weight:900;cursor:pointer;font-family:inherit;letter-spacing:.02em}
+  .submit-bar button:hover{background:#6d28d9}
+  .submit-bar button[disabled]{background:var(--ink-4);cursor:not-allowed}
+
+  /* result */
+  .result-card{background:#fff;border:2px solid var(--green);border-radius:14px;padding:32px 28px;text-align:center}
+  .result-card .ico{font-size:42px;margin-bottom:10px}
+  .result-card h2{font-size:20px;font-weight:900;color:var(--green);margin-bottom:10px}
+  .result-card p{font-size:13.5px;color:var(--ink-2);margin-bottom:6px}
+  .result-card .id{display:inline-block;background:var(--soft);padding:6px 14px;border-radius:8px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--ink-2);margin-top:8px}
+  .result-card .next{margin-top:18px;padding-top:18px;border-top:1px dashed var(--line);font-size:12px;color:var(--ink-3);text-align:left;background:var(--soft);padding:14px 16px;border-radius:8px;border-top:none}
+
+  .err-msg{background:var(--red-50);border-left:3px solid var(--red);color:var(--red);padding:10px 14px;border-radius:6px;font-size:12px;margin-top:8px;display:none}
+  .err-msg.show{display:block}
+
+  @media (max-width:640px){
+    .wrap{padding:16px 12px}
+    .hero{padding:18px 20px}
+    .hero h1{font-size:18px}
+    .card{padding:18px 18px}
+    .card-head h2{font-size:14px}
+    .field-grid{grid-template-columns:1fr}
+    .price-table{grid-template-columns:1fr 1fr}
+    .pay-methods{grid-template-columns:1fr}
+    .progress .step span{font-size:9.5px}
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <img src="assets/logo_ask03.png" alt="일꾼을묻다"/>
+  <b>일꾼을묻다 · 가입 신청서</b>
+</div>
+
+<div class="wrap" id="formWrap">
+  <div class="hero">
+    <div class="eyebrow">REGISTRATION FORM</div>
+    <h1>가입 신청서</h1>
+    <p>아래 5개 단계를 차례로 작성해주세요. 약관 동의 후 제출하시면 운영팀이 검토 후 결제 안내를 드립니다.</p>
+    <div class="meta" id="prefillMeta">
+      <b>※</b> 안내서 메일 링크로 접속하셨다면 일부 정보가 자동 채워집니다.
+    </div>
+  </div>
+
+  <div class="progress" id="progressBar">
+    <div class="step active" data-step="1"><div class="dot"></div><span>정보 확인</span></div>
+    <div class="bar"></div>
+    <div class="step" data-step="2"><div class="dot"></div><span>추가 입력</span></div>
+    <div class="bar"></div>
+    <div class="step" data-step="3"><div class="dot"></div><span>증빙 업로드</span></div>
+    <div class="bar"></div>
+    <div class="step" data-step="4"><div class="dot"></div><span>약관 동의</span></div>
+    <div class="bar"></div>
+    <div class="step" data-step="5"><div class="dot"></div><span>결제</span></div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="card" id="card-1">
+    <div class="card-head">
+      <span class="step-badge">1</span>
+      <h2>후보자 정보 확인</h2>
+      <span class="sub">필수</span>
+    </div>
+    <div class="field-grid">
+      <div class="field">
+        <label>이름 <span class="req">*</span></label>
+        <input type="text" id="f-name" placeholder="홍길동"/>
+      </div>
+      <div class="field">
+        <label>이메일 <span class="req">*</span></label>
+        <input type="email" id="f-email" placeholder="example@email.com"/>
+      </div>
+      <div class="field">
+        <label>연락처 <span class="req">*</span></label>
+        <input type="text" id="f-contact" placeholder="010-0000-0000"/>
+      </div>
+      <div class="field">
+        <label>후보 등록 범위</label>
+        <input type="text" id="f-scope" placeholder="예) 광역의원·기초단체장 등"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="card" id="card-2">
+    <div class="card-head">
+      <span class="step-badge">2</span>
+      <h2>추가 정보 입력</h2>
+      <span class="sub">필수</span>
+    </div>
+    <div class="field-grid">
+      <div class="field">
+        <label>직급 <span class="req">*</span></label>
+        <select id="f-position">
+          <option value="">선택</option>
+          <option value="광역단체장">광역단체장 (시·도지사)</option>
+          <option value="기초단체장">기초단체장 (시장·군수·구청장)</option>
+          <option value="광역의원">광역의원 (시·도의원)</option>
+          <option value="기초의원">기초의원 (시·군·구의원)</option>
+          <option value="교육감">교육감</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>지역구 <span class="req">*</span></label>
+        <input type="text" id="f-region" placeholder="예) 서울특별시 강남구 갑"/>
+      </div>
+      <div class="field">
+        <label>정당</label>
+        <input type="text" id="f-party" placeholder="예) 무소속 / OO당"/>
+      </div>
+      <div class="field">
+        <label>예비후보자 등록번호</label>
+        <input type="text" id="f-regnum" placeholder="(있는 경우)"/>
+      </div>
+    </div>
+    <div class="field" style="margin-top:8px;padding-top:14px;border-top:1px dashed var(--line)">
+      <label style="margin-bottom:8px">대리 결제 시 캠프 담당자 정보 (선택)</label>
+      <div class="field-grid">
+        <div class="field" style="margin:0">
+          <input type="text" id="f-agent-name" placeholder="담당자 이름"/>
+        </div>
+        <div class="field" style="margin:0">
+          <input type="text" id="f-agent-contact" placeholder="담당자 연락처"/>
+        </div>
+      </div>
+      <div class="hint">캠프 담당자가 결제하는 경우, 별도 위임장 + 담당자 신분증 첨부가 필요합니다.</div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="card" id="card-3">
+    <div class="card-head">
+      <span class="step-badge">3</span>
+      <h2>본인 증빙 서류 업로드</h2>
+      <span class="sub">필수</span>
+    </div>
+
+    <div class="doc-row"><span class="req">●</span><div><b>예비후보자 / 후보자 등록증 사본</b> — PDF 또는 이미지</div></div>
+    <div class="doc-row"><span class="req">●</span><div><b>본인 신분증 사본</b> — 주민번호 뒷자리 마스킹 권장</div></div>
+    <div class="doc-row" style="color:var(--ink-3)"><span style="color:var(--ink-3);font-weight:900;font-size:10.5px;margin-top:2px">○</span><div>(대리 결제 시) <b>위임장 + 캠프 담당자 신분증</b></div></div>
+
+    <label class="uploader" id="uploader" for="f-files">
+      <input type="file" id="f-files" multiple accept=".pdf,.jpg,.jpeg,.png,.heic,.webp"/>
+      <p>📎 클릭하여 파일 선택 (또는 끌어다 놓기) — <b>PDF · JPG · PNG · HEIC</b>, 파일당 10MB 이하</p>
+      <div class="file-list" id="fileList"></div>
+    </label>
+    <div class="err-msg" id="filesErr"></div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="card" id="card-4">
+    <div class="card-head">
+      <span class="step-badge">4</span>
+      <h2>약관 동의</h2>
+      <span class="sub">3종 모두 필수</span>
+    </div>
+    <div class="agree-all">
+      <label><input type="checkbox" id="agree-all"/> 아래 3종 약관 전체 동의</label>
+    </div>
+    <div class="agree-row">
+      <label><input type="checkbox" id="agree-1" class="agree-each"/> <b>이용약관</b>에 동의합니다.</label>
+      <a href="terms.html" target="_blank" class="view">전문 보기 ↗</a>
+    </div>
+    <div class="agree-row">
+      <label><input type="checkbox" id="agree-2" class="agree-each"/> <b>개인정보 처리방침</b>에 동의합니다.</label>
+      <a href="privacy.html" target="_blank" class="view">전문 보기 ↗</a>
+    </div>
+    <div class="agree-row">
+      <label><input type="checkbox" id="agree-3" class="agree-each"/> <b>환불 약정</b>에 동의합니다.</label>
+      <a href="refund.html" target="_blank" class="view">전문 보기 ↗</a>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="card" id="card-5">
+    <div class="card-head">
+      <span class="step-badge">5</span>
+      <h2>가입비 안내</h2>
+      <span class="sub">결제는 별도 안내</span>
+    </div>
+    <p style="font-size:12.5px;color:var(--ink-2);margin-bottom:10px">선거기간 14일 기준 · 부가세 별도</p>
+    <div class="price-table">
+      <div class="price-cell" data-pos="광역단체장"><div class="t">광역단체장</div><div class="a">299<sup>만원</sup></div><div class="q">기본 5,000건</div></div>
+      <div class="price-cell" data-pos="기초단체장"><div class="t">기초단체장</div><div class="a">129<sup>만원</sup></div><div class="q">기본 2,000건</div></div>
+      <div class="price-cell" data-pos="광역의원"><div class="t">광역의원</div><div class="a">39<sup>만원</sup></div><div class="q">기본 1,000건</div></div>
+      <div class="price-cell" data-pos="기초의원"><div class="t">기초의원</div><div class="a">19<sup>만원</sup></div><div class="q">기본 500건</div></div>
+    </div>
+
+    <p style="font-size:12px;font-weight:800;color:var(--ink-2);margin:14px 0 4px">결제 수단 (단가가 큰 거래는 가상계좌 권장)</p>
+    <div class="pay-methods">
+      <div class="pay-method featured">
+        <div class="badge">권장</div>
+        <div class="ico">🏦</div>
+        <div class="t">가상계좌</div>
+        <div class="fee">수수료 <b>최저</b></div>
+        <div class="when">입금 1~2시간 내 확인</div>
+      </div>
+      <div class="pay-method">
+        <div class="ico">💳</div>
+        <div class="t">카드</div>
+        <div class="fee">수수료 일반</div>
+        <div class="when">즉시 확인</div>
+      </div>
+      <div class="pay-method">
+        <div class="ico">⚡</div>
+        <div class="t">계좌이체 / 간편결제</div>
+        <div class="fee">수수료 중간</div>
+        <div class="when">즉시 확인</div>
+      </div>
+    </div>
+
+    <div class="pay-notice">
+      <b>📌 결제 진행 안내:</b> 신청서 제출 후, 운영팀이 자격·증빙 자료를 검증한 뒤 <b>결제 링크를 별도 메일로 발송</b>해드립니다. 본 페이지에서는 결제가 진행되지 않습니다.<br/>
+      <span style="font-size:11.5px;display:inline-block;margin-top:6px">💡 <b>가상계좌 결제 시</b> 후보자 본인 명의로 입금하시면 본인 확인 보조 자료로 활용됩니다 (수수료도 가장 낮음).</span>
+    </div>
+  </div>
+
+  <div class="submit-bar">
+    <div class="info">제출 후 운영팀 확인까지 <b>1~2 영업일</b> 소요됩니다.</div>
+    <button id="submitBtn" onclick="submitForm()">신청서 제출하기 →</button>
+  </div>
+
+  <div class="err-msg" id="submitErr" style="margin-top:10px"></div>
+</div>
+
+<!-- result screen -->
+<div class="wrap hidden" id="resultWrap" style="display:none">
+  <div class="result-card">
+    <div class="ico">✅</div>
+    <h2>신청 접수가 완료되었습니다</h2>
+    <p>감사합니다. 운영팀이 자격 및 증빙 자료를 검토 후 결제 안내를 드립니다.</p>
+    <div class="id" id="resultId"></div>
+    <div class="next">
+      <b style="color:var(--purple)">다음 단계</b><br/>
+      ① 운영팀이 등록증·신분증 검증 (1~2 영업일)<br/>
+      ② 검증 완료 시 결제 링크가 메일로 발송됩니다<br/>
+      ③ 결제 완료 후 후보자 대시보드가 일괄 발급됩니다 (3일 단위)
+    </div>
+  </div>
+</div>
+
+<script>
+var WEB_APP_URL='https://script.google.com/macros/s/AKfycby7xcDYmlJgXvriMkqi8ZUO9y1Q-Y7yrZYGiQoiLdE69tn8GzZ8UUbxlmX8gqiJxCQIYw/exec';
+var FILES=[];
+var REQ_ID=new URLSearchParams(location.search).get('id') || '';
+
+function api(payload){
+  return fetch(WEB_APP_URL,{
+    method:'POST',
+    body:JSON.stringify(payload),
+    headers:{'Content-Type':'text/plain;charset=utf-8'}
+  }).then(function(r){return r.json()});
+}
+
+// prefill on load
+async function loadPrefill(){
+  var meta=document.getElementById('prefillMeta');
+  if(!REQ_ID){
+    meta.innerHTML='<b>※</b> 직접 모든 정보를 입력해주세요. 안내서 메일을 받으셨다면 메일의 신청서 링크로 다시 접속해주세요.';
+    return;
+  }
+  try{
+    var res=await api({action:'getRegistrationPrefill',id:REQ_ID});
+    if(res.ok && res.data){
+      var d=res.data;
+      if(d.name) document.getElementById('f-name').value=d.name;
+      if(d.email) document.getElementById('f-email').value=d.email;
+      if(d.contact) document.getElementById('f-contact').value=d.contact;
+      if(d.scope) document.getElementById('f-scope').value=d.scope;
+      if(d.region) document.getElementById('f-region').value=d.region;
+      meta.innerHTML='<b>✓</b> 신청 ID: <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px">'+escape(REQ_ID)+'</span> · 일부 정보가 자동 채워졌습니다.';
+    } else {
+      meta.innerHTML='<b>※</b> 신청 ID가 유효하지 않습니다. 직접 정보를 입력해주세요.';
+    }
+  }catch(err){
+    meta.innerHTML='<b>※</b> 사전 정보 조회 실패. 직접 입력해주세요.';
+  }
+  updateProgress();
+}
+function escape(s){return String(s||'').replace(/[<>&"]/g,function(c){return ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'})[c]})}
+
+// progress tracker — 입력 진행도에 따라 활성 단계 갱신
+function updateProgress(){
+  var done=[];
+  if(document.getElementById('f-name').value && document.getElementById('f-email').value && document.getElementById('f-contact').value) done.push(1);
+  if(document.getElementById('f-position').value && document.getElementById('f-region').value) done.push(2);
+  if(FILES.length>=2) done.push(3);
+  if(document.getElementById('agree-1').checked && document.getElementById('agree-2').checked && document.getElementById('agree-3').checked) done.push(4);
+
+  document.querySelectorAll('.progress .step').forEach(function(el){
+    var step=parseInt(el.dataset.step);
+    el.classList.remove('done','active');
+    if(done.indexOf(step)>=0){el.classList.add('done')}
+    else if(step===Math.min.apply(null,[1,2,3,4,5].filter(function(s){return done.indexOf(s)<0}))) el.classList.add('active');
+  });
+  document.querySelectorAll('.progress .bar').forEach(function(el,i){
+    el.classList.toggle('done',done.indexOf(i+1)>=0);
+  });
+}
+
+// file upload
+document.getElementById('f-files').addEventListener('change',handleFiles);
+function handleFiles(e){
+  var newFiles=Array.from(e.target.files);
+  var err=document.getElementById('filesErr');err.classList.remove('show');
+  for(var i=0;i<newFiles.length;i++){
+    if(newFiles[i].size>10*1024*1024){
+      err.textContent='⚠️ 파일 크기는 10MB 이하만 허용됩니다: '+newFiles[i].name;
+      err.classList.add('show');
+      e.target.value='';return;
+    }
+  }
+  FILES=FILES.concat(newFiles);
+  e.target.value='';
+  renderFiles();
+  updateProgress();
+}
+function renderFiles(){
+  var list=document.getElementById('fileList');
+  var u=document.getElementById('uploader');
+  if(FILES.length===0){u.classList.remove('has-files');list.innerHTML='';return}
+  u.classList.add('has-files');
+  list.innerHTML=FILES.map(function(f,i){
+    return '<div class="file-item"><span class="name">📎 '+escape(f.name)+'</span><span class="size">'+(f.size/1024).toFixed(0)+'KB</span><button class="rm" type="button" onclick="event.preventDefault();removeFile('+i+')">✕</button></div>';
+  }).join('');
+}
+function removeFile(i){FILES.splice(i,1);renderFiles();updateProgress()}
+
+// agree-all
+document.getElementById('agree-all').addEventListener('change',function(e){
+  document.querySelectorAll('.agree-each').forEach(function(c){c.checked=e.target.checked});
+  updateProgress();
+});
+document.querySelectorAll('.agree-each').forEach(function(c){
+  c.addEventListener('change',function(){
+    var all=document.querySelectorAll('.agree-each');
+    var allChecked=Array.from(all).every(function(x){return x.checked});
+    document.getElementById('agree-all').checked=allChecked;
+    updateProgress();
+  });
+});
+
+// price selection (visual only — derived from position)
+document.getElementById('f-position').addEventListener('change',function(e){
+  document.querySelectorAll('.price-cell').forEach(function(c){
+    c.classList.toggle('selected',c.dataset.pos===e.target.value);
+  });
+  updateProgress();
+});
+document.querySelectorAll('.price-cell').forEach(function(c){
+  c.addEventListener('click',function(){
+    document.getElementById('f-position').value=c.dataset.pos;
+    document.querySelectorAll('.price-cell').forEach(function(x){x.classList.toggle('selected',x===c)});
+    updateProgress();
+  });
+});
+
+// general listeners for progress
+['f-name','f-email','f-contact','f-region'].forEach(function(id){
+  document.getElementById(id).addEventListener('input',updateProgress);
+});
+
+// file → base64
+function fileToBase64(file){
+  return new Promise(function(resolve,reject){
+    var r=new FileReader();
+    r.onload=function(){
+      var s=r.result;
+      var idx=s.indexOf(',');
+      resolve({name:file.name,type:file.type||'application/octet-stream',base64:s.slice(idx+1)});
+    };
+    r.onerror=reject;
+    r.readAsDataURL(file);
+  });
+}
+
+async function submitForm(){
+  var btn=document.getElementById('submitBtn');
+  var err=document.getElementById('submitErr');err.classList.remove('show');
+
+  // validation
+  var name=document.getElementById('f-name').value.trim();
+  var email=document.getElementById('f-email').value.trim();
+  var contact=document.getElementById('f-contact').value.trim();
+  var position=document.getElementById('f-position').value;
+  var region=document.getElementById('f-region').value.trim();
+  var a1=document.getElementById('agree-1').checked;
+  var a2=document.getElementById('agree-2').checked;
+  var a3=document.getElementById('agree-3').checked;
+
+  if(!name||!email||!contact){err.textContent='① 후보자 정보 확인 단계에서 이름·이메일·연락처는 필수입니다.';err.classList.add('show');return}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent='이메일 형식이 올바르지 않습니다.';err.classList.add('show');return}
+  if(!position||!region){err.textContent='② 추가 정보 입력 단계에서 직급·지역구는 필수입니다.';err.classList.add('show');return}
+  if(FILES.length<2){err.textContent='③ 증빙 서류 단계에서 등록증과 신분증 사본 (최소 2개 파일)이 필요합니다.';err.classList.add('show');return}
+  if(!(a1&&a2&&a3)){err.textContent='④ 약관 3종 모두 동의해주셔야 합니다.';err.classList.add('show');return}
+
+  btn.disabled=true;btn.textContent='제출 중...';
+
+  try{
+    var encoded=await Promise.all(FILES.map(fileToBase64));
+    var res=await api({
+      action:'submitRegistration',
+      id:REQ_ID,
+      name:name,email:email,contact:contact,
+      scope:document.getElementById('f-scope').value.trim(),
+      position:position,region:region,
+      party:document.getElementById('f-party').value.trim(),
+      regnum:document.getElementById('f-regnum').value.trim(),
+      agentName:document.getElementById('f-agent-name').value.trim(),
+      agentContact:document.getElementById('f-agent-contact').value.trim(),
+      files:encoded,
+      agreedTerms:a1,agreedPrivacy:a2,agreedRefund:a3,
+      agreedAt:new Date().toISOString(),
+      userAgent:navigator.userAgent
+    });
+    if(res.ok){
+      document.getElementById('formWrap').style.display='none';
+      var rw=document.getElementById('resultWrap');rw.style.display='block';rw.classList.remove('hidden');
+      document.getElementById('resultId').textContent='신청 ID: '+(res.requestId||REQ_ID||'-');
+      window.scrollTo(0,0);
+    } else {
+      err.textContent='제출 실패: '+(res.error||'unknown');err.classList.add('show');
+      btn.disabled=false;btn.textContent='신청서 제출하기 →';
+    }
+  }catch(e){
+    err.textContent='제출 중 오류: '+String(e);err.classList.add('show');
+    btn.disabled=false;btn.textContent='신청서 제출하기 →';
+  }
+}
+
+loadPrefill();
+updateProgress();
+</script>
+</body>
+</html>
