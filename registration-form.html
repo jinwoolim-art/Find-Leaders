@@ -369,6 +369,21 @@ function api(payload){
   }).then(function(r){return r.json()});
 }
 
+// scope (자유 텍스트 또는 admin select 값) → form 직급 옵션 매핑
+function inferPosition(scope){
+  if(!scope) return '';
+  var s=String(scope);
+  if(s.indexOf('교육감')>=0) return '교육감';
+  if(s.indexOf('광역단체장')>=0||s.indexOf('광역시장')>=0||s.indexOf('도지사')>=0||s.indexOf('시·도지사')>=0) return '광역단체장';
+  if(s.indexOf('기초단체장')>=0||s.indexOf('구청장')>=0||s.indexOf('군수')>=0) return '기초단체장';
+  if(s.indexOf('광역의원')>=0||s.indexOf('광역시의원')>=0||s.indexOf('도의원')>=0||s.indexOf('시·도의원')>=0) return '광역의원';
+  if(s.indexOf('기초의원')>=0||s.indexOf('구의원')>=0||s.indexOf('군의원')>=0) return '기초의원';
+  // 마지막 fallback — '시장'·'시의원'은 위에서 안 잡힌 경우만
+  if(s.indexOf('시장')>=0) return '기초단체장';
+  if(s.indexOf('시의원')>=0) return '기초의원';
+  return '';
+}
+
 // prefill on load
 async function loadPrefill(){
   var meta=document.getElementById('prefillMeta');
@@ -385,7 +400,15 @@ async function loadPrefill(){
       if(d.contact) document.getElementById('f-contact').value=d.contact;
       if(d.scope) document.getElementById('f-scope').value=d.scope;
       if(d.region) document.getElementById('f-region').value=d.region;
-      meta.innerHTML='<b>✓</b> 신청 ID: <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px">'+escape(REQ_ID)+'</span> · 일부 정보가 자동 채워졌습니다.';
+      // 직급 자동 매핑 (scope → position)
+      var inferredPos=inferPosition(d.scope);
+      if(inferredPos){
+        var sel=document.getElementById('f-position');
+        sel.value=inferredPos;
+        // change 이벤트 직접 발생 → 가격 카드 highlight
+        sel.dispatchEvent(new Event('change'));
+      }
+      meta.innerHTML='<b>✓</b> 신청 ID: <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px">'+escape(REQ_ID)+'</span> · 정보가 자동 채워졌습니다. 누락된 항목만 추가 입력해주세요.';
     } else {
       meta.innerHTML='<b>※</b> 신청 ID가 유효하지 않습니다. 직접 정보를 입력해주세요.';
     }
