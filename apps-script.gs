@@ -858,38 +858,41 @@ function sendRegistrationKit(data) {
   var bodyHtml =
     '<div style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:#1e293b;line-height:1.65;max-width:560px">' +
     '<h2 style="color:#7c3aed;margin:0 0 14px;font-size:18px">안녕하세요, ' + name + '님</h2>' +
-    '<p>일꾼을묻다 가입 절차를 안내드립니다.<br/>아래 4종 자료를 검토하신 후, <b>가입 신청서</b> 링크를 통해 정보를 입력해주세요.</p>' +
+    '<p>일꾼을묻다 가입 절차를 안내드립니다.<br/>아래 두 단계를 차례로 진행해주세요.</p>' +
 
-    '<div style="margin:20px 0;padding:16px 18px;background:#faf5ff;border-left:3px solid #7c3aed;border-radius:6px">' +
-      '<div style="font-size:11px;font-weight:900;color:#7c3aed;letter-spacing:.06em;margin-bottom:6px">📌 STEP 1 — 자료 검토</div>' +
-      '<p style="margin:0 0 6px"><a href="' + REGISTRATION_GUIDE_URL + '" style="color:#7c3aed;font-weight:700">📘 가입 안내서</a> — 5페이지 (서비스·결제·운영 흐름)</p>' +
-      '<p style="margin:0;font-size:12px;color:#475569">📑 약관 3종 (제출 시 동의 필요)</p>' +
-      '<ul style="margin:6px 0 0 18px;font-size:12px;color:#475569">' +
-        '<li><a href="' + TERMS_URL   + '" style="color:#7c3aed">이용약관</a></li>' +
-        '<li><a href="' + PRIVACY_URL + '" style="color:#7c3aed">개인정보 처리방침</a></li>' +
-        '<li><a href="' + REFUND_URL  + '" style="color:#7c3aed">환불 약정</a></li>' +
-      '</ul>' +
+    // STEP 1 — 자료 검토 (큰 박스, 파란 톤, CTA 버튼)
+    '<div style="margin:20px 0;padding:18px 20px;background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%);border-radius:10px;text-align:center">' +
+      '<div style="font-size:11px;font-weight:900;color:#1d4ed8;letter-spacing:.06em;margin-bottom:8px">&#x1F4CC; STEP 1 &mdash; 자료 검토</div>' +
+      '<p style="margin:0 0 14px;font-size:13px">가입 절차·결제·운영 흐름과 약관 3종을 먼저 확인해주세요.</p>' +
+      '<a href="' + REGISTRATION_GUIDE_URL + '" style="display:inline-block;background:#1d4ed8;color:#fff;text-decoration:none;padding:13px 28px;border-radius:10px;font-weight:900;font-size:14px">&#x1F4D8; 가입 안내서 보기 (5p) &rarr;</a>' +
+      '<div style="margin-top:14px;padding-top:12px;border-top:1px dashed rgba(29,78,216,.25);font-size:11.5px;color:#1e3a8a;line-height:1.8">' +
+        '제출 시 동의 필요한 약관 3종 &mdash;<br/>' +
+        '<a href="' + TERMS_URL   + '" style="color:#1d4ed8;font-weight:700">이용약관</a> &middot; ' +
+        '<a href="' + PRIVACY_URL + '" style="color:#1d4ed8;font-weight:700">개인정보 처리방침</a> &middot; ' +
+        '<a href="' + REFUND_URL  + '" style="color:#1d4ed8;font-weight:700">환불 약정</a>' +
+      '</div>' +
     '</div>' +
 
-    '<div style="margin:20px 0;padding:16px 18px;background:linear-gradient(135deg,#faf5ff 0%,#fef3c7 100%);border-radius:10px;text-align:center">' +
-      '<div style="font-size:11px;font-weight:900;color:#7c3aed;letter-spacing:.06em;margin-bottom:8px">📌 STEP 2 — 신청서 작성</div>' +
+    // STEP 2 — 신청서 작성 (큰 박스, 보라 톤, 메인 CTA)
+    '<div style="margin:20px 0;padding:18px 20px;background:linear-gradient(135deg,#faf5ff 0%,#fef3c7 100%);border-radius:10px;text-align:center">' +
+      '<div style="font-size:11px;font-weight:900;color:#7c3aed;letter-spacing:.06em;margin-bottom:8px">&#x1F4CC; STEP 2 &mdash; 신청서 작성</div>' +
       '<p style="margin:0 0 14px;font-size:13px">기본 정보가 일부 자동 입력되어 있습니다. 추가 정보 + 본인 증빙 서류 + 약관 동의 후 제출해주세요.</p>' +
-      '<a href="' + formUrl + '" style="display:inline-block;background:#7c3aed;color:#fff;text-decoration:none;padding:13px 28px;border-radius:10px;font-weight:900;font-size:14px">📝 가입 신청서 작성하기 →</a>' +
+      '<a href="' + formUrl + '" style="display:inline-block;background:#7c3aed;color:#fff;text-decoration:none;padding:13px 28px;border-radius:10px;font-weight:900;font-size:14px">&#x1F4DD; 가입 신청서 작성하기 &rarr;</a>' +
       '<p style="margin:10px 0 0;font-size:10.5px;color:#64748b">신청 ID: ' + id + '</p>' +
     '</div>' +
 
     '<div style="margin:18px 0;padding:12px 14px;background:#fffbeb;border:1px dashed #b45309;border-radius:6px;font-size:12px;color:#b45309">' +
-      '<b>📎 준비물</b> — 후보자 등록증 사본, 본인 신분증 사본 (주민번호 뒷자리 마스킹 권장). 캠프 담당자 결제 시 위임장 + 담당자 신분증 추가.' +
+      '<b>&#x1F4CE; 준비물</b> &mdash; 후보자 등록증 사본, 본인 신분증 사본 (주민번호 뒷자리 마스킹 권장). 캠프 담당자 결제 시 위임장 + 담당자 신분증 추가.' +
     '</div>' +
 
     '<p style="font-size:11.5px;color:#64748b;margin-top:18px;line-height:1.7">' +
-      '· 신청서 제출 후 운영팀이 자격 검증 (1~2 영업일)<br/>' +
-      '· 검증 완료 시 결제 링크가 별도 메일로 발송됩니다<br/>' +
-      '· 결제 완료 후 후보자 대시보드 일괄 발급 (3일 단위)' +
+      '&middot; 신청서 제출 후 운영팀이 자격 검증<br/>' +
+      '&middot; 검증 완료 시 결제 링크가 별도 메일로 발송됩니다<br/>' +
+      '&middot; 결제 완료 후 후보자 대시보드 발급' +
     '</p>' +
 
     '<hr style="border:none;border-top:1px solid #e2e8f0;margin:22px 0"/>' +
-    '<p style="font-size:11px;color:#94a3b8">문의: <a href="mailto:ilkkun.official@gmail.com">ilkkun.official@gmail.com</a> · <a href="https://www.illkkun.cloud" style="color:#94a3b8">www.illkkun.cloud</a></p>' +
+    '<p style="font-size:11px;color:#94a3b8">문의: <a href="mailto:ilkkun.official@gmail.com">ilkkun.official@gmail.com</a> &middot; <a href="https://www.illkkun.cloud" style="color:#94a3b8">www.illkkun.cloud</a></p>' +
     '</div>';
 
   var bodyPlain = '안녕하세요, ' + name + '님\n\n'

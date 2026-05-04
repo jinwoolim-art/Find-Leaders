@@ -106,15 +106,9 @@
 
   /* payment methods */
   .pay-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 8px}
-  .pay-method{border:1.5px solid var(--line);border-radius:10px;padding:14px 12px;text-align:center;background:#fff;position:relative;display:flex;flex-direction:column;gap:4px}
-  .pay-method.featured{border-color:var(--purple);background:linear-gradient(180deg,#faf5ff 0%,#fff 60%)}
-  .pay-method .badge{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:9.5px;font-weight:900;letter-spacing:.06em;padding:3px 10px;border-radius:999px}
-  .pay-method .ico{font-size:22px;margin-bottom:2px}
-  .pay-method .t{font-size:12px;font-weight:900;color:var(--ink)}
-  .pay-method .fee{font-size:10.5px;color:var(--ink-3);font-weight:700}
-  .pay-method .fee b{color:var(--green)}
-  .pay-method.featured .fee b{color:var(--purple)}
-  .pay-method .when{font-size:10px;color:var(--ink-4);margin-top:2px}
+  .pay-method{border:1.5px solid var(--line);border-radius:10px;padding:18px 14px;text-align:center;background:#fff;display:flex;flex-direction:column;gap:6px;align-items:center;justify-content:center}
+  .pay-method .ico{font-size:24px}
+  .pay-method .t{font-size:12.5px;font-weight:900;color:var(--ink)}
 
   /* placeholder */
   .pay-notice{background:linear-gradient(135deg,#fef3c7 0%,#fef9c3 100%);border:1px dashed var(--amber);border-radius:10px;padding:14px 16px;font-size:12.5px;color:var(--amber);line-height:1.6;margin-top:10px}
@@ -219,12 +213,17 @@
         <label>직급 <span class="req">*</span></label>
         <select id="f-position">
           <option value="">선택</option>
-          <option value="광역단체장">광역단체장 (시·도지사)</option>
-          <option value="기초단체장">기초단체장 (시장·군수·구청장)</option>
-          <option value="광역의원">광역의원 (시·도의원)</option>
-          <option value="기초의원">기초의원 (시·군·구의원)</option>
-          <option value="교육감">교육감</option>
+          <optgroup label="── 광역 (17개 시·도) ──">
+            <option value="광역단체장">광역단체장 — 특별·광역시장 / 도지사</option>
+            <option value="광역의원">광역의원 — 시·도의회 의원</option>
+            <option value="교육감">교육감 — 시·도 교육감</option>
+          </optgroup>
+          <optgroup label="── 기초 (226 시·군·구) ──">
+            <option value="기초단체장">기초단체장 — 자치시장 / 군수 / 구청장</option>
+            <option value="기초의원">기초의원 — 시·군·구의회 의원</option>
+          </optgroup>
         </select>
+        <div class="hint">광역 = 특별·광역시 / 도 단위 · 기초 = 자치시 / 군 / 구 단위. 교육감은 광역 단위로 별도 선출됩니다.</div>
       </div>
       <div class="field">
         <label>지역구 <span class="req">*</span></label>
@@ -304,40 +303,32 @@
       <h2>가입비 안내</h2>
       <span class="sub">결제는 별도 안내</span>
     </div>
-    <p style="font-size:12.5px;color:var(--ink-2);margin-bottom:10px">선거기간 14일 기준 · 부가세 별도</p>
+    <p style="font-size:12.5px;color:var(--ink-2);margin-bottom:10px">선거기간 14일 기준 · 부가세 별도 · <b>교육감은 광역단체장과 동일</b></p>
     <div class="price-table">
-      <div class="price-cell" data-pos="광역단체장"><div class="t">광역단체장</div><div class="a">299<sup>만원</sup></div><div class="q">기본 5,000건</div></div>
+      <div class="price-cell" data-pos="광역단체장"><div class="t">광역단체장 / 교육감</div><div class="a">299<sup>만원</sup></div><div class="q">기본 5,000건</div></div>
       <div class="price-cell" data-pos="기초단체장"><div class="t">기초단체장</div><div class="a">129<sup>만원</sup></div><div class="q">기본 2,000건</div></div>
       <div class="price-cell" data-pos="광역의원"><div class="t">광역의원</div><div class="a">39<sup>만원</sup></div><div class="q">기본 1,000건</div></div>
       <div class="price-cell" data-pos="기초의원"><div class="t">기초의원</div><div class="a">19<sup>만원</sup></div><div class="q">기본 500건</div></div>
     </div>
 
-    <p style="font-size:12px;font-weight:800;color:var(--ink-2);margin:14px 0 4px">결제 수단 (단가가 큰 거래는 가상계좌 권장)</p>
+    <p style="font-size:12px;font-weight:800;color:var(--ink-2);margin:14px 0 4px">결제 수단</p>
     <div class="pay-methods">
-      <div class="pay-method featured">
-        <div class="badge">권장</div>
+      <div class="pay-method">
         <div class="ico">🏦</div>
         <div class="t">가상계좌</div>
-        <div class="fee">수수료 <b>최저</b></div>
-        <div class="when">입금 1~2시간 내 확인</div>
       </div>
       <div class="pay-method">
         <div class="ico">💳</div>
         <div class="t">카드</div>
-        <div class="fee">수수료 일반</div>
-        <div class="when">즉시 확인</div>
       </div>
       <div class="pay-method">
         <div class="ico">⚡</div>
         <div class="t">계좌이체 / 간편결제</div>
-        <div class="fee">수수료 중간</div>
-        <div class="when">즉시 확인</div>
       </div>
     </div>
 
     <div class="pay-notice">
-      <b>📌 결제 진행 안내:</b> 신청서 제출 후, 운영팀이 자격·증빙 자료를 검증한 뒤 <b>결제 링크를 별도 메일로 발송</b>해드립니다. 본 페이지에서는 결제가 진행되지 않습니다.<br/>
-      <span style="font-size:11.5px;display:inline-block;margin-top:6px">💡 <b>가상계좌 결제 시</b> 후보자 본인 명의로 입금하시면 본인 확인 보조 자료로 활용됩니다 (수수료도 가장 낮음).</span>
+      <b>📌 결제 진행 안내:</b> 신청서 제출 후, 운영팀이 자격·증빙 자료를 검증한 뒤 <b>결제 링크를 별도 메일로 발송</b>해드립니다. 본 페이지에서는 결제가 진행되지 않습니다.
     </div>
   </div>
 
@@ -466,10 +457,12 @@ document.querySelectorAll('.agree-each').forEach(function(c){
   });
 });
 
-// price selection (visual only — derived from position)
+// price selection (visual only — derived from position). 교육감 → 광역단체장 가격으로 매핑.
+function priceKeyFor(pos){return pos==='교육감'?'광역단체장':pos}
 document.getElementById('f-position').addEventListener('change',function(e){
+  var key=priceKeyFor(e.target.value);
   document.querySelectorAll('.price-cell').forEach(function(c){
-    c.classList.toggle('selected',c.dataset.pos===e.target.value);
+    c.classList.toggle('selected',c.dataset.pos===key);
   });
   updateProgress();
 });
