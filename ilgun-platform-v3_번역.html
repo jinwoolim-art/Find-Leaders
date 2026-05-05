@@ -433,16 +433,16 @@
         <main class="flex-1 pb-32 bg-background-light dark:bg-background-dark">
             <!-- Party filter chips -->
             <div class="px-4 pt-3 pb-1 overflow-x-auto whitespace-nowrap flex gap-2 scrollbar-hide">
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-primary text-white shadow-sm" onclick="filterParty(this, 'all')">All</button>
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-[#4c669a] border border-[#e7ebf3]" onclick="filterParty(this, 'democratic')">Democratic</button>
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-[#4c669a] border border-[#e7ebf3]" onclick="filterParty(this, 'peoples')">People Power</button>
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-[#4c669a] border border-[#e7ebf3]" onclick="filterParty(this, 'justice')">Justice</button>
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-[#4c669a] border border-[#e7ebf3]" onclick="filterParty(this, 'progress')">Progressive</button>
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-[#4c669a] border border-[#e7ebf3]" onclick="filterParty(this, 'green')">Green</button>
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-[#4c669a] border border-[#e7ebf3]" onclick="filterParty(this, 'basic')">Basic Income</button>
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-[#4c669a] border border-[#e7ebf3]" onclick="filterParty(this, 'new_era')">New Era</button>
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-[#4c669a] border border-[#e7ebf3]" onclick="filterParty(this, 'independent')">Independent</button>
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-[#4c669a] border border-[#e7ebf3]" onclick="filterParty(this, 'other')">Others</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#7c3aed" onclick="filterParty(this, 'all')">All</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#004EA2" onclick="filterParty(this, 'democratic')">Democratic</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#E6002D" onclick="filterParty(this, 'peoples')">People Power</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#D4A017" onclick="filterParty(this, 'justice')">Justice</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#6B21A8" onclick="filterParty(this, 'progress')">Progressive</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#009933" onclick="filterParty(this, 'green')">Green</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#00BFA5" onclick="filterParty(this, 'basic')">Basic Income</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#FF6600" onclick="filterParty(this, 'new_era')">New Era</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#666666" onclick="filterParty(this, 'independent')">Independent</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#999999" onclick="filterParty(this, 'other')">Others</button>
             </div>
             <!-- Candidate cards -->
             <div id="candidate-list" class="px-4 py-4 space-y-4">
@@ -2010,6 +2010,13 @@ const candidateData = {
     ]
 };
 
+// ============ Party chip initial colors ============
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.party-filter').forEach(function (b, i) {
+        if (typeof applyPartyChipStyle === 'function') applyPartyChipStyle(b, i === 0);
+    });
+});
+
 // ============ NEC OpenAPI real candidate data (appended after mock) ============
 // Official candidate registration starts 2026-05-13. Empty JSON before that is normal.
 // Mock candidates (priority) come first; real candidates appended at the end.
@@ -3001,28 +3008,33 @@ function switchSegment(btn, segment) {
     currentPartyFilter = 'all';
     selectedCandidates.clear();
     updateCompareFab();
-    // 정당 필터 초기화
+    // Reset party chips — first chip active, rest inactive. Colors via data-color.
     document.querySelectorAll('.party-filter').forEach((b, i) => {
-        if (i === 0) {
-            b.classList.remove('bg-white', 'dark:bg-gray-800', 'text-[#4c669a]', 'border', 'border-[#e7ebf3]');
-            b.classList.add('bg-primary', 'text-white', 'shadow-sm');
-        } else {
-            b.classList.remove('bg-primary', 'text-white', 'shadow-sm');
-            b.classList.add('bg-white', 'dark:bg-gray-800', 'text-[#4c669a]', 'border', 'border-[#e7ebf3]');
-        }
+        applyPartyChipStyle(b, i === 0);
     });
     renderCandidates();
 }
 
 // ============ PARTY FILTER ============
+function applyPartyChipStyle(btn, isActive) {
+    const c = btn.dataset.color || '#4c669a';
+    if (isActive) {
+        btn.style.backgroundColor = c;
+        btn.style.color = '#fff';
+        btn.style.borderColor = c;
+        btn.style.boxShadow = '0 2px 6px ' + c + '55';
+    } else {
+        btn.style.backgroundColor = '#fff';
+        btn.style.color = c;
+        btn.style.borderColor = c + '55';
+        btn.style.boxShadow = 'none';
+    }
+}
+
 function filterParty(btn, party) {
     currentPartyFilter = party;
-    document.querySelectorAll('.party-filter').forEach(b => {
-        b.classList.remove('bg-primary', 'text-white', 'shadow-sm');
-        b.classList.add('bg-white', 'dark:bg-gray-800', 'text-[#4c669a]', 'border', 'border-[#e7ebf3]');
-    });
-    btn.classList.remove('bg-white', 'dark:bg-gray-800', 'text-[#4c669a]', 'border', 'border-[#e7ebf3]');
-    btn.classList.add('bg-primary', 'text-white', 'shadow-sm');
+    document.querySelectorAll('.party-filter').forEach(b => applyPartyChipStyle(b, false));
+    applyPartyChipStyle(btn, true);
 
     document.querySelectorAll('.candidate-card').forEach(card => {
         if (party === 'all' || card.dataset.party === party) {

@@ -433,16 +433,16 @@
         <main class="flex-1 pb-32 bg-background-light dark:bg-background-dark">
             <!-- Party filter chips -->
             <div class="px-4 pt-3 pb-1 overflow-x-auto whitespace-nowrap flex gap-2 scrollbar-hide">
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-primary text-white shadow-sm" onclick="filterParty(this, 'all')">전체</button>
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-[#4c669a] border border-[#e7ebf3]" onclick="filterParty(this, 'democratic')">더불어민주당</button>
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-[#4c669a] border border-[#e7ebf3]" onclick="filterParty(this, 'peoples')">국민의힘</button>
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-[#4c669a] border border-[#e7ebf3]" onclick="filterParty(this, 'justice')">정의당</button>
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-[#4c669a] border border-[#e7ebf3]" onclick="filterParty(this, 'progress')">진보당</button>
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-[#4c669a] border border-[#e7ebf3]" onclick="filterParty(this, 'green')">녹색당</button>
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-[#4c669a] border border-[#e7ebf3]" onclick="filterParty(this, 'basic')">기본소득당</button>
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-[#4c669a] border border-[#e7ebf3]" onclick="filterParty(this, 'new_era')">시대전환</button>
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-[#4c669a] border border-[#e7ebf3]" onclick="filterParty(this, 'independent')">무소속</button>
-                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-[#4c669a] border border-[#e7ebf3]" onclick="filterParty(this, 'other')">기타</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#7c3aed" onclick="filterParty(this, 'all')">전체</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#004EA2" onclick="filterParty(this, 'democratic')">더불어민주당</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#E6002D" onclick="filterParty(this, 'peoples')">국민의힘</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#D4A017" onclick="filterParty(this, 'justice')">정의당</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#6B21A8" onclick="filterParty(this, 'progress')">진보당</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#009933" onclick="filterParty(this, 'green')">녹색당</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#00BFA5" onclick="filterParty(this, 'basic')">기본소득당</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#FF6600" onclick="filterParty(this, 'new_era')">시대전환</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#666666" onclick="filterParty(this, 'independent')">무소속</button>
+                <button class="party-filter shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border" data-color="#999999" onclick="filterParty(this, 'other')">기타</button>
             </div>
             <!-- Candidate cards -->
             <div id="candidate-list" class="px-4 py-4 space-y-4">
@@ -2010,6 +2010,13 @@ const candidateData = {
     ]
 };
 
+// ============ 정당 칩 초기 색상 적용 ============
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.party-filter').forEach(function (b, i) {
+        if (typeof applyPartyChipStyle === 'function') applyPartyChipStyle(b, i === 0);
+    });
+});
+
 // ============ 선관위 OpenAPI 본 후보자 데이터 (후순위로 추가) ============
 // 본 후보자 등록 시작: 2026-05-13. 그 전엔 빈 JSON. 자동으로 등록되면 채워짐.
 // 가상 후보자(선순위) 뒤에 push로 붙어서 같은 UI에 함께 표시.
@@ -2947,28 +2954,33 @@ function switchSegment(btn, segment) {
     currentPartyFilter = 'all';
     selectedCandidates.clear();
     updateCompareFab();
-    // 정당 필터 초기화
+    // 정당 필터 초기화 — 첫 칩(전체)만 활성, 나머지 비활성. 색깔은 data-color 사용.
     document.querySelectorAll('.party-filter').forEach((b, i) => {
-        if (i === 0) {
-            b.classList.remove('bg-white', 'dark:bg-gray-800', 'text-[#4c669a]', 'border', 'border-[#e7ebf3]');
-            b.classList.add('bg-primary', 'text-white', 'shadow-sm');
-        } else {
-            b.classList.remove('bg-primary', 'text-white', 'shadow-sm');
-            b.classList.add('bg-white', 'dark:bg-gray-800', 'text-[#4c669a]', 'border', 'border-[#e7ebf3]');
-        }
+        applyPartyChipStyle(b, i === 0);
     });
     renderCandidates();
 }
 
 // ============ PARTY FILTER ============
+function applyPartyChipStyle(btn, isActive) {
+    const c = btn.dataset.color || '#4c669a';
+    if (isActive) {
+        btn.style.backgroundColor = c;
+        btn.style.color = '#fff';
+        btn.style.borderColor = c;
+        btn.style.boxShadow = '0 2px 6px ' + c + '55';
+    } else {
+        btn.style.backgroundColor = '#fff';
+        btn.style.color = c;
+        btn.style.borderColor = c + '55';
+        btn.style.boxShadow = 'none';
+    }
+}
+
 function filterParty(btn, party) {
     currentPartyFilter = party;
-    document.querySelectorAll('.party-filter').forEach(b => {
-        b.classList.remove('bg-primary', 'text-white', 'shadow-sm');
-        b.classList.add('bg-white', 'dark:bg-gray-800', 'text-[#4c669a]', 'border', 'border-[#e7ebf3]');
-    });
-    btn.classList.remove('bg-white', 'dark:bg-gray-800', 'text-[#4c669a]', 'border', 'border-[#e7ebf3]');
-    btn.classList.add('bg-primary', 'text-white', 'shadow-sm');
+    document.querySelectorAll('.party-filter').forEach(b => applyPartyChipStyle(b, false));
+    applyPartyChipStyle(btn, true);
 
     document.querySelectorAll('.candidate-card').forEach(card => {
         if (party === 'all' || card.dataset.party === party) {
