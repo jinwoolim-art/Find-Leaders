@@ -39,17 +39,13 @@ TYPE_KEY = {
     9: "superintendent",  # 교육감 (5/13 이후)
 }
 
+# V3의 colorClasses 가 blue/red/gray 3가지만 인식하므로 그에 맞춰 단순화.
 PARTY_KEY = {
-    "더불어민주당": ("democratic", "blue"),
-    "국민의힘":     ("peoples",    "red"),
-    "정의당":       ("justice",    "yellow"),
-    "진보당":       ("progress",   "orange"),
-    "녹색당":       ("green",      "green"),
-    "기본소득당":   ("basic",      "teal"),
-    "조국혁신당":   ("rebuild",    "indigo"),
-    "개혁신당":     ("reform",     "purple"),
-    "무소속":       ("independent","gray"),
+    "더불어민주당": ("democratic",  "blue"),
+    "국민의힘":     ("peoples",     "red"),
+    "무소속":       ("independent", "gray"),
 }
+DEFAULT_PARTY = ("other", "gray")  # 위에 없는 모든 정당
 
 
 def fetch(code: int, sd: str, key: str):
@@ -79,7 +75,7 @@ def fetch(code: int, sd: str, key: str):
 def to_v3(item: dict, code: int) -> dict:
     """OpenAPI item → V3 candidate 형식."""
     party_name = item.get("jdName") or "무소속"
-    pk, pcolor = PARTY_KEY.get(party_name, ("other", "gray"))
+    pk, pcolor = PARTY_KEY.get(party_name, DEFAULT_PARTY)
 
     name = item.get("name") or ""
     age = item.get("age")
