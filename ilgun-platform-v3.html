@@ -2024,7 +2024,19 @@ let selectedCandidates = new Set();
 let currentChatCandidate = null;
 
 function getCurrentCandidates() {
-    return candidateData[currentSegment] || [];
+    const all = candidateData[currentSegment] || [];
+    const sido = (selectedRegion && selectedRegion.sido) || '';
+    if (!sido) return all;
+    // 광역단체장(governor): sido 매칭만
+    if (currentSegment === 'governor') {
+        return all.filter(c => c.sido === sido);
+    }
+    // 기초단체장(mayor/district_head/county_head): sido + sigungu 매칭
+    const sigungu = (selectedRegion && selectedRegion.sigungu) || '';
+    if (!sigungu) return all.filter(c => c.sido === sido);
+    return all.filter(c => c.sido === sido && (
+        c.sigungu === sigungu || c.wiwName === sigungu || c.sggName === sigungu
+    ));
 }
 
 function findCandidateById(id) {
@@ -2959,7 +2971,12 @@ function renderCandidates() {
     const list = document.getElementById('candidate-list');
     list.innerHTML = '';
 
-    getCurrentCandidates().slice().sort((a, b) => a.number - b.number).forEach(c => {
+    getCurrentCandidates().slice().sort((a, b) => {
+        // 가상(number=1,2,…) 먼저, 실제 등록 전(number=null)은 뒤로
+        const an = (a.number == null) ? 9999 : a.number;
+        const bn = (b.number == null) ? 9999 : b.number;
+        return an - bn;
+    }).forEach(c => {
         const colorClasses = {
             blue: { bg: 'bg-blue-50', text: 'text-blue-600', slogan: 'text-primary' },
             red: { bg: 'bg-red-50', text: 'text-red-600', slogan: 'text-red-600' },
