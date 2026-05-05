@@ -269,11 +269,11 @@
                 <div class="w-20 h-20 rounded-3xl flex items-center justify-center mb-8 overflow-hidden">
                     <img src="assets/logo_ask03.png" alt="일꾼을묻다" class="w-full h-full object-contain"/>
                 </div>
-                <h1 class="text-4xl font-bold tracking-tight text-slate-900 dark:text-white mb-3">일꾼을묻다</h1>
-                <p class="text-xs text-slate-500 dark:text-slate-400 font-normal text-center">당신의 목소리에 진심으로 응답하는 스마트한 선택</p>
+                <h1 class="text-4xl font-bold tracking-tight text-slate-900 dark:text-white mb-3" data-i18n="appTitle">일꾼을묻다</h1>
+                <p class="text-xs text-slate-500 dark:text-slate-400 font-normal text-center" data-i18n="appSub">당신의 목소리에 진심으로 응답하는 스마트한 선택</p>
                 <div class="w-full mt-10 space-y-3">
                     <button onclick="navigateTo('page-election-type');" class="w-full bg-primary hover:bg-violet-700 text-white font-bold py-5 px-6 rounded-2xl flex items-center justify-center gap-2 shadow-xl shadow-primary/20 transition-all active:scale-[0.98]">
-                        <span>일꾼보기</span>
+                        <span data-i18n="viewCandidates">일꾼보기</span>
                         <span class="material-symbols-outlined">arrow_forward</span>
                     </button>
                 </div>
@@ -283,9 +283,9 @@
                 <div id="dday-card" class="rounded-3xl bg-gradient-to-br from-violet-600 via-primary to-indigo-600 text-white p-6 shadow-xl shadow-primary/20">
                     <div class="flex items-center gap-2 mb-1">
                         <span class="material-symbols-outlined text-[18px]">how_to_vote</span>
-                        <span class="text-[12px] font-bold tracking-wide opacity-90">제9회 전국동시지방선거</span>
+                        <span class="text-[12px] font-bold tracking-wide opacity-90" data-i18n="ddayElectionLabel">제9회 전국동시지방선거</span>
                     </div>
-                    <p class="text-[11px] opacity-75 mb-4">2026년 6월 3일 (수) · 오전 6시 ~ 오후 6시</p>
+                    <p class="text-[11px] opacity-75 mb-4" data-i18n="ddaySchedule">2026년 6월 3일 (수) · 오전 6시 ~ 오후 6시</p>
                     <div class="flex items-baseline gap-2 mb-4">
                         <span class="text-[36px] font-black leading-none">D-</span>
                         <span id="dday-days" class="text-[64px] font-black leading-none tracking-tight">--</span>
@@ -293,15 +293,15 @@
                     <div class="grid grid-cols-3 gap-2">
                         <div class="bg-white/15 rounded-xl py-2 text-center backdrop-blur-sm">
                             <div id="dday-hours" class="text-[20px] font-black leading-none">--</div>
-                            <div class="text-[10px] opacity-80 mt-1">시간</div>
+                            <div class="text-[10px] opacity-80 mt-1" data-i18n="ddayHours">시간</div>
                         </div>
                         <div class="bg-white/15 rounded-xl py-2 text-center backdrop-blur-sm">
                             <div id="dday-minutes" class="text-[20px] font-black leading-none">--</div>
-                            <div class="text-[10px] opacity-80 mt-1">분</div>
+                            <div class="text-[10px] opacity-80 mt-1" data-i18n="ddayMinutes">분</div>
                         </div>
                         <div class="bg-white/15 rounded-xl py-2 text-center backdrop-blur-sm">
                             <div id="dday-seconds" class="text-[20px] font-black leading-none">--</div>
-                            <div class="text-[10px] opacity-80 mt-1">초</div>
+                            <div class="text-[10px] opacity-80 mt-1" data-i18n="ddaySeconds">초</div>
                         </div>
                     </div>
                 </div>
@@ -318,7 +318,7 @@
                     <button onclick="navigateTo('page-home', true)" class="p-1 -ml-1">
                         <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
                     </button>
-                    <h1 class="text-base font-bold">선거 종류 선택</h1>
+                    <h1 class="text-base font-bold" data-i18n="electionType">선거 종류 선택</h1>
                 </div>
                 <button onclick="toggleDark()" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
                     <span class="material-symbols-outlined text-gray-600 dark:text-gray-400 block dark:hidden">dark_mode</span>
@@ -334,27 +334,27 @@
                         <span class="material-symbols-outlined text-primary text-xl">location_city</span>
                     </div>
                     <div>
-                        <p class="text-[11px] text-slate-400 font-medium">거주 지역</p>
-                        <p class="text-sm font-bold text-slate-800 dark:text-white">시·도 / 시·군·구를 선택하세요</p>
+                        <p class="text-[11px] text-slate-400 font-medium" data-i18n="findMyArea">거주 지역</p>
+                        <p class="text-sm font-bold text-slate-800 dark:text-white" data-i18n="selectRegion">시·도 / 시·군·구를 선택하세요</p>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-2 mb-2">
                     <select id="region-sido" onchange="onSidoChange()" class="w-full px-3 py-2.5 text-sm rounded-lg border border-[#e7ebf3] dark:border-gray-700 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:outline-none focus:border-primary">
-                        <option value="">시·도 선택</option>
+                        <option value="" data-i18n="sidoOption">시·도 선택</option>
                     </select>
                     <select id="region-sigungu" onchange="onSigunguChange()" class="w-full px-3 py-2.5 text-sm rounded-lg border border-[#e7ebf3] dark:border-gray-700 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:outline-none focus:border-primary disabled:opacity-50" disabled>
-                        <option value="">시·군·구 선택</option>
+                        <option value="" data-i18n="sigunguOption">시·군·구 선택</option>
                     </select>
                 </div>
                 <select id="region-dong" onchange="onDongChange()" class="w-full px-3 py-2.5 text-sm rounded-lg border border-[#e7ebf3] dark:border-gray-700 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:outline-none focus:border-primary disabled:opacity-50" disabled>
-                    <option value="">읍·면·동 선택</option>
+                    <option value="" data-i18n="eupMyeonDongOption">읍·면·동 선택</option>
                 </select>
             </div>
 
             <!-- 선거 카테고리 타이틀 -->
             <div class="mt-5 mb-4 px-1">
-                <h2 class="text-lg font-bold text-slate-800 dark:text-white">어떤 선거의 후보자를 찾으시나요?</h2>
-                <p class="text-xs text-slate-400 mt-1">카테고리를 선택하면 해당 후보자 목록을 볼 수 있습니다</p>
+                <h2 class="text-lg font-bold text-slate-800 dark:text-white" data-i18n="whichElection">어떤 선거의 후보자를 찾으시나요?</h2>
+                <p class="text-xs text-slate-400 mt-1" data-i18n="selectCategory">카테고리를 선택하면 해당 후보자 목록을 볼 수 있습니다</p>
             </div>
 
             <!-- 우리지역 (대형 상단 버튼) -->
@@ -366,9 +366,9 @@
                         <span class="material-symbols-outlined text-blue-600 dark:text-blue-400 text-4xl">location_city</span>
                     </div>
                     <div class="flex-1">
-                        <h3 class="text-xl font-bold text-slate-800 dark:text-white">우리지역</h3>
+                        <h3 class="text-xl font-bold text-slate-800 dark:text-white" data-i18n="ourRegion">우리지역</h3>
                         <p class="text-[11px] font-bold text-blue-600 dark:text-blue-400 tracking-wider mt-0.5">CITY & LOCAL</p>
-                        <p class="text-xs text-slate-400 mt-1.5">시·도지사 · 구청장 · 시장 · 군수</p>
+                        <p class="text-xs text-slate-400 mt-1.5" data-i18n="localOfficials">시·도지사 · 구청장 · 시장 · 군수</p>
                     </div>
                     <span class="material-symbols-outlined text-blue-300 dark:text-blue-700 text-2xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
                 </div>
@@ -382,9 +382,9 @@
                     <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                         <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-2xl">holiday_village</span>
                     </div>
-                    <h3 class="text-base font-bold text-slate-800 dark:text-white">우리 골목</h3>
+                    <h3 class="text-base font-bold text-slate-800 dark:text-white" data-i18n="ourAlleyTitle">우리 골목</h3>
                     <p class="text-[10px] font-bold text-amber-600 dark:text-amber-400 tracking-wider mt-0.5">COUNCIL</p>
-                    <p class="text-[11px] text-slate-400 mt-2 leading-relaxed">시의원 · 구의원<br>도의원 · 군의원</p>
+                    <p class="text-[11px] text-slate-400 mt-2 leading-relaxed" data-i18n="councilMembers">시의원 · 구의원<br>도의원 · 군의원</p>
                 </button>
 
                 <!-- 우리교육 -->
@@ -393,9 +393,9 @@
                     <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                         <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-2xl">school</span>
                     </div>
-                    <h3 class="text-base font-bold text-slate-800 dark:text-white">우리교육</h3>
+                    <h3 class="text-base font-bold text-slate-800 dark:text-white" data-i18n="ourEduTitle">우리교육</h3>
                     <p class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 tracking-wider mt-0.5">EDU</p>
-                    <p class="text-[11px] text-slate-400 mt-2 leading-relaxed">교육감 후보</p>
+                    <p class="text-[11px] text-slate-400 mt-2 leading-relaxed" data-i18n="eduCandidate">교육감 후보</p>
                 </button>
             </div>
 
@@ -450,7 +450,7 @@
                     </button>
                     <!-- 기호 배지 -->
                     <div id="chat-candidate-number" class="shrink-0 w-10 h-10 rounded-lg flex flex-col items-center justify-center text-white font-black shadow-md" style="background:#6b7280;">
-                        <span class="text-[7px] font-bold leading-none opacity-80">기호</span>
+                        <span class="text-[7px] font-bold leading-none opacity-80" data-i18n="ballotNoLabel">기호</span>
                         <span id="chat-candidate-number-text" class="text-[17px] leading-none mt-0.5">1</span>
                     </div>
                     <!-- 후보자 정보 (이름+정당/지역 한 줄 + 슬로건) -->
@@ -488,7 +488,7 @@
                         style="object-position:center top"/>
                     <!-- 가상 아바타 안내 -->
                     <div class="absolute bottom-0 left-0 right-0 z-20 px-3 py-1.5 bg-black/55 backdrop-blur-sm text-center">
-                        <p class="text-[11px] text-white/95 leading-tight">⚠ AI 아바타가 정책 데이터를 학습하여 생성한 가상의 정보입니다.</p>
+                        <p class="text-[11px] text-white/95 leading-tight" data-i18n="avatarDisclaimer">⚠ AI 아바타가 정책 데이터를 학습하여 생성한 가상의 정보입니다.</p>
                     </div>
                 </div>
             </section>
@@ -514,12 +514,12 @@
                     <div class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 p-3 pb-5">
                         <div class="flex items-center gap-1 mb-1.5 px-0.5">
                             <span class="material-symbols-outlined text-slate-400 text-[13px]">info</span>
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">아래 버튼은 후보자가 직접 등록한 핵심 공약 및 정책입니다.</p>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-tight" data-i18n="quickQuestionInfo">아래 버튼은 후보자가 직접 등록한 핵심 공약 및 정책입니다.</p>
                         </div>
                         <div id="quick-questions" class="flex gap-2 overflow-x-auto scrollbar-hide mb-3"></div>
                         <div class="flex items-center gap-2">
                             <div class="relative flex-1">
-                                <input id="chat-input" onkeydown="if(event.key==='Enter')sendMessage()" class="w-full h-11 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-1 focus:ring-primary focus:border-primary px-4 pr-10 text-sm" placeholder="궁금한 내용을 입력하세요..." type="text"/>
+                                <input id="chat-input" onkeydown="if(event.key==='Enter')sendMessage()" class="w-full h-11 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-1 focus:ring-primary focus:border-primary px-4 pr-10 text-sm" data-i18n-placeholder="inputPlaceholder" placeholder="궁금한 내용을 입력하세요..." type="text"/>
                                 <div onclick="sendMessage()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-primary">
                                     <span class="material-symbols-outlined text-xl">send</span>
                                 </div>
@@ -534,7 +534,7 @@
                     <div class="w-full px-4 pt-2">
                         <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-2 flex items-start gap-1.5">
                             <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-sm shrink-0 mt-0.5">accessibility_new</span>
-                            <p class="text-[10px] text-amber-800 dark:text-amber-300 leading-snug">
+                            <p class="text-[10px] text-amber-800 dark:text-amber-300 leading-snug" data-i18n="voiceNotice">
                                 본 음성 서비스는 정보 취약계층(장애인·노약자 등)의 편의를 위해 제공되는 AI 가상 음성입니다. 후보자 본인의 실제 목소리가 아님을 알려드립니다.
                             </p>
                         </div>
@@ -542,7 +542,7 @@
                     <!-- 실제 음성 UI -->
                     <div id="voice-ui-real" class="flex-1 flex flex-col items-center justify-center px-6 py-2 overflow-y-auto">
                         <!-- 음성 상태 표시 -->
-                        <div id="voice-status-text" class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-3">마이크 버튼을 눌러 질문하세요</div>
+                        <div id="voice-status-text" class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-3" data-i18n="voicePromptStart">마이크 버튼을 눌러 질문하세요</div>
 
                         <!-- 음성 파형 애니메이션 -->
                         <div id="voice-wave" class="flex items-center justify-center gap-1 h-12 mb-3 opacity-0 transition-opacity">
@@ -570,7 +570,7 @@
                         <button id="voice-btn" onclick="toggleVoice()" class="w-16 h-16 rounded-full bg-primary text-white shadow-xl shadow-primary/30 flex items-center justify-center hover:bg-violet-700 active:scale-95 transition-all">
                             <span class="material-symbols-outlined text-3xl">mic</span>
                         </button>
-                        <p class="text-[11px] text-slate-400 mt-2">탭하여 말하기</p>
+                        <p class="text-[11px] text-slate-400 mt-2" data-i18n="tapToSpeak">탭하여 말하기</p>
 
                         <!-- 음성 빠른 질문 -->
                         <div class="flex flex-wrap justify-center gap-1.5 mt-3">
@@ -599,9 +599,9 @@
                 <div class="flex-1 min-w-0">
                     <h1 class="text-base font-bold flex items-center gap-1.5">
                         <span class="material-symbols-outlined text-primary text-lg">school</span>
-                        교육감 후보
+                        <span data-i18n="eduCandidate">교육감 후보</span>
                     </h1>
-                    <p id="education-header-sub" class="text-xs text-[#4c669a] dark:text-gray-400 font-medium">거주 지역 미선택</p>
+                    <p id="education-header-sub" class="text-xs text-[#4c669a] dark:text-gray-400 font-medium" data-i18n="regionInChargeNone">거주 지역 미선택</p>
                 </div>
             </div>
         </header>
@@ -626,9 +626,9 @@
                 <div class="flex-1 min-w-0">
                     <h1 class="text-base font-bold flex items-center gap-1.5">
                         <span class="material-symbols-outlined text-primary text-lg">holiday_village</span>
-                        우리 골목
+                        <span data-i18n="ourAlleyTitle">우리 골목</span>
                     </h1>
-                    <p id="council-header-sub" class="text-xs text-[#4c669a] dark:text-gray-400 font-medium">시·도의원 · 시·구·군의원 후보</p>
+                    <p id="council-header-sub" class="text-xs text-[#4c669a] dark:text-gray-400 font-medium" data-i18n="ourAlleyHead">시·도의원 · 시·구·군의원 후보</p>
                 </div>
             </div>
         </header>
@@ -639,7 +639,7 @@
             </div>
 
             <!-- 결과 카운터 -->
-            <p class="text-xs text-slate-500 dark:text-slate-400 mb-3"><span id="council-result-count" class="font-bold text-primary">0</span>명의 후보</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-3"><span id="council-result-count" class="font-bold text-primary">0</span> <span data-i18n="candidatesCountSuffix">명의 후보</span></p>
 
             <!-- 리스트 -->
             <div id="council-list" class="space-y-3"></div>
@@ -672,7 +672,7 @@
                 <button onclick="closeCompare()" class="p-1 -ml-1">
                     <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
                 </button>
-                <h1 class="text-lg font-bold">후보자 비교</h1>
+                <h1 class="text-lg font-bold" data-i18n="compareTitle">후보자 비교</h1>
             </div>
         </header>
         <main id="compare-content" class="flex-1 p-4 bg-background-light dark:bg-background-dark pb-20">
@@ -696,9 +696,9 @@
                 <div class="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-5">
                     <span class="material-symbols-outlined text-slate-300 dark:text-slate-600 text-4xl">bookmark_border</span>
                 </div>
-                <p class="text-base font-bold text-slate-700 dark:text-slate-200 mb-2">관심 후보를 확인하세요</p>
-                <p class="text-sm text-slate-400 text-center leading-relaxed mb-6">로그인하면 관심 후보의 공약, 활동 소식을<br>한 곳에서 모아볼 수 있습니다.</p>
-                <button onclick="showLoginModal()" class="px-8 py-3 bg-primary text-white font-bold text-sm rounded-xl shadow-lg shadow-primary/20 active:scale-95 transition-transform">
+                <p class="text-base font-bold text-slate-700 dark:text-slate-200 mb-2" data-i18n="followTitle">관심 후보를 확인하세요</p>
+                <p class="text-sm text-slate-400 text-center leading-relaxed mb-6" data-i18n="followDesc">로그인하면 관심 후보의 공약, 활동 소식을<br>한 곳에서 모아볼 수 있습니다.</p>
+                <button onclick="showLoginModal()" class="px-8 py-3 bg-primary text-white font-bold text-sm rounded-xl shadow-lg shadow-primary/20 active:scale-95 transition-transform" data-i18n="loginSignup">
                     로그인 / 회원가입
                 </button>
             </div>
@@ -721,7 +721,7 @@
     <div id="page-my" class="page">
         <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
             <div class="flex items-center justify-between">
-                <h1 class="text-lg font-bold text-slate-800 dark:text-white">마이</h1>
+                <h1 class="text-lg font-bold text-slate-800 dark:text-white" data-i18n="my">마이</h1>
                 <button onclick="toggleDark()" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
                     <span class="material-symbols-outlined text-gray-600 dark:text-gray-400 block dark:hidden">dark_mode</span>
                     <span class="material-symbols-outlined text-gray-400 hidden dark:block">light_mode</span>
@@ -736,10 +736,10 @@
                         <span class="material-symbols-outlined text-slate-400 text-2xl">person</span>
                     </div>
                     <div class="flex-1">
-                        <p class="text-base font-bold text-slate-700 dark:text-slate-200">로그인이 필요합니다</p>
-                        <p class="text-xs text-slate-400 mt-0.5">로그인하고 더 많은 기능을 이용하세요</p>
+                        <p class="text-base font-bold text-slate-700 dark:text-slate-200" data-i18n="loginRequired">로그인이 필요합니다</p>
+                        <p class="text-xs text-slate-400 mt-0.5" data-i18n="loginDesc">로그인하고 더 많은 기능을 이용하세요</p>
                     </div>
-                    <button onclick="showLoginModal()" class="px-4 py-2 bg-primary text-white text-xs font-bold rounded-lg active:scale-95 transition-transform">로그인</button>
+                    <button onclick="showLoginModal()" class="px-4 py-2 bg-primary text-white text-xs font-bold rounded-lg active:scale-95 transition-transform" data-i18n="login">로그인</button>
                 </div>
                 <div id="my-profile-user" class="hidden flex items-center gap-4">
                     <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
@@ -755,19 +755,19 @@
 
             <!-- 내 활동 요약 -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-[#e7ebf3] dark:border-gray-700">
-                <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-4">내 활동</h3>
+                <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-4" data-i18n="myActivity">내 활동</h3>
                 <div class="grid grid-cols-3 gap-3 text-center">
                     <button onclick="openMyInterestsCard()" class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl active:bg-slate-100 dark:active:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer">
                         <p class="text-xl font-bold text-primary" id="my-likes-count">0</p>
-                        <p class="text-[11px] text-slate-400 mt-1">관심 후보</p>
+                        <p class="text-[11px] text-slate-400 mt-1" data-i18n="likes">관심 후보</p>
                     </button>
                     <button onclick="openMyPolicyInterestsCard()" class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl active:bg-slate-100 dark:active:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer">
                         <p class="text-xl font-bold text-primary" id="my-policy-interests-count">0</p>
-                        <p class="text-[11px] text-slate-400 mt-1">공감 공약</p>
+                        <p class="text-[11px] text-slate-400 mt-1" data-i18n="policyInterests">공감 공약</p>
                     </button>
                     <button onclick="openMyReportsCard()" class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl active:bg-slate-100 dark:active:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer">
                         <p class="text-xl font-bold text-primary" id="my-report-count">0</p>
-                        <p class="text-[11px] text-slate-400 mt-1">신고</p>
+                        <p class="text-[11px] text-slate-400 mt-1" data-i18n="reports">신고</p>
                     </button>
                 </div>
             </div>
@@ -776,27 +776,27 @@
             <div class="bg-white dark:bg-slate-800 rounded-2xl border border-[#e7ebf3] dark:border-gray-700 overflow-hidden">
                 <button onclick="openMyPolicyInterestsCard()" class="w-full flex items-center gap-3 px-5 py-4 text-left border-b border-[#e7ebf3] dark:border-gray-700 active:bg-slate-50 dark:active:bg-slate-700">
                     <span class="material-symbols-outlined text-slate-500 text-xl">thumb_up</span>
-                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">공감 공약 목록</span>
+                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200" data-i18n="policyInterestsList">공감 공약 목록</span>
                     <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
                 </button>
                 <button onclick="openMyReportsCard()" class="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-slate-50 dark:active:bg-slate-700">
                     <span class="material-symbols-outlined text-slate-500 text-xl">flag</span>
-                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">신고 내역</span>
+                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200" data-i18n="reportHistory">신고 내역</span>
                     <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
                 </button>
             </div>
 
             <!-- 내 투표 정보 -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl border border-[#e7ebf3] dark:border-gray-700 overflow-hidden">
-                <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 px-5 pt-4 pb-2">내 투표 정보</h3>
+                <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 px-5 pt-4 pb-2" data-i18n="myVoteInfo">내 투표 정보</h3>
                 <button onclick="openPollingStation()" class="w-full flex items-center gap-3 px-5 py-3.5 text-left border-b border-[#e7ebf3] dark:border-gray-700 active:bg-slate-50 dark:active:bg-slate-700">
                     <span class="material-symbols-outlined text-slate-500 text-xl">location_on</span>
-                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">투표소 찾기</span>
+                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200" data-i18n="findPollingStation">투표소 찾기</span>
                     <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
                 </button>
                 <button onclick="showToast('선거 일정을 준비 중입니다')" class="w-full flex items-center gap-3 px-5 py-3.5 text-left active:bg-slate-50 dark:active:bg-slate-700">
                     <span class="material-symbols-outlined text-slate-500 text-xl">calendar_month</span>
-                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">선거 일정 보기</span>
+                    <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200" data-i18n="electionSchedule">선거 일정 보기</span>
                     <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
                 </button>
             </div>
@@ -815,7 +815,7 @@
                 <button onclick="navigateTo('page-my', true)" class="p-1 -ml-1">
                     <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
                 </button>
-                <h1 class="text-base font-bold">공감 공약</h1>
+                <h1 class="text-base font-bold" data-i18n="policyInterests">공감 공약</h1>
             </div>
         </header>
         <main class="flex-1 bg-background-light dark:bg-background-dark px-4 pt-4 pb-24">
@@ -836,7 +836,7 @@
                 <button onclick="navigateTo('page-my', true)" class="p-1 -ml-1">
                     <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
                 </button>
-                <h1 class="text-base font-bold">신고 내역</h1>
+                <h1 class="text-base font-bold" data-i18n="reportHistory">신고 내역</h1>
             </div>
         </header>
         <main class="flex-1 bg-background-light dark:bg-background-dark px-4 pt-4 pb-24">
@@ -1214,7 +1214,7 @@
     <div id="compare-fab" class="compare-fab hidden">
         <button onclick="showCompare()" class="w-full py-4 rounded-xl bg-gradient-to-r from-primary to-blue-400 text-white font-black text-base flex items-center justify-center gap-3 shadow-[0_8px_25px_-5px_rgba(19,91,236,0.4)] hover:brightness-110 active:scale-[0.98] transition-all">
             <div id="compare-count" class="flex items-center justify-center size-6 bg-white/20 rounded-full text-xs">0</div>
-            선택한 후보자 비교하기
+            <span data-i18n="compareSelected">선택한 후보자 비교하기</span>
             <span class="material-symbols-outlined">compare_arrows</span>
         </button>
     </div>
@@ -1997,9 +1997,9 @@ const candidateData = {
     ]
 };
 
-// ============ 선관위 OpenAPI 본 후보자 데이터 (후순위로 추가) ============
-// 본 후보자 등록 시작: 2026-05-13. 그 전엔 빈 JSON. 자동으로 등록되면 채워짐.
-// 가상 후보자(선순위) 뒤에 push로 붙어서 같은 UI에 함께 표시.
+// ============ NEC OpenAPI real candidate data (appended after mock) ============
+// Official candidate registration starts 2026-05-13. Empty JSON before that is normal.
+// Mock candidates (priority) come first; real candidates appended at the end.
 fetch('assets/candidates-real.json', { cache: 'no-store' })
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (real) {
@@ -2009,14 +2009,13 @@ fetch('assets/candidates-real.json', { cache: 'no-store' })
                 candidateData[k].push.apply(candidateData[k], real[k]);
             }
         });
-        // 현재 화면이 후보자 리스트면 다시 그림
         if (typeof renderCandidates === 'function' &&
             document.getElementById('page-candidates') &&
             !document.getElementById('page-candidates').classList.contains('hidden')) {
             try { renderCandidates(); } catch (_) { /* skip */ }
         }
     })
-    .catch(function () { /* JSON 없거나 실패 시 가상 후보자만 사용 */ });
+    .catch(function () { /* fall back to mock-only */ });
 
 let currentSegment = 'governor';
 let currentPartyFilter = 'all';
@@ -2027,11 +2026,9 @@ function getCurrentCandidates() {
     const all = candidateData[currentSegment] || [];
     const sido = (selectedRegion && selectedRegion.sido) || '';
     if (!sido) return all;
-    // 광역단체장(governor): sido 매칭만
     if (currentSegment === 'governor') {
         return all.filter(c => c.sido === sido);
     }
-    // 기초단체장(mayor/district_head/county_head): sido + sigungu 매칭
     const sigungu = (selectedRegion && selectedRegion.sigungu) || '';
     if (!sigungu) return all.filter(c => c.sido === sido);
     return all.filter(c => c.sido === sido && (
@@ -2065,9 +2062,22 @@ function getElectionType(id) {
 
 function getElectionTypeLabel(id) {
     const type = getElectionType(id);
+    const isEn = currentLang === 'en';
     if (type === 'council') {
         const c = findCandidateById(id);
-        return (c && c.council_type) || '의원';
+        const ctype = (c && c.council_type) || '의원';
+        if (isEn) {
+            if (ctype === '광역의원') return t('positionProvinceCouncil');
+            if (ctype === '기초의원') return t('positionCityCouncil');
+            return 'Council';
+        }
+        return ctype;
+    }
+    if (isEn) {
+        if (type === 'governor') return t('positionGovernor');
+        if (type === 'mayor') return t('positionDistrictHead');
+        if (type === 'superintendent') return t('positionSuperintendent');
+        return '';
     }
     return (type && ELECTION_TYPE_LABELS[type]) || '';
 }
@@ -2417,7 +2427,8 @@ const DONGS_BY_SIGUNGU = {
     '용산구': ['후암동', '용산2가동', '남영동', '청파동', '원효로1동', '원효로2동', '효창동', '용문동', '한강로동', '이촌1동', '이촌2동', '이태원1동', '이태원2동', '한남동', '서빙고동', '보광동'],
     '강남구': ['신사동', '논현1동', '논현2동', '압구정동', '청담동', '삼성1동', '삼성2동', '대치1동', '대치2동', '대치4동', '역삼1동', '역삼2동', '도곡1동', '도곡2동', '개포1동', '개포2동', '개포4동', '세곡동', '일원본동', '일원1동', '일원2동', '수서동'],
     '서초구': ['잠원동', '반포본동', '반포1동', '반포2동', '반포3동', '반포4동', '방배본동', '방배1동', '방배2동', '방배3동', '방배4동', '서초1동', '서초2동', '서초3동', '서초4동', '양재1동', '양재2동', '내곡동'],
-    '송파구': ['풍납1동', '풍납2동', '거여1동', '거여2동', '마천1동', '마천2동', '방이1동', '방이2동', '오륜동', '오금동', '송파1동', '송파2동', '석촌동', '삼전동', '가락본동', '가락1동', '가락2동', '문정1동', '문정2동', '장지동', '위례동', '잠실본동', '잠실2동', '잠실3동', '잠실4동', '잠실6동', '잠실7동']
+    '송파구': ['풍납1동', '풍납2동', '거여1동', '거여2동', '마천1동', '마천2동', '방이1동', '방이2동', '오륜동', '오금동', '송파1동', '송파2동', '석촌동', '삼전동', '가락본동', '가락1동', '가락2동', '문정1동', '문정2동', '장지동', '위례동', '잠실본동', '잠실2동', '잠실3동', '잠실4동', '잠실6동', '잠실7동'],
+    '강동구': ['강일동', '상일1동', '상일2동', '명일1동', '명일2동', '고덕1동', '고덕2동', '암사1동', '암사2동', '암사3동', '천호1동', '천호2동', '천호3동', '성내1동', '성내2동', '성내3동', '길동', '둔촌1동', '둔촌2동']
 };
 
 let selectedRegion = JSON.parse(localStorage.getItem('selectedRegion') || '{"sido":"","sigungu":"","dong":""}');
@@ -2427,8 +2438,8 @@ function initRegionDropdowns() {
     const sidoSel = document.getElementById('region-sido');
     const sigunguSel = document.getElementById('region-sigungu');
     if (!sidoSel || !sigunguSel) return;
-    sidoSel.innerHTML = '<option value="">시·도 선택</option>' +
-        Object.keys(REGIONS).map(s => `<option value="${s}">${s}</option>`).join('');
+    sidoSel.innerHTML = `<option value="">${t('sidoOption')}</option>` +
+        Object.keys(REGIONS).map(s => `<option value="${s}">${localizeSido(s)}</option>`).join('');
     if (selectedRegion.sido) {
         sidoSel.value = selectedRegion.sido;
         populateSigungu(selectedRegion.sido);
@@ -2444,7 +2455,7 @@ function initRegionDropdowns() {
 function populateDong(sigungu) {
     const dongSel = document.getElementById('region-dong');
     if (!dongSel) return;
-    dongSel.innerHTML = '<option value="">읍·면·동 선택</option>';
+    dongSel.innerHTML = `<option value="">${t('eupMyeonDongOption')}</option>`;
     if (!sigungu) {
         dongSel.disabled = true;
         return;
@@ -2457,7 +2468,7 @@ function populateDong(sigungu) {
     list.forEach(d => {
         const opt = document.createElement('option');
         opt.value = d;
-        opt.textContent = d;
+        opt.textContent = localizeDong(d);
         dongSel.appendChild(opt);
     });
 }
@@ -2473,7 +2484,7 @@ function onDongChange() {
 function populateSigungu(sido) {
     const sigunguSel = document.getElementById('region-sigungu');
     if (!sigunguSel) return;
-    sigunguSel.innerHTML = '<option value="">시·군·구 선택</option>';
+    sigunguSel.innerHTML = `<option value="">${t('sigunguOption')}</option>`;
 
     if (!sido) {
         sigunguSel.disabled = true;
@@ -2490,7 +2501,7 @@ function populateSigungu(sido) {
     if (!region.sigungu || region.sigungu.length === 0) {
         const opt = document.createElement('option');
         opt.value = '';
-        opt.textContent = '기초단체 선거 없음 (광역만)';
+        opt.textContent = t('noBasicElection');
         opt.disabled = true;
         sigunguSel.appendChild(opt);
         sigunguSel.disabled = true;
@@ -2501,7 +2512,7 @@ function populateSigungu(sido) {
     region.sigungu.forEach(item => {
         const opt = document.createElement('option');
         opt.value = item.name;
-        opt.textContent = item.name;
+        opt.textContent = localizeSigungu(item.name);
         opt.dataset.type = item.type;
         sigunguSel.appendChild(opt);
     });
@@ -2540,9 +2551,9 @@ function saveRegion() {
 
 function getRegionText() {
     const parts = [];
-    if (selectedRegion.sido) parts.push(selectedRegion.sido);
-    if (selectedRegion.sigungu) parts.push(selectedRegion.sigungu);
-    if (selectedRegion.dong) parts.push(selectedRegion.dong);
+    if (selectedRegion.sido) parts.push(localizeSido(selectedRegion.sido));
+    if (selectedRegion.sigungu) parts.push(localizeSigungu(selectedRegion.sigungu));
+    if (selectedRegion.dong) parts.push(localizeDong(selectedRegion.dong));
     return parts.join(' ');
 }
 
@@ -2550,39 +2561,47 @@ function updateCandidatesHeaderSub() {
     const sub = document.getElementById('candidates-header-sub');
     if (!sub) return;
     const txt = getRegionText();
-    sub.textContent = (txt ? txt : '거주 지역 미선택') + ' 관할';
+    sub.textContent = (txt ? txt : t('regionInChargeNone')) + t('coverageSuffix');
 }
 
 // ============ ELECTION CATEGORY ============
 let currentElectionCategory = 'local';
 
-const electionCategoryConfig = {
-    local: {
-        title: '우리지역 후보자',
-        icon: 'location_city',
-        segments: [
-            { key: 'governor', label: '시·도지사' },
-            { key: 'district_head', label: '구청장' },
-            { key: 'mayor', label: '시장' },
-            { key: 'county_head', label: '군수' }
-        ]
-    },
-    council: {
-        title: '우리 골목 후보자',
-        icon: 'holiday_village',
-        segments: [
-            { key: 'city_council', label: '시의원·구의원' },
-            { key: 'province_council', label: '도의원·군의원' }
-        ]
-    },
-    education: {
-        title: '우리교육 후보자',
-        icon: 'school',
-        segments: [
-            { key: 'superintendent', label: '교육감' }
-        ]
+function getElectionCategoryConfig() {
+    return {
+        local: {
+            title: t('regionalCandidatesHeader'),
+            icon: 'location_city',
+            segments: [
+                { key: 'governor', label: t('govLabel') },
+                { key: 'district_head', label: t('districtHeadLabel') },
+                { key: 'mayor', label: t('cityHeadLabel') },
+                { key: 'county_head', label: t('countyHeadLabel') }
+            ]
+        },
+        council: {
+            title: t('councilCandidatesHeader'),
+            icon: 'holiday_village',
+            segments: [
+                { key: 'city_council', label: t('cityCouncilLabel') },
+                { key: 'province_council', label: t('provinceCouncilLabel') }
+            ]
+        },
+        education: {
+            title: t('educationCandidatesHeader'),
+            icon: 'school',
+            segments: [
+                { key: 'superintendent', label: t('superintendentLabel') }
+            ]
+        }
+    };
+}
+// 호환을 위해 정적 참조 유지 (런타임 호출 시점 기준 t() 평가)
+const electionCategoryConfig = new Proxy({}, {
+    get(target, prop) {
+        return getElectionCategoryConfig()[prop];
     }
-};
+});
 
 // 거주지역 기반 우리지역 탭 2개 산출 (서울 강남구 → "서울시장 / 강남구청장")
 function isMetroCity(sido) {
@@ -2594,19 +2613,37 @@ function getMyElectionTabs() {
     if (!sido || !sigungu) return null;
     const sgtype = getSigunguType(sido, sigungu);
     if (!sgtype) return null;
+    const isEn = currentLang === 'en';
     let topTab;
     if (isMetroCity(sido)) {
-        const shortSido = sido.replace(/(특별시|광역시|특별자치시)$/, '');
-        topTab = { key: 'governor', label: shortSido + '시장' };
+        if (isEn) {
+            topTab = { key: 'governor', label: localizeSido(sido) + ' ' + t('positionMayor') };
+        } else {
+            const shortSido = sido.replace(/(특별시|광역시|특별자치시)$/, '');
+            topTab = { key: 'governor', label: shortSido + '시장' };
+        }
     } else {
-        const shortSido = sido.replace(/(특별자치도|도)$/, '');
-        topTab = { key: 'governor', label: shortSido + '도지사' };
+        if (isEn) {
+            topTab = { key: 'governor', label: localizeSido(sido) + ' ' + t('positionGovernor') };
+        } else {
+            const shortSido = sido.replace(/(특별자치도|도)$/, '');
+            topTab = { key: 'governor', label: shortSido + '도지사' };
+        }
     }
     let bottomTab;
-    if (sgtype === '자치구') bottomTab = { key: 'district_head', label: sigungu + '청장' };
-    else if (sgtype === '자치시') bottomTab = { key: 'mayor', label: sigungu + '장' };
-    else if (sgtype === '자치군') bottomTab = { key: 'county_head', label: sigungu.replace(/군$/, '') + '군수' };
-    else return null;
+    if (sgtype === '자치구') {
+        bottomTab = isEn
+            ? { key: 'district_head', label: localizeSigungu(sigungu) + ' ' + t('positionDistrictHead') }
+            : { key: 'district_head', label: sigungu + '청장' };
+    } else if (sgtype === '자치시') {
+        bottomTab = isEn
+            ? { key: 'mayor', label: localizeSigungu(sigungu) + ' ' + t('positionMayor') }
+            : { key: 'mayor', label: sigungu + '장' };
+    } else if (sgtype === '자치군') {
+        bottomTab = isEn
+            ? { key: 'county_head', label: localizeSigungu(sigungu) + ' ' + t('positionCountyHead') }
+            : { key: 'county_head', label: sigungu.replace(/군$/, '') + '군수' };
+    } else return null;
     return [topTab, bottomTab];
 }
 
@@ -2642,7 +2679,7 @@ function openElectionCategory(category) {
             if (iconEl) iconEl.textContent = config.icon;
             if (sub) {
                 const regionTxt = (typeof getRegionText === 'function') ? getRegionText() : '';
-                sub.textContent = (regionTxt || '거주 지역 미선택') + ' 관할';
+                sub.textContent = (regionTxt || t('regionInChargeNone')) + t('coverageSuffix');
             }
         } catch (e) { console.warn('[openElectionCategory] header', e); }
 
@@ -2701,7 +2738,7 @@ function renderEducationList() {
     if (!list || !empty) return;
 
     const sido = selectedRegion && selectedRegion.sido;
-    if (sub) sub.textContent = sido ? (sido + ' 교육감') : '거주 지역 미선택';
+    if (sub) sub.textContent = sido ? (localizeSido(sido) + ' ' + t('positionSuperintendent')) : t('regionInChargeNone');
 
     let pool = (candidateData.superintendent || []).slice();
     if (sido) pool = pool.filter(c => c.sido === sido);
@@ -2726,7 +2763,8 @@ function renderEducationCard(c) {
         red:  { bg: 'bg-red-50',  text: 'text-red-600',  slogan: 'text-red-600' },
         gray: { bg: 'bg-gray-100', text: 'text-gray-600', slogan: 'text-gray-600' }
     }[c.partyColor] || { bg:'bg-gray-100', text:'text-gray-600', slogan:'text-gray-600' };
-    const numberLabel = c.number > 0 ? `기호 ${c.number}` : '교육감';
+    const numberLabel = c.number > 0 ? `${t('ballotNoLabel')} ${c.number}${t('ballotNoSuffix')}` : t('positionSuperintendent');
+    const partyDisp = escapeHtml(localizeParty(c.party || t('partyIndependent')));
     return `
         <div class="candidate-card relative bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm border border-[#e7ebf3] dark:border-gray-800 transition-all" data-party="${c.partyKey}" data-id="${c.id}">
             <div class="absolute top-3 right-3 z-10">
@@ -2746,24 +2784,24 @@ function renderEducationCard(c) {
                 <div class="flex-1 pr-6">
                     <div class="flex items-center gap-2 mb-1 flex-wrap">
                         <span class="text-[10px] font-bold px-1.5 py-0.5 ${colorClasses.bg} ${colorClasses.text} rounded">${numberLabel}</span>
-                        <span class="text-xs font-medium text-[#4c669a] dark:text-gray-400">${escapeHtml(c.party || '무소속')}</span>
+                        <span class="text-xs font-medium text-[#4c669a] dark:text-gray-400">${partyDisp}</span>
                     </div>
-                    <h3 class="text-lg font-bold text-[#0d121b] dark:text-white leading-tight">${escapeHtml(c.name)} <span class="text-sm font-normal text-gray-400">(${c.age}세)</span></h3>
+                    <h3 class="text-lg font-bold text-[#0d121b] dark:text-white leading-tight">${escapeHtml(c.name)} <span class="text-sm font-normal text-gray-400">(${c.age}${t('ageSuffixLabel')})</span></h3>
                     <p class="text-sm ${colorClasses.slogan} font-bold mt-1 line-clamp-1">"${escapeHtml(c.slogan || '')}"</p>
                 </div>
             </div>
             <div class="px-4 pb-4 grid grid-cols-[1fr_auto_1fr] gap-2">
                 <button onclick="openChat(${c.id})" class="flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-primary text-white text-sm font-bold active:scale-[0.98] transition-transform">
-                    <span class="material-symbols-outlined text-sm">forum</span> 대화
+                    <span class="material-symbols-outlined text-sm">forum</span> ${t('cardChatLabel')}
                 </button>
                 <div class="flex items-center">
                     <input class="like-checkbox hidden" id="btn-like-${c.id}" type="checkbox" ${bookmarkedCandidates.includes(c.id) ? 'checked' : ''} onchange="toggleBookmark(${c.id})" />
                     <label class="flex items-center gap-1.5 px-3 py-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 text-sm font-bold cursor-pointer transition-all active:scale-[0.98]" for="btn-like-${c.id}">
                         <span class="material-symbols-outlined text-sm text-gray-400">bookmark</span>
-                        <span class="text-[#0d121b] dark:text-white">관심 등록</span>
+                        <span class="text-[#0d121b] dark:text-white">${t('cardBookmarkLabel')}</span>
                     </label>
                 </div>
-                <button onclick="openDetail(${c.id})" class="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 text-[#0d121b] dark:text-white text-sm font-bold active:scale-[0.98] transition-transform">상세보기</button>
+                <button onclick="openDetail(${c.id})" class="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 text-[#0d121b] dark:text-white text-sm font-bold active:scale-[0.98] transition-transform">${t('cardDetailLabel')}</button>
             </div>
         </div>
     `;
@@ -2780,16 +2818,32 @@ function getMyCouncilTabs() {
     if (!sido || !sigungu) return null;
     const sgtype = getSigunguType(sido, sigungu);
     if (!sgtype) return null;
+    const isEn = currentLang === 'en';
     let topLabel;
     if (isMetroCity(sido)) {
-        const shortSido = sido.replace(/(특별시|광역시|특별자치시)$/, '');
-        topLabel = shortSido + '시의원';
+        if (isEn) {
+            topLabel = localizeSido(sido) + ' ' + t('positionCityCouncil');
+        } else {
+            const shortSido = sido.replace(/(특별시|광역시|특별자치시)$/, '');
+            topLabel = shortSido + '시의원';
+        }
     } else {
-        const shortSido = sido.replace(/(특별자치도|도)$/, '');
-        topLabel = shortSido + '도의원';
+        if (isEn) {
+            topLabel = localizeSido(sido) + ' ' + t('positionProvinceCouncil');
+        } else {
+            const shortSido = sido.replace(/(특별자치도|도)$/, '');
+            topLabel = shortSido + '도의원';
+        }
     }
-    // 강남구 → 강남구의원, 수원시 → 수원시의원, 강화군 → 강화군의원
-    const bottomLabel = sigungu + '의원';
+    let bottomLabel;
+    if (isEn) {
+        if (sgtype === '자치구') bottomLabel = localizeSigungu(sigungu) + ' ' + t('positionDistrictCouncil');
+        else if (sgtype === '자치군') bottomLabel = localizeSigungu(sigungu) + ' ' + t('positionCountyCouncil');
+        else bottomLabel = localizeSigungu(sigungu) + ' ' + t('positionCityCouncil');
+    } else {
+        // 강남구 → 강남구의원, 수원시 → 수원시의원, 강화군 → 강화군의원
+        bottomLabel = sigungu + '의원';
+    }
     return { top: topLabel, bottom: bottomLabel };
 }
 
@@ -2816,7 +2870,7 @@ function renderCouncilList() {
     // 헤더 sub + segmented-control 동적 렌더링 — 거주지 기반
     const sub = document.getElementById('council-header-sub');
     const regionTxt = (typeof getRegionText === 'function') ? getRegionText() : '';
-    if (sub) sub.textContent = (regionTxt || '거주 지역 미선택') + ' 관할';
+    if (sub) sub.textContent = (regionTxt || t('regionInChargeNone')) + t('coverageSuffix');
     const tabs = getMyCouncilTabs() || { top: '광역의원', bottom: '기초의원' };
     const segControl = document.querySelector('#council-segment-wrap .segmented-control');
     if (segControl) {
@@ -2889,25 +2943,25 @@ function renderCouncilCard(c) {
                 </div>
                 <div class="flex-1 pr-6">
                     <div class="flex items-center gap-2 mb-1 flex-wrap">
-                        <span class="text-[10px] font-bold px-1.5 py-0.5 ${colorClasses.bg} ${colorClasses.text} rounded">기호 ${c.number}</span>
-                        <span class="text-xs font-medium text-[#4c669a] dark:text-gray-400">${escapeHtml(c.party || '')}</span>
+                        <span class="text-[10px] font-bold px-1.5 py-0.5 ${colorClasses.bg} ${colorClasses.text} rounded">${t('ballotNoLabel')} ${c.number}${t('ballotNoSuffix')}</span>
+                        <span class="text-xs font-medium text-[#4c669a] dark:text-gray-400">${escapeHtml(localizeParty(c.party || ''))}</span>
                     </div>
-                    <h3 class="text-lg font-bold text-[#0d121b] dark:text-white leading-tight">${escapeHtml(c.name)} <span class="text-sm font-normal text-gray-400">(${c.age}세)</span></h3>
+                    <h3 class="text-lg font-bold text-[#0d121b] dark:text-white leading-tight">${escapeHtml(c.name)} <span class="text-sm font-normal text-gray-400">(${c.age}${t('ageSuffixLabel')})</span></h3>
                     <p class="text-sm ${colorClasses.slogan} font-bold mt-1 line-clamp-1">"${escapeHtml(c.slogan || '')}"</p>
                 </div>
             </div>
             <div class="px-4 pb-4 grid grid-cols-[1fr_auto_1fr] gap-2">
                 <button onclick="openChat(${c.id})" class="flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-primary text-white text-sm font-bold active:scale-[0.98] transition-transform">
-                    <span class="material-symbols-outlined text-sm">forum</span> 대화
+                    <span class="material-symbols-outlined text-sm">forum</span> ${t('cardChatLabel')}
                 </button>
                 <div class="flex items-center">
                     <input class="like-checkbox hidden" id="btn-like-${c.id}" type="checkbox" ${bookmarkedCandidates.includes(c.id) ? 'checked' : ''} onchange="toggleBookmark(${c.id})" />
                     <label class="flex items-center gap-1.5 px-3 py-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 text-sm font-bold cursor-pointer transition-all active:scale-[0.98]" for="btn-like-${c.id}">
                         <span class="material-symbols-outlined text-sm text-gray-400">bookmark</span>
-                        <span class="text-[#0d121b] dark:text-white">관심 등록</span>
+                        <span class="text-[#0d121b] dark:text-white">${t('cardBookmarkLabel')}</span>
                     </label>
                 </div>
-                <button onclick="openDetail(${c.id})" class="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 text-[#0d121b] dark:text-white text-sm font-bold active:scale-[0.98] transition-transform">상세보기</button>
+                <button onclick="openDetail(${c.id})" class="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 text-[#0d121b] dark:text-white text-sm font-bold active:scale-[0.98] transition-transform">${t('cardDetailLabel')}</button>
             </div>
         </div>
     `;
@@ -2972,7 +3026,7 @@ function renderCandidates() {
     list.innerHTML = '';
 
     getCurrentCandidates().slice().sort((a, b) => {
-        // 가상(number=1,2,…) 먼저, 실제 등록 전(number=null)은 뒤로
+        // Mock candidates (number=1,2,…) first; pre-registration (number=null) last.
         const an = (a.number == null) ? 9999 : a.number;
         const bn = (b.number == null) ? 9999 : b.number;
         return an - bn;
@@ -3010,25 +3064,25 @@ function renderCandidates() {
                 </div>
                 <div class="flex-1 pr-6">
                     <div class="flex items-center gap-2 mb-1">
-                        <span class="text-[10px] font-bold px-1.5 py-0.5 ${colorClasses.bg} ${colorClasses.text} rounded">기호 ${c.number}</span>
-                        <span class="text-xs font-medium text-[#4c669a] dark:text-gray-400">${c.party}</span>
+                        <span class="text-[10px] font-bold px-1.5 py-0.5 ${colorClasses.bg} ${colorClasses.text} rounded">${t('ballotNoLabel')} ${c.number}${t('ballotNoSuffix')}</span>
+                        <span class="text-xs font-medium text-[#4c669a] dark:text-gray-400">${localizeParty(c.party)}</span>
                     </div>
-                    <h3 class="text-lg font-bold text-[#0d121b] dark:text-white leading-tight">${c.name} <span class="text-sm font-normal text-gray-400">(${c.age}세)</span></h3>
+                    <h3 class="text-lg font-bold text-[#0d121b] dark:text-white leading-tight">${c.name} <span class="text-sm font-normal text-gray-400">(${c.age}${t('ageSuffixLabel')})</span></h3>
                     <p class="text-sm ${colorClasses.slogan} font-bold mt-1 line-clamp-1">"${c.slogan}"</p>
                 </div>
             </div>
             <div class="px-4 pb-4 grid grid-cols-[1fr_auto_1fr] gap-2">
                 <button onclick="openChat(${c.id})" class="flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-primary text-white text-sm font-bold active:scale-[0.98] transition-transform">
-                    <span class="material-symbols-outlined text-sm">forum</span> 대화
+                    <span class="material-symbols-outlined text-sm">forum</span> ${t('cardChatLabel')}
                 </button>
                 <div class="flex items-center">
                     <input class="like-checkbox hidden" id="btn-like-${c.id}" type="checkbox" ${bookmarkedCandidates.includes(c.id) ? 'checked' : ''} onchange="toggleBookmark(${c.id})" />
                     <label class="flex items-center gap-1.5 px-3 py-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 text-sm font-bold cursor-pointer transition-all active:scale-[0.98]" for="btn-like-${c.id}">
                         <span class="material-symbols-outlined text-sm text-gray-400">bookmark</span>
-                        <span class="text-[#0d121b] dark:text-white">관심 등록</span>
+                        <span class="text-[#0d121b] dark:text-white">${t('cardBookmarkLabel')}</span>
                     </label>
                 </div>
-                <button onclick="openDetail(${c.id})" class="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 text-[#0d121b] dark:text-white text-sm font-bold active:scale-[0.98] transition-transform">상세보기</button>
+                <button onclick="openDetail(${c.id})" class="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-[#e7ebf3] dark:border-gray-700 text-[#0d121b] dark:text-white text-sm font-bold active:scale-[0.98] transition-transform">${t('cardDetailLabel')}</button>
             </div>
         `;
         list.appendChild(card);
@@ -3158,7 +3212,7 @@ function togglePolicyInterest(candidateId, policyKey, btnEl) {
 
     // 버튼 상태 업데이트 (수치 없음, 본인 공감 여부만 토글)
     const labelEl = btnEl.querySelector('.policy-interest-label');
-    if (labelEl) labelEl.textContent = active ? '공감함' : '공감하기';
+    if (labelEl) labelEl.textContent = active ? t('empathizedToggleLabel') : t('empathizeLabel');
     const iconEl = btnEl.querySelector('.material-symbols-outlined');
     if (active) {
         btnEl.classList.remove('bg-slate-100','dark:bg-slate-700','text-slate-600','dark:text-slate-300','border-slate-300','dark:border-gray-600');
@@ -3204,7 +3258,7 @@ function openDetail(id) {
     const c = findCandidateById(id);
     if (!c) return;
 
-    document.getElementById('detail-header-name').textContent = c.name + ' 후보';
+    document.getElementById('detail-header-name').textContent = c.name + t('candidateSuffixLabel');
 
     const partyColors = { blue: '#2563eb', red: '#dc2626', gray: '#6b7280' };
     const pc = partyColors[c.partyColor] || '#6b7280';
@@ -3228,7 +3282,12 @@ function openDetail(id) {
 
     // 공약 카드 렌더 (5-B 공감 버튼 포함)
     const policyKeys = c.policies ? ['summary','jobs','vision','education'].filter(k => c.policies[k]) : [];
-    const policyLabels = { summary: '정책 요약', jobs: '일자리', vision: '비전', education: '교육' };
+    const policyLabels = {
+        summary: t('policySummaryLabel'),
+        jobs: t('jobsLabelDetail'),
+        vision: t('visionLabelDetail'),
+        education: t('educationLabelDetail')
+    };
     const policyIcons = { summary: 'description', jobs: 'work', vision: 'visibility', education: 'school' };
     const interestedSet = new Set((policyInterests[`candidate_${c.id}`] || []));
     const policyCards = policyKeys.map(k => {
@@ -3239,25 +3298,25 @@ function openDetail(id) {
             <div class="flex items-center gap-2">
                 <button onclick="togglePolicyInterest(${c.id}, '${k}', this)" data-policy-key="${k}" class="policy-interest-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 ${active ? 'bg-primary text-white border border-primary' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-gray-600'}">
                     <span class="material-symbols-outlined text-[14px]" ${active ? `style="font-variation-settings:'FILL' 1"` : ''}>thumb_up</span>
-                    <span class="policy-interest-label">${active ? '공감함' : '공감하기'}</span>
+                    <span class="policy-interest-label">${active ? t('empathizedToggleLabel') : t('empathizeLabel')}</span>
                 </button>
                 <button onclick="openCandidatePolicyDetail(${c.id}, '${k}')" class="ml-auto inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold border border-[#e7ebf3] dark:border-gray-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-95 transition-all">
                     <span class="material-symbols-outlined text-[14px]">unfold_more</span>
-                    상세보기
+                    ${t('detailLabel')}
                 </button>
             </div>
         </div>`;
     }).join('');
 
     const policyHtml = policyCards ? `
-        <p class="text-xs text-slate-400 mb-3">선거법 준수 및 중립성 유지를 위해 공감 전체 합계는 노출되지 않습니다.</p>
+        <p class="text-xs text-slate-400 mb-3">${t('electionLawNotice')}</p>
         <div class="space-y-3">${policyCards}</div>
     ` : '';
 
     const portfolioHtml = `
         ${c.greeting ? `<section>
             <h3 class="flex items-center gap-2 text-base font-bold text-slate-800 dark:text-white mb-3">
-                <span class="material-symbols-outlined" style="color:${pc}">waving_hand</span> 인사말
+                <span class="material-symbols-outlined" style="color:${pc}">waving_hand</span> ${t('greetingLabel')}
             </h3>
             <div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-[#e7ebf3] dark:border-gray-700">
                 <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${c.greeting}</p>
@@ -3265,13 +3324,13 @@ function openDetail(id) {
         </section>` : ''}
         ${careerHtml ? `<section>
             <h3 class="flex items-center gap-2 text-base font-bold text-slate-800 dark:text-white mb-3">
-                <span class="material-symbols-outlined" style="color:${pc}">timeline</span> 주요 약력
+                <span class="material-symbols-outlined" style="color:${pc}">timeline</span> ${t('careerLabel')}
             </h3>
             <div class="space-y-3 pl-1">${careerHtml}</div>
         </section>` : ''}
         ${achieveHtml ? `<section>
             <h3 class="flex items-center gap-2 text-base font-bold text-slate-800 dark:text-white mb-3">
-                <span class="material-symbols-outlined" style="color:${pc}">emoji_events</span> 주요 성과
+                <span class="material-symbols-outlined" style="color:${pc}">emoji_events</span> ${t('achievementsLabel')}
             </h3>
             <div class="space-y-2">${achieveHtml}</div>
         </section>` : ''}
@@ -3288,9 +3347,9 @@ function openDetail(id) {
                 <div class="flex-1">
                     <div class="flex items-center gap-2 mb-1">
                         <span class="text-xl font-bold text-slate-800 dark:text-white">${c.name}</span>
-                        <span class="px-2 py-0.5 rounded-full text-xs font-bold text-white" style="background:${pc}">기호 ${c.number}번</span>
+                        <span class="px-2 py-0.5 rounded-full text-xs font-bold text-white" style="background:${pc}">${t('ballotNoLabel')} ${c.number}${t('ballotNoSuffix')}</span>
                     </div>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">${c.party} · ${c.age}세</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">${localizeParty(c.party)} · ${c.age}${t('ageSuffixLabel')}</p>
                     <p class="text-xs text-slate-400 mt-0.5"><span class="material-symbols-outlined text-xs align-middle">location_on</span> ${c.birthplace || ''}</p>
                     <p class="text-xs text-slate-400"><span class="material-symbols-outlined text-xs align-middle">school</span> ${c.education || ''}</p>
                 </div>
@@ -3302,10 +3361,10 @@ function openDetail(id) {
         <div class="sticky top-[57px] z-40 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 pt-3">
             <div class="flex bg-slate-100 dark:bg-slate-800 rounded-xl p-1 gap-1">
                 <button onclick="switchDetailTab('portfolio')" id="detail-tab-portfolio" class="flex-1 py-2 rounded-lg text-slate-500 dark:text-slate-400 text-xs font-bold transition-all">
-                    포트폴리오
+                    ${t('portfolioTabLabel')}
                 </button>
                 <button onclick="switchDetailTab('policy')" id="detail-tab-policy" class="flex-1 py-2 rounded-lg bg-white dark:bg-slate-700 text-primary shadow-sm text-xs font-bold transition-all">
-                    핵심공약 ${policyKeys.length}
+                    ${t('keyPoliciesTabLabel')} ${policyKeys.length}
                 </button>
             </div>
         </div>
@@ -3322,10 +3381,10 @@ function openDetail(id) {
             <!-- 하단 버튼 -->
             <div class="flex gap-3 pt-2">
                 <button onclick="openChat(${c.id})" class="flex-1 py-3 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2" style="background:${pc}">
-                    <span class="material-symbols-outlined text-lg">chat</span> AI 아바타와 대화
+                    <span class="material-symbols-outlined text-lg">chat</span> ${t('chatWithAvatarLabel')}
                 </button>
                 <button onclick="navigateTo('page-candidates', true)" class="flex-1 py-3 rounded-xl border-2 font-bold text-sm flex items-center justify-center gap-2" style="border-color:${pc}; color:${pc}">
-                    <span class="material-symbols-outlined text-lg">arrow_back</span> 목록으로
+                    <span class="material-symbols-outlined text-lg">arrow_back</span> ${t('backToListLabel')}
                 </button>
             </div>
         </div>
@@ -4264,7 +4323,12 @@ const POLICY_DETAIL_TEMPLATES = {
 function openCandidatePolicyDetail(candidateId, policyKey) {
     const c = findCandidateById(candidateId);
     if (!c || !c.policies || !c.policies[policyKey]) return;
-    const labels = { summary: '정책 요약', jobs: '일자리', vision: '비전', education: '교육' };
+    const labels = {
+        summary: t('policySummaryLabel'),
+        jobs: t('jobsLabelDetail'),
+        vision: t('visionLabelDetail'),
+        education: t('educationLabelDetail')
+    };
     const icons  = { summary: 'description', jobs: 'work', vision: 'visibility', education: 'school' };
     const partyColors = { blue: '#2563eb', red: '#dc2626', gray: '#6b7280' };
     const pc = partyColors[c.partyColor] || '#6b7280';
@@ -4274,7 +4338,7 @@ function openCandidatePolicyDetail(candidateId, policyKey) {
     const candEl  = document.getElementById('cpd-candidate');
     const body    = document.getElementById('cpd-body');
     if (titleEl) titleEl.innerHTML = `<span class="material-symbols-outlined" style="color:${pc}">${icons[policyKey]}</span> ${labels[policyKey]}`;
-    if (candEl)  candEl.textContent = `${c.name} 후보 · ${c.party || '무소속'}`;
+    if (candEl)  candEl.textContent = `${c.name}${t('candidateSuffixLabel')} · ${localizeParty(c.party || t('partyIndependent'))}`;
 
     const sectionHead = (icon, title, color) => `
         <div class="flex items-center gap-2 mb-2">
@@ -5154,8 +5218,14 @@ function renderPolicyInterestsPage() {
         const validKeys = policyKeys.filter(k => c.policies[k]);
         if (validKeys.length === 0) return '';
 
+        const policyLabelsLocal = {
+            summary: t('policySummaryLabel'),
+            jobs: t('jobsLabelDetail'),
+            vision: t('visionLabelDetail'),
+            education: t('educationLabelDetail')
+        };
         const subCards = validKeys.map(k => {
-            const label = POLICY_LABELS_KO[k] || k;
+            const label = policyLabelsLocal[k] || k;
             const icon = POLICY_ICONS[k] || 'description';
             const content = c.policies[k];
             // 핵심공약 탭과 동일 디자인: 공감함(활성) 상태로 노출 → 클릭 시 토글되어 목록에서 제거
@@ -5166,11 +5236,11 @@ function renderPolicyInterestsPage() {
                     <div class="flex items-center gap-2">
                         <button onclick="togglePolicyInterest(${id}, '${k}', this); renderPolicyInterestsPage();" data-policy-key="${k}" class="policy-interest-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 bg-primary text-white border border-primary">
                             <span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1">thumb_up</span>
-                            <span class="policy-interest-label">공감함</span>
+                            <span class="policy-interest-label">${t('empathizedToggleLabel')}</span>
                         </button>
                         <button onclick="openCandidatePolicyDetail(${id}, '${k}')" class="ml-auto inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold border border-[#e7ebf3] dark:border-gray-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-95 transition-all">
                             <span class="material-symbols-outlined text-[14px]">unfold_more</span>
-                            상세보기
+                            ${t('detailLabel')}
                         </button>
                     </div>
                 </div>
@@ -5178,7 +5248,7 @@ function renderPolicyInterestsPage() {
         }).join('');
 
         const typeLabel = getElectionTypeLabel(id);
-        const typeBadge = typeLabel ? `<span class="inline-flex items-center px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-medium flex-shrink-0">${escapeHtml(typeLabel)} 후보</span>` : '';
+        const typeBadge = typeLabel ? `<span class="inline-flex items-center px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-medium flex-shrink-0">${escapeHtml(typeLabel)}${t('candidateSuffixLabel')}</span>` : '';
         return `
             <div class="space-y-3">
                 <div class="bg-white dark:bg-slate-800 rounded-xl border border-[#e7ebf3] dark:border-gray-700 px-4 py-3 flex items-center gap-3">
@@ -5186,10 +5256,10 @@ function renderPolicyInterestsPage() {
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2 flex-wrap">
                             <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${escapeHtml(c.name)}</p>
-                            <span class="px-1.5 py-0.5 rounded text-[10px] font-bold text-white" style="background:${pc}">기호 ${c.number}</span>
+                            <span class="px-1.5 py-0.5 rounded text-[10px] font-bold text-white" style="background:${pc}">${t('ballotNoLabel')} ${c.number}${t('ballotNoSuffix')}</span>
                             ${typeBadge}
                         </div>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${escapeHtml(c.party)}</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${escapeHtml(localizeParty(c.party))}</p>
                     </div>
                 </div>
                 ${subCards}
@@ -5478,8 +5548,9 @@ function submitReport() {
     showToast(`신고가 접수되었습니다 (번호: ${number})`);
 }
 
-// ============ LANGUAGE (한/영) ============
-let currentLang = localStorage.getItem('lang') || 'ko';
+// ============ LANGUAGE (KO/EN) ============
+// 번역 버전: 별도 localStorage 키 사용 (원본의 KO 설정과 분리, 기본 EN)
+let currentLang = localStorage.getItem('lang_dev') || 'en';
 
 const translations = {
     ko: {
@@ -5541,7 +5612,191 @@ const translations = {
         etc: '기타',
         cancel: '취소',
         submitReport: '신고 제출',
-        digitalTwin: '디지털 트윈'
+        digitalTwin: '디지털 트윈',
+        // ── 추가 UI 키 (번역 버전용) ──
+        electionTitle: '제9회 전국동시지방선거',
+        regionDesc: '우리 지역 후보자를 확인하고, AI 아바타 대화를 통해 궁금한 공약을 직접 물어보세요.',
+        currentPolicy: '현 시행되고 있는 정책',
+        currentPolicySub: '데이터 연동',
+        electionNews: '선거 뉴스',
+        electionNewsSub: '지방선거 실시간 뉴스',
+        electionTypeTitle: '제9회 전국동시지방선거',
+        electionTypeSub: '카테고리 선택',
+        regionalCandidates: '우리지역 후보자',
+        ourAlleyTitle: '우리 골목',
+        ourAlleySub: '시·도의원 · 시·구·군의원 후보',
+        ourEduTitle: '우리교육',
+        ourEduSub: '교육감 후보',
+        compareTitle: '후보자 비교',
+        candidateDetail: '후보자',
+        democratic: '더불어민주당',
+        peoples: '국민의힘',
+        independent: '무소속',
+        provinceCouncil: '광역의원',
+        cityCouncil: '기초의원',
+        searchHint: '우리 동네 검색 (예: 강남, 종로, 수원)',
+        searchTip: '지역명이나 선거구명으로 검색해보세요',
+        candidatesCount: '명의 후보',
+        chairmanGov: '시·도지사',
+        districtHead: '구청장',
+        cityHead: '시장',
+        countyHead: '군수',
+        portfolio: '포트폴리오',
+        keyPolicies: '핵심공약',
+        chatWithAvatar: 'AI 아바타와 대화',
+        backToList: '목록으로',
+        registerInterest: '관심 등록',
+        bookmarked: '관심 등록됨',
+        empathize: '공감하기',
+        empathized: '공감함',
+        viewDetail: '상세보기',
+        viewPledge: '공약 보기',
+        aiChatBtn: 'AI 대화',
+        compareSelected: '선택한 후보자 비교하기',
+        avatarDisclaimer: 'AI 아바타가 정책 데이터를 학습하여 생성한 가상의 정보입니다.',
+        candidateAi: 'AI',
+        report: '신고',
+        quickQuestionInfo: '아래 버튼은 후보자가 직접 등록한 핵심 공약 및 정책입니다.',
+        keyPolicy: '주요 정책',
+        jobs: '일자리',
+        vision: '비전',
+        education: '교육',
+        back: '돌아가기',
+        economy: '경제',
+        welfare: '복지',
+        transport: '교통',
+        safety: '안전',
+        youthJobs: '청년일자리',
+        seniorJobs: '장년일자리',
+        disabledJobs: '장애인일자리',
+        urbanDev: '도시발전',
+        civicEngagement: '시민참여',
+        regionalCoop: '지역상생',
+        publicEdu: '공교육',
+        childcare: '돌봄',
+        lifelongLearning: '평생학습',
+        voiceNotice: '본 음성 서비스는 정보 취약계층(장애인·노약자 등)의 편의를 위해 제공되는 AI 가상 음성입니다. 후보자 본인의 실제 목소리가 아님을 알려드립니다.',
+        voicePromptStart: '마이크 버튼을 눌러 질문하세요',
+        voicePromptAgain: '마이크 버튼을 눌러 다시 질문하세요',
+        voicePromptListening: '듣고 있습니다...',
+        voicePromptThinking: '답변을 준비하고 있습니다...',
+        voicePromptPlaying: '🔊 답변을 들려드립니다',
+        tapToSpeak: '탭하여 말하기',
+        pdSummary: '요약',
+        pdBackground: '추진 배경',
+        pdDetails: '세부 항목',
+        pdTimeline: '추진 일정',
+        pdDisclaimer: '※ 본 상세 내용은 후보자가 등록한 자료를 기반으로 정리한 것입니다.',
+        resetChat: '대화 초기화',
+        share: '공유하기',
+        close: '닫기',
+        empathyNotice: '선거법 준수 및 중립성 유지를 위해 공감 전체 합계는 노출되지 않습니다.',
+        candidateRegPeriod: '제9회 전국동시지방선거, 5월 14일 후보자 등록 신청일',
+        reportSubmitted: '신고가 접수되었습니다. 검토 후 조치하겠습니다.',
+        reportAlready: '이미 신고한 답변입니다',
+        reportTooMany: '잠시 후 다시 시도해 주세요',
+        reportCategoryRequired: '신고 사유 카테고리를 선택해주세요',
+        candidateBlocked: '후보가 차단되었습니다',
+        shared: '공유되었습니다',
+        loginNeeded: '로그인이 필요합니다',
+        showCompareMin: '최대 3명까지 선택 가능합니다',
+        chatReset: '대화가 초기화되었습니다',
+        selectRegion: '시·도 / 시·군·구를 선택하세요',
+        sidoOption: '시·도 선택',
+        sigunguOption: '시·군·구 선택',
+        localOfficials: '시·도지사 · 구청장 · 시장 · 군수',
+        councilMembers: '시의원 · 구의원<br>도의원 · 군의원',
+        regionNotSelected: '거주 지역 미선택',
+        ourPolling: '우리 투표소 찾기',
+        empathizeBtn: '공감하기',
+        cardChat: '대화',
+        justiceParty: '정의당',
+        symbol: '기호',
+        symbolNo: '기호 {n}번',
+        ageSuffix: '세',
+        candidateSuffix: '후보',
+        portfolioTab: '포트폴리오',
+        keyPoliciesTab: '핵심공약',
+        greetingSection: '인사말',
+        careerSection: '주요 약력',
+        achievementsSection: '주요 성과',
+        keyPolicySection: '핵심 공약',
+        keyPolicySubLabel: '주요 정책',
+        jobsLabel: '일자리',
+        visionLabel: '비전',
+        educationLabel: '교육',
+        ourAlleyHead: '시·도의원 · 시·구·군의원 후보',
+        searchTipFull: '지역명이나 선거구명으로 검색해보세요',
+        candidatesCountSuffix: '명의 후보',
+        chatModeText: '채팅 대화',
+        chatModeVoice: '음성 대화',
+        inputPlaceholder: '궁금한 내용을 입력하세요...',
+        candidateSummary: '정책 요약',
+        empathyLabel: '공감하기',
+        empathizedLabel: '공감함',
+        backToCandidates: '목록으로',
+        chatWithAvatarBtn: 'AI 아바타와 대화',
+        digitalTwinLive: '후보 디지털 트윈 (Live)',
+        chatBubbleAi: 'AI',
+        // v3 신규
+        liveElectionNews: '실시간 선거 뉴스 보기',
+        ddayElectionLabel: '제9회 전국동시지방선거',
+        ddaySchedule: '2026년 6월 3일 (수) · 오전 6시 ~ 오후 6시',
+        ddayHours: '시간',
+        ddayMinutes: '분',
+        ddaySeconds: '초',
+        eupMyeonDongOption: '읍·면·동 선택',
+        // ── 추가: 미번역 영역 보강 ──
+        regionalCandidatesHeader: '우리지역 후보자',
+        councilCandidatesHeader: '우리 골목 후보자',
+        educationCandidatesHeader: '우리교육 후보자',
+        eduSuperintendent: '교육감',
+        govLabel: '시·도지사',
+        districtHeadLabel: '구청장',
+        cityHeadLabel: '시장',
+        countyHeadLabel: '군수',
+        cityCouncilLabel: '시의원·구의원',
+        provinceCouncilLabel: '도의원·군의원',
+        superintendentLabel: '교육감',
+        positionMayor: '시장',
+        positionGovernor: '도지사',
+        positionDistrictHead: '구청장',
+        positionCountyHead: '군수',
+        positionCityCouncil: '시의원',
+        positionProvinceCouncil: '도의원',
+        positionDistrictCouncil: '구의원',
+        positionCountyCouncil: '군의원',
+        positionSuperintendent: '교육감',
+        coverageSuffix: ' 관할',
+        myVoteInfoSection: '내 투표 정보',
+        cardChatLabel: '대화',
+        cardBookmarkLabel: '관심 등록',
+        cardDetailLabel: '상세보기',
+        ballotNoLabel: '기호',
+        ballotNoSuffix: '번',
+        portfolioTabLabel: '포트폴리오',
+        keyPoliciesTabLabel: '핵심공약',
+        chatWithAvatarLabel: 'AI 아바타와 대화',
+        backToListLabel: '목록으로',
+        empathizeLabel: '공감하기',
+        empathizedToggleLabel: '공감함',
+        detailLabel: '상세보기',
+        electionLawNotice: '선거법 준수 및 중립성 유지를 위해 공감 전체 합계는 노출되지 않습니다.',
+        policySummaryLabel: '정책 요약',
+        jobsLabelDetail: '일자리',
+        visionLabelDetail: '비전',
+        educationLabelDetail: '교육',
+        greetingLabel: '인사말',
+        careerLabel: '주요 약력',
+        achievementsLabel: '주요 성과',
+        candidateSuffixLabel: ' 후보',
+        ageSuffixLabel: '세',
+        noBasicElection: '기초단체 선거 없음 (광역만)',
+        partyDemocratic: '더불어민주당',
+        partyPeoplePower: '국민의힘',
+        partyJustice: '정의당',
+        partyIndependent: '무소속',
+        regionInChargeNone: '거주 지역 미선택'
     },
     en: {
         appTitle: 'Find Leaders',
@@ -5602,9 +5857,521 @@ const translations = {
         etc: 'Other',
         cancel: 'Cancel',
         submitReport: 'Submit Report',
-        digitalTwin: 'Digital Twin'
+        digitalTwin: 'Digital Twin',
+        // ── Additional UI keys (translation build) ──
+        electionTitle: '9th Local Election',
+        regionDesc: 'Find candidates in your area and ask the AI avatar about their pledges directly.',
+        currentPolicy: 'Current Policies',
+        currentPolicySub: 'Data Integration',
+        electionNews: 'Election News',
+        electionNewsSub: 'Live local election news',
+        electionTypeTitle: '9th Local Election',
+        electionTypeSub: 'Select Category',
+        regionalCandidates: 'Regional Candidates',
+        ourAlleyTitle: 'Local Council',
+        ourAlleySub: 'Provincial / City / County / District Council',
+        ourEduTitle: 'Education',
+        ourEduSub: 'Superintendent Candidates',
+        compareTitle: 'Compare Candidates',
+        candidateDetail: 'Candidate',
+        democratic: 'Democratic Party',
+        peoples: 'People Power Party',
+        independent: 'Independent',
+        provinceCouncil: 'Provincial Council',
+        cityCouncil: 'Local Council',
+        searchHint: 'Search neighborhood (e.g. Gangnam, Jongno)',
+        searchTip: 'Try searching by region or district name',
+        candidatesCount: 'candidates',
+        chairmanGov: 'Mayor / Governor',
+        districtHead: 'District Head',
+        cityHead: 'City Mayor',
+        countyHead: 'County Head',
+        portfolio: 'Portfolio',
+        keyPolicies: 'Key Policies',
+        chatWithAvatar: 'Chat with AI Avatar',
+        backToList: 'Back to List',
+        registerInterest: 'Bookmark',
+        bookmarked: 'Bookmarked',
+        empathize: 'Empathize',
+        empathized: 'Empathized',
+        viewDetail: 'View Details',
+        viewPledge: 'View Pledge',
+        aiChatBtn: 'AI Chat',
+        compareSelected: 'Compare selected candidates',
+        avatarDisclaimer: 'AI avatar showing virtual content generated from policy data.',
+        candidateAi: 'AI',
+        report: 'Report',
+        quickQuestionInfo: 'The buttons below are key pledges and policies registered by the candidate.',
+        keyPolicy: 'Key Policy',
+        jobs: 'Jobs',
+        vision: 'Vision',
+        education: 'Education',
+        back: 'Back',
+        economy: 'Economy',
+        welfare: 'Welfare',
+        transport: 'Transport',
+        safety: 'Safety',
+        youthJobs: 'Youth Jobs',
+        seniorJobs: 'Senior Jobs',
+        disabledJobs: 'Jobs for Disabled',
+        urbanDev: 'Urban Development',
+        civicEngagement: 'Civic Engagement',
+        regionalCoop: 'Regional Cooperation',
+        publicEdu: 'Public Education',
+        childcare: 'Childcare',
+        lifelongLearning: 'Lifelong Learning',
+        voiceNotice: 'This voice service is an AI virtual voice provided for accessibility (people with disabilities, elderly, etc.). It is not the candidate’s actual voice.',
+        voicePromptStart: 'Press the mic to ask a question',
+        voicePromptAgain: 'Press the mic to ask another question',
+        voicePromptListening: 'Listening...',
+        voicePromptThinking: 'Preparing answer...',
+        voicePromptPlaying: '🔊 Playing answer',
+        tapToSpeak: 'Tap to speak',
+        pdSummary: 'Summary',
+        pdBackground: 'Background',
+        pdDetails: 'Details',
+        pdTimeline: 'Roadmap',
+        pdDisclaimer: '※ Detail content is compiled from materials registered by the candidate.',
+        resetChat: 'Reset Chat',
+        share: 'Share',
+        close: 'Close',
+        empathyNotice: 'For election law compliance and neutrality, total empathy counts are not displayed.',
+        candidateRegPeriod: '9th Local Election — May 14 candidate registration opens',
+        reportSubmitted: 'Report submitted. We will review and take action.',
+        reportAlready: 'You have already reported this answer',
+        reportTooMany: 'Please try again in a moment',
+        reportCategoryRequired: 'Please select a report category',
+        candidateBlocked: 'Candidate blocked',
+        shared: 'Shared',
+        loginNeeded: 'Login required',
+        showCompareMin: 'Up to 3 candidates can be selected',
+        chatReset: 'Chat has been reset',
+        selectRegion: 'Select Province / District',
+        sidoOption: 'Select Province',
+        sigunguOption: 'Select District',
+        localOfficials: 'Governor · District Head · Mayor · County Head',
+        councilMembers: 'Provincial / Local<br>Council Members',
+        regionNotSelected: 'No region selected',
+        ourPolling: 'Find Polling Station',
+        empathizeBtn: 'Empathize',
+        cardChat: 'Chat',
+        justiceParty: 'Justice Party',
+        symbol: 'No.',
+        symbolNo: 'No. {n}',
+        ageSuffix: '',
+        candidateSuffix: 'Candidate',
+        portfolioTab: 'Portfolio',
+        keyPoliciesTab: 'Key Policies',
+        greetingSection: 'Greeting',
+        careerSection: 'Career',
+        achievementsSection: 'Achievements',
+        keyPolicySection: 'Key Pledges',
+        keyPolicySubLabel: 'Key Policy',
+        jobsLabel: 'Jobs',
+        visionLabel: 'Vision',
+        educationLabel: 'Education',
+        ourAlleyHead: 'Provincial / City / County / District Council',
+        searchTipFull: 'Try searching by region or district name',
+        candidatesCountSuffix: 'candidates',
+        chatModeText: 'Chat',
+        chatModeVoice: 'Voice',
+        inputPlaceholder: 'Type your question...',
+        candidateSummary: 'Policy Summary',
+        empathyLabel: 'Empathize',
+        empathizedLabel: 'Empathized',
+        backToCandidates: 'Back to List',
+        chatWithAvatarBtn: 'Chat with AI Avatar',
+        digitalTwinLive: 'Candidate Digital Twin (Live)',
+        chatBubbleAi: 'AI',
+        // v3 new keys
+        liveElectionNews: 'Live Election News',
+        ddayElectionLabel: '9th Local Election',
+        ddaySchedule: 'Wed, June 3, 2026 · 6 AM – 6 PM',
+        ddayHours: 'Hours',
+        ddayMinutes: 'Minutes',
+        ddaySeconds: 'Seconds',
+        eupMyeonDongOption: 'Select Town/Village',
+        // ── Additional: Untranslated areas ──
+        regionalCandidatesHeader: 'Regional Candidates',
+        councilCandidatesHeader: 'Local Council Candidates',
+        educationCandidatesHeader: 'Education Superintendent Candidates',
+        eduSuperintendent: 'Superintendent',
+        govLabel: 'Governor / Metropolitan Mayor',
+        districtHeadLabel: 'District Head',
+        cityHeadLabel: 'Mayor',
+        countyHeadLabel: 'County Head',
+        cityCouncilLabel: 'City / District Council',
+        provinceCouncilLabel: 'Provincial / County Council',
+        superintendentLabel: 'Superintendent',
+        positionMayor: 'Mayor',
+        positionGovernor: 'Governor',
+        positionDistrictHead: 'District Head',
+        positionCountyHead: 'County Head',
+        positionCityCouncil: 'City Council',
+        positionProvinceCouncil: 'Provincial Council',
+        positionDistrictCouncil: 'District Council',
+        positionCountyCouncil: 'County Council',
+        positionSuperintendent: 'Superintendent',
+        coverageSuffix: ' area',
+        myVoteInfoSection: 'My Voting Info',
+        cardChatLabel: 'Chat',
+        cardBookmarkLabel: 'Bookmark',
+        cardDetailLabel: 'Details',
+        ballotNoLabel: 'No.',
+        ballotNoSuffix: '',
+        portfolioTabLabel: 'Portfolio',
+        keyPoliciesTabLabel: 'Key Policies',
+        chatWithAvatarLabel: 'Chat with AI Avatar',
+        backToListLabel: 'Back to List',
+        empathizeLabel: 'Like',
+        empathizedToggleLabel: 'Liked',
+        detailLabel: 'Details',
+        electionLawNotice: 'Per election law and neutrality, total like counts are not disclosed.',
+        policySummaryLabel: 'Policy Summary',
+        jobsLabelDetail: 'Jobs',
+        visionLabelDetail: 'Vision',
+        educationLabelDetail: 'Education',
+        greetingLabel: 'Greeting',
+        careerLabel: 'Career',
+        achievementsLabel: 'Achievements',
+        candidateSuffixLabel: '',
+        ageSuffixLabel: ' yrs',
+        noBasicElection: 'No basic local elections (province-level only)',
+        partyDemocratic: 'Democratic Party of Korea',
+        partyPeoplePower: 'People Power Party',
+        partyJustice: 'Justice Party',
+        partyIndependent: 'Independent',
+        regionInChargeNone: 'No region selected'
     }
 };
+
+// 시·도 이름 영문 매핑 (광역만 영문화, 시·군·구·동은 한글 유지)
+const SIDO_EN = {
+    '서울특별시': 'Seoul',
+    '부산광역시': 'Busan',
+    '대구광역시': 'Daegu',
+    '인천광역시': 'Incheon',
+    '광주광역시': 'Gwangju',
+    '대전광역시': 'Daejeon',
+    '울산광역시': 'Ulsan',
+    '세종특별자치시': 'Sejong',
+    '경기도': 'Gyeonggi-do',
+    '강원특별자치도': 'Gangwon-do',
+    '충청북도': 'Chungcheongbuk-do',
+    '충청남도': 'Chungcheongnam-do',
+    '전북특별자치도': 'Jeollabuk-do',
+    '전라남도': 'Jeollanam-do',
+    '경상북도': 'Gyeongsangbuk-do',
+    '경상남도': 'Gyeongsangnam-do',
+    '제주특별자치도': 'Jeju-do'
+};
+
+// 정당명 영문 매핑
+const PARTY_EN = {
+    '더불어민주당': 'Democratic Party of Korea',
+    '국민의힘': 'People Power Party',
+    '정의당': 'Justice Party',
+    '무소속': 'Independent'
+};
+
+// 시·군·구 영문 매핑 (국립국어원 로마자 표기 규칙: 구→-gu, 시→-si, 군→-gun)
+// REGIONS 객체에 정의된 것만 매핑 (서울 25개 자치구 + 다른 광역시 자치구/군 + 도의 시·군)
+const SIGUNGU_EN = {
+    // 서울특별시 25개 자치구
+    '종로구': 'Jongno-gu',
+    '중구': 'Jung-gu',
+    '용산구': 'Yongsan-gu',
+    '성동구': 'Seongdong-gu',
+    '광진구': 'Gwangjin-gu',
+    '동대문구': 'Dongdaemun-gu',
+    '중랑구': 'Jungnang-gu',
+    '성북구': 'Seongbuk-gu',
+    '강북구': 'Gangbuk-gu',
+    '도봉구': 'Dobong-gu',
+    '노원구': 'Nowon-gu',
+    '은평구': 'Eunpyeong-gu',
+    '서대문구': 'Seodaemun-gu',
+    '마포구': 'Mapo-gu',
+    '양천구': 'Yangcheon-gu',
+    '강서구': 'Gangseo-gu',
+    '구로구': 'Guro-gu',
+    '금천구': 'Geumcheon-gu',
+    '영등포구': 'Yeongdeungpo-gu',
+    '동작구': 'Dongjak-gu',
+    '관악구': 'Gwanak-gu',
+    '서초구': 'Seocho-gu',
+    '강남구': 'Gangnam-gu',
+    '송파구': 'Songpa-gu',
+    '강동구': 'Gangdong-gu',
+    // 부산광역시 (서울과 겹치지 않는 것)
+    '서구': 'Seo-gu',
+    '동구': 'Dong-gu',
+    '영도구': 'Yeongdo-gu',
+    '부산진구': 'Busanjin-gu',
+    '동래구': 'Dongnae-gu',
+    '남구': 'Nam-gu',
+    '북구': 'Buk-gu',
+    '해운대구': 'Haeundae-gu',
+    '사하구': 'Saha-gu',
+    '금정구': 'Geumjeong-gu',
+    '연제구': 'Yeonje-gu',
+    '수영구': 'Suyeong-gu',
+    '사상구': 'Sasang-gu',
+    '기장군': 'Gijang-gun',
+    // 대구광역시
+    '수성구': 'Suseong-gu',
+    '달서구': 'Dalseo-gu',
+    '달성군': 'Dalseong-gun',
+    '군위군': 'Gunwi-gun',
+    // 인천광역시
+    '미추홀구': 'Michuhol-gu',
+    '연수구': 'Yeonsu-gu',
+    '남동구': 'Namdong-gu',
+    '부평구': 'Bupyeong-gu',
+    '계양구': 'Gyeyang-gu',
+    '강화군': 'Ganghwa-gun',
+    '옹진군': 'Ongjin-gun',
+    // 광주광역시
+    '광산구': 'Gwangsan-gu',
+    // 대전광역시
+    '유성구': 'Yuseong-gu',
+    '대덕구': 'Daedeok-gu',
+    // 울산광역시
+    '울주군': 'Ulju-gun',
+    // 경기도
+    '수원시': 'Suwon-si',
+    '고양시': 'Goyang-si',
+    '용인시': 'Yongin-si',
+    '성남시': 'Seongnam-si',
+    '부천시': 'Bucheon-si',
+    '화성시': 'Hwaseong-si',
+    '안산시': 'Ansan-si',
+    '안양시': 'Anyang-si',
+    '평택시': 'Pyeongtaek-si',
+    '시흥시': 'Siheung-si',
+    '김포시': 'Gimpo-si',
+    '광주시': 'Gwangju-si',
+    '광명시': 'Gwangmyeong-si',
+    '군포시': 'Gunpo-si',
+    '하남시': 'Hanam-si',
+    '오산시': 'Osan-si',
+    '파주시': 'Paju-si',
+    '이천시': 'Icheon-si',
+    '안성시': 'Anseong-si',
+    '의왕시': 'Uiwang-si',
+    '양주시': 'Yangju-si',
+    '구리시': 'Guri-si',
+    '남양주시': 'Namyangju-si',
+    '포천시': 'Pocheon-si',
+    '동두천시': 'Dongducheon-si',
+    '과천시': 'Gwacheon-si',
+    '여주시': 'Yeoju-si',
+    '의정부시': 'Uijeongbu-si',
+    '가평군': 'Gapyeong-gun',
+    '양평군': 'Yangpyeong-gun',
+    '연천군': 'Yeoncheon-gun',
+    // 강원특별자치도
+    '춘천시': 'Chuncheon-si',
+    '원주시': 'Wonju-si',
+    '강릉시': 'Gangneung-si',
+    '동해시': 'Donghae-si',
+    '태백시': 'Taebaek-si',
+    '속초시': 'Sokcho-si',
+    '삼척시': 'Samcheok-si',
+    '홍천군': 'Hongcheon-gun',
+    '횡성군': 'Hoengseong-gun',
+    '영월군': 'Yeongwol-gun',
+    '평창군': 'Pyeongchang-gun',
+    '정선군': 'Jeongseon-gun',
+    '철원군': 'Cheorwon-gun',
+    '화천군': 'Hwacheon-gun',
+    '양구군': 'Yanggu-gun',
+    '인제군': 'Inje-gun',
+    '고성군': 'Goseong-gun',
+    '양양군': 'Yangyang-gun',
+    // 충청북도
+    '청주시': 'Cheongju-si',
+    '충주시': 'Chungju-si',
+    '제천시': 'Jecheon-si',
+    '보은군': 'Boeun-gun',
+    '옥천군': 'Okcheon-gun',
+    '영동군': 'Yeongdong-gun',
+    '증평군': 'Jeungpyeong-gun',
+    '진천군': 'Jincheon-gun',
+    '괴산군': 'Goesan-gun',
+    '음성군': 'Eumseong-gun',
+    '단양군': 'Danyang-gun',
+    // 충청남도
+    '천안시': 'Cheonan-si',
+    '공주시': 'Gongju-si',
+    '보령시': 'Boryeong-si',
+    '아산시': 'Asan-si',
+    '서산시': 'Seosan-si',
+    '논산시': 'Nonsan-si',
+    '계룡시': 'Gyeryong-si',
+    '당진시': 'Dangjin-si',
+    '금산군': 'Geumsan-gun',
+    '부여군': 'Buyeo-gun',
+    '서천군': 'Seocheon-gun',
+    '청양군': 'Cheongyang-gun',
+    '홍성군': 'Hongseong-gun',
+    '예산군': 'Yesan-gun',
+    '태안군': 'Taean-gun',
+    // 전북특별자치도
+    '전주시': 'Jeonju-si',
+    '군산시': 'Gunsan-si',
+    '익산시': 'Iksan-si',
+    '정읍시': 'Jeongeup-si',
+    '남원시': 'Namwon-si',
+    '김제시': 'Gimje-si',
+    '완주군': 'Wanju-gun',
+    '진안군': 'Jinan-gun',
+    '무주군': 'Muju-gun',
+    '장수군': 'Jangsu-gun',
+    '임실군': 'Imsil-gun',
+    '순창군': 'Sunchang-gun',
+    '고창군': 'Gochang-gun',
+    '부안군': 'Buan-gun',
+    // 전라남도
+    '목포시': 'Mokpo-si',
+    '여수시': 'Yeosu-si',
+    '순천시': 'Suncheon-si',
+    '나주시': 'Naju-si',
+    '광양시': 'Gwangyang-si',
+    '담양군': 'Damyang-gun',
+    '곡성군': 'Gokseong-gun',
+    '구례군': 'Gurye-gun',
+    '고흥군': 'Goheung-gun',
+    '보성군': 'Boseong-gun',
+    '화순군': 'Hwasun-gun',
+    '장흥군': 'Jangheung-gun',
+    '강진군': 'Gangjin-gun',
+    '해남군': 'Haenam-gun',
+    '영암군': 'Yeongam-gun',
+    '무안군': 'Muan-gun',
+    '함평군': 'Hampyeong-gun',
+    '영광군': 'Yeonggwang-gun',
+    '장성군': 'Jangseong-gun',
+    '완도군': 'Wando-gun',
+    '진도군': 'Jindo-gun',
+    '신안군': 'Sinan-gun',
+    // 경상북도
+    '포항시': 'Pohang-si',
+    '경주시': 'Gyeongju-si',
+    '김천시': 'Gimcheon-si',
+    '안동시': 'Andong-si',
+    '구미시': 'Gumi-si',
+    '영주시': 'Yeongju-si',
+    '영천시': 'Yeongcheon-si',
+    '상주시': 'Sangju-si',
+    '문경시': 'Mungyeong-si',
+    '경산시': 'Gyeongsan-si',
+    '의성군': 'Uiseong-gun',
+    '청송군': 'Cheongsong-gun',
+    '영양군': 'Yeongyang-gun',
+    '영덕군': 'Yeongdeok-gun',
+    '청도군': 'Cheongdo-gun',
+    '고령군': 'Goryeong-gun',
+    '성주군': 'Seongju-gun',
+    '칠곡군': 'Chilgok-gun',
+    '예천군': 'Yecheon-gun',
+    '봉화군': 'Bonghwa-gun',
+    '울진군': 'Uljin-gun',
+    '울릉군': 'Ulleung-gun',
+    // 경상남도
+    '창원시': 'Changwon-si',
+    '진주시': 'Jinju-si',
+    '통영시': 'Tongyeong-si',
+    '사천시': 'Sacheon-si',
+    '김해시': 'Gimhae-si',
+    '밀양시': 'Miryang-si',
+    '거제시': 'Geoje-si',
+    '양산시': 'Yangsan-si',
+    '의령군': 'Uiryeong-gun',
+    '함안군': 'Haman-gun',
+    '창녕군': 'Changnyeong-gun',
+    '남해군': 'Namhae-gun',
+    '하동군': 'Hadong-gun',
+    '산청군': 'Sancheong-gun',
+    '함양군': 'Hamyang-gun',
+    '거창군': 'Geochang-gun',
+    '합천군': 'Hapcheon-gun'
+};
+
+// 동(읍·면·동) 영문 매핑 — 강남구 동 우선 (다른 구의 동은 데이터 추가 시 같은 패턴으로 매핑 가능)
+const DONG_EN = {
+    // 강남구
+    '신사동': 'Sinsa-dong',
+    '논현1동': 'Nonhyeon 1-dong',
+    '논현2동': 'Nonhyeon 2-dong',
+    '압구정동': 'Apgujeong-dong',
+    '청담동': 'Cheongdam-dong',
+    '삼성1동': 'Samseong 1-dong',
+    '삼성2동': 'Samseong 2-dong',
+    '대치1동': 'Daechi 1-dong',
+    '대치2동': 'Daechi 2-dong',
+    '대치4동': 'Daechi 4-dong',
+    '역삼1동': 'Yeoksam 1-dong',
+    '역삼2동': 'Yeoksam 2-dong',
+    '도곡1동': 'Dogok 1-dong',
+    '도곡2동': 'Dogok 2-dong',
+    '개포1동': 'Gaepo 1-dong',
+    '개포2동': 'Gaepo 2-dong',
+    '개포4동': 'Gaepo 4-dong',
+    '세곡동': 'Segok-dong',
+    '일원본동': 'Ilwon Bon-dong',
+    '일원1동': 'Ilwon 1-dong',
+    '일원2동': 'Ilwon 2-dong',
+    '수서동': 'Suseo-dong',
+    // 강동구
+    '강일동': 'Gangil-dong',
+    '상일1동': 'Sangil 1-dong',
+    '상일2동': 'Sangil 2-dong',
+    '명일1동': 'Myeongil 1-dong',
+    '명일2동': 'Myeongil 2-dong',
+    '고덕1동': 'Godeok 1-dong',
+    '고덕2동': 'Godeok 2-dong',
+    '암사1동': 'Amsa 1-dong',
+    '암사2동': 'Amsa 2-dong',
+    '암사3동': 'Amsa 3-dong',
+    '천호1동': 'Cheonho 1-dong',
+    '천호2동': 'Cheonho 2-dong',
+    '천호3동': 'Cheonho 3-dong',
+    '성내1동': 'Seongnae 1-dong',
+    '성내2동': 'Seongnae 2-dong',
+    '성내3동': 'Seongnae 3-dong',
+    '길동': 'Gil-dong',
+    '둔촌1동': 'Dunchon 1-dong',
+    '둔촌2동': 'Dunchon 2-dong',
+    // 폴백 자동 생성 동 (1동~5동)
+    '1동': '1-dong',
+    '2동': '2-dong',
+    '3동': '3-dong',
+    '4동': '4-dong',
+    '5동': '5-dong'
+};
+
+// 직위 한→영 변환 (동적 라벨 — "강남구청장" → "Gangnam District Head" 등)
+function localizeSido(sido) {
+    if (!sido) return '';
+    if (currentLang !== 'en') return sido;
+    return SIDO_EN[sido] || sido;
+}
+function localizeParty(party) {
+    if (!party) return '';
+    if (currentLang !== 'en') return party;
+    return PARTY_EN[party] || party;
+}
+function localizeSigungu(name) {
+    if (!name) return '';
+    if (currentLang !== 'en') return name;
+    return SIGUNGU_EN[name] || name;
+}
+function localizeDong(name) {
+    if (!name) return '';
+    if (currentLang !== 'en') return name;
+    return DONG_EN[name] || name;
+}
 
 function t(key) {
     return translations[currentLang]?.[key] || translations.ko[key] || key;
@@ -5612,19 +6379,49 @@ function t(key) {
 
 function toggleLang() {
     currentLang = currentLang === 'ko' ? 'en' : 'ko';
-    localStorage.setItem('lang', currentLang);
+    localStorage.setItem('lang_dev', currentLang);
     applyLang();
+}
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang_dev', currentLang);
+    applyLang();
+    // 동적 UI 재렌더 (현재 페이지에 따라)
+    try {
+        if (document.getElementById('candidate-list')?.children.length) renderCandidates();
+        if (document.getElementById('council-list')?.children.length) renderCouncilList();
+        if (document.getElementById('education-list')?.children.length) renderEducationList();
+    } catch (e) {}
+}
+// 정당 번역 (partyKey 기반)
+function tParty(partyKey, fallback) {
+    const map = { democratic:'democratic', peoples:'peoples', independent:'independent', justice:'justiceParty' };
+    return map[partyKey] ? t(map[partyKey]) : (fallback || partyKey);
+}
+// 후보자 타입 번역 (광역의원/기초의원/교육감)
+function tCouncilType(type) {
+    if (type === '광역의원') return t('provinceCouncil');
+    if (type === '기초의원') return t('cityCouncil');
+    return type || t('cityCouncil');
 }
 
 function applyLang() {
+    const koBtn = document.getElementById('lang-btn-ko');
+    const enBtn = document.getElementById('lang-btn-en');
+    const activeCls = 'px-3 rounded-md transition-all text-primary bg-white dark:bg-slate-700 shadow-sm';
+    const inactiveCls = 'px-3 rounded-md transition-all text-slate-400';
+    if (koBtn && enBtn) {
+        koBtn.className = currentLang === 'ko' ? activeCls : inactiveCls;
+        enBtn.className = currentLang === 'en' ? activeCls : inactiveCls;
+    }
+    // 구버전 lang-toggle 호환
     const toggle = document.getElementById('lang-toggle');
-    const koLabel = document.getElementById('lang-label-ko');
-    const enLabel = document.getElementById('lang-label-en');
-
     if (toggle) {
         if (currentLang === 'en') toggle.classList.add('lang-en');
         else toggle.classList.remove('lang-en');
     }
+    const koLabel = document.getElementById('lang-label-ko');
+    const enLabel = document.getElementById('lang-label-en');
     if (koLabel) koLabel.className = currentLang === 'en' ? 'text-slate-400' : 'text-primary font-bold';
     if (enLabel) enLabel.className = currentLang === 'en' ? 'text-primary font-bold' : 'text-slate-400';
 
@@ -5639,11 +6436,24 @@ function applyLang() {
     const navKeys = ['home', 'candidates', 'follow', 'my'];
     navLabels.forEach((el, i) => { if (navKeys[i]) el.textContent = t(navKeys[i]); });
 
-    // 선거종류 페이지
+    // 선거종류 페이지 + 일반 텍스트
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        el.textContent = t(key);
+        const value = t(key);
+        // HTML 태그 포함 시 innerHTML, 아니면 textContent (XSS 안전: 자체 번역 데이터)
+        if (/<\w+/.test(value)) el.innerHTML = value;
+        else el.textContent = value;
     });
+    // placeholder 속성 번역
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        el.placeholder = t(key);
+    });
+    // 검색/채팅 placeholder
+    const councilSearch = document.getElementById('council-search');
+    if (councilSearch) councilSearch.placeholder = t('searchHint');
+    const chatInput = document.getElementById('chat-input');
+    if (chatInput) chatInput.placeholder = t('inputPlaceholder');
 
     // 채팅 모드 탭
     const tabText = document.getElementById('tab-text');
@@ -5654,6 +6464,51 @@ function applyLang() {
     // 신고 모달 (5-F 보강 이후 구조가 복잡해져 h2만 i18n)
     const reportTitleEl = document.querySelector('#report-modal h2');
     if (reportTitleEl) reportTitleEl.textContent = t('reportTitle');
+
+    // 동적 렌더 영역 재실행 — 거주지 드롭다운, 후보자 카드, 헤더 sub
+    try { initRegionDropdowns(); } catch (e) { console.warn('[applyLang] initRegionDropdowns', e); }
+    try { renderCandidates(); } catch (e) { console.warn('[applyLang] renderCandidates', e); }
+    try { if (typeof updateCandidatesHeaderSub === 'function') updateCandidatesHeaderSub(); } catch (e) {}
+    try {
+        // council/education 페이지가 활성 상태이면 재렌더
+        const councilPage = document.getElementById('page-council');
+        const eduPage = document.getElementById('page-education');
+        if (councilPage && councilPage.classList.contains('active')) {
+            if (typeof renderCouncilList === 'function') renderCouncilList();
+        }
+        if (eduPage && eduPage.classList.contains('active')) {
+            if (typeof renderEducationList === 'function') renderEducationList();
+        }
+    } catch (e) { console.warn('[applyLang] council/edu rerender', e); }
+    // 후보자 페이지 헤더 타이틀 (currentElectionCategory 기준)
+    try {
+        const titleEl = document.getElementById('candidates-header-title');
+        if (titleEl && typeof currentElectionCategory !== 'undefined') {
+            const cfg = getElectionCategoryConfig()[currentElectionCategory];
+            if (cfg && cfg.title) titleEl.textContent = cfg.title;
+        }
+    } catch (e) {}
+    // 세그먼트 컨트롤 라벨 재생성
+    try {
+        const segWrap = document.getElementById('segment-control-wrap');
+        if (segWrap && typeof currentElectionCategory !== 'undefined') {
+            const cfg = getElectionCategoryConfig()[currentElectionCategory];
+            if (cfg) {
+                let segments = cfg.segments;
+                if (currentElectionCategory === 'local') {
+                    const dyn = (typeof getMyElectionTabs === 'function') ? getMyElectionTabs() : null;
+                    if (dyn) segments = dyn;
+                }
+                const segControl = segWrap.querySelector('.segmented-control');
+                if (segControl && segments && segments.length > 1) {
+                    const buttons = segControl.querySelectorAll('.segmented-item');
+                    buttons.forEach((btn, idx) => {
+                        if (segments[idx]) btn.textContent = segments[idx].label;
+                    });
+                }
+            }
+        }
+    } catch (e) {}
 }
 
 // ============ CHAT MORE MENU ============

@@ -39,13 +39,18 @@ TYPE_KEY = {
     9: "superintendent",  # 교육감 (5/13 이후)
 }
 
-# V3의 colorClasses 가 blue/red/gray 3가지만 인식하므로 그에 맞춰 단순화.
+# 정당별 partyKey + V3 colorClasses 키 매핑.
 PARTY_KEY = {
-    "더불어민주당": ("democratic",  "blue"),
-    "국민의힘":     ("peoples",     "red"),
-    "무소속":       ("independent", "gray"),
+    "더불어민주당":   ("democratic",  "blue"),    # 파랑
+    "국민의힘":       ("peoples",     "red"),     # 빨강
+    "정의당":         ("justice",     "yellow"),  # 노랑
+    "녹색당":         ("green",       "green"),   # 초록
+    "진보당":         ("progress",    "purple"),  # 보라
+    "기본소득당":     ("basic",       "teal"),    # 민트
+    "시대전환":       ("new_era",     "orange"),  # 주황
+    "무소속":         ("independent", "gray"),    # 회색
 }
-DEFAULT_PARTY = ("other", "gray")  # 위에 없는 모든 정당
+DEFAULT_PARTY = ("other", "gray")  # 위에 없는 정당 (개혁신당·조국혁신당·국민연합 등)
 
 
 def fetch(code: int, sd: str, key: str):
