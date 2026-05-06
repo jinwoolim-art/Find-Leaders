@@ -2549,29 +2549,38 @@ function openElectionCategory(category) {
     }
 
     const config = electionCategoryConfig[category];
+    if (!config) return;
 
-    // 헤더 업데이트
-    document.getElementById('candidates-header-title').textContent = config.title;
-    document.getElementById('candidates-header-icon').textContent = config.icon;
-    const sub = document.getElementById('candidates-header-sub');
-    const regionTxt = getRegionText();
-    sub.textContent = (regionTxt || '거주 지역 미선택') + ' 관할';
+    // 헤더 업데이트 (null guard)
+    const titleEl = document.getElementById('candidates-header-title');
+    const iconEl = document.getElementById('candidates-header-icon');
+    const subEl = document.getElementById('candidates-header-sub');
+    if (titleEl) titleEl.textContent = config.title;
+    if (iconEl) iconEl.textContent = config.icon;
+    if (subEl) {
+        const regionTxt = getRegionText();
+        subEl.textContent = (regionTxt || '거주 지역 미선택') + ' 관할';
+    }
 
     // 세그먼트 동적 생성
     const segWrap = document.getElementById('segment-control-wrap');
-    if (config.segments.length === 1) {
-        segWrap.classList.add('hidden');
-    } else {
-        segWrap.classList.remove('hidden');
-        const segControl = segWrap.querySelector('.segmented-control');
-        segControl.innerHTML = '';
-        config.segments.forEach((seg, idx) => {
-            const btn = document.createElement('button');
-            btn.className = 'segmented-item' + (idx === 0 ? ' active' : '');
-            btn.textContent = seg.label;
-            btn.onclick = function() { switchSegment(this, seg.key); };
-            segControl.appendChild(btn);
-        });
+    if (segWrap) {
+        if (config.segments.length === 1) {
+            segWrap.classList.add('hidden');
+        } else {
+            segWrap.classList.remove('hidden');
+            const segControl = segWrap.querySelector('.segmented-control');
+            if (segControl) {
+                segControl.innerHTML = '';
+                config.segments.forEach((seg, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'segmented-item' + (idx === 0 ? ' active' : '');
+                    btn.textContent = seg.label;
+                    btn.onclick = function() { switchSegment(this, seg.key); };
+                    segControl.appendChild(btn);
+                });
+            }
+        }
     }
 
     // 초기화 및 렌더링
