@@ -1194,7 +1194,7 @@
         <div class="chip"><span class="ms" style="color:#3b82f6">forum</span> 시민 대화 로그 분석</div>
         <div class="chip"><span class="ms" style="color:#ef4444">thumb_up</span> 공감·응원 반응 추적</div>
         <div class="chip"><span class="ms" style="color:#f59e0b">priority_high</span> 우려 사항 → 공약 보완</div>
-        <div class="chip"><span class="ms" style="color:#10b981">analytics</span> 정책별 반응 분석</div>
+        <div class="chip"><span class="ms" style="color:#10b981">analytics</span> 이슈 비교 분석</div>
       </div>
       <div class="dashboard-chips" style="margin-top:18px">
         <span>후보자 프로필 페이지</span>
@@ -1341,7 +1341,7 @@
             <p style="text-align:right;font-size:11px;color:var(--ink-3);margin-top:10px">※ 본 통계는 후보자 내부용 자료입니다</p>
           </div>
 
-          <!-- 4. 운영 현황 요약 -->
+          <!-- 4. 운영 현황 요약 + 비교 분석 -->
           <div class="dash-slide">
             <div class="insight-head">
               <div class="insight-num" style="background:#10b981">3</div>
@@ -1353,6 +1353,22 @@
               <div class="ops-card"><span class="ms" style="color:#10b981;font-size:24px">thumb_up</span><div class="ops-val" style="color:#10b981">87<small>%</small></div><div class="ops-lbl">답변 만족도</div></div>
             </div>
             <a style="font-size:12px;color:var(--purple);font-weight:700;margin-top:8px;display:inline-block">→ 운영현황에서 상세 보기</a>
+            <div class="compare-card">
+              <div class="compare-head"><span class="compare-num">4</span><span class="compare-title">비교 분석</span><span class="insight-badge purple">참고용</span></div>
+              <div style="background:#faf5ff;border:1px solid var(--purple-100);color:var(--purple);font-size:11px;font-weight:700;padding:8px 12px;border-radius:8px;margin-bottom:10px;display:flex;align-items:center;gap:6px">
+                📌 후보자 본인 데이터 + 익명 표본 평균 비교 (개별 후보 식별 불가)
+              </div>
+              <table class="compare-table">
+                <thead><tr><th>항목</th><th class="our">후보자</th></tr></thead>
+                <tbody>
+                  <tr><td>시민 질문 수</td><td class="our"><b>492건</b></td></tr>
+                  <tr><td>공감 반응</td><td class="our"><b>887건</b></td></tr>
+                  <tr><td>답변 만족도</td><td class="our"><b style="color:#10b981">87%</b></td></tr>
+                  <tr><td>주요 이슈</td><td class="our"><span class="kw-chip" style="font-size:10px">청년 주거</span></td></tr>
+                  <tr><td>우려 비율</td><td class="our"><b style="color:#10b981">2.4%</b></td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <!-- 5. 답변 만족도 + 길이별 -->
@@ -1976,7 +1992,7 @@ setInterval(() => {
 }, 2500);
 
 /* ───── 5. Dashboard slider (자동 순환 + 좌우 화살표 수동 조작) ───── */
-const dashSlideLabels = ['사용 현황', '시민 인사이트', '정책 반응 분석', '운영 현황 요약', '답변 만족도 분석'];
+const dashSlideLabels = ['사용 현황', '시민 인사이트', '정책 반응 분석', '운영 현황 + 비교 분석', '답변 만족도 분석'];
 const dashSlider = document.getElementById('dashSlider');
 const dashDots = document.getElementById('dashDots');
 const dashSlideLabel = document.getElementById('dashSlideLabel');

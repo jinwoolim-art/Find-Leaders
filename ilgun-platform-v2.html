@@ -6088,30 +6088,32 @@ window.addEventListener('message', function (e) {
 
 // ============ D-Day 카운트다운 (제9회 전국동시지방선거: 2026-06-03 06:00) ============
 (function () {
-    var ELECTION_AT = new Date('2026-06-03T06:00:00+09:00').getTime();
-    function pad(n) { return String(n).padStart(2, '0'); }
+    var ELECTION_AT = new Date(2026, 5, 3, 6, 0, 0).getTime(); // 월은 0-based: 5=6월
+    function pad(n) { return ('0' + n).slice(-2); }
     function tick() {
-        var diff = ELECTION_AT - Date.now();
-        var d = document.getElementById('dday-days');
-        var h = document.getElementById('dday-hours');
-        var m = document.getElementById('dday-minutes');
-        var s = document.getElementById('dday-seconds');
-        if (!d) return;
-        if (diff <= 0) {
-            d.textContent = 'DAY';
-            if (h) h.textContent = '00';
-            if (m) m.textContent = '00';
-            if (s) s.textContent = '00';
-            return;
-        }
-        d.textContent = Math.floor(diff / 86400000);
-        if (h) h.textContent = pad(Math.floor((diff % 86400000) / 3600000));
-        if (m) m.textContent = pad(Math.floor((diff % 3600000) / 60000));
-        if (s) s.textContent = pad(Math.floor((diff % 60000) / 1000));
+        try {
+            var diff = ELECTION_AT - Date.now();
+            var d = document.getElementById('dday-days');
+            if (!d) return;
+            var h = document.getElementById('dday-hours');
+            var m = document.getElementById('dday-minutes');
+            var s = document.getElementById('dday-seconds');
+            if (diff <= 0) {
+                d.textContent = 'DAY';
+                if (h) h.textContent = '00';
+                if (m) m.textContent = '00';
+                if (s) s.textContent = '00';
+                return;
+            }
+            d.textContent = Math.floor(diff / 86400000);
+            if (h) h.textContent = pad(Math.floor((diff % 86400000) / 3600000));
+            if (m) m.textContent = pad(Math.floor((diff % 3600000) / 60000));
+            if (s) s.textContent = pad(Math.floor((diff % 60000) / 1000));
+        } catch (e) { console.error('[dday]', e); }
     }
-    function start() { tick(); setInterval(tick, 1000); }
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
-    else start();
+    tick();
+    setInterval(tick, 1000);
+    console.log('[dday] started, ELECTION_AT=', new Date(ELECTION_AT).toString());
 })();
 </script>
 </body>
