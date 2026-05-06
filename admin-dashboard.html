@@ -219,7 +219,7 @@
       <div class="funnel-item" style="background:#fef2f2;border-color:#fecaca"><p class="fn" style="color:#dc2626">5</p><p class="fl">만료</p></div>
     </div>
     <div class="fr">
-      <select class="sel" id="inq-f-scope" onchange="applyInqFilter()"><option value="">후보등록범위 전체</option><option>광역시장</option><option>도지사</option><option>구청장</option><option>시장</option><option>군수</option><option>광역시의원</option><option>도의원</option><option>구의원</option><option>시의원</option><option>군의원</option><option>교육감</option></select>
+      <select class="sel" id="inq-f-scope" onchange="applyInqFilter()"><option value="">후보구분 전체</option><option>광역시장</option><option>도지사</option><option>구청장</option><option>시장</option><option>군수</option><option>광역시의원</option><option>도의원</option><option>구의원</option><option>시의원</option><option>군의원</option><option>교육감</option></select>
       <select class="sel" id="inq-f-send" onchange="applyInqFilter()"><option value="">안내발송 전체</option><option value="Y">📩 발송됨</option><option value="미발송">미발송</option><option value="실패">❌ 실패</option></select>
       <select class="sel" id="inq-f-sub" onchange="applyInqFilter()"><option value="">신청여부 전체</option><option value="Y">✅ 신청</option><option value="미신청">⏳ 대기</option></select>
       <select class="sel" id="inq-f-status" onchange="applyInqFilter()"><option value="">상태 전체</option><option>신규</option><option>만료</option></select>
@@ -231,7 +231,7 @@
     </div>
     <div class="card" style="overflow:hidden">
       <table class="tbl">
-        <thead><tr><th><input type="checkbox" class="chk" onclick="togAll(this,'inq')"/></th><th>접수일</th><th>이름</th><th>이메일</th><th>후보등록범위</th><th>안내발송</th><th>신청여부</th><th>상태</th><th>메모</th><th>액션</th></tr></thead>
+        <thead><tr><th><input type="checkbox" class="chk" onclick="togAll(this,'inq')"/></th><th>접수일</th><th>후보자명</th><th>이메일</th><th>후보구분</th><th>안내발송</th><th>신청여부</th><th>상태</th><th>메모</th><th>액션</th></tr></thead>
         <tbody id="inq-tbody"><tr><td colspan="10" style="text-align:center;padding:40px;color:#9ca3af">로그인 후 데이터를 불러옵니다</td></tr></tbody>
       </table>
     </div>
@@ -254,7 +254,7 @@
       <div class="sc" style="border-color:#bbf7d0"><p id="app-stat-done" style="font-size:24px;font-weight:900;color:#15803d">0</p><p style="font-size:11px;color:#15803d;font-weight:600">발급 완료</p></div>
     </div>
     <div class="fr">
-      <select class="sel" id="app-f-pos" onchange="applyAppFilter()"><option value="">직급 전체</option><option>광역시장</option><option>도지사</option><option>구청장</option><option>시장</option><option>군수</option><option>광역시의원</option><option>도의원</option><option>구의원</option><option>시의원</option><option>군의원</option><option>교육감</option><option>기초의원</option></select>
+      <select class="sel" id="app-f-pos" onchange="applyAppFilter()"><option value="">후보구분 전체</option><option>광역시장</option><option>도지사</option><option>구청장</option><option>시장</option><option>군수</option><option>광역시의원</option><option>도의원</option><option>구의원</option><option>시의원</option><option>군의원</option><option>교육감</option><option>기초의원</option></select>
       <select class="sel" id="app-f-cert" onchange="applyAppFilter()"><option value="">증명서 전체</option><option value="Y">📎 있음</option><option value="N">❌ 없음</option></select>
       <select class="sel" id="app-f-status" onchange="applyAppFilter()"><option value="">상태 전체</option><option>신규</option><option>증명서요청</option><option>승인대기</option><option>발급완료</option></select>
       <input type="text" class="inp" id="app-f-search" placeholder="검색..." style="width:160px;padding:6px 10px;font-size:11px" oninput="applyAppFilter()"/>
@@ -263,7 +263,7 @@
     </div>
     <div class="card" style="overflow:hidden">
       <table class="tbl">
-        <thead><tr><th><input type="checkbox" class="chk" onclick="togAll(this,'app')"/></th><th>접수일</th><th>이름</th><th>직급</th><th>이메일</th><th>증명서</th><th>상태</th><th>액션</th></tr></thead>
+        <thead><tr><th><input type="checkbox" class="chk" onclick="togAll(this,'app')"/></th><th>접수일</th><th>후보자명</th><th>후보구분</th><th>이메일</th><th>증명서</th><th>상태</th><th>액션</th></tr></thead>
         <tbody id="app-tbody"><tr><td colspan="8" style="text-align:center;padding:40px;color:#9ca3af">로그인 후 데이터를 불러옵니다</td></tr></tbody>
       </table>
     </div>
@@ -307,7 +307,7 @@
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
         <div>
-          <label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">직급</label>
+          <label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">후보구분</label>
           <select id="gen-pos" class="inp" style="font-size:13px"><option>기초의원</option><option>광역의원</option><option>기초단체장</option><option>광역단체장</option><option>교육감</option></select>
         </div>
         <div>
@@ -359,7 +359,7 @@
         </div>
       </div>
       <table class="tbl">
-        <thead><tr><th>발급일</th><th>후보자</th><th>직급</th><th>ID</th><th>PW</th><th>플랫폼 전달</th><th>활성화</th><th>후보자 발송</th></tr></thead>
+        <thead><tr><th>발급일</th><th>후보자</th><th>후보구분</th><th>ID</th><th>PW</th><th>플랫폼 전달</th><th>활성화</th><th>후보자 발송</th></tr></thead>
         <tbody id="acct-tbody">
           <tr><td colspan="8" style="text-align:center;padding:40px;color:#9ca3af">생성된 계정이 없습니다</td></tr>
         </tbody>
@@ -663,8 +663,8 @@ function openElectionLookup(){
         +'</select></div>'
       +'<div><label style="font-size:11px;font-weight:800;color:#475569;display:block;margin-bottom:4px">시·도명 (sdName) — 정식 명칭</label>'
         +'<input id="el-sdname" type="text" placeholder="예) 서울특별시 / 경기도" value="서울특별시" style="width:100%;padding:8px 10px;font-size:12px;border:1px solid #e2e8f0;border-radius:6px"/></div>'
-      +'<div><label style="font-size:11px;font-weight:800;color:#475569;display:block;margin-bottom:4px">검색어 (이름·지역구, 선택)</label>'
-        +'<input id="el-keyword" type="text" placeholder="후보자명 일부 또는 지역구" style="width:100%;padding:8px 10px;font-size:12px;border:1px solid #e2e8f0;border-radius:6px"/></div>'
+      +'<div><label style="font-size:11px;font-weight:800;color:#475569;display:block;margin-bottom:4px">검색어 (이름·선거구, 선택)</label>'
+        +'<input id="el-keyword" type="text" placeholder="후보자명 일부 또는 선거구" style="width:100%;padding:8px 10px;font-size:12px;border:1px solid #e2e8f0;border-radius:6px"/></div>'
     +'</div>'
     +'<button class="btn btn-primary" style="background:#7c3aed;border-color:#7c3aed;width:100%;margin-top:6px" onclick="runElectionLookup()"><span class="ms" style="font-size:14px">search</span>조회 실행</button>'
     +'<div id="el-result" style="margin-top:14px;min-height:60px"></div>'
@@ -700,7 +700,7 @@ function runElectionLookup(){
       +'<th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">기호</th>'
       +'<th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">이름</th>'
       +'<th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">정당</th>'
-      +'<th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">지역구</th>'
+      +'<th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">선거구</th>'
       +'</tr></thead><tbody>';
     list.forEach(function(c){
       html+='<tr><td style="padding:8px;border-bottom:1px solid #f1f5f9">'+(c.num||'-')+'</td>'
@@ -1543,7 +1543,7 @@ function approveAndIssue(name,email,pos){
 
     // STEP 2: 관리자 + 후보자 이메일 병렬 발송
     var adminSubject='[일꾼을찾다] 계정 활성화 요청 - '+name;
-    var adminBody='플랫폼 관리자님,\n\n아래 후보자 계정을 활성화해주세요.\n\n━━━━━━━━━━━━━━━━━━━━\n후보자: '+name+'\n직급: '+pos+'\n이메일: '+email+'\nID: '+id+'\nPW: '+pw+'\n━━━━━━━━━━━━━━━━━━━━\n\n활성화 완료 후 회신 부탁드립니다.\n\n감사합니다.\n일꾼을찾다 팀';
+    var adminBody='플랫폼 관리자님,\n\n아래 후보자 계정을 활성화해주세요.\n\n━━━━━━━━━━━━━━━━━━━━\n후보자: '+name+'\n후보구분: '+pos+'\n이메일: '+email+'\nID: '+id+'\nPW: '+pw+'\n━━━━━━━━━━━━━━━━━━━━\n\n활성화 완료 후 회신 부탁드립니다.\n\n감사합니다.\n일꾼을찾다 팀';
     var userSubject='[일꾼을찾다] 대시보드 계정이 발급되었습니다';
     var userBody='{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n대시보드 계정이 발급되었습니다.\n\n━━━━━━━━━━━━━━━━━━━━\n🔗 대시보드: '+DASHBOARD_URL+'\n📧 ID: {{ID}}\n🔑 임시 비밀번호: {{비밀번호}}\n━━━━━━━━━━━━━━━━━━━━\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n⚠️ 관리자 활성화 후 로그인 가능합니다 (최대 1영업일 소요).\n\n감사합니다.\n일꾼을찾다 팀';
 
@@ -1913,7 +1913,7 @@ function showInboxSnippet(idx){
 
 function registerToApp(idx){
   var m=inboxData[idx];if(!m)return;
-  var pos=prompt('직급을 입력하세요 (기초의원/광역의원/기초단체장/광역단체장/교육감)','기초의원');
+  var pos=prompt('후보구분을 입력하세요 (기초의원/광역의원/기초단체장/광역단체장/교육감)','기초의원');
   if(!pos) return;
   apiSend({
     action:'registerApp',
@@ -1924,7 +1924,7 @@ function registerToApp(idx){
     hasAttachment:m.hasAttachment
   },function(res){
     if(!res.ok) return;
-    alert('✅ 신청관리(2단계)에 등록 완료\n\n후보자: '+m.fromName+'\n직급: '+pos+'\n증명서: '+(m.hasAttachment?'Y':'N'));
+    alert('✅ 신청관리(2단계)에 등록 완료\n\n후보자: '+m.fromName+'\n후보구분: '+pos+'\n증명서: '+(m.hasAttachment?'Y':'N'));
     inboxData[idx].isUnread=false;
     renderInbox();
     loadAllData();
@@ -1939,7 +1939,7 @@ function autoRegisterApps(){
     return m.category==='신청서' && m.isUnread;
   });
   if(!candidates.length){alert('미처리 신청서가 없습니다');return}
-  var defPos=prompt('모두에게 적용할 기본 직급을 입력하세요\n(등록 후 2단계 탭에서 개별 수정 가능)','기초의원');
+  var defPos=prompt('모두에게 적용할 기본 후보구분을 입력하세요\n(등록 후 2단계 탭에서 개별 수정 가능)','기초의원');
   if(!defPos) return;
   // 먼저 신청관리 시트에서 이미 등록된 이메일 조회 (중복 방지)
   apiSend({action:'readSheet',tab:'신청관리'},function(res){
@@ -1953,7 +1953,7 @@ function autoRegisterApps(){
       alert('모두 이미 등록된 이메일입니다 ('+skipped+'건 중복 스킵)');
       return;
     }
-    if(!confirm('📋 '+toRegister.length+'건 일괄 자동 등록\n\n직급: '+defPos+'\n중복 스킵: '+skipped+'건\n\n계속할까요?')) return;
+    if(!confirm('📋 '+toRegister.length+'건 일괄 자동 등록\n\n후보구분: '+defPos+'\n중복 스킵: '+skipped+'건\n\n계속할까요?')) return;
     var done=0,ok=0,fail=0;
     toRegister.forEach(function(m){
       apiSend({

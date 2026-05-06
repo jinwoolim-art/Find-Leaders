@@ -126,6 +126,99 @@
         /* Toast */
         .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #1e293b; color: white; padding: 12px 24px; border-radius: 12px; z-index: 100; transition: transform 0.3s; font-size: 14px; font-weight: 500; }
         .toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* ============ FIGMA FLAT EXPORT MODE (?mode=flat) — 본문 영향 없음, body.figma-flat 클래스 있을 때만 적용 ============ */
+        body.figma-flat { overflow: visible !important; }
+        body.figma-flat .max-w-\[480px\] { overflow: visible !important; min-height: 0 !important; }
+        body.figma-flat .page {
+            display: flex !important;
+            min-height: 0 !important;
+            height: auto !important;
+            border-bottom: 12px solid #cbd5e1 !important;
+            animation: none !important;
+            transform: none !important;
+            opacity: 1 !important;
+            position: relative !important;
+        }
+        body.figma-flat .page-section-label {
+            display: block;
+            background: #7c3aed;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            padding: 6px 14px;
+            margin: 0;
+        }
+        body.figma-flat #page-chat,
+        body.figma-flat #page-chat * { max-height: none !important; }
+        body.figma-flat #page-chat { min-height: 700px !important; }
+        body.figma-flat #chat-avatar-wrap { min-height: 320px !important; }
+        body.figma-flat #chat-messages { overflow: visible !important; max-height: none !important; }
+        body.figma-flat #main-bottom-nav,
+        body.figma-flat .compare-fab,
+        body.figma-flat .toast {
+            position: static !important;
+            transform: none !important;
+            opacity: 1 !important;
+        }
+        body.figma-flat .compare-fab.hidden { display: none !important; }
+        body.figma-flat #report-modal,
+        body.figma-flat #policy-modal,
+        body.figma-flat #candidate-policy-modal,
+        body.figma-flat #login-modal {
+            position: relative !important;
+            inset: auto !important;
+            display: block !important;
+            border-bottom: 12px solid #cbd5e1 !important;
+            background: #f1f5f9 !important;
+            z-index: auto !important;
+            padding: 16px 0 !important;
+        }
+        body.figma-flat #report-modal.hidden,
+        body.figma-flat #policy-modal.hidden,
+        body.figma-flat #candidate-policy-modal.hidden,
+        body.figma-flat #login-modal.hidden { display: block !important; }
+        body.figma-flat #report-modal > div,
+        body.figma-flat #policy-modal > div,
+        body.figma-flat #candidate-policy-modal > div,
+        body.figma-flat #login-modal > div {
+            position: relative !important;
+            transform: none !important;
+            animation: none !important;
+            inset: auto !important;
+            top: auto !important; left: auto !important; right: auto !important; bottom: auto !important;
+            width: 100% !important;
+            max-width: 480px !important;
+            margin: 0 auto !important;
+        }
+        body.figma-flat img,
+        body.figma-flat video,
+        body.figma-flat picture { visibility: hidden !important; }
+        body.figma-flat img[src*="logo"],
+        body.figma-flat img[alt*="일꾼"],
+        body.figma-flat img[alt*="logo" i] { visibility: visible !important; }
+        body.figma-flat .candidate-photo,
+        body.figma-flat #chat-avatar-wrap,
+        body.figma-flat #chat-avatar-img,
+        body.figma-flat #chat-avatar-video,
+        body.figma-flat #chat-avatar-bg {
+            background: linear-gradient(135deg, #e2e8f0, #cbd5e1) !important;
+        }
+        body.figma-flat #compare-fab,
+        body.figma-flat #compare-fab.hidden {
+            position: relative !important;
+            display: block !important;
+            transform: none !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            width: 100% !important;
+            max-width: 480px !important;
+            margin: 16px auto !important;
+            bottom: auto !important; left: auto !important;
+        }
+        /* flat 모드에서만 숨길 요소들 (정책버튼/뉴스/투표소찾기/안내박스/정당필터) — JS에서 .flat-hide 추가 */
+        body.figma-flat .flat-hide { display: none !important; }
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 transition-colors duration-300">
@@ -159,13 +252,13 @@
                         <span>일꾼보기</span>
                         <span class="material-symbols-outlined">arrow_forward</span>
                     </button>
-                    <button onclick="navigateTo('page-policy'); loadPolicies();" class="w-full bg-transparent border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold py-5 px-6 rounded-2xl flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
+                    <button onclick="navigateTo('page-policy'); loadPolicies();" class="hidden w-full bg-transparent border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold py-5 px-6 rounded-2xl flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
                         <span class="material-symbols-outlined text-primary">policy</span>
                         <span>현 시행되고 있는 정책</span>
                     </button>
                 </div>
             </div>
-            <section class="pb-10">
+            <section class="hidden pb-10">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-lg font-bold flex items-center gap-2">
                         <span class="material-symbols-outlined text-red-500">campaign</span>
@@ -174,6 +267,34 @@
                     <span onclick="navigateTo('page-news'); loadNews();" class="text-xs text-primary font-bold cursor-pointer hover:underline">더보기</span>
                 </div>
                 <div id="home-news-list" class="space-y-3">
+                </div>
+            </section>
+            <!-- D-Day 카운트다운 (제9회 전국동시지방선거 2026.06.03) -->
+            <section class="pb-10">
+                <div id="dday-card" class="rounded-3xl bg-gradient-to-br from-violet-600 via-primary to-indigo-600 text-white p-6 shadow-xl shadow-primary/20">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="material-symbols-outlined text-[18px]">how_to_vote</span>
+                        <span class="text-[12px] font-bold tracking-wide opacity-90">제9회 전국동시지방선거</span>
+                    </div>
+                    <p class="text-[11px] opacity-75 mb-4">2026년 6월 3일 (수) · 오전 6시 ~ 오후 6시</p>
+                    <div class="flex items-baseline gap-2 mb-4">
+                        <span class="text-[36px] font-black leading-none">D-</span>
+                        <span id="dday-days" class="text-[64px] font-black leading-none tracking-tight">--</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="bg-white/15 rounded-xl py-2 text-center backdrop-blur-sm">
+                            <div id="dday-hours" class="text-[20px] font-black leading-none">--</div>
+                            <div class="text-[10px] opacity-80 mt-1">시간</div>
+                        </div>
+                        <div class="bg-white/15 rounded-xl py-2 text-center backdrop-blur-sm">
+                            <div id="dday-minutes" class="text-[20px] font-black leading-none">--</div>
+                            <div class="text-[10px] opacity-80 mt-1">분</div>
+                        </div>
+                        <div class="bg-white/15 rounded-xl py-2 text-center backdrop-blur-sm">
+                            <div id="dday-seconds" class="text-[20px] font-black leading-none">--</div>
+                            <div class="text-[10px] opacity-80 mt-1">초</div>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>
@@ -5584,6 +5705,413 @@ applyLang();
         });
         observer.observe(document.body, { childList: true, subtree: true });
     } catch (e) {}
+})();
+
+// ============================================================================
+// FIGMA 라우팅 (?#figma=KEY 또는 postMessage({figma:KEY})) — 본문 영향 없음
+// ============================================================================
+window.__applyFigmaKey = function (key) {
+    if (!key) return;
+    console.log('[figma] applying:', key);
+    try {
+        var dbg = document.createElement('div');
+        dbg.textContent = '▶ ' + key;
+        dbg.style.cssText = 'position:fixed;top:8px;left:8px;background:#7c3aed;color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:6px;z-index:9999;font-family:monospace;opacity:0.85';
+        document.body.appendChild(dbg);
+    } catch (e) {}
+    try {
+        switch (key) {
+            case 'page-home':
+            case 'page-election-type':
+            case 'page-candidates':
+            case 'page-policy':
+            case 'page-news':
+            case 'page-my':
+            case 'page-policy-interests':
+            case 'page-reports':
+            case 'page-consent':
+                navigateTo(key);
+                if (key === 'page-policy' && typeof loadPolicies === 'function') loadPolicies();
+                if (key === 'page-news' && typeof loadNews === 'function') loadNews();
+                break;
+            case 'page-council':
+                navigateTo('page-council');
+                if (typeof renderCouncilList === 'function') renderCouncilList();
+                break;
+            case 'page-education':
+                navigateTo('page-education');
+                if (typeof renderEducationList === 'function') renderEducationList();
+                break;
+            case 'page-compare':
+                bookmarkedCandidates = [1, 2, 3];
+                localStorage.setItem('bookmarkedCandidates', JSON.stringify([1, 2, 3]));
+                navigateTo('page-compare');
+                if (typeof renderCompare === 'function') renderCompare();
+                break;
+            case 'detail-policy':
+                openDetail(1);
+                setTimeout(function () { switchDetailTab('policy'); }, 250);
+                break;
+            case 'detail-portfolio':
+                openDetail(1);
+                setTimeout(function () { switchDetailTab('portfolio'); }, 250);
+                break;
+            case 'chat-text':
+                openChat(1);
+                setTimeout(function () { switchChatMode('text'); }, 250);
+                break;
+            case 'chat-voice':
+                openChat(1);
+                setTimeout(function () { switchChatMode('voice'); }, 250);
+                break;
+            default:
+                console.warn('[figma] unknown key:', key);
+        }
+    } catch (e) { console.warn('[figma] err', e); }
+};
+(function () {
+    var m = (location.hash || '').match(/figma=([^&]+)/);
+    if (!m) return;
+    var key = decodeURIComponent(m[1]);
+    function fire() { setTimeout(function () { window.__applyFigmaKey(key); }, 600); }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fire);
+    else fire();
+})();
+window.addEventListener('hashchange', function () {
+    var m = (location.hash || '').match(/figma=([^&]+)/);
+    if (m) window.__applyFigmaKey(decodeURIComponent(m[1]));
+});
+window.addEventListener('message', function (e) {
+    var d = e && e.data;
+    if (!d || typeof d !== 'object' || !d.figma) return;
+    setTimeout(function () { window.__applyFigmaKey(String(d.figma)); }, 100);
+});
+
+// ============================================================================
+// FIGMA FLAT MODE (?mode=flat) — 본문 무손상, body.figma-flat 부착 + DOM 패치
+// ============================================================================
+(function () {
+    var qp = new URLSearchParams(location.search || '');
+    if (qp.get('mode') !== 'flat') return;
+    document.body.classList.add('figma-flat');
+
+    // 캡처 스크립트
+    var s = document.createElement('script');
+    s.src = 'https://mcp.figma.com/mcp/html-to-design/capture.js';
+    s.async = true;
+    document.head.appendChild(s);
+
+    // ===== 헬퍼들 =====
+    var DONGS_BY_SIGUNGU = {
+        '종로구': ['청운효자동', '사직동', '삼청동', '부암동', '평창동', '무악동', '교남동', '가회동', '종로1·2·3·4가동', '종로5·6가동', '이화동', '혜화동', '창신1동', '창신2동', '창신3동', '숭인1동', '숭인2동'],
+        '중구': ['소공동', '회현동', '명동', '필동', '장충동', '광희동', '을지로동', '신당동', '다산동', '약수동', '청구동', '신당5동', '동화동', '황학동', '중림동'],
+        '용산구': ['후암동', '용산2가동', '남영동', '청파동', '원효로1동', '원효로2동', '효창동', '용문동', '한강로동', '이촌1동', '이촌2동', '이태원1동', '이태원2동', '한남동', '서빙고동', '보광동'],
+        '강남구': ['신사동', '논현1동', '논현2동', '압구정동', '청담동', '삼성1동', '삼성2동', '대치1동', '대치2동', '대치4동', '역삼1동', '역삼2동', '도곡1동', '도곡2동', '개포1동', '개포2동', '개포4동', '세곡동', '일원본동', '일원1동', '일원2동', '수서동'],
+        '서초구': ['잠원동', '반포본동', '반포1동', '반포2동', '반포3동', '반포4동', '방배본동', '방배1동', '방배2동', '방배3동', '방배4동', '서초1동', '서초2동', '서초3동', '서초4동', '양재1동', '양재2동', '내곡동'],
+        '송파구': ['풍납1동', '풍납2동', '거여1동', '거여2동', '마천1동', '마천2동', '방이1동', '방이2동', '오륜동', '오금동', '송파1동', '송파2동', '석촌동', '삼전동', '가락본동', '가락1동', '가락2동', '문정1동', '문정2동', '장지동', '위례동', '잠실본동', '잠실2동', '잠실3동', '잠실4동', '잠실6동', '잠실7동']
+    };
+
+    function injectDdayCard() {
+        var home = document.getElementById('page-home');
+        if (!home || document.getElementById('dday-card')) return;
+        var main = home.querySelector('main');
+        if (!main) return;
+        var sec = document.createElement('section');
+        sec.className = 'pb-10 px-6';
+        sec.innerHTML = '' +
+            '<div id="dday-card" class="rounded-3xl bg-gradient-to-br from-violet-600 via-primary to-indigo-600 text-white p-6 shadow-xl shadow-primary/20">' +
+                '<div class="flex items-center gap-2 mb-1">' +
+                    '<span class="material-symbols-outlined text-[18px]">how_to_vote</span>' +
+                    '<span class="text-[12px] font-bold tracking-wide opacity-90">제9회 전국동시지방선거</span>' +
+                '</div>' +
+                '<p class="text-[11px] opacity-75 mb-4">2026년 6월 3일 (수) · 오전 6시 ~ 오후 6시</p>' +
+                '<div class="flex items-baseline gap-2 mb-4">' +
+                    '<span class="text-[36px] font-black leading-none">D-</span>' +
+                    '<span id="dday-days" class="text-[64px] font-black leading-none tracking-tight">--</span>' +
+                '</div>' +
+                '<div class="grid grid-cols-3 gap-2">' +
+                    '<div class="bg-white/15 rounded-xl py-2 text-center backdrop-blur-sm"><div id="dday-hours" class="text-[20px] font-black leading-none">--</div><div class="text-[10px] opacity-80 mt-1">시간</div></div>' +
+                    '<div class="bg-white/15 rounded-xl py-2 text-center backdrop-blur-sm"><div id="dday-minutes" class="text-[20px] font-black leading-none">--</div><div class="text-[10px] opacity-80 mt-1">분</div></div>' +
+                    '<div class="bg-white/15 rounded-xl py-2 text-center backdrop-blur-sm"><div id="dday-seconds" class="text-[20px] font-black leading-none">--</div><div class="text-[10px] opacity-80 mt-1">초</div></div>' +
+                '</div>' +
+            '</div>';
+        main.appendChild(sec);
+        var ELECTION_AT = new Date('2026-06-03T06:00:00+09:00').getTime();
+        function pad(n) { return String(n).padStart(2, '0'); }
+        function tick() {
+            var diff = ELECTION_AT - Date.now();
+            var d = document.getElementById('dday-days');
+            if (!d) return;
+            if (diff <= 0) { d.textContent = 'DAY'; return; }
+            d.textContent = Math.floor(diff / 86400000);
+            var h = document.getElementById('dday-hours');
+            var m = document.getElementById('dday-minutes');
+            var s = document.getElementById('dday-seconds');
+            if (h) h.textContent = pad(Math.floor((diff % 86400000) / 3600000));
+            if (m) m.textContent = pad(Math.floor((diff % 3600000) / 60000));
+            if (s) s.textContent = pad(Math.floor((diff % 60000) / 1000));
+        }
+        tick();
+        setInterval(tick, 1000);
+    }
+
+    function hideHomeExtras() {
+        var home = document.getElementById('page-home');
+        if (!home) return;
+        // 정책 버튼
+        home.querySelectorAll('button[onclick*="page-policy"]').forEach(function (b) { b.classList.add('flat-hide'); });
+        // 뉴스 섹션
+        var newsList = home.querySelector('#home-news-list');
+        if (newsList) {
+            var sec = newsList.closest('section');
+            if (sec) sec.classList.add('flat-hide');
+        }
+    }
+
+    function injectDongDropdown() {
+        if (document.getElementById('region-dong')) return;
+        var sigunguSel = document.getElementById('region-sigungu');
+        if (!sigunguSel) return;
+        var grid = sigunguSel.parentElement;
+        if (!grid) return;
+        var dongSel = document.createElement('select');
+        dongSel.id = 'region-dong';
+        dongSel.className = 'w-full px-3 py-2.5 text-sm rounded-lg border border-[#e7ebf3] dark:border-gray-700 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:outline-none focus:border-primary disabled:opacity-50 mt-2';
+        dongSel.style.gridColumn = '1 / -1';
+        dongSel.innerHTML = '<option value="">읍·면·동 선택</option>';
+        dongSel.disabled = true;
+        grid.appendChild(dongSel);
+        function populateDong(sigungu) {
+            dongSel.innerHTML = '<option value="">읍·면·동 선택</option>';
+            if (!sigungu) { dongSel.disabled = true; return; }
+            var list = DONGS_BY_SIGUNGU[sigungu] || ['1동', '2동', '3동', '4동', '5동'];
+            dongSel.disabled = false;
+            list.forEach(function (d) {
+                var opt = document.createElement('option');
+                opt.value = d; opt.textContent = d;
+                dongSel.appendChild(opt);
+            });
+        }
+        // 시·군·구 변경시 동 갱신 (기존 onSigunguChange 후에 실행)
+        var prevHandler = sigunguSel.onchange;
+        sigunguSel.onchange = function () {
+            if (prevHandler) prevHandler.call(this);
+            populateDong(sigunguSel.value);
+        };
+        // 시·도 변경시 동 리셋
+        var sidoSel = document.getElementById('region-sido');
+        if (sidoSel) {
+            var prevSido = sidoSel.onchange;
+            sidoSel.onchange = function () {
+                if (prevSido) prevSido.call(this);
+                populateDong('');
+            };
+        }
+        // 초기 채우기
+        populateDong(sigunguSel.value);
+        return populateDong;
+    }
+
+    function hideElectionTypeExtras() {
+        var et = document.getElementById('page-election-type');
+        if (!et) return;
+        // 투표소 찾기
+        et.querySelectorAll('button[onclick*="openPollingStation"]').forEach(function (b) {
+            var p = b.parentElement;
+            if (p) p.classList.add('flat-hide');
+        });
+        // "제9회 전국동시지방선거" 안내 박스
+        et.querySelectorAll('div').forEach(function (d) {
+            var t = (d.textContent || '');
+            if (t.indexOf('제9회 전국동시지방선거') !== -1 && t.indexOf('직접 물어보세요') !== -1 && d.children.length <= 2) {
+                d.classList.add('flat-hide');
+            }
+        });
+    }
+
+    function hidePartyFilter() {
+        var cand = document.getElementById('page-candidates');
+        if (!cand) return;
+        var first = cand.querySelector('.party-filter');
+        if (first && first.parentElement) first.parentElement.classList.add('flat-hide');
+    }
+
+    function applyDynamicLocalTabs() {
+        var sido = (selectedRegion && selectedRegion.sido) || '';
+        var sigungu = (selectedRegion && selectedRegion.sigungu) || '';
+        if (!sido || !sigungu) return;
+        var sgtype = (typeof getSigunguType === 'function') ? getSigunguType(sido, sigungu) : null;
+        if (!sgtype) return;
+        var metro = /(특별시|광역시|특별자치시)$/.test(sido);
+        var topTab, bottomTab;
+        if (metro) {
+            var s1 = sido.replace(/(특별시|광역시|특별자치시)$/, '');
+            topTab = { key: 'governor', label: s1 + '시장' };
+        } else {
+            var s2 = sido.replace(/(특별자치도|도)$/, '');
+            topTab = { key: 'governor', label: s2 + '도지사' };
+        }
+        if (sgtype === '자치구') bottomTab = { key: 'district_head', label: sigungu + '청장' };
+        else if (sgtype === '자치시') bottomTab = { key: 'mayor', label: sigungu + '장' };
+        else if (sgtype === '자치군') bottomTab = { key: 'county_head', label: sigungu.replace(/군$/, '') + '군수' };
+        else return;
+        var segControl = document.querySelector('#segment-control-wrap .segmented-control');
+        if (!segControl) return;
+        segControl.innerHTML = '';
+        [topTab, bottomTab].forEach(function (seg, idx) {
+            var btn = document.createElement('button');
+            btn.className = 'segmented-item' + (idx === 0 ? ' active' : '');
+            btn.textContent = seg.label;
+            btn.onclick = function () { switchSegment(this, seg.key); };
+            segControl.appendChild(btn);
+        });
+        if (typeof currentSegment !== 'undefined') currentSegment = topTab.key;
+        if (typeof renderCandidates === 'function') renderCandidates();
+    }
+
+    function seedRegion(populateDong) {
+        try {
+            selectedRegion.sido = '서울특별시';
+            selectedRegion.sigungu = '강남구';
+            if (typeof saveRegion === 'function') saveRegion();
+            var sidoSel = document.getElementById('region-sido');
+            var sigunguSel = document.getElementById('region-sigungu');
+            var dongSel = document.getElementById('region-dong');
+            if (sidoSel) sidoSel.value = '서울특별시';
+            if (typeof populateSigungu === 'function') populateSigungu('서울특별시');
+            if (sigunguSel) sigunguSel.value = '강남구';
+            if (populateDong) populateDong('강남구');
+            if (dongSel) dongSel.value = '역삼1동';
+        } catch (e) { console.warn('[flat] seedRegion', e); }
+    }
+
+    function seedSamples() {
+        try {
+            bookmarkedCandidates = [1, 2, 3];
+            localStorage.setItem('bookmarkedCandidates', JSON.stringify(bookmarkedCandidates));
+            policyInterests = {
+                'candidate_1': ['summary', 'jobs', 'vision'],
+                'candidate_2': ['vision', 'education'],
+                'candidate_3': ['education', 'summary']
+            };
+            localStorage.setItem('policyInterests', JSON.stringify(policyInterests));
+        } catch (e) {}
+        try {
+            reportHistory = [
+                { number: 'RPT-2026-0312-001', category: 'POLICY_MISMATCH', targetContent: '"청년 일자리 5만개 신규 창출"\n— 김ㅇ준 후보 답변 中', detail: '선관위 공보물에는 3만개로 표기되어 있어 수치가 다릅니다.', status: 'submitted', createdAt: Date.now() - 21600000 },
+                { number: 'RPT-2026-0310-014', category: 'AI_MALFUNCTION', targetContent: '음성 인식 후 답변이 질문과 무관한 내용 출력', detail: '"교육 정책 알려줘" 라고 물었는데 경제 답변이 나옴.', status: 'resolved', createdAt: Date.now() - 93600000 },
+                { number: 'RPT-2026-0308-022', category: 'OPPONENT_DEFAMATION', targetContent: '특정 후보 비방 발언 의심', detail: '근거 없이 다른 후보 인격을 비하하는 표현 발견.', status: 'rejected', createdAt: Date.now() - 252000000 }
+            ];
+            localStorage.setItem('reportHistory', JSON.stringify(reportHistory));
+        } catch (e) {}
+    }
+
+    function labelizeAndPrefill() {
+        var pageLabels = {
+            'page-home': '01 · 메인 홈',
+            'page-election-type': '02 · 선거 종류 선택',
+            'page-candidates': '03 · 후보자 목록 (우리지역)',
+            'page-council': '04 · 우리골목 (지방의원)',
+            'page-education': '05 · 우리교육 (교육감)',
+            'page-compare': '06 · 후보자 비교',
+            'page-detail': '07 · 후보 상세',
+            'page-chat': '08 · 대화',
+            'page-my': '09 · 마이페이지',
+            'page-policy-interests': '10 · 공감공약 목록',
+            'page-reports': '11 · 신고내역',
+            'page-consent': '12 · 회원 약관 동의',
+            'page-policy': '13 · 시행 정책',
+            'page-news': '14 · 실시간 선거 뉴스'
+        };
+        Object.keys(pageLabels).forEach(function (id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            if (el.previousElementSibling && el.previousElementSibling.classList.contains('page-section-label')) return;
+            var lab = document.createElement('div');
+            lab.className = 'page-section-label';
+            lab.textContent = pageLabels[id];
+            el.parentNode.insertBefore(lab, el);
+        });
+        ['report-modal', 'policy-modal', 'login-modal'].forEach(function (id, idx) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            if (el.previousElementSibling && el.previousElementSibling.classList.contains('page-section-label')) return;
+            var lab = document.createElement('div');
+            lab.className = 'page-section-label';
+            lab.textContent = (15 + idx) + ' · ' + ({ 'report-modal': '신고 모달', 'policy-modal': '핵심공약 상세 모달', 'login-modal': '로그인 모달' })[id];
+            el.parentNode.insertBefore(lab, el);
+            el.classList.remove('hidden');
+        });
+    }
+
+    function ready(fn) {
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+        else fn();
+    }
+
+    ready(function () {
+        // 1) 마크업 패치 (숨김 + 추가)
+        hideHomeExtras();
+        hideElectionTypeExtras();
+        hidePartyFilter();
+        var populateDong = injectDongDropdown();
+        injectDdayCard();
+        labelizeAndPrefill();
+
+        // 2) 데이터 시드 + 거주지
+        seedSamples();
+        seedRegion(populateDong);
+
+        // 3) 동적 페이지 진입 (init 후 약간 대기)
+        setTimeout(function () {
+            try { if (typeof openElectionCategory === 'function') { openElectionCategory('local'); applyDynamicLocalTabs(); } } catch (e) {}
+            try { if (typeof openDetail === 'function') openDetail(1); } catch (e) {}
+            try { if (typeof openChat === 'function') { openChat(1); switchChatMode('text'); } } catch (e) {}
+            try { if (typeof renderCouncilList === 'function') renderCouncilList(); } catch (e) {}
+            try { if (typeof renderEducationList === 'function') renderEducationList(); } catch (e) {}
+            try { if (typeof renderCompare === 'function') renderCompare(); } catch (e) {}
+            try { if (typeof loadPolicies === 'function') loadPolicies(); } catch (e) {}
+            try { if (typeof loadNews === 'function') loadNews(); } catch (e) {}
+            try { if (typeof renderMyPage === 'function') renderMyPage(); } catch (e) {}
+            try { if (typeof renderInterestsPage === 'function') renderInterestsPage(); } catch (e) {}
+            try { if (typeof renderPolicyInterestsPage === 'function') renderPolicyInterestsPage(); } catch (e) {}
+            try { if (typeof renderReportsPage === 'function') renderReportsPage(); } catch (e) {}
+            try { if (typeof showSubQuestions === 'function') showSubQuestions('policy'); } catch (e) {}
+            try { if (typeof openReportModal === 'function') openReportModal('msg-1'); } catch (e) {}
+            try { if (typeof openPolicyModal === 'function' && typeof samplePolicies !== 'undefined' && samplePolicies[0]) openPolicyModal(samplePolicies[0]); } catch (e) {}
+            try { if (typeof showLoginModal === 'function') showLoginModal(); } catch (e) {}
+            try { var fab = document.getElementById('compare-fab'); if (fab) fab.classList.remove('hidden'); } catch (e) {}
+        }, 400);
+    });
+    console.log('[flat] activated');
+})();
+
+// ============ D-Day 카운트다운 (제9회 전국동시지방선거: 2026-06-03 06:00) ============
+(function () {
+    var ELECTION_AT = new Date('2026-06-03T06:00:00+09:00').getTime();
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function tick() {
+        var diff = ELECTION_AT - Date.now();
+        var d = document.getElementById('dday-days');
+        var h = document.getElementById('dday-hours');
+        var m = document.getElementById('dday-minutes');
+        var s = document.getElementById('dday-seconds');
+        if (!d) return;
+        if (diff <= 0) {
+            d.textContent = 'DAY';
+            if (h) h.textContent = '00';
+            if (m) m.textContent = '00';
+            if (s) s.textContent = '00';
+            return;
+        }
+        d.textContent = Math.floor(diff / 86400000);
+        if (h) h.textContent = pad(Math.floor((diff % 86400000) / 3600000));
+        if (m) m.textContent = pad(Math.floor((diff % 3600000) / 60000));
+        if (s) s.textContent = pad(Math.floor((diff % 60000) / 1000));
+    }
+    function start() { tick(); setInterval(tick, 1000); }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+    else start();
 })();
 </script>
 </body>

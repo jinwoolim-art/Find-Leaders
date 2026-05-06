@@ -1554,19 +1554,29 @@
         </div>
         <div class="row">
           <div>
-            <label>후보 등록 범위<span class="req">*</span></label>
+            <label>후보구분<span class="req">*</span></label>
             <select name="scope" required>
               <option value="">선택</option>
-              <option>광역단체장 (시·도지사)</option>
-              <option>기초단체장 (시장·구청장·군수)</option>
-              <option>광역의원</option>
-              <option>기초의원</option>
-              <option>교육감</option>
-              <option>기타</option>
+              <optgroup label="── 광역 (17개 시·도) ──">
+                <option>광역시장</option>
+                <option>도지사</option>
+                <option>광역시의원</option>
+                <option>도의원</option>
+                <option>교육감</option>
+              </optgroup>
+              <optgroup label="── 기초 (226 시·군·구) ──">
+                <option>구청장</option>
+                <option>시장</option>
+                <option>군수</option>
+                <option>구의원</option>
+                <option>시의원</option>
+                <option>군의원</option>
+                <option>기초의원 (시·군·구의원 통합)</option>
+              </optgroup>
             </select>
           </div>
           <div>
-            <label>지역구<span class="req">*</span></label>
+            <label>선거구<span class="req">*</span></label>
             <input type="text" name="region" required placeholder="예) 서울 강남구 갑"/>
           </div>
         </div>

@@ -53,16 +53,17 @@
   /* P1 COVER */
   .cover{
     background:radial-gradient(circle at 80% 0%,rgba(124,58,237,.10) 0%,transparent 50%),radial-gradient(circle at 0% 100%,rgba(245,158,11,.08) 0%,transparent 55%),linear-gradient(180deg,#fbfaff 0%,#fff 70%);
-    text-align:center;justify-content:space-between;align-items:center;padding-top:32mm;padding-bottom:26mm;
+    text-align:center;justify-content:space-evenly;align-items:center;padding-top:28mm;padding-bottom:30mm;
   }
-  .cover > *:not(.pg-brand):not(.pg-num){width:100%;max-width:560px}
+  .cover > *:not(.pg-brand):not(.pg-num):not(.cover-bottom){width:100%;max-width:560px}
   .cover::before{content:'';position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.07) 0%,transparent 70%);top:-150px;right:-120px}
   .cover-doc-tag{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--purple-200);color:var(--purple);font-weight:800;font-size:10.5px;letter-spacing:.08em;padding:6px 14px;border-radius:999px;margin-bottom:24px}
-  .cover-logo-mark{width:78px;height:78px;border-radius:20px;background:#fff;border:1px solid var(--purple-100);display:grid;place-items:center;margin:0 auto 22px;box-shadow:0 14px 30px rgba(124,58,237,.15);overflow:hidden}
-  .cover-logo-mark img{width:60px;height:60px;border-radius:14px;object-fit:cover}
+  .cover-hero{display:flex;flex-direction:column;align-items:center;text-align:center}
+  .cover-logo-mark{width:84px;height:84px;border-radius:22px;background:#fff;border:1px solid var(--purple-100);display:grid;place-items:center;margin:0 auto 20px;box-shadow:0 14px 30px rgba(124,58,237,.15);overflow:hidden;flex-shrink:0}
+  .cover-logo-mark img{width:64px;height:64px;border-radius:14px;object-fit:cover}
   .cover .h1{font-size:38px;line-height:1.2;margin-bottom:14px}
   .cover .h1 strong{color:var(--purple)}
-  .cover .lead{font-size:14.5px;color:var(--ink-2);max-width:520px;margin:0 auto 28px}
+  .cover .lead{font-size:14.5px;color:var(--ink-2);max-width:520px;margin:0 auto}
   .cover-name-card{
     background:#fff;border:2px solid var(--purple-200);border-radius:16px;
     padding:22px 32px;margin:0 auto 24px;display:inline-block;text-align:left;
@@ -85,11 +86,11 @@
     font-size:14px;color:var(--ink-2);line-height:1.7;
   }
   .welcome-msg b{color:var(--purple)}
-  .steps-timeline{margin-top:22px;display:flex;flex-direction:column;gap:0;flex:1}
+  .steps-timeline{display:flex;flex-direction:column;gap:24px;width:100%}
   .timeline-row{
     display:grid;grid-template-columns:60px 1fr;gap:16px;align-items:center;
     padding:14px 18px;background:#fff;border:1px solid var(--line);border-radius:14px;
-    margin-bottom:8px;position:relative;
+    position:relative;
   }
   .timeline-row.now{background:linear-gradient(135deg,var(--purple-50) 0%,#fff 100%);border:2px solid var(--purple)}
   .timeline-num{
@@ -102,30 +103,73 @@
   .timeline-body p{font-size:11.5px;color:var(--ink-3);margin:0;line-height:1.5}
 
   /* P3 PAYMENT */
-  .pay-head{margin-bottom:14px}
-  .pay-tier-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+  .pay-head{margin-bottom:0}
+  .pay-body{display:flex;flex-direction:column;gap:18px;flex:1;justify-content:center;margin:18px 0}
+  .pay-tier-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
   .pay-tier{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:14px 14px 12px;text-align:center;position:relative}
   .pay-tier.featured{background:linear-gradient(180deg,#faf5ff 0%,var(--gold-50) 100%);border:2px solid var(--purple)}
   .pay-tier .t{font-size:11px;font-weight:900;color:var(--ink);margin-bottom:4px}
   .pay-tier .a{font-size:22px;font-weight:900;color:var(--ink);letter-spacing:-.02em;line-height:1}
   .pay-tier .a sup{font-size:11px;color:var(--ink-3);font-weight:800;margin-left:1px}
   .pay-tier .q{font-size:9.5px;color:var(--purple);font-weight:800;margin-top:5px}
-  .pay-single{
+  .pay-process{
     background:linear-gradient(180deg,#faf5ff 0%,#fff 100%);
-    border:1.5px solid var(--purple);border-radius:14px;padding:24px 28px;margin-bottom:14px;
-    display:grid;grid-template-columns:64px 1fr;gap:20px;align-items:center;
+    border:1.5px solid var(--purple);border-radius:14px;
+    padding:18px 20px;
+    display:flex;flex-direction:column;gap:14px;
   }
-  .pay-single .pay-icon{width:64px;height:64px;border-radius:14px;background:var(--purple);color:#fff;display:grid;place-items:center;box-shadow:0 10px 22px rgba(124,58,237,.3)}
-  .pay-single .pay-icon .ms{font-size:32px}
-  .pay-single h4{font-size:16px;font-weight:900;color:var(--ink);margin:0 0 6px}
-  .pay-single p{font-size:12.5px;color:var(--ink-2);line-height:1.6;margin:0 0 8px}
-  .pay-single ul{list-style:none;padding:0;margin:0 0 10px;display:flex;flex-direction:column;gap:5px;font-size:11.5px;color:var(--ink-2);line-height:1.5}
-  .pay-single li{display:flex;gap:6px;align-items:flex-start}
-  .pay-single li::before{content:"·";color:var(--purple);font-weight:900;flex-shrink:0;font-size:14px;line-height:1}
-  .pay-link{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-2);background:var(--gold-50);padding:8px 14px;border-radius:8px;line-height:1.55}
-  .pay-link .ms{color:#92400e;font-size:14px}
+  .pay-step{
+    display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:flex-start;
+  }
+  .pay-step + .pay-step{padding-top:14px;border-top:1px dashed var(--purple-200)}
+  .pay-step .step-num{
+    display:flex;align-items:center;justify-content:center;
+    width:38px;height:38px;border-radius:10px;
+    background:var(--purple);color:#fff;
+    font-weight:900;font-size:15px;
+    flex-shrink:0;
+    box-shadow:0 6px 14px rgba(124,58,237,.28);
+  }
+  .pay-step .step-body h4{
+    font-size:14.5px;font-weight:900;color:var(--ink);margin:0 0 5px;
+    display:flex;align-items:center;gap:7px;
+  }
+  .pay-step .step-body h4 .ms{color:var(--purple);font-size:18px}
+  .pay-step .step-body p{font-size:12px;color:var(--ink-2);line-height:1.6;margin:0 0 7px}
+  .pay-step .step-body ul{
+    list-style:none;padding:0;margin:0 0 8px;
+    display:flex;flex-direction:column;gap:3px;
+    font-size:11.5px;color:var(--ink-2);line-height:1.55;
+  }
+  .pay-step .step-body li{display:flex;gap:6px;align-items:flex-start}
+  .pay-step .step-body li::before{content:"·";color:var(--purple);font-weight:900;flex-shrink:0;font-size:14px;line-height:1.4}
+  .pay-step .step-body li b{color:var(--ink);font-weight:800}
+  .pay-step .step-meta{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--gold-50);
+    padding:7px 12px;border-radius:8px;
+    font-size:11px;color:var(--ink-2);font-weight:700;line-height:1.4;
+  }
+  .pay-step .step-meta .ms{color:#92400e;font-size:14px}
+  .pay-step .step-mail{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--purple);color:#fff;
+    padding:7px 14px;border-radius:8px;
+    font-size:11.5px;font-weight:800;letter-spacing:.01em;
+  }
+  .pay-step .step-mail .ms{font-size:14px}
+  .pay-step .step-warn{
+    margin-top:8px;
+    display:flex;gap:7px;align-items:flex-start;
+    font-size:11px;color:#92400e;
+    background:var(--gold-50);
+    border:1px dashed var(--gold-300);
+    padding:8px 12px;border-radius:8px;line-height:1.55;
+  }
+  .pay-step .step-warn .ms{color:#92400e;font-size:14px;flex-shrink:0;margin-top:1px}
+  .pay-step .step-warn b{color:#92400e}
   .refund-banner{
-    margin-top:14px;background:linear-gradient(135deg,#ecfdf5 0%,var(--gold-50) 100%);
+    background:linear-gradient(135deg,#ecfdf5 0%,var(--gold-50) 100%);
     border:1px solid #a7f3d0;border-radius:12px;
     padding:14px 18px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;
   }
@@ -136,7 +180,7 @@
 
   /* P4 입금 후 받는 도구 (대시보드 4) */
   .receive-head{margin-bottom:14px}
-  .receive-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+  .receive-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:0;flex:1;grid-auto-rows:1fr}
   .receive-card{
     background:#fff;border:1px solid var(--line);border-radius:14px;
     overflow:hidden;display:flex;flex-direction:column;
@@ -154,7 +198,7 @@
   }
   .receive-card .screen-wide img{width:100%;height:100%;object-fit:cover;display:block}
   .receive-card .screen-wide .ph{font-size:9px;color:var(--ink-3);font-weight:800;text-align:center;padding:0 8px}
-  .receive-card .info{padding:8px 14px 14px}
+  .receive-card .info{padding:8px 14px 14px;margin-top:auto}
   .receive-card h4{font-size:12.5px;font-weight:900;color:var(--ink);margin:0 0 4px;line-height:1.35}
   .receive-card p{font-size:10.5px;color:var(--ink-3);line-height:1.55;margin:0}
   .receive-extra{
@@ -209,6 +253,7 @@
     margin-bottom:16px;position:relative;
     box-shadow:0 8px 20px rgba(124,58,237,.16);
     max-width:560px;text-align:center;
+    align-self:center;
   }
   .golden-notice .nt-tag{
     display:inline-flex;align-items:center;gap:6px;
@@ -260,6 +305,7 @@
     color:#fff;font-weight:900;font-size:14px;
     padding:14px 26px;border-radius:999px;
     box-shadow:0 12px 24px rgba(15,23,42,.35);position:relative;
+    align-self:center;
   }
   .golden-cta .ms{font-size:18px}
 
@@ -333,7 +379,7 @@
   .contact-band .right b{color:var(--gold-50)}
 
   /* P6 약관 안내 */
-  .terms-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+  .terms-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;flex:1;align-items:stretch}
   .terms-card{
     background:#fff;border:1px solid var(--line);border-radius:14px;
     padding:16px 18px;display:flex;flex-direction:column;gap:8px;
@@ -343,13 +389,14 @@
     letter-spacing:.06em;display:flex;align-items:center;gap:6px;margin-bottom:4px;
   }
   .terms-card h4 .ms{font-size:14px}
-  .terms-card ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px}
+  .terms-card ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px}
   .terms-card li{
-    font-size:11px;color:var(--ink-2);line-height:1.5;
+    font-size:11px;color:var(--ink-2);line-height:1.65;
     display:flex;gap:6px;align-items:flex-start;
+    word-break:keep-all;
   }
-  .terms-card li::before{content:'·';color:var(--purple);font-weight:900;flex-shrink:0;font-size:14px;line-height:1}
-  .terms-card li b{color:var(--ink);font-weight:800}
+  .terms-card li::before{content:'·';color:var(--purple);font-weight:900;flex-shrink:0;font-size:14px;line-height:1.65}
+  .terms-card li b{color:var(--ink);font-weight:800;white-space:nowrap}
   .terms-card .link{
     margin-top:auto;padding-top:10px;border-top:1px dashed var(--line);
     font-size:10.5px;color:var(--ink-3);font-weight:700;
@@ -429,10 +476,11 @@
 <section class="page cover">
   <div class="pg-brand"><img src="assets/logo_ask03.png" alt=""/><b>일꾼을묻다</b><span>· REGISTRATION GUIDE</span></div>
 
-  <div class="cover-logo-mark"><img src="assets/logo_ask03.png" alt=""/></div>
-
-  <h1 class="h1">이제 가입만 하면<br/><strong>시작됩니다</strong></h1>
-  <p class="lead">서비스 소개서 검토 후 등록 신청해주셔서 감사합니다.<br/>입금 → 대시보드 발급 → 운영 시작.</p>
+  <div class="cover-hero">
+    <div class="cover-logo-mark"><img src="assets/logo_ask03.png" alt=""/></div>
+    <h1 class="h1">이제 가입만 하면<br/><strong>시작됩니다</strong></h1>
+    <p class="lead">서비스 소개서 검토 후 등록 신청해주셔서 감사합니다.<br/>입금 → 대시보드 발급 → 운영 시작.</p>
+  </div>
 
   <div class="steps-timeline">
     <div class="timeline-row now">
@@ -472,25 +520,42 @@
     <p class="lead">선거기간 14일 기준 / 부가세 별도 · 후보자 페이지 세팅 + 자료 등록 + 기본 응답량 포함</p>
   </div>
 
-  <div class="pay-tier-grid">
-    <div class="pay-tier featured"><div class="t">광역단체장</div><div class="a">299<sup>만원</sup></div><div class="q">기본 5,000건</div></div>
-    <div class="pay-tier"><div class="t">기초단체장</div><div class="a">129<sup>만원</sup></div><div class="q">기본 2,000건</div></div>
-    <div class="pay-tier"><div class="t">광역의원</div><div class="a">39<sup>만원</sup></div><div class="q">기본 1,000건</div></div>
-    <div class="pay-tier"><div class="t">기초의원</div><div class="a">19<sup>만원</sup></div><div class="q">기본 500건</div></div>
-  </div>
+  <div class="pay-body">
+    <div class="pay-tier-grid">
+      <div class="pay-tier featured"><div class="t">광역단체장</div><div class="a">299<sup>만원</sup></div><div class="q">기본 5,000건</div></div>
+      <div class="pay-tier"><div class="t">기초단체장</div><div class="a">129<sup>만원</sup></div><div class="q">기본 2,000건</div></div>
+      <div class="pay-tier"><div class="t">광역의원</div><div class="a">39<sup>만원</sup></div><div class="q">기본 1,000건</div></div>
+      <div class="pay-tier"><div class="t">기초의원</div><div class="a">19<sup>만원</sup></div><div class="q">기본 500건</div></div>
+    </div>
 
-  <div class="pay-single">
-    <div class="pay-icon"><span class="ms">credit_card</span></div>
-    <div>
-      <h4>인터넷 결제 (PG)</h4>
-      <p>카드·계좌이체·간편결제·가상계좌 — 결제는 즉시 확인됩니다.</p>
-      <ul>
-        <li>결제 즉시 입금 확인 (영업시간 외도 가능)</li>
-        <li>전자세금계산서 자동 발행 (사업자등록번호 입력)</li>
-        <li><b>대시보드는 3일 단위 일괄 발송</b> — 빨리 신청할수록 빨리 받음</li>
-        <li>입금 후 <b>신청 확인은 메일로</b> 받아보실 수 있습니다</li>
-      </ul>
-      <span class="pay-link"><span class="ms">link</span><span class="placeholder">[결제 링크]</span> — 별도 메일로 발송</span>
+    <div class="pay-process">
+      <div class="pay-step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4><span class="ms">credit_card</span>인터넷 결제 (PG)</h4>
+          <p>카드·계좌이체·간편결제·가상계좌 — 결제는 즉시 확인됩니다.</p>
+          <ul>
+            <li>결제 즉시 입금 확인 (영업시간 외도 가능)</li>
+            <li>전자세금계산서 자동 발행 (사업자등록번호 입력)</li>
+          </ul>
+          <span class="step-meta"><span class="ms">link</span><span class="placeholder">[결제 링크]</span> — 별도 메일로 발송</span>
+        </div>
+      </div>
+
+      <div class="pay-step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4><span class="ms">attach_email</span>후보자 본인 증빙 메일 송부</h4>
+          <p>결제와 별도로 후보자 본인 확인을 위해 아래 자료를 메일로 보내주세요.</p>
+          <ul>
+            <li><b>(필수)</b> 예비후보자 / 후보자 등록증 사본</li>
+            <li><b>(필수)</b> 본인 신분증 사본 — 주민번호 뒷자리 마스킹</li>
+            <li>캠프 담당자 결제 시 — <b>위임장 + 담당자 신분증</b> 추가</li>
+          </ul>
+          <span class="step-mail"><span class="ms">mail</span>ilkkun.official@gmail.com</span>
+          <div class="step-warn"><span class="ms">verified_user</span><span><b>결제 + 본인 증빙</b> 모두 확인되면 대시보드 일괄 발송됩니다 (3일 단위).</span></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -634,6 +699,7 @@
         <li><b>가입비</b> — 직급별 차등 (광역단체장 299만원 / 기초단체장 129 / 광역의원 39 / 기초의원 19, 부가세 별도)</li>
         <li><b>환불</b> — <b>구축 전 안심 환불</b> 가능 / 구축 후(사전 답변 입력 시작) 제한</li>
         <li><b>후보자 의무</b> — 등록 자료 정확성 보장, 사전 답변 본인 검토·승인</li>
+        <li><b>본인 증명</b> — 결제와 별도로 등록증·신분증 메일 송부 (대리 결제 시 위임장 추가)</li>
         <li><b>운영사 의무</b> — 시스템 안정성·정치적 중립·개인정보 보호</li>
         <li><b>선거법 준수</b> — AI 안내 정보 자동 표시, 사칭이 아닌 대리인 설정, 상대 후보 비방 X</li>
         <li><b>관할 법원</b> — 회사 본사 소재지(대전·세종) 관할 법원</li>
@@ -645,7 +711,7 @@
     <div class="terms-card">
       <h4><span class="ms">lock</span>개인정보 처리방침 핵심 요약</h4>
       <ul>
-        <li><b>후보자 수집 항목</b> — 이메일·연락처·후보자명·직급·지역구·정책자료(필수 6종)</li>
+        <li><b>후보자 수집 항목</b> — 이메일·연락처·후보자명·후보구분·선거구·정책자료(필수 6종)</li>
         <li><b>시민(유권자) 정보</b> — <b>원칙적 비수집</b> · 질문 내용만 비식별화 통계로 활용</li>
         <li><b>보유 기간</b> — 후보자 정보: 선거 종료 후 30일 폐기 / 결제 기록: 5년(법령)</li>
         <li><b>제3자 제공</b> — 없음 (법령상 요청 외)</li>

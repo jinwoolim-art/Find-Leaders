@@ -163,27 +163,26 @@
   </div>
 
   <div class="progress" id="progressBar">
-    <div class="step active" data-step="1"><div class="dot"></div><span>정보 확인</span></div>
+    <div class="step active" data-step="1"><div class="dot"></div><span>정보 입력</span></div>
     <div class="bar"></div>
-    <div class="step" data-step="2"><div class="dot"></div><span>추가 입력</span></div>
+    <div class="step" data-step="2"><div class="dot"></div><span>증빙 업로드</span></div>
     <div class="bar"></div>
-    <div class="step" data-step="3"><div class="dot"></div><span>증빙 업로드</span></div>
+    <div class="step" data-step="3"><div class="dot"></div><span>약관 동의</span></div>
     <div class="bar"></div>
-    <div class="step" data-step="4"><div class="dot"></div><span>약관 동의</span></div>
-    <div class="bar"></div>
-    <div class="step" data-step="5"><div class="dot"></div><span>결제</span></div>
+    <div class="step" data-step="4"><div class="dot"></div><span>결제</span></div>
   </div>
 
-  <!-- STEP 1 -->
+  <!-- STEP 1: 신청자 정보 (구 STEP 1 + STEP 2 통합) -->
   <div class="card" id="card-1">
     <div class="card-head">
       <span class="step-badge">1</span>
-      <h2>후보자 정보 확인</h2>
+      <h2>신청자 정보</h2>
       <span class="sub">필수</span>
     </div>
+    <input type="hidden" id="f-scope"/>
     <div class="field-grid">
       <div class="field">
-        <label>이름 <span class="req">*</span></label>
+        <label>후보자명 <span class="req">*</span></label>
         <input type="text" id="f-name" placeholder="홍길동"/>
       </div>
       <div class="field">
@@ -195,38 +194,30 @@
         <input type="text" id="f-contact" placeholder="010-0000-0000"/>
       </div>
       <div class="field">
-        <label>후보 등록 범위</label>
-        <input type="text" id="f-scope" placeholder="예) 광역의원·기초단체장 등"/>
-      </div>
-    </div>
-  </div>
-
-  <!-- STEP 2 -->
-  <div class="card" id="card-2">
-    <div class="card-head">
-      <span class="step-badge">2</span>
-      <h2>추가 정보 입력</h2>
-      <span class="sub">필수</span>
-    </div>
-    <div class="field-grid">
-      <div class="field">
-        <label>직급 <span class="req">*</span></label>
+        <label>후보구분 <span class="req">*</span></label>
         <select id="f-position">
           <option value="">선택</option>
           <optgroup label="── 광역 (17개 시·도) ──">
-            <option value="광역단체장">광역단체장 — 특별·광역시장 / 도지사</option>
-            <option value="광역의원">광역의원 — 시·도의회 의원</option>
-            <option value="교육감">교육감 — 시·도 교육감</option>
+            <option value="광역시장">광역시장</option>
+            <option value="도지사">도지사</option>
+            <option value="광역시의원">광역시의원</option>
+            <option value="도의원">도의원</option>
+            <option value="교육감">교육감</option>
           </optgroup>
           <optgroup label="── 기초 (226 시·군·구) ──">
-            <option value="기초단체장">기초단체장 — 자치시장 / 군수 / 구청장</option>
-            <option value="기초의원">기초의원 — 시·군·구의회 의원</option>
+            <option value="구청장">구청장</option>
+            <option value="시장">시장</option>
+            <option value="군수">군수</option>
+            <option value="구의원">구의원</option>
+            <option value="시의원">시의원</option>
+            <option value="군의원">군의원</option>
+            <option value="기초의원">기초의원 (시·군·구의원 통합)</option>
           </optgroup>
         </select>
         <div class="hint">광역 = 특별·광역시 / 도 단위 · 기초 = 자치시 / 군 / 구 단위. 교육감은 광역 단위로 별도 선출됩니다.</div>
       </div>
       <div class="field">
-        <label>지역구 <span class="req">*</span></label>
+        <label>선거구 <span class="req">*</span></label>
         <input type="text" id="f-region" placeholder="예) 서울특별시 강남구 갑"/>
       </div>
       <div class="field">
@@ -252,10 +243,10 @@
     </div>
   </div>
 
-  <!-- STEP 3 -->
-  <div class="card" id="card-3">
+  <!-- STEP 2 -->
+  <div class="card" id="card-2">
     <div class="card-head">
-      <span class="step-badge">3</span>
+      <span class="step-badge">2</span>
       <h2>본인 증빙 서류 업로드</h2>
       <span class="sub">필수</span>
     </div>
@@ -272,10 +263,10 @@
     <div class="err-msg" id="filesErr"></div>
   </div>
 
-  <!-- STEP 4 -->
-  <div class="card" id="card-4">
+  <!-- STEP 3 -->
+  <div class="card" id="card-3">
     <div class="card-head">
-      <span class="step-badge">4</span>
+      <span class="step-badge">3</span>
       <h2>약관 동의</h2>
       <span class="sub">3종 모두 필수</span>
     </div>
@@ -296,10 +287,10 @@
     </div>
   </div>
 
-  <!-- STEP 5 -->
-  <div class="card" id="card-5">
+  <!-- STEP 4 -->
+  <div class="card" id="card-4">
     <div class="card-head">
-      <span class="step-badge">5</span>
+      <span class="step-badge">4</span>
       <h2>가입비 안내</h2>
       <span class="sub">결제는 별도 안내</span>
     </div>
@@ -369,18 +360,43 @@ function api(payload){
   }).then(function(r){return r.json()});
 }
 
-// scope (자유 텍스트 또는 admin select 값) → form 직급 옵션 매핑
+// 후보구분 12옵션 (어드민과 동일)
+var POSITIONS_12 = ['광역시장','도지사','광역시의원','도의원','교육감','구청장','시장','군수','구의원','시의원','군의원','기초의원'];
+
+// scope (자유 텍스트 또는 admin 12옵션 값) → 후보구분 12옵션 매핑
 function inferPosition(scope){
   if(!scope) return '';
   var s=String(scope);
+  // 1. 12옵션 정확 매칭 (admin이 보낸 값 그대로)
+  for(var i=0;i<POSITIONS_12.length;i++){
+    if(s===POSITIONS_12[i]) return POSITIONS_12[i];
+  }
+  // 2. 키워드 추론 (자유텍스트 fallback)
   if(s.indexOf('교육감')>=0) return '교육감';
-  if(s.indexOf('광역단체장')>=0||s.indexOf('광역시장')>=0||s.indexOf('도지사')>=0||s.indexOf('시·도지사')>=0) return '광역단체장';
-  if(s.indexOf('기초단체장')>=0||s.indexOf('구청장')>=0||s.indexOf('군수')>=0) return '기초단체장';
-  if(s.indexOf('광역의원')>=0||s.indexOf('광역시의원')>=0||s.indexOf('도의원')>=0||s.indexOf('시·도의원')>=0) return '광역의원';
-  if(s.indexOf('기초의원')>=0||s.indexOf('구의원')>=0||s.indexOf('군의원')>=0) return '기초의원';
-  // 마지막 fallback — '시장'·'시의원'은 위에서 안 잡힌 경우만
-  if(s.indexOf('시장')>=0) return '기초단체장';
-  if(s.indexOf('시의원')>=0) return '기초의원';
+  if(s.indexOf('도지사')>=0) return '도지사';
+  if(s.indexOf('광역시장')>=0) return '광역시장';
+  if(s.indexOf('광역단체장')>=0||s.indexOf('시·도지사')>=0) return '광역시장';
+  if(s.indexOf('구청장')>=0) return '구청장';
+  if(s.indexOf('군수')>=0) return '군수';
+  if(s.indexOf('도의원')>=0) return '도의원';
+  if(s.indexOf('광역시의원')>=0) return '광역시의원';
+  if(s.indexOf('광역의원')>=0||s.indexOf('시·도의원')>=0) return '광역시의원';
+  if(s.indexOf('구의원')>=0) return '구의원';
+  if(s.indexOf('군의원')>=0) return '군의원';
+  if(s.indexOf('기초의원')>=0) return '기초의원';
+  if(s.indexOf('시의원')>=0) return '시의원';
+  if(s.indexOf('기초단체장')>=0) return '시장';
+  if(s.indexOf('시장')>=0) return '시장';
+  return '';
+}
+
+// 12옵션 → NEC 5종 (가격·sgTypecode 매핑용)
+function categoryFor(pos){
+  if(pos==='교육감') return '교육감';
+  if(pos==='광역시장'||pos==='도지사') return '광역단체장';
+  if(pos==='구청장'||pos==='시장'||pos==='군수') return '기초단체장';
+  if(pos==='광역시의원'||pos==='도의원') return '광역의원';
+  if(pos==='구의원'||pos==='시의원'||pos==='군의원'||pos==='기초의원') return '기초의원';
   return '';
 }
 
@@ -422,16 +438,16 @@ function escape(s){return String(s||'').replace(/[<>&"]/g,function(c){return ({'
 // progress tracker — 입력 진행도에 따라 활성 단계 갱신
 function updateProgress(){
   var done=[];
-  if(document.getElementById('f-name').value && document.getElementById('f-email').value && document.getElementById('f-contact').value) done.push(1);
-  if(document.getElementById('f-position').value && document.getElementById('f-region').value) done.push(2);
-  if(FILES.length>=2) done.push(3);
-  if(document.getElementById('agree-1').checked && document.getElementById('agree-2').checked && document.getElementById('agree-3').checked) done.push(4);
+  if(document.getElementById('f-name').value && document.getElementById('f-email').value && document.getElementById('f-contact').value
+     && document.getElementById('f-position').value && document.getElementById('f-region').value) done.push(1);
+  if(FILES.length>=2) done.push(2);
+  if(document.getElementById('agree-1').checked && document.getElementById('agree-2').checked && document.getElementById('agree-3').checked) done.push(3);
 
   document.querySelectorAll('.progress .step').forEach(function(el){
     var step=parseInt(el.dataset.step);
     el.classList.remove('done','active');
     if(done.indexOf(step)>=0){el.classList.add('done')}
-    else if(step===Math.min.apply(null,[1,2,3,4,5].filter(function(s){return done.indexOf(s)<0}))) el.classList.add('active');
+    else if(step===Math.min.apply(null,[1,2,3,4].filter(function(s){return done.indexOf(s)<0}))) el.classList.add('active');
   });
   document.querySelectorAll('.progress .bar').forEach(function(el,i){
     el.classList.toggle('done',done.indexOf(i+1)>=0);
@@ -480,8 +496,11 @@ document.querySelectorAll('.agree-each').forEach(function(c){
   });
 });
 
-// price selection (visual only — derived from position). 교육감 → 광역단체장 가격으로 매핑.
-function priceKeyFor(pos){return pos==='교육감'?'광역단체장':pos}
+// 가격카드 매핑 — 12옵션 → 5종 (교육감은 광역단체장 가격)
+function priceKeyFor(pos){
+  var c=categoryFor(pos);
+  return c==='교육감'?'광역단체장':c;
+}
 document.getElementById('f-position').addEventListener('change',function(e){
   var key=priceKeyFor(e.target.value);
   document.querySelectorAll('.price-cell').forEach(function(c){
@@ -489,13 +508,7 @@ document.getElementById('f-position').addEventListener('change',function(e){
   });
   updateProgress();
 });
-document.querySelectorAll('.price-cell').forEach(function(c){
-  c.addEventListener('click',function(){
-    document.getElementById('f-position').value=c.dataset.pos;
-    document.querySelectorAll('.price-cell').forEach(function(x){x.classList.toggle('selected',x===c)});
-    updateProgress();
-  });
-});
+// 가격카드 시각 표시 전용 (선택은 후보구분 드롭박스에서)
 
 // general listeners for progress
 ['f-name','f-email','f-contact','f-region'].forEach(function(id){
@@ -530,11 +543,11 @@ async function submitForm(){
   var a2=document.getElementById('agree-2').checked;
   var a3=document.getElementById('agree-3').checked;
 
-  if(!name||!email||!contact){err.textContent='① 후보자 정보 확인 단계에서 이름·이메일·연락처는 필수입니다.';err.classList.add('show');return}
+  if(!name||!email||!contact){err.textContent='① 신청자 정보 단계에서 후보자명·이메일·연락처는 필수입니다.';err.classList.add('show');return}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent='이메일 형식이 올바르지 않습니다.';err.classList.add('show');return}
-  if(!position||!region){err.textContent='② 추가 정보 입력 단계에서 직급·지역구는 필수입니다.';err.classList.add('show');return}
-  if(FILES.length<2){err.textContent='③ 증빙 서류 단계에서 등록증과 신분증 사본 (최소 2개 파일)이 필요합니다.';err.classList.add('show');return}
-  if(!(a1&&a2&&a3)){err.textContent='④ 약관 3종 모두 동의해주셔야 합니다.';err.classList.add('show');return}
+  if(!position||!region){err.textContent='① 신청자 정보 단계에서 후보구분·선거구는 필수입니다.';err.classList.add('show');return}
+  if(FILES.length<2){err.textContent='② 증빙 서류 단계에서 등록증과 신분증 사본 (최소 2개 파일)이 필요합니다.';err.classList.add('show');return}
+  if(!(a1&&a2&&a3)){err.textContent='③ 약관 3종 모두 동의해주셔야 합니다.';err.classList.add('show');return}
 
   btn.disabled=true;btn.textContent='제출 중...';
 
