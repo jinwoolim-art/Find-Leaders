@@ -5505,13 +5505,13 @@ function applyLang() {
     const enLabel = document.getElementById('lang-label-en');
 
     if (currentLang === 'en') {
-        toggle.classList.add('lang-en');
-        koLabel.className = 'text-slate-400';
-        enLabel.className = 'text-primary font-bold';
+        if (toggle) toggle.classList.add('lang-en');
+        if (koLabel) koLabel.className = 'text-slate-400';
+        if (enLabel) enLabel.className = 'text-primary font-bold';
     } else {
-        toggle.classList.remove('lang-en');
-        koLabel.className = 'text-primary font-bold';
-        enLabel.className = 'text-slate-400';
+        if (toggle) toggle.classList.remove('lang-en');
+        if (koLabel) koLabel.className = 'text-primary font-bold';
+        if (enLabel) enLabel.className = 'text-slate-400';
     }
 
     // 홈
@@ -6086,7 +6086,10 @@ window.addEventListener('message', function (e) {
     console.log('[flat] activated');
 })();
 
-// ============ D-Day 카운트다운 (제9회 전국동시지방선거: 2026-06-03 06:00) ============
+
+</script>
+<!-- D-Day 카운트다운 — 별도 스크립트 태그 (다른 JS 에러 영향권 밖) -->
+<script>
 (function () {
     var ELECTION_AT = new Date(2026, 5, 3, 6, 0, 0).getTime(); // 월은 0-based: 5=6월
     function pad(n) { return ('0' + n).slice(-2); }

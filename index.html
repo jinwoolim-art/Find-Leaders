@@ -1949,7 +1949,13 @@ function showAppSlide(n){
   }
   if (appSliderCap) appSliderCap.textContent = appSliderLabels[n];
   if (appSliderVideo) {
-    if (n === 3) { try { appSliderVideo.currentTime = 0; appSliderVideo.play(); } catch(e){} }
+    if (n === 3) {
+      try {
+        appSliderVideo.currentTime = 0;
+        var p = appSliderVideo.play();
+        if (p && p.catch) p.catch(function(){}); // NotSupportedError 등 무시
+      } catch(e){}
+    }
     else { try { appSliderVideo.pause(); } catch(e){} }
   }
 }
