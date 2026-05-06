@@ -269,6 +269,37 @@
                 <div id="home-news-list" class="space-y-3">
                 </div>
             </section>
+            <!-- 사전등록 카운트다운 (2026.05.20 종료) -->
+            <section class="pb-5">
+                <div class="rounded-3xl bg-gradient-to-br from-amber-50 to-orange-100 dark:from-amber-900/30 dark:to-orange-800/30 border-2 border-amber-200 dark:border-amber-700/50 p-5 text-center">
+                    <div class="inline-flex items-center gap-1.5 bg-white dark:bg-slate-800 border border-amber-300 dark:border-amber-600 text-amber-700 dark:text-amber-300 text-[10px] font-bold rounded-full px-3 py-1.5 mb-3 shadow-sm">
+                        <span>🎁</span>
+                        <span>사전 등록 한정 혜택 · 2026년 5월 20일 종료</span>
+                    </div>
+                    <h3 class="text-xl font-black text-slate-900 dark:text-white mb-1">지금 등록하세요</h3>
+                    <p class="text-[11px] text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">사전 등록 후보자 한정 — 할인 가격으로<br/>사전 구성 데이터를 먼저 확보하세요.</p>
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-md border border-amber-100 dark:border-amber-800">
+                        <div class="grid grid-cols-4 gap-1 items-center">
+                            <div class="text-center">
+                                <div id="early-days" class="text-[22px] font-black text-amber-600 dark:text-amber-400 leading-none">--</div>
+                                <div class="text-[9px] font-bold text-slate-500 dark:text-slate-400 tracking-widest mt-1">DAYS</div>
+                            </div>
+                            <div class="text-center">
+                                <div id="early-hours" class="text-[22px] font-black text-amber-600 dark:text-amber-400 leading-none">--</div>
+                                <div class="text-[9px] font-bold text-slate-500 dark:text-slate-400 tracking-widest mt-1">HOURS</div>
+                            </div>
+                            <div class="text-center">
+                                <div id="early-minutes" class="text-[22px] font-black text-amber-600 dark:text-amber-400 leading-none">--</div>
+                                <div class="text-[9px] font-bold text-slate-500 dark:text-slate-400 tracking-widest mt-1">MIN</div>
+                            </div>
+                            <div class="text-center">
+                                <div id="early-seconds" class="text-[22px] font-black text-amber-600 dark:text-amber-400 leading-none">--</div>
+                                <div class="text-[9px] font-bold text-slate-500 dark:text-slate-400 tracking-widest mt-1">SEC</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
             <!-- D-Day 카운트다운 (제9회 전국동시지방선거 2026.06.03) -->
             <section class="pb-10">
                 <div id="dday-card" class="rounded-3xl bg-gradient-to-br from-violet-600 via-primary to-indigo-600 text-white p-6 shadow-xl shadow-primary/20">
@@ -6126,6 +6157,37 @@ window.addEventListener('message', function (e) {
     tick();
     setInterval(tick, 1000);
     console.log('[dday] started, ELECTION_AT=', new Date(ELECTION_AT).toString());
+})();
+
+// ============ 사전등록 카운트다운 (2026-05-20 종료) ============
+(function () {
+    // 2026-05-21 00:00:00 = 2026-05-20 23:59:59 직후
+    var EARLY_AT = new Date(2026, 4, 21, 0, 0, 0).getTime();
+    function pad(n) { return ('0' + n).slice(-2); }
+    function tickEarly() {
+        try {
+            var diff = EARLY_AT - Date.now();
+            var d = document.getElementById('early-days');
+            if (!d) return;
+            var h = document.getElementById('early-hours');
+            var m = document.getElementById('early-minutes');
+            var s = document.getElementById('early-seconds');
+            if (diff <= 0) {
+                d.textContent = '0';
+                if (h) h.textContent = '00';
+                if (m) m.textContent = '00';
+                if (s) s.textContent = '00';
+                return;
+            }
+            d.textContent = Math.floor(diff / 86400000);
+            if (h) h.textContent = pad(Math.floor((diff % 86400000) / 3600000));
+            if (m) m.textContent = pad(Math.floor((diff % 3600000) / 60000));
+            if (s) s.textContent = pad(Math.floor((diff % 60000) / 1000));
+        } catch (e) { console.error('[early]', e); }
+    }
+    tickEarly();
+    setInterval(tickEarly, 1000);
+    console.log('[early] started, EARLY_AT=', new Date(EARLY_AT).toString());
 })();
 </script>
 </body>
