@@ -65,6 +65,7 @@ function doPost(e) {
     if (action === 'sendRegistrationKit')   return sendRegistrationKit(data);
     if (action === 'getRegistrationPrefill')return getRegistrationPrefill(data);
     if (action === 'submitRegistration')    return submitRegistration(data);
+    if (action === 'verifyPayment')         return verifyPayment(data);
     if (action === 'log')         return logOnly(data);
     if (action === 'getInbox')    return getInbox(data);
     if (action === 'getMessage')  return getMessage(data);
@@ -1103,6 +1104,154 @@ function getOrCreateRegistrationFolder_(id, name) {
   if (subIter.hasNext()) { sub = subIter.next(); }
   else { sub = root.createFolder(subName); }
   return sub;
+}
+
+/* ═══════════════════════ 결제 검증 (포트원 V2) ═══════════════════════ */
+
+/**
+ * checkout.html에서 결제 완료 후 호출. 포트원 V2 API로 결제 진위 검증.
+ *
+ * 흐름:
+ *   1) PORTONE_API_SECRET 로드 (Properties Service)
+ *   2) GET https://api.portone.io/payments/{paymentId} → 결제 조회
+ *   3) status === 'PAID' 확인
+ *   4) 금액 검증 (서버측 직급 가격으로 재계산, 클라이언트 위변조 방어)
+ *   5) 결제내역 시트에 기록
+ *   6) 가입신청 시트의 상태를 '결제완료'로 업데이트
+ *   7) Google Chat 알림
+ */
+function verifyPayment(data) {
+  try {
+    var apiSecret = PropertiesService.getScriptProperties().getProperty('PORTONE_API_SECRET');
+    if (!apiSecret) return json({ok: false, error: 'API Secret not configured'});
+
+    var paymentId = (data.paymentId || '').trim();
+    if (!paymentId) return json({ok: false, error: 'paymentId missing'});
+
+    // 1. 포트원 V2 API 결제 조회
+    var resp = UrlFetchApp.fetch(
+      'https://api.portone.io/payments/' + encodeURIComponent(paymentId),
+      {
+        method: 'get',
+        headers: { 'Authorization': 'PortOne ' + apiSecret },
+        muteHttpExceptions: true
+      }
+    );
+    if (resp.getResponseCode() !== 200) {
+      return json({ok: false, error: 'PortOne API: ' + resp.getResponseCode() + ' / ' + resp.getContentText()});
+    }
+    var pay = JSON.parse(resp.getContentText());
+
+    // 2. status PAID 확인
+    if (pay.status !== 'PAID') {
+      return json({ok: false, error: 'Payment not PAID: ' + pay.status});
+    }
+
+    // 3. 금액 검증 (서버 측 직급 가격으로 재계산)
+    var expectedFromServer = expectedAmountFor_(data.plan);
+    var expectedFromClient = Number(data.expectedAmount || 0);
+    if (expectedFromClient !== expectedFromServer) {
+      cancelPortOnePayment_(paymentId, 'expected amount mismatch (client tampering)');
+      return json({ok: false, error: 'expectedAmount mismatch'});
+    }
+    if (Number(pay.amount.total) !== expectedFromServer) {
+      cancelPortOnePayment_(paymentId, 'paid amount mismatch');
+      return json({ok: false, error: 'paid amount mismatch: expected ' + expectedFromServer + ', got ' + pay.amount.total});
+    }
+
+    // 4. 결제내역 시트 기록
+    recordPaymentSuccess_(paymentId, data, pay);
+
+    // 5. 가입신청 시트의 상태를 '결제완료'로 업데이트
+    updateRegistrationPaymentStatus_(data.requestId, paymentId);
+
+    // 6. Chat 알림
+    notifyChat('💳 *결제 완료*\n'
+      + '• 후보자: ' + (data.buyerName || '') + ' / ' + (data.plan || '') + '\n'
+      + '• 신청 ID: ' + (data.requestId || '-') + '\n'
+      + '• 결제 ID: ' + paymentId + '\n'
+      + '• 금액: ₩' + Number(pay.amount.total).toLocaleString());
+
+    return json({ok: true, paymentId: paymentId, amount: pay.amount.total});
+  } catch (e) {
+    return json({ok: false, error: 'verifyPayment exception: ' + (e && e.message || e)});
+  }
+}
+
+function expectedAmountFor_(plan) {
+  var prices = {
+    '광역단체장': 2990000,
+    '기초단체장': 1290000,
+    '광역의원':   390000,
+    '기초의원':   190000
+  };
+  var base = prices[plan] || 0;
+  return base + Math.round(base * 0.1); // VAT 10%
+}
+
+function cancelPortOnePayment_(paymentId, reason) {
+  try {
+    var apiSecret = PropertiesService.getScriptProperties().getProperty('PORTONE_API_SECRET');
+    UrlFetchApp.fetch(
+      'https://api.portone.io/payments/' + encodeURIComponent(paymentId) + '/cancel',
+      {
+        method: 'post',
+        headers: { 'Authorization': 'PortOne ' + apiSecret, 'Content-Type': 'application/json' },
+        payload: JSON.stringify({ reason: reason || 'verification failed' }),
+        muteHttpExceptions: true
+      }
+    );
+  } catch (e) { /* swallow */ }
+}
+
+function recordPaymentSuccess_(paymentId, req, pay) {
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sh = ss.getSheetByName('결제내역');
+  if (!sh) {
+    sh = ss.insertSheet('결제내역');
+    sh.appendRow(['결제ID','신청ID','직급','금액','결제수단','카드사','결제일시','결제자명','연락처','사업자번호','상태','기록일시']);
+    sh.getRange(1, 1, 1, 12).setFontWeight('bold').setBackground('#f1f5f9');
+    sh.setFrozenRows(1);
+  }
+
+  var card = (pay.method && pay.method.card) || {};
+  var methodType = (pay.method && pay.method.type) || '';
+
+  sh.appendRow([
+    paymentId,
+    req.requestId || '',
+    req.plan || '',
+    pay.amount.total,
+    methodType,
+    card.issuer || card.brand || '',
+    pay.paidAt || '',
+    req.buyerName || '',
+    req.buyerPhone || '',
+    req.bizNum || '',
+    'PAID',
+    new Date().toISOString()
+  ]);
+}
+
+function updateRegistrationPaymentStatus_(requestId, paymentId) {
+  if (!requestId) return;
+  try {
+    var sh = SpreadsheetApp.openById(SHEET_ID).getSheetByName(REGISTRATION_SHEET);
+    if (!sh) return;
+    var values = sh.getDataRange().getValues();
+    var headers = values[0] || [];
+    var idCol = headers.indexOf('신청ID');
+    var stateCol = headers.indexOf('상태');
+    var memoCol = headers.indexOf('메모');
+    if (idCol < 0) return;
+    for (var r = 1; r < values.length; r++) {
+      if ((values[r][idCol] || '').toString().trim() === requestId) {
+        if (stateCol >= 0) sh.getRange(r + 1, stateCol + 1).setValue('결제완료');
+        if (memoCol >= 0)  sh.getRange(r + 1, memoCol + 1).setValue('결제ID: ' + paymentId);
+        break;
+      }
+    }
+  } catch (e) { /* skip */ }
 }
 
 /* ═══════════════════════ 유틸 ═══════════════════════ */

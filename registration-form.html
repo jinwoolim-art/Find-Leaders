@@ -68,12 +68,39 @@
   .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
   /* file upload */
-  .uploader{border:2px dashed var(--line);border-radius:10px;padding:18px;text-align:center;background:var(--soft);cursor:pointer;transition:all .15s}
+  .uploader{
+    border:2px dashed var(--line);border-radius:10px;padding:28px 18px;
+    text-align:center;background:var(--soft);cursor:pointer;
+    transition:border-color .15s, background-color .15s, transform .15s;
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+  }
   .uploader:hover{border-color:var(--purple);background:var(--purple-50)}
-  .uploader.has-files{border-style:solid;background:#fff;text-align:left}
-  .uploader p{font-size:12.5px;color:var(--ink-3);margin:0}
-  .uploader p b{color:var(--purple)}
-  .uploader input[type=file]{display:none}
+  .uploader.dragging{
+    border-style:solid;border-color:var(--purple);
+    background:var(--purple-100);transform:scale(1.01);
+  }
+  .uploader.has-files{
+    border-style:solid;background:#fff;text-align:left;
+    align-items:stretch;padding:14px 16px;gap:0;
+  }
+  .uploader .upload-ico{font-size:36px;line-height:1;margin-bottom:4px;pointer-events:none}
+  .uploader .upload-line1{font-size:13px;color:var(--ink);font-weight:800;pointer-events:none}
+  .uploader .upload-line1 b{color:var(--purple)}
+  .uploader .upload-line2{font-size:11.5px;color:var(--ink-3);font-weight:700;margin-top:2px;pointer-events:none}
+  .uploader.has-files .upload-ico,
+  .uploader.has-files .upload-line1,
+  .uploader.has-files .upload-line2{display:none}
+  .uploader.has-files .add-more{
+    display:block;font-size:12px;color:var(--purple);font-weight:800;
+    text-align:center;padding:6px 0 4px;border-bottom:1px dashed var(--line);margin-bottom:8px;
+  }
+  .uploader .add-more{display:none}
+  .uploader input[type=file]{
+    position:absolute !important;width:1px !important;height:1px !important;
+    padding:0 !important;margin:-1px !important;overflow:hidden !important;
+    clip:rect(0,0,0,0) !important;white-space:nowrap !important;border:0 !important;
+    opacity:0 !important;
+  }
   .file-list{margin-top:10px;display:flex;flex-direction:column;gap:6px}
   .file-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--soft);border-radius:6px;font-size:11.5px}
   .file-item .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink-2)}
@@ -98,7 +125,14 @@
   .price-table{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
   .price-cell{border:1.5px solid var(--line);border-radius:8px;padding:10px 8px;text-align:center;background:#fff;cursor:pointer;transition:all .15s}
   .price-cell:hover{border-color:var(--purple-200)}
-  .price-cell.selected{border-color:var(--purple);background:var(--purple-50)}
+  .price-cell.selected{border-color:var(--purple);background:var(--purple-50);box-shadow:0 0 0 3px rgba(124,58,237,.12)}
+  .price-cell.disabled{
+    opacity:0.4;cursor:not-allowed;
+    background:var(--soft);border-color:var(--line);
+    pointer-events:none;
+  }
+  .price-cell.disabled:hover{border-color:var(--line)}
+  .price-cell.disabled .q{color:var(--ink-3)}
   .price-cell .t{font-size:11px;font-weight:800;color:var(--ink-2);margin-bottom:4px}
   .price-cell .a{font-size:15px;font-weight:900;color:var(--ink);letter-spacing:-.01em}
   .price-cell .a sup{font-size:10px;color:var(--ink-3);font-weight:700;margin-left:1px}
@@ -156,7 +190,7 @@
   <div class="hero">
     <div class="eyebrow">REGISTRATION FORM</div>
     <h1>가입 신청서</h1>
-    <p>아래 5개 단계를 차례로 작성해주세요. 약관 동의 후 제출하시면 운영팀이 검토 후 결제 안내를 드립니다.</p>
+    <p>아래 4개 단계를 차례로 작성하신 뒤, 가입비 카드를 선택하시면 결제 페이지로 이동합니다. 결제가 완료되면 운영팀이 자격·증빙 자료를 검증한 뒤 후보자 대시보드를 일괄 발급합니다.</p>
     <div class="meta" id="prefillMeta">
       <b>※</b> 안내서 메일 링크로 접속하셨다면 일부 정보가 자동 채워집니다.
     </div>
@@ -257,7 +291,10 @@
 
     <label class="uploader" id="uploader" for="f-files">
       <input type="file" id="f-files" multiple accept=".pdf,.jpg,.jpeg,.png,.heic,.webp"/>
-      <p>📎 클릭하여 파일 선택 (또는 끌어다 놓기) — <b>PDF · JPG · PNG · HEIC</b>, 파일당 10MB 이하</p>
+      <div class="upload-ico">📤</div>
+      <div class="upload-line1"><b>여기에 파일을 끌어다 놓거나 클릭하세요</b></div>
+      <div class="upload-line2">PDF · JPG · PNG · HEIC · 파일당 10MB 이하</div>
+      <div class="add-more">📤 추가 파일을 끌어다 놓거나 클릭하여 추가</div>
       <div class="file-list" id="fileList"></div>
     </label>
     <div class="err-msg" id="filesErr"></div>
@@ -291,41 +328,22 @@
   <div class="card" id="card-4">
     <div class="card-head">
       <span class="step-badge">4</span>
-      <h2>가입비 안내</h2>
-      <span class="sub">결제는 별도 안내</span>
+      <h2>가입비 선택 및 결제</h2>
+      <span class="sub">카드 결제</span>
     </div>
     <p style="font-size:12.5px;color:var(--ink-2);margin-bottom:10px">선거기간 14일 기준 · 부가세 별도 · <b>교육감은 광역단체장과 동일</b></p>
+    <p id="priceHint" style="font-size:11.5px;color:var(--ink-3);font-weight:800;margin-bottom:10px">👆 먼저 위에서 후보구분을 선택해주세요.</p>
     <div class="price-table">
-      <div class="price-cell" data-pos="광역단체장"><div class="t">광역단체장 / 교육감</div><div class="a">299<sup>만원</sup></div><div class="q">기본 5,000건</div></div>
-      <div class="price-cell" data-pos="기초단체장"><div class="t">기초단체장</div><div class="a">129<sup>만원</sup></div><div class="q">기본 2,000건</div></div>
-      <div class="price-cell" data-pos="광역의원"><div class="t">광역의원</div><div class="a">39<sup>만원</sup></div><div class="q">기본 1,000건</div></div>
-      <div class="price-cell" data-pos="기초의원"><div class="t">기초의원</div><div class="a">19<sup>만원</sup></div><div class="q">기본 500건</div></div>
-    </div>
-
-    <p style="font-size:12px;font-weight:800;color:var(--ink-2);margin:14px 0 4px">결제 수단</p>
-    <div class="pay-methods">
-      <div class="pay-method">
-        <div class="ico">🏦</div>
-        <div class="t">가상계좌</div>
-      </div>
-      <div class="pay-method">
-        <div class="ico">💳</div>
-        <div class="t">카드</div>
-      </div>
-      <div class="pay-method">
-        <div class="ico">⚡</div>
-        <div class="t">계좌이체 / 간편결제</div>
-      </div>
+      <div class="price-cell" data-pos="광역단체장" onclick="goCheckout('광역단체장')"><div class="t">광역단체장 / 교육감</div><div class="a">299<sup>만원</sup></div><div class="q">기본 5,000건</div></div>
+      <div class="price-cell" data-pos="기초단체장" onclick="goCheckout('기초단체장')"><div class="t">기초단체장</div><div class="a">129<sup>만원</sup></div><div class="q">기본 2,000건</div></div>
+      <div class="price-cell" data-pos="광역의원" onclick="goCheckout('광역의원')"><div class="t">광역의원</div><div class="a">39<sup>만원</sup></div><div class="q">기본 1,000건</div></div>
+      <div class="price-cell" data-pos="기초의원" onclick="goCheckout('기초의원')"><div class="t">기초의원</div><div class="a">19<sup>만원</sup></div><div class="q">기본 500건</div></div>
     </div>
 
     <div class="pay-notice">
-      <b>📌 결제 진행 안내:</b> 신청서 제출 후 운영팀이 자격·증빙 자료를 검증하고 <b>결제 안내</b>를 드립니다.
+      <b>📌 결제 진행 안내:</b> 직급 클릭 → 신청서 제출 → 결제 페이지 이동 → 카드 결제 완료 → 운영팀 자격·증빙 검증 → 후보자 대시보드 일괄 발급 (3일 단위).
     </div>
-  </div>
-
-  <div class="submit-bar">
-    <div class="info">제출 후 운영팀 확인까지 <b>1~2 영업일</b> 소요됩니다.</div>
-    <button id="submitBtn" onclick="submitForm()">신청서 제출하기 →</button>
+    <div class="err-msg" id="submitErr" style="margin-top:10px"></div>
   </div>
 
   <div class="err-msg" id="submitErr" style="margin-top:10px"></div>
@@ -454,23 +472,56 @@ function updateProgress(){
   });
 }
 
-// file upload
-document.getElementById('f-files').addEventListener('change',handleFiles);
-function handleFiles(e){
-  var newFiles=Array.from(e.target.files);
+// file upload — input + drag&drop 공통 처리
+function processFiles(newFiles){
   var err=document.getElementById('filesErr');err.classList.remove('show');
+  var accepted=[];
   for(var i=0;i<newFiles.length;i++){
     if(newFiles[i].size>10*1024*1024){
       err.textContent='⚠️ 파일 크기는 10MB 이하만 허용됩니다: '+newFiles[i].name;
       err.classList.add('show');
-      e.target.value='';return;
+      return;
     }
+    accepted.push(newFiles[i]);
   }
-  FILES=FILES.concat(newFiles);
-  e.target.value='';
+  FILES=FILES.concat(accepted);
   renderFiles();
   updateProgress();
 }
+document.getElementById('f-files').addEventListener('change',function(e){
+  var files=Array.from(e.target.files);
+  processFiles(files);
+  e.target.value='';
+});
+
+// drag & drop
+var uploader=document.getElementById('uploader');
+['dragenter','dragover'].forEach(function(evt){
+  uploader.addEventListener(evt,function(e){
+    e.preventDefault();e.stopPropagation();
+    uploader.classList.add('dragging');
+  });
+});
+['dragleave','drop'].forEach(function(evt){
+  uploader.addEventListener(evt,function(e){
+    e.preventDefault();e.stopPropagation();
+    if(evt==='dragleave' && uploader.contains(e.relatedTarget)) return;
+    uploader.classList.remove('dragging');
+  });
+});
+uploader.addEventListener('drop',function(e){
+  if(e.dataTransfer && e.dataTransfer.files){
+    processFiles(Array.from(e.dataTransfer.files));
+  }
+});
+// 페이지 다른 곳에 파일 드롭 시 브라우저가 파일을 그냥 여는 것 방지
+['dragover','drop'].forEach(function(evt){
+  window.addEventListener(evt,function(e){
+    if(e.target!==uploader && !uploader.contains(e.target)){
+      e.preventDefault();
+    }
+  });
+});
 function renderFiles(){
   var list=document.getElementById('fileList');
   var u=document.getElementById('uploader');
@@ -501,14 +552,28 @@ function priceKeyFor(pos){
   var c=categoryFor(pos);
   return c==='교육감'?'광역단체장':c;
 }
-document.getElementById('f-position').addEventListener('change',function(e){
-  var key=priceKeyFor(e.target.value);
+function syncPriceCells(){
+  var key=priceKeyFor(document.getElementById('f-position').value);
+  var hint=document.getElementById('priceHint');
   document.querySelectorAll('.price-cell').forEach(function(c){
-    c.classList.toggle('selected',c.dataset.pos===key);
+    var match = key && c.dataset.pos===key;
+    c.classList.toggle('selected', match);
+    c.classList.toggle('disabled', !match);
   });
+  if(key){
+    hint.textContent='아래 활성화된 직급을 클릭하시면 결제 페이지로 이동합니다.';
+    hint.style.color='var(--purple)';
+  } else {
+    hint.textContent='👆 먼저 위에서 후보구분을 선택해주세요.';
+    hint.style.color='var(--ink-3)';
+  }
+}
+document.getElementById('f-position').addEventListener('change',function(){
+  syncPriceCells();
   updateProgress();
 });
-// 가격카드 시각 표시 전용 (선택은 후보구분 드롭박스에서)
+// 페이지 로드 시 초기화 — 후보구분 미선택이면 모든 카드 비활성
+syncPriceCells();
 
 // general listeners for progress
 ['f-name','f-email','f-contact','f-region'].forEach(function(id){
@@ -529,9 +594,9 @@ function fileToBase64(file){
   });
 }
 
-async function submitForm(){
-  var btn=document.getElementById('submitBtn');
+async function goCheckout(plan){
   var err=document.getElementById('submitErr');err.classList.remove('show');
+  var clickedCell=document.querySelector('.price-cell[data-pos="'+plan+'"]');
 
   // validation
   var name=document.getElementById('f-name').value.trim();
@@ -543,13 +608,23 @@ async function submitForm(){
   var a2=document.getElementById('agree-2').checked;
   var a3=document.getElementById('agree-3').checked;
 
-  if(!name||!email||!contact){err.textContent='① 신청자 정보 단계에서 후보자명·이메일·연락처는 필수입니다.';err.classList.add('show');return}
+  if(!name||!email||!contact){err.textContent='① 신청자 정보 단계에서 후보자명·이메일·연락처는 필수입니다.';err.classList.add('show');window.scrollTo({top:0,behavior:'smooth'});return}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent='이메일 형식이 올바르지 않습니다.';err.classList.add('show');return}
   if(!position||!region){err.textContent='① 신청자 정보 단계에서 후보구분·선거구는 필수입니다.';err.classList.add('show');return}
   if(FILES.length<2){err.textContent='② 증빙 서류 단계에서 등록증과 신분증 사본 (최소 2개 파일)이 필요합니다.';err.classList.add('show');return}
   if(!(a1&&a2&&a3)){err.textContent='③ 약관 3종 모두 동의해주셔야 합니다.';err.classList.add('show');return}
 
-  btn.disabled=true;btn.textContent='제출 중...';
+  // 후보구분과 선택한 가격 카드 일치 검증 (교육감 → 광역단체장 가격)
+  var expectedPlan=priceKeyFor(position);
+  if(expectedPlan && expectedPlan!==plan){
+    err.textContent='선택한 직급 가격은 ['+expectedPlan+'] 입니다. 후보구분과 일치하는 가격 카드를 선택해주세요.';
+    err.classList.add('show');
+    return;
+  }
+
+  // 모든 가격 카드 비활성화 + 클릭한 카드는 진행 표시
+  document.querySelectorAll('.price-cell').forEach(function(c){c.style.pointerEvents='none';c.style.opacity='0.5'});
+  if(clickedCell){clickedCell.style.opacity='1';clickedCell.classList.add('selected');clickedCell.querySelector('.q').textContent='제출 중...'}
 
   try{
     var encoded=await Promise.all(FILES.map(fileToBase64));
@@ -559,6 +634,7 @@ async function submitForm(){
       name:name,email:email,contact:contact,
       scope:document.getElementById('f-scope').value.trim(),
       position:position,region:region,
+      plan:plan,
       party:document.getElementById('f-party').value.trim(),
       regnum:document.getElementById('f-regnum').value.trim(),
       agentName:document.getElementById('f-agent-name').value.trim(),
@@ -569,18 +645,28 @@ async function submitForm(){
       userAgent:navigator.userAgent
     });
     if(res.ok){
-      document.getElementById('formWrap').style.display='none';
-      var rw=document.getElementById('resultWrap');rw.style.display='block';rw.classList.remove('hidden');
-      document.getElementById('resultId').textContent='신청 ID: '+(res.requestId||REQ_ID||'-');
-      window.scrollTo(0,0);
+      var requestId=res.requestId||REQ_ID||'';
+      var qs=new URLSearchParams({
+        plan:plan,
+        id:requestId,
+        name:name,
+        phone:contact
+      });
+      location.href='checkout.html?'+qs.toString();
     } else {
       err.textContent='제출 실패: '+(res.error||'unknown');err.classList.add('show');
-      btn.disabled=false;btn.textContent='신청서 제출하기 →';
+      document.querySelectorAll('.price-cell').forEach(function(c){c.style.pointerEvents='';c.style.opacity=''});
+      if(clickedCell) clickedCell.querySelector('.q').textContent=defaultQuotaFor(clickedCell.dataset.pos);
     }
   }catch(e){
     err.textContent='제출 중 오류: '+String(e);err.classList.add('show');
-    btn.disabled=false;btn.textContent='신청서 제출하기 →';
+    document.querySelectorAll('.price-cell').forEach(function(c){c.style.pointerEvents='';c.style.opacity=''});
+    if(clickedCell) clickedCell.querySelector('.q').textContent=defaultQuotaFor(clickedCell.dataset.pos);
   }
+}
+
+function defaultQuotaFor(plan){
+  return ({'광역단체장':'기본 5,000건','기초단체장':'기본 2,000건','광역의원':'기본 1,000건','기초의원':'기본 500건'})[plan]||'';
 }
 
 loadPrefill();
