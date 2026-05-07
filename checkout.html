@@ -321,16 +321,15 @@ function showFail(reason, paymentId){
 
 function loadCheckout(){
   var qs = new URLSearchParams(location.search);
-  var plan = qs.get('plan') || '';
+  // plan 파라미터 없거나 잘못된 값이면 기본값(기초의원)으로 fallback — PG 심사·직접 접근 대응
+  var plan = qs.get('plan') || '기초의원';
   var name = qs.get('name') || '';
   var phone = qs.get('phone') || '';
   var requestId = qs.get('id') || '';
   var p = PLAN_TABLE[plan];
-
   if(!p){
-    document.getElementById('checkoutWrap').style.display = 'none';
-    document.getElementById('invalidWrap').style.display = 'block';
-    return;
+    plan = '기초의원';
+    p = PLAN_TABLE[plan];
   }
 
   var vat = Math.round(p.price * 0.1);
