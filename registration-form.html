@@ -122,7 +122,7 @@
   .agree-row input[type=checkbox],.agree-all input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--purple);flex-shrink:0}
 
   /* price table */
-  .price-table{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+  .price-table{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0}
   .price-cell{border:1.5px solid var(--line);border-radius:8px;padding:10px 8px;text-align:center;background:#fff;cursor:pointer;transition:all .15s}
   .price-cell:hover{border-color:var(--purple-200)}
   .price-cell.selected{border-color:var(--purple);background:var(--purple-50);box-shadow:0 0 0 3px rgba(124,58,237,.12)}
@@ -331,10 +331,11 @@
       <h2>가입비 선택 및 결제</h2>
       <span class="sub">카드 결제</span>
     </div>
-    <p style="font-size:12.5px;color:var(--ink-2);margin-bottom:10px">선거기간 14일 기준 · 부가세 별도 · <b>교육감은 광역단체장과 동일</b></p>
+    <p style="font-size:12.5px;color:var(--ink-2);margin-bottom:10px">가입비 기준 · 선거기간 운영 기준 · 부가세 별도</p>
     <p id="priceHint" style="font-size:11.5px;color:var(--ink-3);font-weight:800;margin-bottom:10px">👆 먼저 위에서 후보구분을 선택해주세요.</p>
     <div class="price-table">
-      <div class="price-cell" data-pos="광역단체장" onclick="goCheckout('광역단체장')"><div class="t">광역단체장 / 교육감</div><div class="a">299<sup>만원</sup></div><div class="q">기본 5,000건</div></div>
+      <div class="price-cell" data-pos="광역단체장" onclick="goCheckout('광역단체장')"><div class="t">광역단체장</div><div class="a">299<sup>만원</sup></div><div class="q">기본 5,000건</div></div>
+      <div class="price-cell" data-pos="교육감" onclick="goCheckout('교육감')"><div class="t">교육감</div><div class="a">129<sup>만원</sup></div><div class="q">기본 2,000건</div></div>
       <div class="price-cell" data-pos="기초단체장" onclick="goCheckout('기초단체장')"><div class="t">기초단체장</div><div class="a">129<sup>만원</sup></div><div class="q">기본 2,000건</div></div>
       <div class="price-cell" data-pos="광역의원" onclick="goCheckout('광역의원')"><div class="t">광역의원</div><div class="a">39<sup>만원</sup></div><div class="q">기본 1,000건</div></div>
       <div class="price-cell" data-pos="기초의원" onclick="goCheckout('기초의원')"><div class="t">기초의원</div><div class="a">19<sup>만원</sup></div><div class="q">기본 500건</div></div>
@@ -547,10 +548,9 @@ document.querySelectorAll('.agree-each').forEach(function(c){
   });
 });
 
-// 가격카드 매핑 — 12옵션 → 5종 (교육감은 광역단체장 가격)
+// 가격카드 매핑 — 12옵션 → 5종 (교육감은 별도 카드, 가격은 기초단체장과 동일)
 function priceKeyFor(pos){
-  var c=categoryFor(pos);
-  return c==='교육감'?'광역단체장':c;
+  return categoryFor(pos);
 }
 function syncPriceCells(){
   var key=priceKeyFor(document.getElementById('f-position').value);
@@ -614,7 +614,7 @@ async function goCheckout(plan){
   if(FILES.length<2){err.textContent='② 증빙 서류 단계에서 등록증과 신분증 사본 (최소 2개 파일)이 필요합니다.';err.classList.add('show');return}
   if(!(a1&&a2&&a3)){err.textContent='③ 약관 3종 모두 동의해주셔야 합니다.';err.classList.add('show');return}
 
-  // 후보구분과 선택한 가격 카드 일치 검증 (교육감 → 광역단체장 가격)
+  // 후보구분과 선택한 가격 카드 일치 검증
   var expectedPlan=priceKeyFor(position);
   if(expectedPlan && expectedPlan!==plan){
     err.textContent='선택한 직급 가격은 ['+expectedPlan+'] 입니다. 후보구분과 일치하는 가격 카드를 선택해주세요.';
@@ -666,7 +666,7 @@ async function goCheckout(plan){
 }
 
 function defaultQuotaFor(plan){
-  return ({'광역단체장':'기본 5,000건','기초단체장':'기본 2,000건','광역의원':'기본 1,000건','기초의원':'기본 500건'})[plan]||'';
+  return ({'광역단체장':'기본 5,000건','교육감':'기본 2,000건','기초단체장':'기본 2,000건','광역의원':'기본 1,000건','기초의원':'기본 500건'})[plan]||'';
 }
 
 loadPrefill();

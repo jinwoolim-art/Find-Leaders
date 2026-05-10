@@ -310,17 +310,17 @@
 
   /* P10 Pricing */
   .pricing-head{text-align:center;margin-bottom:18px}
-  .pricing-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;flex:1;align-content:start}
-  .price-card{position:relative;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:22px 22px 20px}
+  .pricing-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;flex:1;align-content:start}
+  .price-card{position:relative;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:16px 14px 14px}
   .price-card.featured{background:linear-gradient(180deg,#faf5ff 0%,var(--gold-50) 100%);border:2px solid var(--purple)}
-  .price-card .tier{font-size:13px;font-weight:900;color:var(--ink);margin-bottom:6px}
-  .price-card .tier-sub{font-size:10.5px;color:var(--ink-3);margin-bottom:10px}
-  .price-card .amount{font-size:30px;font-weight:900;color:var(--ink);line-height:1;letter-spacing:-.02em}
-  .price-card .amount sup{font-size:14px;font-weight:800;margin-left:2px;color:var(--ink-3)}
-  .price-card .quota{margin-top:10px;display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--purple);font-weight:800;padding:5px 11px;background:var(--purple-50);border-radius:8px}
-  .price-card .quota .ms{font-size:13px}
-  .price-card ul{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--ink-2);line-height:1.5}
-  .price-card ul li{display:flex;gap:5px;align-items:flex-start}
+  .price-card .tier{font-size:12px;font-weight:900;color:var(--ink);margin-bottom:4px;letter-spacing:-.01em}
+  .price-card .tier-sub{font-size:9.5px;color:var(--ink-3);margin-bottom:8px;line-height:1.35}
+  .price-card .amount{font-size:24px;font-weight:900;color:var(--ink);line-height:1;letter-spacing:-.02em}
+  .price-card .amount sup{font-size:11px;font-weight:800;margin-left:2px;color:var(--ink-3)}
+  .price-card .quota{margin-top:8px;display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--purple);font-weight:800;padding:4px 9px;background:var(--purple-50);border-radius:8px}
+  .price-card .quota .ms{font-size:12px}
+  .price-card ul{list-style:none;padding:0;margin:10px 0 0;display:flex;flex-direction:column;gap:4px;font-size:10px;color:var(--ink-2);line-height:1.45}
+  .price-card ul li{display:flex;gap:4px;align-items:flex-start}
   .price-card ul li::before{content:"✓";color:var(--purple);font-weight:900;flex-shrink:0}
   .pricing-note{margin-top:18px;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:14px 18px;text-align:center;font-size:12px;color:var(--ink-2);line-height:1.7}
   .pricing-note b{color:var(--purple)}
@@ -331,7 +331,7 @@
   .breakdown-common .chip{display:inline-flex;align-items:center;gap:5px;background:var(--purple-50);color:var(--purple);font-weight:800;font-size:10.5px;padding:4px 10px;border-radius:999px}
   .breakdown-common .chip .ms{font-size:13px}
   .breakdown-common .note{margin-top:8px;font-size:10.5px;color:var(--ink-3)}
-  .breakdown-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+  .breakdown-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
   .breakdown-card{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:16px 18px}
   .breakdown-card.featured{background:linear-gradient(180deg,#faf5ff 0%,#fff 100%);border:2px solid var(--purple)}
   .breakdown-card .tier-name{font-size:13px;font-weight:900;color:var(--ink);margin-bottom:3px}
@@ -1246,45 +1246,72 @@
 
   <div class="pricing-head">
     <div class="eyebrow"><span class="num">10</span> · 요금 구조</div>
-    <h2 class="h2">가입비 + 기본 응답량 포함</h2>
-    <p class="lead">선거기간 14일 기준 / 부가세 별도 · 후보자 페이지 세팅 + 자료 등록 + 기본 응답량 포함</p>
+    <h2 class="h2">가입비 기준 · 선거기간 운영</h2>
+    <p class="lead">가입비 기준 / 선거기간 운영 기준 / 부가세 별도</p>
   </div>
 
   <div class="pricing-grid">
     <div class="price-card featured">
       <div class="tier">광역단체장</div>
-      <div class="tier-sub">시·도지사</div>
+      <div class="tier-sub">시·도지사 · 광역시장</div>
       <div class="amount">299<sup>만원</sup></div>
-      <div class="quota"><span class="ms">forum</span>기본 응답량 5,000건</div>
       <ul>
-        <li>후보자 페이지 세팅</li>
-        <li>자료 등록 / 자동 매칭</li>
-        <li>유권자 반응 대시보드</li>
-        <li>지역별 분석 / 익명 표본 비교</li>
+        <li>후보자 프로필 등록</li>
+        <li>공약·정책 등록</li>
+        <li>약력·활동 이력 등록</li>
+        <li>프로필 사진 등록</li>
+        <li>후보자 캐릭터 영상 제공</li>
+        <li>시민 질문 응답 기능</li>
+        <li>시민 반응 대시보드</li>
+        <li>지역별 관심 지표 확인</li>
+      </ul>
+    </div>
+
+    <div class="price-card">
+      <div class="tier">교육감</div>
+      <div class="tier-sub">시·도 단위 단독 선출</div>
+      <div class="amount">129<sup>만원</sup></div>
+      <ul>
+        <li>후보자 프로필 등록</li>
+        <li>공약·정책 등록</li>
+        <li>약력·활동 이력 등록</li>
+        <li>프로필 사진 등록</li>
+        <li>후보자 캐릭터 영상 제공</li>
+        <li>시민 질문 응답 기능</li>
+        <li>시민 반응 대시보드</li>
+        <li>지역별 관심 지표 확인</li>
       </ul>
     </div>
 
     <div class="price-card">
       <div class="tier">기초단체장</div>
-      <div class="tier-sub">시장·구청장·군수</div>
+      <div class="tier-sub">시장 · 군수 · 구청장</div>
       <div class="amount">129<sup>만원</sup></div>
-      <div class="quota"><span class="ms">forum</span>기본 응답량 2,000건</div>
       <ul>
-        <li>후보자 페이지 세팅</li>
-        <li>자료 등록 / 자동 매칭</li>
-        <li>유권자 반응 대시보드</li>
+        <li>후보자 프로필 등록</li>
+        <li>공약·정책 등록</li>
+        <li>약력·활동 이력 등록</li>
+        <li>프로필 사진 등록</li>
+        <li>후보자 캐릭터 영상 제공</li>
+        <li>시민 질문 응답 기능</li>
+        <li>시민 반응 대시보드</li>
+        <li>지역별 관심 지표 확인</li>
       </ul>
     </div>
 
     <div class="price-card">
       <div class="tier">광역의원</div>
-      <div class="tier-sub">시·도 의원</div>
+      <div class="tier-sub">시·도의원</div>
       <div class="amount">39<sup>만원</sup></div>
-      <div class="quota"><span class="ms">forum</span>기본 응답량 1,000건</div>
       <ul>
-        <li>후보자 페이지 세팅</li>
-        <li>자료 등록 / 자동 매칭</li>
-        <li>유권자 반응 대시보드</li>
+        <li>후보자 프로필 등록</li>
+        <li>공약·정책 등록</li>
+        <li>약력·활동 이력 등록</li>
+        <li>프로필 사진 등록</li>
+        <li>후보자 캐릭터 영상 제공</li>
+        <li>시민 질문 응답 기능</li>
+        <li>시민 반응 대시보드</li>
+        <li>선거구 관심 지표 확인</li>
       </ul>
     </div>
 
@@ -1292,18 +1319,21 @@
       <div class="tier">기초의원</div>
       <div class="tier-sub">시·군·구 의원</div>
       <div class="amount">19<sup>만원</sup></div>
-      <div class="quota"><span class="ms">forum</span>기본 응답량 500건</div>
       <ul>
-        <li>후보자 페이지 세팅</li>
-        <li>자료 등록 / 자동 매칭</li>
-        <li>유권자 반응 대시보드</li>
+        <li>후보자 프로필 등록</li>
+        <li>공약·정책 등록</li>
+        <li>약력·활동 이력 등록</li>
+        <li>프로필 사진 등록</li>
+        <li>후보자 캐릭터 영상 제공</li>
+        <li>시민 질문 응답 기능</li>
+        <li>시민 반응 대시보드</li>
       </ul>
     </div>
   </div>
 
   <div class="pricing-note">
-    <b>처음에는 가볍게 시작하고, 질문이 늘어나면 필요한 만큼 확장</b>합니다.<br/>
-    가입비에 후보자 페이지 세팅·자료 등록·기본 응답량이 포함되며, 소진 후 대화카드 추가 구매로 이어집니다.
+    <b>가입비에는 후보자 페이지 운영에 필요한 기본 기능이 모두 포함</b>됩니다.<br/>
+    질문이 늘어 응답량이 추가로 필요할 경우 <b>대화카드</b>로 필요한 만큼 확장할 수 있습니다.
   </div>
 
   <div class="pg-foot">© 2026 일꾼을묻다 · 후보자 전용 서비스 소개서</div>
@@ -1322,7 +1352,7 @@
 
   <div class="breakdown-common">
     <div class="row">
-      <span class="chip"><span class="ms">event</span>선거기간 14일 기준</span>
+      <span class="chip"><span class="ms">event</span>선거기간 운영 기준</span>
       <span class="chip"><span class="ms">forum</span>질문 1건당 평균 응답 2회</span>
       <span class="chip"><span class="ms">groups</span>유권자 규모 · 예상 참여율 기준</span>
     </div>
@@ -1341,7 +1371,17 @@
     </div>
 
     <div class="breakdown-card">
-      <div class="tier-name">기초단체장 (시장·구청장·군수)</div>
+      <div class="tier-name">교육감</div>
+      <p class="tier-tagline">시·도 단위 단독 선출, 교육 분야 집중 질문 대응</p>
+      <div class="breakdown-stats">
+        <div class="breakdown-stat"><span class="label">예상 질문 수</span><span class="value">2,000 ~ 10,000건</span></div>
+        <div class="breakdown-stat purple"><span class="label">예상 응답량</span><span class="value">4,000 ~ 20,000건</span></div>
+        <div class="breakdown-stat"><span class="label">1일 평균 응답</span><span class="value">300 ~ 1,400건</span></div>
+      </div>
+    </div>
+
+    <div class="breakdown-card">
+      <div class="tier-name">기초단체장 (시장·군수·구청장)</div>
       <p class="tier-tagline">지역 이슈 대응 + 빠른 반응 확인이 핵심</p>
       <div class="breakdown-stats">
         <div class="breakdown-stat"><span class="label">예상 질문 수</span><span class="value">2,000 ~ 10,000건</span></div>

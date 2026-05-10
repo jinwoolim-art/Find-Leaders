@@ -79,6 +79,15 @@ function doPost(e) {
     if (action === 'listAttachments')return listAttachments(data);
     if (action === 'uploadFile')     return uploadFile(data);
     if (action === 'deleteFile')     return deleteFile(data);
+    if (action === 'listCSItems')     return listCSItems(data);
+    if (action === 'saveCSItem')      return saveCSItem(data);
+    if (action === 'updateCSItem')    return updateCSItem(data);
+    if (action === 'activateCSItem')  return activateCSItem(data);
+    if (action === 'deleteCSItem')    return deleteCSItem(data);
+    if (action === 'uploadCSDocument') return uploadCSDocument(data);
+    if (action === 'listCSDocuments') return listCSDocuments(data);
+    if (action === 'toggleCSDocument') return toggleCSDocument(data);
+    if (action === 'deleteCSDocument') return deleteCSDocument(data);
 
     return json({ok: false, error: 'unknown action: ' + action});
   } catch (err) {
@@ -298,6 +307,455 @@ function registerAccount(data) {
   return json({ok: true, registered: 'account', name: data.name});
 }
 
+/* ═══════════════════════ CS 프롬프트 관리 (Positive / Negative 분리) ═══════════════════════ */
+
+var CS_POSITIVE_SHEET = 'CS프롬프트_Positive';
+var CS_NEGATIVE_SHEET = 'CS프롬프트_Negative';
+var CS_DOC_SHEET = 'CS학습문서';
+var CS_DOC_FOLDER = 'CS학습문서';
+
+function ensurePositiveSheet() {
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sh = ss.getSheetByName(CS_POSITIVE_SHEET);
+  if (!sh) {
+    sh = ss.insertSheet(CS_POSITIVE_SHEET);
+    sh.appendRow(['id', '이름', '본문', '활성', '작성자', '작성일']);
+    sh.appendRow([
+      'pp_default',
+      '기본',
+      '당신은 "일꾼을찾다" (정치 후보자 디지털 캠페인 플랫폼) CS 담당자입니다.\n후보자에게 친절하고 전문적인 톤으로 답변하세요.\n답변 끝에는 "감사합니다.\n일꾼을찾다 팀" 을 추가하세요.\n일반 운영·기능·사용법 문의에만 자신감 있게 답변하세요.\n환불·약관 문의 시 학습된 정책 문서를 정확히 참고해서 답변하세요.',
+      true,
+      'system',
+      today()
+    ]);
+  }
+  return sh;
+}
+
+function ensureNegativeSheet() {
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sh = ss.getSheetByName(CS_NEGATIVE_SHEET);
+  if (!sh) {
+    sh = ss.insertSheet(CS_NEGATIVE_SHEET);
+    sh.appendRow(['id', '이름', '본문', '활성', '작성자', '작성일']);
+    sh.appendRow([
+      'pn_default',
+      '기본',
+      '다음 중 하나에 해당하면 답변하지 말고 정확히 "[민감]" 한 단어만 출력하세요:\n- 정치적·이념적 견해를 묻는 질문\n- 특정 정당/후보자 비교·평가\n- 선거법 해석이 필요한 질문\n- 법률·규제 자문이 필요한 질문\n- AI가 정확한 답을 모르는 사실 관계 질문\n- 분쟁성 환불 케이스 (환불 거부 시 법적 조치·고소 위협 등)\n- 결제 분쟁 (이중 결제·미환불·승인 오류 등 직접적 금전 문제)\n- 기타 회사 공식 입장이 필요한 사안',
+      true,
+      'system',
+      today()
+    ]);
+  }
+  return sh;
+}
+
+function ensureCSDocSheet() {
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sh = ss.getSheetByName(CS_DOC_SHEET);
+  if (!sh) {
+    sh = ss.insertSheet(CS_DOC_SHEET);
+    sh.appendRow(['id', '파일명', '카테고리', '내용', '활성', '업로드일', 'Drive파일ID']);
+  }
+  return sh;
+}
+
+function getCSDocFolder() {
+  var iter = DriveApp.getFoldersByName(CS_DOC_FOLDER);
+  if (iter.hasNext()) return iter.next();
+  return DriveApp.createFolder(CS_DOC_FOLDER);
+}
+
+function _csSheetForKind(kind) {
+  return kind === 'negative' ? ensureNegativeSheet() : ensurePositiveSheet();
+}
+
+function _csIdPrefix(kind) {
+  return kind === 'negative' ? 'pn_' : 'pp_';
+}
+
+/**
+ * 활성 본문(string) 반환. 활성 없으면 첫 행, 시트 비면 빈 문자열.
+ */
+function getActivePromptBody(kind) {
+  var sh = _csSheetForKind(kind);
+  var rows = sh.getDataRange().getValues();
+  if (rows.length < 2) return '';
+  var headers = rows[0];
+  var iActive = headers.indexOf('활성');
+  var iBody = headers.indexOf('본문');
+  for (var i = 1; i < rows.length; i++) {
+    if (rows[i][iActive] === true || String(rows[i][iActive]).toUpperCase() === 'TRUE') {
+      return String(rows[i][iBody] || '');
+    }
+  }
+  return String(rows[1][iBody] || '');
+}
+
+function listCSItems(data) {
+  var kind = (data && data.kind) || 'positive';
+  var sh = _csSheetForKind(kind);
+  var rows = sh.getDataRange().getValues();
+  if (rows.length < 2) return json({ ok: true, kind: kind, items: [] });
+  var headers = rows[0];
+  var items = [];
+  for (var i = 1; i < rows.length; i++) {
+    var it = {};
+    headers.forEach(function(h, j) { it[h] = rows[i][j]; });
+    items.push(it);
+  }
+  return json({ ok: true, kind: kind, items: items });
+}
+
+function saveCSItem(data) {
+  var kind = (data && data.kind) || 'positive';
+  var name = (data.name || '').trim();
+  var body = (data.body || '').trim();
+  var activate = !!data.activate;
+  if (!name || !body) return json({ ok: false, error: '이름과 본문 필수' });
+
+  var sh = _csSheetForKind(kind);
+  var id = _csIdPrefix(kind) + Date.now() + Math.random().toString(36).slice(2, 6);
+
+  if (activate) {
+    var rows = sh.getDataRange().getValues();
+    var headers = rows[0];
+    var iActive = headers.indexOf('활성');
+    for (var i = 1; i < rows.length; i++) {
+      if (rows[i][iActive] === true || String(rows[i][iActive]).toUpperCase() === 'TRUE') {
+        sh.getRange(i + 1, iActive + 1).setValue(false);
+      }
+    }
+  }
+
+  sh.appendRow([id, name, body, activate, data.author || 'admin', today()]);
+  return json({ ok: true, id: id, kind: kind });
+}
+
+function updateCSItem(data) {
+  var kind = (data && data.kind) || 'positive';
+  var id = data.id;
+  if (!id) return json({ ok: false, error: 'id 필수' });
+  var sh = _csSheetForKind(kind);
+  var rows = sh.getDataRange().getValues();
+  var headers = rows[0];
+  var iId = headers.indexOf('id');
+  var iName = headers.indexOf('이름');
+  var iBody = headers.indexOf('본문');
+  for (var i = 1; i < rows.length; i++) {
+    if (String(rows[i][iId]) === String(id)) {
+      if (typeof data.name === 'string' && data.name.trim()) sh.getRange(i + 1, iName + 1).setValue(data.name.trim());
+      if (typeof data.body === 'string' && data.body.trim()) sh.getRange(i + 1, iBody + 1).setValue(data.body.trim());
+      return json({ ok: true });
+    }
+  }
+  return json({ ok: false, error: '찾을 수 없음' });
+}
+
+function activateCSItem(data) {
+  var kind = (data && data.kind) || 'positive';
+  var id = data.id;
+  if (!id) return json({ ok: false, error: 'id 필수' });
+  var sh = _csSheetForKind(kind);
+  var rows = sh.getDataRange().getValues();
+  var headers = rows[0];
+  var iId = headers.indexOf('id');
+  var iActive = headers.indexOf('활성');
+  for (var i = 1; i < rows.length; i++) {
+    var isMatch = String(rows[i][iId]) === String(id);
+    sh.getRange(i + 1, iActive + 1).setValue(isMatch);
+  }
+  return json({ ok: true });
+}
+
+function deleteCSItem(data) {
+  var kind = (data && data.kind) || 'positive';
+  var id = data.id;
+  if (!id) return json({ ok: false, error: 'id 필수' });
+  var sh = _csSheetForKind(kind);
+  var rows = sh.getDataRange().getValues();
+  var headers = rows[0];
+  var iId = headers.indexOf('id');
+  var iActive = headers.indexOf('활성');
+  for (var i = 1; i < rows.length; i++) {
+    if (String(rows[i][iId]) === String(id)) {
+      if (rows[i][iActive] === true || String(rows[i][iActive]).toUpperCase() === 'TRUE') {
+        return json({ ok: false, error: '활성 항목은 삭제 불가 — 다른 항목 활성화 후 시도' });
+      }
+      sh.deleteRow(i + 1);
+      return json({ ok: true });
+    }
+  }
+  return json({ ok: false, error: '찾을 수 없음' });
+}
+
+/* ═══════════════════════ CS 학습 문서 관리 ═══════════════════════ */
+
+function uploadCSDocument(data) {
+  var name = (data.name || '').trim();
+  var category = (data.category || '일반').trim();
+  var content = (data.content || '').trim();
+  var base64 = data.base64 || '';
+  var contentType = data.contentType || '';
+
+  if (!name) return json({ ok: false, error: '제목/파일명 필수' });
+  if (!content && !base64) return json({ ok: false, error: '내용 또는 파일 필수' });
+
+  var driveFileId = '';
+  var extractedText = content;
+
+  if (base64) {
+    try {
+      var folder = getCSDocFolder();
+      var blob = Utilities.newBlob(Utilities.base64Decode(base64), contentType, name);
+      var file = folder.createFile(blob);
+      driveFileId = file.getId();
+
+      if (contentType === 'application/pdf') {
+        // Drive Advanced Service 필요 — 활성화 안 됐으면 fallback
+        try {
+          if (typeof Drive !== 'undefined' && Drive.Files && Drive.Files.copy) {
+            var copy = Drive.Files.copy(
+              { title: name + ' (텍스트 추출)', mimeType: 'application/vnd.google-apps.document' },
+              driveFileId
+            );
+            extractedText = DocumentApp.openById(copy.id).getBody().getText();
+            DriveApp.getFileById(copy.id).setTrashed(true);
+          } else {
+            extractedText = '[PDF 텍스트 자동 추출 불가 — Drive Advanced Service 활성화 필요]\nDrive 파일 ID: ' + driveFileId;
+          }
+        } catch (e) {
+          Logger.log('[CS] PDF extract failed: ' + e);
+          extractedText = '[PDF 텍스트 추출 실패: ' + e + ']\nDrive 파일 ID: ' + driveFileId;
+        }
+      } else if (contentType === 'text/plain' || /\.txt$/i.test(name)) {
+        extractedText = blob.getDataAsString('UTF-8');
+      } else {
+        extractedText = '[지원되지 않는 파일 형식: ' + contentType + ']';
+      }
+    } catch (e) {
+      Logger.log('[CS] uploadCSDocument failed: ' + e);
+      return json({ ok: false, error: '업로드 실패: ' + e });
+    }
+  }
+
+  if (extractedText.length > 8000) {
+    extractedText = extractedText.slice(0, 8000) + '\n\n[... 8000자에서 잘림]';
+  }
+
+  var sh = ensureCSDocSheet();
+  var id = 'doc_' + Date.now() + Math.random().toString(36).slice(2, 6);
+  sh.appendRow([id, name, category, extractedText, true, today(), driveFileId]);
+  return json({ ok: true, id: id, length: extractedText.length, driveFileId: driveFileId });
+}
+
+function listCSDocuments(_data) {
+  var sh = ensureCSDocSheet();
+  var rows = sh.getDataRange().getValues();
+  if (rows.length < 2) return json({ ok: true, docs: [] });
+  var headers = rows[0];
+  var docs = [];
+  for (var i = 1; i < rows.length; i++) {
+    var d = {};
+    headers.forEach(function(h, j) {
+      if (h === '내용' && rows[i][j]) {
+        var s = String(rows[i][j]);
+        d['내용미리보기'] = s.slice(0, 200) + (s.length > 200 ? '...' : '');
+        d['내용길이'] = s.length;
+      } else {
+        d[h] = rows[i][j];
+      }
+    });
+    docs.push(d);
+  }
+  return json({ ok: true, docs: docs });
+}
+
+function toggleCSDocument(data) {
+  var id = data.id;
+  if (!id) return json({ ok: false, error: 'id 필수' });
+  var active = !!data.active;
+  var sh = ensureCSDocSheet();
+  var rows = sh.getDataRange().getValues();
+  var headers = rows[0];
+  var iId = headers.indexOf('id');
+  var iActive = headers.indexOf('활성');
+  for (var i = 1; i < rows.length; i++) {
+    if (String(rows[i][iId]) === String(id)) {
+      sh.getRange(i + 1, iActive + 1).setValue(active);
+      return json({ ok: true });
+    }
+  }
+  return json({ ok: false, error: '찾을 수 없음' });
+}
+
+function deleteCSDocument(data) {
+  var id = data.id;
+  if (!id) return json({ ok: false, error: 'id 필수' });
+  var sh = ensureCSDocSheet();
+  var rows = sh.getDataRange().getValues();
+  var headers = rows[0];
+  var iId = headers.indexOf('id');
+  var iDriveId = headers.indexOf('Drive파일ID');
+  for (var i = 1; i < rows.length; i++) {
+    if (String(rows[i][iId]) === String(id)) {
+      var driveFileId = rows[i][iDriveId];
+      if (driveFileId) {
+        try { DriveApp.getFileById(driveFileId).setTrashed(true); }
+        catch (e) { Logger.log('[CS] drive trash failed: ' + e); }
+      }
+      sh.deleteRow(i + 1);
+      return json({ ok: true });
+    }
+  }
+  return json({ ok: false, error: '찾을 수 없음' });
+}
+
+function getActiveCSDocuments() {
+  var sh = ensureCSDocSheet();
+  var rows = sh.getDataRange().getValues();
+  if (rows.length < 2) return [];
+  var headers = rows[0];
+  var iActive = headers.indexOf('활성');
+  var iName = headers.indexOf('파일명');
+  var iCategory = headers.indexOf('카테고리');
+  var iContent = headers.indexOf('내용');
+  var docs = [];
+  for (var i = 1; i < rows.length; i++) {
+    if (rows[i][iActive] === true || String(rows[i][iActive]).toUpperCase() === 'TRUE') {
+      docs.push({
+        name: rows[i][iName],
+        category: rows[i][iCategory],
+        content: String(rows[i][iContent] || '')
+      });
+    }
+  }
+  return docs;
+}
+
+/* ═══════════════════════ AI 자동 답변 (CS 초안 생성) ═══════════════════════ */
+
+/**
+ * OpenAI Chat Completions 호출. Script Properties에 OPENAI_API_KEY 등록 필수.
+ * 실패 시 null 반환 — 메인 흐름은 계속 진행.
+ */
+function callOpenAI(messages, model) {
+  var apiKey = PropertiesService.getScriptProperties().getProperty('OPENAI_API_KEY');
+  if (!apiKey) {
+    Logger.log('[AI] OPENAI_API_KEY not set in Script Properties');
+    return null;
+  }
+  try {
+    var res = UrlFetchApp.fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'post',
+      contentType: 'application/json',
+      headers: { 'Authorization': 'Bearer ' + apiKey },
+      payload: JSON.stringify({
+        model: model || 'gpt-4o-mini',
+        messages: messages,
+        temperature: 0.3,
+        max_tokens: 600
+      }),
+      muteHttpExceptions: true
+    });
+    var code = res.getResponseCode();
+    if (code !== 200) {
+      Logger.log('[AI] OpenAI error ' + code + ': ' + res.getContentText());
+      return null;
+    }
+    var data = JSON.parse(res.getContentText());
+    return (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || null;
+  } catch (err) {
+    Logger.log('[AI] OpenAI exception: ' + err);
+    return null;
+  }
+}
+
+/**
+ * 최근 답변 완료된 문의 N건을 가져와 FAQ context로 활용.
+ * "답변" 컬럼에 값이 있는 행 = 이미 답변된 문의 = 학습 자료.
+ */
+function getRecentAnsweredFAQs(limit) {
+  try {
+    var sh = SpreadsheetApp.openById(SHEET_ID).getSheetByName(INQUIRY_SHEET);
+    if (!sh) return [];
+    var values = sh.getDataRange().getValues();
+    if (values.length < 2) return [];
+    var headers = values[0];
+    var iMessage = headers.indexOf('문의내용');
+    var iAnswer = headers.indexOf('답변');
+    if (iMessage < 0 || iAnswer < 0) return [];
+
+    var faqs = [];
+    for (var r = values.length - 1; r >= 1 && faqs.length < (limit || 15); r--) {
+      var q = String(values[r][iMessage] || '').trim();
+      var a = String(values[r][iAnswer] || '').trim();
+      if (q && a && a.length > 10) {
+        faqs.push({ question: q, answer: a });
+      }
+    }
+    return faqs;
+  } catch (err) {
+    Logger.log('[AI] getRecentAnsweredFAQs failed: ' + err);
+    return [];
+  }
+}
+
+/**
+ * AI가 문의 내용을 보고 답변 초안 생성. 민감한 질문이면 [민감] 태그만 출력해서
+ * 사람(관리자)이 직접 답변하도록 하고, 일반 질문이면 답변 초안을 만든다.
+ */
+function generateAIDraft(opts) {
+  var name = opts.name || '';
+  var message = (opts.message || '').trim();
+  if (!message) return { needsHuman: true, draft: '', reason: '문의 내용 없음' };
+
+  // 1. 활성 Positive + Negative (각각 별도 라이브러리)
+  var positive = '';
+  var negative = '';
+  try { positive = getActivePromptBody('positive'); } catch (e) { Logger.log('[AI] getActivePromptBody positive failed: ' + e); }
+  try { negative = getActivePromptBody('negative'); } catch (e) { Logger.log('[AI] getActivePromptBody negative failed: ' + e); }
+  if (!positive) {
+    positive = '당신은 "일꾼을찾다" CS 담당자입니다. 친절하고 전문적인 톤으로 답변하세요. 답변 끝에 "감사합니다.\n일꾼을찾다 팀" 추가.';
+  }
+  if (!negative) {
+    negative = '다음 중 하나면 정확히 "[민감]" 한 단어만 출력: 정치적 견해, 정당 비교, 선거법 해석, 법률 자문, 분쟁성 환불, 결제 분쟁, 회사 공식 입장 필요 사안.';
+  }
+
+  // 2. 활성 학습 문서
+  var docs = [];
+  try { docs = getActiveCSDocuments(); } catch (e) { Logger.log('[AI] getActiveCSDocuments failed: ' + e); }
+  var docContext = docs.length
+    ? '\n\n[참고 정책 문서]\n' + docs.map(function(d) {
+        return '## [' + (d.category || '일반') + '] ' + d.name + '\n' + d.content;
+      }).join('\n\n')
+    : '';
+
+  // 3. 최근 답변 FAQ
+  var faqs = getRecentAnsweredFAQs(15);
+  var faqContext = faqs.length
+    ? '\n\n[최근 답변 완료된 FAQ]\n' + faqs.map(function(f) {
+        return 'Q: ' + f.question + '\nA: ' + f.answer;
+      }).join('\n\n')
+    : '';
+
+  var systemPrompt = positive + '\n\n⚠️ 민감 분류 기준:\n' + negative + docContext + faqContext;
+
+  var userPrompt = name + '님의 문의:\n' + message + '\n\n위 문의에 답변하거나, 민감하면 "[민감]"만 출력하세요.';
+
+  var draft = callOpenAI([
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: userPrompt }
+  ]);
+
+  if (!draft) return { needsHuman: true, draft: '', reason: 'AI 호출 실패' };
+  var trimmed = draft.trim();
+  if (trimmed === '[민감]' || trimmed.indexOf('[민감]') === 0) {
+    return { needsHuman: true, draft: '', reason: '민감 질문 — 사람 답변 필요' };
+  }
+  return { needsHuman: false, draft: trimmed, reason: '' };
+}
+
 /* ═══════════════════════ 문의관리: Google Form 응답 자동 수집 ═══════════════════════ */
 
 /**
@@ -312,7 +770,8 @@ function registerAccount(data) {
  *      이벤트 유형: 양식 제출 시
  *
  * 문의관리 컬럼: A 접수일 / B 후보자명 / C 이메일 / D 후보등록범위 / E 지역구 /
- *                F 담당자연락처 / G 문의내용 / H 안내발송 / I 신청여부 / J 상태
+ *                F 담당자연락처 / G 문의내용 / H 안내발송 / I 신청여부 / J 상태 /
+ *                K 메모 / L 신청ID / M AI초안 / N 답변 / O AI상태
  */
 function onFormSubmit(e) {
   var sh = SpreadsheetApp.openById(SHEET_ID).getSheetByName(INQUIRY_SHEET);
@@ -340,6 +799,23 @@ function onFormSubmit(e) {
   );
   var message = byLabel(['문의 내용', '문의내용'], 6);
 
+  // AI 답변 초안 생성 (실패해도 메인 흐름엔 영향 없음)
+  var aiDraft = '';
+  var aiStatus = '미생성';
+  try {
+    var aiResult = generateAIDraft({ name: name, message: message });
+    if (aiResult.needsHuman) {
+      aiDraft = '';
+      aiStatus = '민감 — 사람 답변 필요';
+    } else {
+      aiDraft = aiResult.draft;
+      aiStatus = '초안 생성됨';
+    }
+  } catch (err) {
+    Logger.log('[AI] generateAIDraft failed in onFormSubmit: ' + err);
+    aiStatus = '생성 실패';
+  }
+
   sh.appendRow([
     today(),   // A 접수일
     name,      // B 후보자명
@@ -350,15 +826,22 @@ function onFormSubmit(e) {
     message,   // G 문의내용
     '미발송',  // H 안내발송
     '미신청',  // I 신청여부
-    '신규'     // J 상태
+    '신규',    // J 상태
+    '',        // K 메모 (관리자 입력용)
+    '',        // L 신청ID (다른 흐름에서 채움)
+    aiDraft,   // M AI초안
+    '',        // N 답변 (관리자 검수 후 발송 시 채움)
+    aiStatus   // O AI상태
   ]);
 
-  notifyChat('📥 *신규 문의 접수*\n'
+  var sensitivePrefix = aiStatus === '민감 — 사람 답변 필요' ? '🚨 *민감 질문 — 직접 답변 필요*\n\n' : '';
+  notifyChat(sensitivePrefix + '📥 *신규 문의 접수*\n'
     + '• 이름: ' + name + '\n'
     + '• 이메일: ' + email + '\n'
     + '• 후보종류: ' + scope + '\n'
     + '• 지역: ' + region + '\n'
-    + '• 연락처: ' + contact);
+    + '• 연락처: ' + contact + '\n'
+    + '• AI: ' + aiStatus);
 }
 
 /**
@@ -702,20 +1185,65 @@ function applyCandidate(data) {
   var sh = SpreadsheetApp.openById(SHEET_ID).getSheetByName(INQUIRY_SHEET);
   if (!sh) return json({ok: false, error: '시트 없음: ' + INQUIRY_SHEET});
 
+  // AI 답변 초안 생성 — 문의 내용 있을 때만
+  var aiDraft = '';
+  var aiStatus = '미생성';
+  if (message) {
+    try {
+      var aiResult = generateAIDraft({ name: name, message: message });
+      if (aiResult.needsHuman) {
+        aiDraft = '';
+        aiStatus = '민감 — 사람 답변 필요';
+      } else {
+        aiDraft = aiResult.draft;
+        aiStatus = '초안 생성됨';
+      }
+    } catch (err) {
+      Logger.log('[AI] generateAIDraft failed in applyCandidate: ' + err);
+      aiStatus = '생성 실패';
+    }
+  }
+
   sh.appendRow([
-    today(), name, email, scope, region, contact, message,
-    '미발송', '미신청', '신규'
+    today(),   // A 접수일
+    name,      // B 후보자명
+    email,     // C 이메일
+    scope,     // D 후보등록범위
+    region,    // E 지역구
+    contact,   // F 담당자연락처
+    message,   // G 문의내용
+    '미발송',  // H 안내발송
+    '미신청',  // I 신청여부
+    '신규',    // J 상태
+    '',        // K 메모
+    '',        // L 신청ID
+    aiDraft,   // M AI초안
+    '',        // N 답변
+    aiStatus   // O AI상태
   ]);
 
-  notifyChat('📥 *신규 후보자 등록 신청*\n'
+  var sensitivePrefix = aiStatus === '민감 — 사람 답변 필요' ? '🚨 *민감 질문 — 직접 답변 필요*\n\n' : '';
+  notifyChat(sensitivePrefix + '📥 *신규 후보자 등록 신청*\n'
     + '• 이름: ' + name + '\n'
     + '• 이메일: ' + email + '\n'
     + '• 후보종류: ' + scope + '\n'
     + '• 지역: ' + region + '\n'
     + '• 연락처: ' + contact
-    + (message ? '\n• 문의: ' + message : ''));
+    + (message ? '\n• 문의: ' + message + '\n• AI: ' + aiStatus : ''));
 
-  return json({ok: true, name: name, email: email});
+  // 자동 신청서 메일 발송 — sendRegistrationKit가 ID 발급, 시트 ID 갱신, 메일 발송 모두 처리
+  // 메일 실패는 문의 접수 자체에는 영향 없음 (try/catch로 격리)
+  var autoSent = false;
+  var autoErr = '';
+  try {
+    sendRegistrationKit(data);
+    autoSent = true;
+  } catch (e) {
+    autoErr = (e && e.message) ? e.message : String(e);
+    notifyChat('⚠️ *신청서 메일 자동 발송 실패*\n• 이메일: ' + email + '\n• 사유: ' + autoErr);
+  }
+
+  return json({ok: true, name: name, email: email, autoSent: autoSent, autoErr: autoErr});
 }
 
 /* ═══════════════════════ 소개서 신청 (랜딩) ═══════════════════════ */
@@ -769,7 +1297,7 @@ function sendBrochure(data) {
         '※ FAQ 펼쳐보기·링크 클릭 등 모든 기능을 바로 사용하실 수 있습니다.</span>' +
       '</p>' +
       '<p style="font-size:13px;color:#64748b;margin-top:18px">' +
-      '· AI 후보자 챗봇 · 24시간 시민 응대 · 후보자 전용 대시보드<br/>' +
+      '· 후보자 페이지 운영 · 24시간 시민 질문 자동 응답 · 후보자 전용 대시보드<br/>' +
       '· 도입 문의: <a href="mailto:ilkkun.official@gmail.com">ilkkun.official@gmail.com</a>' +
       '</p>' +
       '<p style="font-size:11.5px;color:#475569;margin-top:14px;background:#faf5ff;border-left:3px solid #7c3aed;padding:10px 14px;border-radius:6px">' +
@@ -1182,6 +1710,7 @@ function expectedAmountFor_(plan) {
   var prices = {
     '광역단체장': 2990000,
     '기초단체장': 1290000,
+    '교육감':     1290000,
     '광역의원':   390000,
     '기초의원':   190000
   };
