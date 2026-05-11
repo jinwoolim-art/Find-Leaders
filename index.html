@@ -1955,36 +1955,7 @@ if (appSliderDots) {
 }
 setInterval(() => { showAppSlide((appSlideIdx + 1) % 5); }, 4000);
 
-/* ───── 5. Token slider — 자 단위 + 자동 순환 ───── */
-const slider = document.getElementById('tokenSlider');
-const tokenValue = document.getElementById('tokenValue');
-const toggles = document.querySelectorAll('.token-toggle');
-const TOGGLE_PRESETS = [35, 85, 135]; // 짧음/보통/길 (자 단위)
-let toggleIdx = 1; // 시작: 보통
-let toggleAutoStopped = false;
-function applyToggle(len, opts){
-  slider.value = len;
-  tokenValue.textContent = len + '자';
-  toggles.forEach(t => t.classList.toggle('active', parseInt(t.dataset.len) === len));
-}
-slider.addEventListener('input', () => {
-  toggleAutoStopped = true; // 사용자 조작 시 영구 정지
-  const val = parseInt(slider.value);
-  tokenValue.textContent = val + '자';
-  toggles.forEach(t => t.classList.toggle('active', parseInt(t.dataset.len) === val));
-});
-toggles.forEach(t => {
-  t.addEventListener('click', () => {
-    toggleAutoStopped = true;
-    applyToggle(parseInt(t.dataset.len));
-  });
-});
-// 자동 순환: 짧음 → 보통 → 길 → 짧음...
-setInterval(() => {
-  if (toggleAutoStopped) return;
-  toggleIdx = (toggleIdx + 1) % TOGGLE_PRESETS.length;
-  applyToggle(TOGGLE_PRESETS[toggleIdx]);
-}, 2500);
+/* Token slider 제거됨 — 답변 길이 박스는 brochure P12로 이전 */
 
 /* ───── 5. Dashboard slider (자동 순환 + 좌우 화살표 수동 조작) ───── */
 const dashSlideLabels = ['사용 현황', '시민 인사이트', '정책 반응 분석', '운영 현황 + 비교 분석', '답변 만족도 분석'];
