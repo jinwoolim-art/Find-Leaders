@@ -119,6 +119,7 @@
     <p style="color:#4b5563;font-size:9px;font-weight:700;padding:16px 14px 4px;text-transform:uppercase;letter-spacing:.05em">고객 관리</p>
     <div class="sn" id="nav-inq" onclick="sw('inq')"><span class="ms">campaign</span>1단계 · 문의<span class="bdg" id="bdg-inq" style="background:#3b82f6">0</span></div>
     <div class="sn" id="nav-app" onclick="sw('app')"><span class="ms">assignment</span>2단계 · 신청<span class="bdg" id="bdg-app">0</span></div>
+    <div class="sn" id="nav-reg" onclick="sw('reg')"><span class="ms">how_to_reg</span>가입신청 (결제완료)<span class="bdg" id="bdg-reg" style="background:#7c3aed">0</span></div>
     <div class="sn" id="nav-acct" onclick="sw('acct')"><span class="ms">vpn_key</span>계정 발급<span class="bdg" id="bdg-acct" style="background:#22c55e">0</span></div>
     <p style="color:#4b5563;font-size:9px;font-weight:700;padding:16px 14px 4px;text-transform:uppercase;letter-spacing:.05em">메일 / CS</p>
     <div class="sn" id="nav-inbox" onclick="sw('inbox')"><span class="ms">inbox</span>수신 메일<span class="bdg" id="bdg-inbox" style="background:#3b82f6">0</span></div>
@@ -275,6 +276,52 @@
       <p style="font-size:11px;color:#1d4ed8;font-weight:600;margin:0" id="app-status">⏳ 구글 시트 연결 중...</p>
       <button class="btn btn-ghost" style="margin-left:auto;padding:4px 10px;font-size:10px" onclick="loadAllData()"><span class="ms" style="font-size:13px">refresh</span>새로고침</button>
     </div>
+  </div>
+
+  <!-- ══════════════════════════════ -->
+  <!-- 가입신청 (결제완료) — registration-form.html → 가입신청 시트 -->
+  <!-- ══════════════════════════════ -->
+  <div id="tab-reg" class="content" style="flex:1;display:none">
+    <!-- 요약 카드 -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+      <div class="sc"><p style="font-size:24px;font-weight:900;color:#111827" id="reg-total">0</p><p style="font-size:11px;color:#9ca3af;font-weight:600">전체</p></div>
+      <div class="sc" style="border-color:#fef3c7"><p style="font-size:24px;font-weight:900;color:#92400e" id="reg-new">0</p><p style="font-size:11px;color:#92400e;font-weight:600">신규접수</p></div>
+      <div class="sc" style="border-color:#bbf7d0"><p style="font-size:24px;font-weight:900;color:#15803d" id="reg-paid">0</p><p style="font-size:11px;color:#15803d;font-weight:600">결제완료</p></div>
+      <div class="sc" style="border-color:#bfdbfe"><p style="font-size:24px;font-weight:900;color:#1d4ed8" id="reg-today">0</p><p style="font-size:11px;color:#1d4ed8;font-weight:600">오늘 접수</p></div>
+    </div>
+
+    <!-- 검색/필터 -->
+    <div class="card" style="padding:14px;margin-bottom:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <input id="reg-search" class="inp" placeholder="이름·이메일·지역구 검색" style="flex:1;min-width:200px" oninput="regRender()"/>
+      <select id="reg-filter" class="inp" style="width:160px" onchange="regRender()">
+        <option value="">전체 상태</option>
+        <option value="신규접수">신규접수</option>
+        <option value="결제완료">결제완료</option>
+      </select>
+      <button class="btn btn-ghost" onclick="regLoad()" style="padding:8px 12px"><span class="ms" style="font-size:14px">refresh</span>새로고침</button>
+    </div>
+
+    <!-- 테이블 -->
+    <div class="card" style="padding:0;overflow-x:auto">
+      <table class="tbl" style="font-size:12px">
+        <thead>
+          <tr>
+            <th>접수일시</th>
+            <th>이름</th>
+            <th>직급</th>
+            <th>지역구</th>
+            <th>정당</th>
+            <th>이메일</th>
+            <th>담당자</th>
+            <th>증빙</th>
+            <th>상태</th>
+            <th>메모</th>
+          </tr>
+        </thead>
+        <tbody id="reg-tbody"><tr><td colspan="10" style="padding:30px;text-align:center;color:#9ca3af">로딩 중...</td></tr></tbody>
+      </table>
+    </div>
+    <p style="font-size:11px;color:#94a3b8;margin:12px 4px 0">출처: 가입신청 시트 (registration-form.html → submitRegistration → 결제완료 시 자동 갱신)</p>
   </div>
 
   <!-- ══════════════════════════════ -->
@@ -1426,9 +1473,77 @@ function closeCSFromSheet(i){
 
 function doLogin(){if(document.getElementById('login-pw').value==='0000'){document.getElementById('login-screen').classList.remove('show');loadAllData();renderAcctTable();loadAttachments();loadInbox();sw('home')}else{document.getElementById('login-err').style.display='block'}}
 function logout(){document.getElementById('login-screen').classList.add('show');document.getElementById('login-pw').value=''}
-var TABS=['home','inq','app','acct','cs','sent','inbox','tpl','aiset','avatar'];
-var TI={home:{t:'홈 · 요약',i:'dashboard'},inq:{t:'1단계 · 문의 관리',i:'campaign'},app:{t:'2단계 · 신청 관리',i:'assignment'},acct:{t:'계정 발급',i:'vpn_key'},cs:{t:'CS 관리',i:'support_agent'},sent:{t:'발송 내역',i:'send'},inbox:{t:'수신 메일',i:'inbox'},tpl:{t:'템플릿 관리',i:'draft'},aiset:{t:'AI 답변 설정',i:'smart_toy'},avatar:{t:'아바타 자동화',i:'face'}};
-function sw(tab){TABS.forEach(function(t){var el=document.getElementById('tab-'+t);if(el)el.style.display=t===tab?'block':'none';var nav=document.getElementById('nav-'+t);if(nav)nav.classList.toggle('on',t===tab)});document.getElementById('tt').textContent=TI[tab].t;document.getElementById('ti').textContent=TI[tab].i;closeP();document.querySelector('.side').classList.remove('mobile-open');if(tab==='home'&&typeof updateHomeSummary==='function')updateHomeSummary();if(tab==='aiset'&&typeof aiLoadAll==='function')aiLoadAll()}
+var TABS=['home','inq','app','reg','acct','cs','sent','inbox','tpl','aiset','avatar'];
+var TI={home:{t:'홈 · 요약',i:'dashboard'},inq:{t:'1단계 · 문의 관리',i:'campaign'},app:{t:'2단계 · 신청 관리',i:'assignment'},reg:{t:'가입신청 (결제완료)',i:'how_to_reg'},acct:{t:'계정 발급',i:'vpn_key'},cs:{t:'CS 관리',i:'support_agent'},sent:{t:'발송 내역',i:'send'},inbox:{t:'수신 메일',i:'inbox'},tpl:{t:'템플릿 관리',i:'draft'},aiset:{t:'AI 답변 설정',i:'smart_toy'},avatar:{t:'아바타 자동화',i:'face'}};
+function sw(tab){TABS.forEach(function(t){var el=document.getElementById('tab-'+t);if(el)el.style.display=t===tab?'block':'none';var nav=document.getElementById('nav-'+t);if(nav)nav.classList.toggle('on',t===tab)});document.getElementById('tt').textContent=TI[tab].t;document.getElementById('ti').textContent=TI[tab].i;closeP();document.querySelector('.side').classList.remove('mobile-open');if(tab==='home'&&typeof updateHomeSummary==='function')updateHomeSummary();if(tab==='aiset'&&typeof aiLoadAll==='function')aiLoadAll();if(tab==='reg'&&typeof regLoad==='function')regLoad()}
+
+// ═══════════════ 가입신청 (결제완료) — 가입신청 시트 읽기 전용 ═══════════════
+var regAllRows = [];
+function regLoad(){
+  var tbody=document.getElementById('reg-tbody');
+  if(tbody)tbody.innerHTML='<tr><td colspan="10" style="padding:30px;text-align:center;color:#9ca3af">로딩 중...</td></tr>';
+  fetchSheet('가입신청', function(rows){
+    regAllRows = rows || [];
+    regUpdateSummary();
+    regRender();
+    var bdg=document.getElementById('bdg-reg');
+    if(bdg)bdg.textContent = regAllRows.length;
+  });
+}
+function regUpdateSummary(){
+  var today=new Date();
+  var ymd=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+  var total=regAllRows.length, paid=0, neww=0, todayCnt=0;
+  regAllRows.forEach(function(r){
+    var s=(r['상태']||'').trim();
+    if(s==='결제완료')paid++;
+    else if(s==='신규접수'||s==='')neww++;
+    var dt=(r['신청일시']||'').toString();
+    if(dt.indexOf(ymd)===0||dt.indexOf(ymd.replace(/-/g,'. '))>=0)todayCnt++;
+  });
+  var $=function(id){return document.getElementById(id)};
+  if($('reg-total'))$('reg-total').textContent=total;
+  if($('reg-new'))$('reg-new').textContent=neww;
+  if($('reg-paid'))$('reg-paid').textContent=paid;
+  if($('reg-today'))$('reg-today').textContent=todayCnt;
+}
+function regRender(){
+  var tbody=document.getElementById('reg-tbody');
+  if(!tbody)return;
+  var q=(document.getElementById('reg-search').value||'').toLowerCase().trim();
+  var f=document.getElementById('reg-filter').value;
+  var filtered=regAllRows.filter(function(r){
+    if(f){var s=(r['상태']||'').trim();if(s!==f)return false}
+    if(q){
+      var hay=((r['이름']||'')+(r['이메일']||'')+(r['지역구']||'')+(r['담당자명']||'')).toLowerCase();
+      if(hay.indexOf(q)===-1)return false;
+    }
+    return true;
+  });
+  if(filtered.length===0){
+    tbody.innerHTML='<tr><td colspan="10" style="padding:30px;text-align:center;color:#9ca3af">데이터 없음</td></tr>';
+    return;
+  }
+  tbody.innerHTML=filtered.map(function(r){
+    var s=(r['상태']||'').trim();
+    var sColor=s==='결제완료'?'#15803d':s==='신규접수'?'#92400e':'#6b7280';
+    var sBg=s==='결제완료'?'#dcfce7':s==='신규접수'?'#fef3c7':'#f3f4f6';
+    var url=r['증빙폴더URL']||'';
+    var urlCell=url?'<a href="'+url+'" target="_blank" style="color:#7c3aed;text-decoration:none">📁 열기</a>':'<span style="color:#cbd5e1">-</span>';
+    return '<tr>'
+      +'<td style="font-size:11px;color:#6b7280">'+(r['신청일시']||'')+'</td>'
+      +'<td style="font-weight:700">'+(r['이름']||'')+'</td>'
+      +'<td>'+(r['직급']||'')+'</td>'
+      +'<td>'+(r['지역구']||'')+'</td>'
+      +'<td>'+(r['정당']||'')+'</td>'
+      +'<td style="font-size:11.5px;color:#475569">'+(r['이메일']||'')+'</td>'
+      +'<td style="font-size:11.5px">'+(r['담당자명']||'')+(r['담당자연락처']?'<br/><span style="color:#94a3b8;font-size:10.5px">'+r['담당자연락처']+'</span>':'')+'</td>'
+      +'<td>'+urlCell+'</td>'
+      +'<td><span style="background:'+sBg+';color:'+sColor+';padding:3px 9px;border-radius:12px;font-size:10.5px;font-weight:700">'+(s||'-')+'</span></td>'
+      +'<td style="font-size:11px;color:#6b7280">'+(r['메모']||'')+'</td>'
+    +'</tr>';
+  }).join('');
+}
 function togAll(m,g){document.querySelectorAll('.rc-'+g).forEach(function(c){c.checked=m.checked})}
 var bulkActiveTab='inq';
 function openBulkFromTab(){
