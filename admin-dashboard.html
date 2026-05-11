@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>관리자 대시보드 | 일꾼을찾다</title>
+<title>관리자 대시보드 | 일꾼을묻다</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <style>
@@ -104,7 +104,7 @@
   <div style="background:#fff;border-radius:24px;padding:40px;width:380px;text-align:center">
     <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;margin:0 auto 16px"><span class="ms msf" style="color:#fff;font-size:28px">admin_panel_settings</span></div>
     <h2 style="font-size:20px;font-weight:900;color:#111827;margin:0 0 4px">관리자 대시보드</h2>
-    <p style="font-size:12px;color:#9ca3af;margin:0 0 24px">일꾼을찾다 · Admin</p>
+    <p style="font-size:12px;color:#9ca3af;margin:0 0 24px">일꾼을묻다 · Admin</p>
     <div style="text-align:left;margin-bottom:12px"><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">비밀번호</label><input type="password" id="login-pw" class="inp" placeholder="비밀번호" onkeydown="if(event.key==='Enter')doLogin()"/></div>
     <p id="login-err" style="font-size:11px;color:#dc2626;margin:0 0 12px;display:none">비밀번호가 틀렸습니다</p>
     <button onclick="doLogin()" class="btn btn-primary" style="width:100%;padding:12px;font-size:14px;justify-content:center">로그인</button>
@@ -113,7 +113,7 @@
 
 <!-- 사이드바 -->
 <div class="side">
-  <div style="padding:20px 16px 16px"><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center"><span class="ms msf" style="color:#fff;font-size:17px">admin_panel_settings</span></div><div><p style="color:#fff;font-weight:900;font-size:13px">일꾼을찾다</p><p style="color:#4b5563;font-size:10px">Admin Dashboard</p></div></div></div>
+  <div style="padding:20px 16px 16px"><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center"><span class="ms msf" style="color:#fff;font-size:17px">admin_panel_settings</span></div><div><p style="color:#fff;font-weight:900;font-size:13px">일꾼을묻다</p><p style="color:#4b5563;font-size:10px">Admin Dashboard</p></div></div></div>
   <nav style="flex:1;padding:0 6px;display:flex;flex-direction:column;gap:2px;overflow-y:auto">
     <div class="sn on" id="nav-home" onclick="sw('home')" style="margin-top:8px"><span class="ms">dashboard</span>홈 · 요약</div>
     <p style="color:#4b5563;font-size:9px;font-weight:700;padding:16px 14px 4px;text-transform:uppercase;letter-spacing:.05em">고객 관리</p>
@@ -126,6 +126,7 @@
     <div class="sn" id="nav-sent" onclick="sw('sent')"><span class="ms">send</span>발송 내역</div>
     <p style="color:#4b5563;font-size:9px;font-weight:700;padding:16px 14px 4px;text-transform:uppercase;letter-spacing:.05em">시스템</p>
     <div class="sn" id="nav-tpl" onclick="sw('tpl')"><span class="ms">draft</span>템플릿 관리</div>
+    <div class="sn" id="nav-aiset" onclick="sw('aiset')"><span class="ms">smart_toy</span>AI 답변 설정</div>
   </nav>
   <div style="padding:12px;border-top:1px solid #1f2937">
     <div class="sn" onclick="logout()"><span class="ms">logout</span>로그아웃</div>
@@ -473,11 +474,11 @@
       </div>
       <div style="margin-bottom:12px">
         <label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">메일 제목</label>
-        <input type="text" id="auto-subject" class="inp" value="[일꾼을찾다] 안내서 및 신청서를 보내드립니다" style="font-size:13px"/>
+        <input type="text" id="auto-subject" class="inp" value="[일꾼을묻다] 안내서 및 신청서를 보내드립니다" style="font-size:13px"/>
       </div>
       <div style="margin-bottom:12px">
         <label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">메일 본문 <span style="color:#a78bfa">{{이름}} {{이메일}} 자동 치환</span></label>
-        <textarea id="auto-body" class="inp" rows="10" style="font-size:12px;line-height:1.8;resize:vertical">{{이름}}님 안녕하세요, 일꾼을찾다입니다.
+        <textarea id="auto-body" class="inp" rows="10" style="font-size:12px;line-height:1.8;resize:vertical">{{이름}}님 안녕하세요, 일꾼을묻다입니다.
 
 문의 감사합니다.
 안내서와 신청서를 보내드립니다.
@@ -490,7 +491,7 @@
 접수 후 1영업일 내 대시보드를 발급해드립니다.
 
 감사합니다.
-일꾼을찾다 팀 드림</textarea>
+일꾼을묻다 팀 드림</textarea>
       </div>
       <!-- 첨부파일 선택 -->
       <div style="background:#f5f3ff;border:1px solid #ede9fe;border-radius:12px;padding:14px">
@@ -531,14 +532,131 @@
       <button class="btn btn-primary" onclick="alert('새 템플릿')"><span class="ms" style="font-size:14px">add</span>새 템플릿</button>
     </div>
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px">
-      <div class="card" style="padding:16px;cursor:pointer" onclick="openTplEdit('2단계 · 계정 발급','[일꾼을찾다] 대시보드 계정이 발급되었습니다','{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n대시보드 계정이 발급되었습니다.\n\n━━━━━━━━━━━━━━━━━━━━\n🔗 대시보드: {{대시보드링크}}\n📧 ID: {{이메일}}\n🔑 임시 비밀번호: {{비밀번호}}\n━━━━━━━━━━━━━━━━━━━━\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n\n감사합니다.\n일꾼을찾다 팀')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#22c55e;font-size:18px">key</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">2단계 · 계정 발급</p></div><p style="font-size:11px;color:#6b7280;margin:0">대시보드 URL + ID + 임시 비밀번호</p></div>
-      <div class="card" style="padding:16px;cursor:pointer" onclick="openTplEdit('2단계 · 증명서 요청','[일꾼을찾다] 후보자 확인증을 보내주세요','{{이름}}님 안녕하세요.\n\n신청서를 접수받았으나 후보자 확인증이 첨부되어 있지 않습니다.\n\n📩 ilkkun.official@gmail.com 으로 확인증을 보내주세요.\n\n감사합니다.\n일꾼을찾다 팀')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#dc2626;font-size:18px">description</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">2단계 · 증명서 요청</p></div><p style="font-size:11px;color:#6b7280;margin:0">후보자 확인증 미첨부 안내</p></div>
-      <div class="card" style="padding:16px;cursor:pointer" onclick="openTplEdit('리마인더','[일꾼을찾다] 신청서 제출 안내','{{이름}}님 안녕하세요.\n\n지난번 안내드린 신청서가 아직 접수되지 않았습니다.\n미제출 시 서비스 이용이 불가합니다.\n\n📩 ilkkun.official@gmail.com\n\n감사합니다.\n일꾼을찾다 팀')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#f59e0b;font-size:18px">schedule_send</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">리마인더</p></div><p style="font-size:11px;color:#6b7280;margin:0">미신청/미제출 리마인더</p></div>
-      <div class="card" style="padding:16px;cursor:pointer" onclick="openTplEdit('CS 답변','[일꾼을찾다] 문의 답변드립니다','{{이름}}님 안녕하세요.\n\n문의하신 내용에 답변드립니다.\n\n──────────────────\n(답변 내용)\n──────────────────\n\n추가 문의는 본 메일에 회신해주세요.\n\n감사합니다.\n일꾼을찾다 팀')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#3b82f6;font-size:18px">reply</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">CS 답변</p></div><p style="font-size:11px;color:#6b7280;margin:0">고객 문의 답변 기본 템플릿</p></div>
-      <div class="card" style="padding:16px;cursor:pointer" onclick="openTplEdit('이벤트 할인','[일꾼을찾다] 🔥 특별 할인 안내','{{이름}}님 안녕하세요.\n\n지금 토큰 충전 시 최대 45% 할인!\n\n🔥 1차 이벤트 (4월): 최대 혜택\n⏰ 2차 이벤트 (5/1~10): 마지막 기회\n\n👉 충전하기: {{대시보드링크}}\n\n감사합니다.\n일꾼을찾다 팀')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#f59e0b;font-size:18px">local_fire_department</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">이벤트 할인 안내</p></div><p style="font-size:11px;color:#6b7280;margin:0">할인 프로모션 메일</p></div>
-      <div class="card" style="padding:16px;cursor:pointer" onclick="openTplEdit('토큰 부족','[일꾼을찾다] ⚠️ 토큰 부족','{{이름}}님 안녕하세요.\n\n토큰 잔여량이 부족합니다.\n소진 시 AI 아바타 운영이 중단됩니다.\n\n👉 충전하기: {{대시보드링크}}\n\n감사합니다.\n일꾼을찾다 팀')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#ef4444;font-size:18px">warning</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">토큰 부족 알림</p></div><p style="font-size:11px;color:#6b7280;margin:0">토큰 잔여 부족 충전 안내</p></div>
+      <div class="card" style="padding:16px;cursor:pointer" onclick="openTplEdit('2단계 · 계정 발급','[일꾼을묻다] 대시보드 계정이 발급되었습니다','{{이름}}님 안녕하세요, 일꾼을묻다입니다.\n\n대시보드 계정이 발급되었습니다.\n\n━━━━━━━━━━━━━━━━━━━━\n🔗 대시보드: {{대시보드링크}}\n📧 ID: {{이메일}}\n🔑 임시 비밀번호: {{비밀번호}}\n━━━━━━━━━━━━━━━━━━━━\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n\n감사합니다.\n일꾼을묻다 팀')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#22c55e;font-size:18px">key</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">2단계 · 계정 발급</p></div><p style="font-size:11px;color:#6b7280;margin:0">대시보드 URL + ID + 임시 비밀번호</p></div>
+      <div class="card" style="padding:16px;cursor:pointer" onclick="openTplEdit('2단계 · 증명서 요청','[일꾼을묻다] 후보자 확인증을 보내주세요','{{이름}}님 안녕하세요.\n\n신청서를 접수받았으나 후보자 확인증이 첨부되어 있지 않습니다.\n\n📩 ilkkun.official@gmail.com 으로 확인증을 보내주세요.\n\n감사합니다.\n일꾼을묻다 팀')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#dc2626;font-size:18px">description</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">2단계 · 증명서 요청</p></div><p style="font-size:11px;color:#6b7280;margin:0">후보자 확인증 미첨부 안내</p></div>
+      <div class="card" style="padding:16px;cursor:pointer" onclick="openTplEdit('리마인더','[일꾼을묻다] 신청서 제출 안내','{{이름}}님 안녕하세요.\n\n지난번 안내드린 신청서가 아직 접수되지 않았습니다.\n미제출 시 서비스 이용이 불가합니다.\n\n📩 ilkkun.official@gmail.com\n\n감사합니다.\n일꾼을묻다 팀')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#f59e0b;font-size:18px">schedule_send</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">리마인더</p></div><p style="font-size:11px;color:#6b7280;margin:0">미신청/미제출 리마인더</p></div>
+      <div class="card" style="padding:16px;cursor:pointer" onclick="openTplEdit('CS 답변','[일꾼을묻다] 문의 답변드립니다','{{이름}}님 안녕하세요.\n\n문의하신 내용에 답변드립니다.\n\n──────────────────\n(답변 내용)\n──────────────────\n\n추가 문의는 본 메일에 회신해주세요.\n\n감사합니다.\n일꾼을묻다 팀')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#3b82f6;font-size:18px">reply</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">CS 답변</p></div><p style="font-size:11px;color:#6b7280;margin:0">고객 문의 답변 기본 템플릿</p></div>
+      <div class="card" style="padding:16px;cursor:pointer" onclick="openTplEdit('이벤트 할인','[일꾼을묻다] 🔥 특별 할인 안내','{{이름}}님 안녕하세요.\n\n지금 토큰 충전 시 최대 45% 할인!\n\n🔥 1차 이벤트 (4월): 최대 혜택\n⏰ 2차 이벤트 (5/1~10): 마지막 기회\n\n👉 충전하기: {{대시보드링크}}\n\n감사합니다.\n일꾼을묻다 팀')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#f59e0b;font-size:18px">local_fire_department</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">이벤트 할인 안내</p></div><p style="font-size:11px;color:#6b7280;margin:0">할인 프로모션 메일</p></div>
+      <div class="card" style="padding:16px;cursor:pointer" onclick="openTplEdit('토큰 부족','[일꾼을묻다] ⚠️ 토큰 부족','{{이름}}님 안녕하세요.\n\n토큰 잔여량이 부족합니다.\n소진 시 AI 아바타 운영이 중단됩니다.\n\n👉 충전하기: {{대시보드링크}}\n\n감사합니다.\n일꾼을묻다 팀')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms" style="color:#ef4444;font-size:18px">warning</span><p style="font-size:13px;font-weight:900;color:#111827;margin:0">토큰 부족 알림</p></div><p style="font-size:11px;color:#6b7280;margin:0">토큰 잔여 부족 충전 안내</p></div>
       <div class="card" style="padding:16px;cursor:pointer;border:2px dashed #c4b5fd;background:#faf5ff" onclick="alert('팸플릿 에디터')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="ms msf" style="color:#7c3aed;font-size:18px">palette</span><p style="font-size:13px;font-weight:900;color:#7c3aed;margin:0">팸플릿 만들기</p></div><p style="font-size:11px;color:#7c3aed;margin:0">이미지 + 텍스트 + CTA 버튼 조합</p></div>
       <div class="card" style="padding:16px;cursor:pointer;border:2px dashed #e2e8f0" onclick="alert('새 템플릿')"><div style="text-align:center;padding:8px 0"><span class="ms" style="color:#d1d5db;font-size:28px">add_circle_outline</span><p style="font-size:12px;color:#9ca3af;font-weight:700;margin:6px 0 0">새 템플릿 추가</p></div></div>
+    </div>
+  </div>
+
+  <!-- ═════════════════ AI 답변 설정 ═════════════════ -->
+  <div id="tab-aiset" class="content" style="flex:1;display:none">
+
+    <!-- 활성 조합 미리보기 -->
+    <div class="card" style="padding:20px;margin-bottom:16px;border:2px solid #7c3aed">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <span class="ms msf" style="color:#7c3aed;font-size:22px">smart_toy</span>
+        <div>
+          <p style="font-size:14px;font-weight:900;color:#111827;margin:0">현재 AI 답변 조합</p>
+          <p style="font-size:11px;color:#6b7280;margin:2px 0 0">활성 Positive + 활성 Negative + 활성 학습 문서가 조합되어 답변 생성</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#3b82f6;margin-bottom:4px">✅ 활성 Positive</div>
+          <div id="ai-active-positive" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px;font-size:11.5px;color:#374151;line-height:1.6;white-space:pre-wrap;max-height:200px;overflow-y:auto">로딩 중...</div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#dc2626;margin-bottom:4px">⚠️ 활성 Negative</div>
+          <div id="ai-active-negative" style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:12px;font-size:11.5px;color:#374151;line-height:1.6;white-space:pre-wrap;max-height:200px;overflow-y:auto">로딩 중...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Positive 라이브러리 ── -->
+    <div class="card" style="padding:20px;margin-bottom:16px;border-left:3px solid #3b82f6">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <span class="ms" style="color:#3b82f6;font-size:20px">thumb_up</span>
+        <p style="font-size:14px;font-weight:900;color:#111827;margin:0">Positive 라이브러리 (답변 톤·가이드)</p>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px;margin-bottom:10px">
+        <input id="aip-name" class="inp" placeholder="이름 (예: 친근톤 v1)"/>
+        <input id="aip-author" class="inp" placeholder="작성자 (선택)"/>
+      </div>
+      <textarea id="aip-body" class="inp" style="min-height:140px;font-family:inherit;font-size:12.5px;line-height:1.5" placeholder="당신은 일꾼을묻다 CS 담당자입니다. 친절하고 전문적인 톤으로..."></textarea>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+        <button class="btn btn-ghost" onclick="aiClearForm('positive')" style="padding:8px 14px">초기화</button>
+        <button class="btn" style="padding:8px 14px;background:#e5e7eb;color:#374151" onclick="aiSaveItem('positive',false)">💾 저장만</button>
+        <button class="btn btn-purple" onclick="aiSaveItem('positive',true)" style="padding:8px 16px">💾 저장 + 활성화</button>
+      </div>
+      <div style="margin-top:14px;border-top:1px solid #e5e7eb;padding-top:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <p style="font-size:12px;font-weight:700;color:#374151;margin:0">저장된 Positive</p>
+          <button class="btn btn-ghost" onclick="aiLoadList('positive')" style="padding:4px 10px;font-size:11px"><span class="ms" style="font-size:13px">refresh</span></button>
+        </div>
+        <div id="ai-positive-list">로딩 중...</div>
+      </div>
+    </div>
+
+    <!-- ── Negative 라이브러리 ── -->
+    <div class="card" style="padding:20px;margin-bottom:16px;border-left:3px solid #dc2626">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <span class="ms" style="color:#dc2626;font-size:20px">block</span>
+        <p style="font-size:14px;font-weight:900;color:#111827;margin:0">Negative 라이브러리 (민감 분류 기준)</p>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px;margin-bottom:10px">
+        <input id="ain-name" class="inp" placeholder="이름 (예: 환불학습반영 v1)"/>
+        <input id="ain-author" class="inp" placeholder="작성자 (선택)"/>
+      </div>
+      <textarea id="ain-body" class="inp" style="min-height:140px;font-family:inherit;font-size:12.5px;line-height:1.5" placeholder="다음 중 하나면 [민감] 출력: 정치적 견해, 법률 자문..."></textarea>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+        <button class="btn btn-ghost" onclick="aiClearForm('negative')" style="padding:8px 14px">초기화</button>
+        <button class="btn" style="padding:8px 14px;background:#e5e7eb;color:#374151" onclick="aiSaveItem('negative',false)">💾 저장만</button>
+        <button class="btn btn-purple" onclick="aiSaveItem('negative',true)" style="padding:8px 16px">💾 저장 + 활성화</button>
+      </div>
+      <div style="margin-top:14px;border-top:1px solid #e5e7eb;padding-top:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <p style="font-size:12px;font-weight:700;color:#374151;margin:0">저장된 Negative</p>
+          <button class="btn btn-ghost" onclick="aiLoadList('negative')" style="padding:4px 10px;font-size:11px"><span class="ms" style="font-size:13px">refresh</span></button>
+        </div>
+        <div id="ai-negative-list">로딩 중...</div>
+      </div>
+    </div>
+
+    <!-- 학습 문서 업로드 -->
+    <div class="card" style="padding:20px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <span class="ms" style="color:#22c55e;font-size:20px">upload_file</span>
+        <p style="font-size:13px;font-weight:900;color:#111827;margin:0">학습 문서 추가</p>
+      </div>
+      <p style="font-size:11px;color:#6b7280;margin:0 0 10px">활성된 문서는 AI가 답변 작성 시 참고합니다 (환불약정, 가입절차 등)</p>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px;margin-bottom:10px">
+        <input id="ai-doc-name" class="inp" placeholder="문서 제목 (예: 환불 약정 v1)"/>
+        <select id="ai-doc-cat" class="inp">
+          <option value="환불">환불</option>
+          <option value="가입">가입</option>
+          <option value="결제">결제</option>
+          <option value="약관">약관</option>
+          <option value="FAQ">FAQ</option>
+          <option value="일반" selected>일반</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:10px">
+        <input type="file" id="ai-doc-file" accept=".pdf,.txt,application/pdf,text/plain" style="flex:1;font-size:12px;padding:8px;border:1px solid #e5e7eb;border-radius:8px"/>
+      </div>
+      <p style="font-size:10px;color:#9ca3af;margin:0 0 8px">또는 텍스트 직접 입력 ↓ (둘 중 하나만)</p>
+      <textarea id="ai-doc-text" class="inp" style="min-height:100px;font-family:inherit;font-size:12.5px;line-height:1.5" placeholder="정책 내용, FAQ, 환불 규정 등을 직접 붙여넣기..."></textarea>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+        <button class="btn btn-ghost" onclick="aiClearDocForm()" style="padding:8px 14px">초기화</button>
+        <button class="btn btn-purple" onclick="aiUploadDoc()" style="padding:8px 16px">📤 업로드 + 활성화</button>
+      </div>
+      <div id="ai-doc-status" style="font-size:11px;color:#6b7280;margin-top:8px"></div>
+    </div>
+
+    <!-- 학습 문서 목록 -->
+    <div class="card" style="padding:20px;margin-bottom:20px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="ms" style="color:#22c55e;font-size:20px">folder</span>
+          <p style="font-size:13px;font-weight:900;color:#111827;margin:0">학습 문서 목록</p>
+        </div>
+        <button class="btn btn-ghost" onclick="aiLoadDocs()" style="padding:4px 10px;font-size:11px"><span class="ms" style="font-size:13px">refresh</span>새로고침</button>
+      </div>
+      <div id="ai-docs-list">로딩 중...</div>
     </div>
   </div>
 
@@ -609,7 +727,7 @@ var WEB_APP_URL='https://script.google.com/macros/s/AKfycby7xcDYmlJgXvriMkqi8ZUO
 
 function apiSend(payload, onDone){
   if(!WEB_APP_URL){
-    alert('⚠️ Apps Script 웹앱 URL이 설정되지 않았습니다.\n\napps-script.gs를 배포한 후 admin-dashboard.html의 WEB_APP_URL에 붙여넣으세요.');
+    alert('⚠️ Apps Script 웹앱 URL이 설정되지 않았습니다.\n\napps-script/Code.gs를 배포한 후 admin-dashboard.html의 WEB_APP_URL에 붙여넣으세요.');
     if(onDone) onDone({ok:false,error:'WEB_APP_URL not set'});
     return;
   }
@@ -951,7 +1069,15 @@ function _renderInqRows(rows){
     var sendHtml=isSent?'<span class="st st-sent">📩 발송됨</span>':isFailed?'<span class="st" style="background:#fef2f2;color:#dc2626">❌ 실패</span>':'<span class="st st-nosub">—</span>';
     var esN=escapeHtml(r['후보자명']||''),esE=escapeHtml(r['이메일']||'');
     var memo=(r['메모']||'').replace(/"/g,'&quot;');
+    var aiStatusVal=(r['AI상태']||'').toString();
+    var hasAnswer=(r['답변']||'').toString().trim().length>0;
+    var aiBadge='';
+    if(aiStatusVal==='민감 — 사람 답변 필요') aiBadge='<span class="st" style="background:#fef2f2;color:#dc2626;font-size:10px;margin-right:4px">🚨 민감</span>';
+    else if(aiStatusVal==='초안 생성됨') aiBadge='<span class="st" style="background:#ecfeff;color:#0e7490;font-size:10px;margin-right:4px">🤖 초안</span>';
+    if(hasAnswer) aiBadge='<span class="st st-sent" style="font-size:10px;margin-right:4px">✅ 답변완료</span>';
+    var aiBtn='<button class="btn btn-ghost" style="padding:4px 8px;font-size:10px;margin-right:4px;border-color:#a78bfa;color:#6d28d9" onclick="openAIReply(\''+esE+'\')"><span class="ms" style="font-size:13px">smart_toy</span>답변</button>';
     var actHtml=
+      aiBadge + aiBtn +
       (isSub?'<span style="font-size:11px;color:#15803d;font-weight:700;margin-right:6px">→ 2단계</span>'
         :isExp?'<span style="font-size:11px;color:#9ca3af;margin-right:6px">만료</span>'
         :'<button class="btn btn-ghost" style="padding:4px 8px;font-size:10px;margin-right:4px" onclick="sendReminderOne(\''+esN+'\',\''+esE+'\')"><span class="ms" style="font-size:13px">schedule_send</span>리마인더</button>')+
@@ -968,6 +1094,88 @@ function _renderInqRows(rows){
       '<td>'+actHtml+'</td>'+
       '</tr>';
   }).join('');
+}
+
+function openAIReply(email){
+  var row=inqAllRows.find(function(r){return (r['이메일']||'')===email});
+  if(!row){alert('문의를 찾을 수 없음');return}
+  var name=row['후보자명']||'';
+  var question=row['문의내용']||'';
+  var aiDraft=row['AI초안']||'';
+  var aiStatus=row['AI상태']||'';
+  var existingAnswer=row['답변']||'';
+  var isSensitive=aiStatus==='민감 — 사람 답변 필요';
+
+  var existing=document.getElementById('ai-reply-modal');
+  if(existing) existing.remove();
+
+  var headerColor=isSensitive?'#dc2626':'#6d28d9';
+  var headerLabel=isSensitive?'🚨 민감 질문 — 직접 답변 필요':'🤖 AI 초안 검수 후 발송';
+  var initialBody=existingAnswer || aiDraft || '';
+
+  var modal=document.createElement('div');
+  modal.id='ai-reply-modal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:1000;display:flex;align-items:flex-start;justify-content:center;padding:40px 20px;overflow:auto';
+  modal.innerHTML=''
+    +'<div style="background:#fff;max-width:720px;width:100%;border-radius:14px;padding:22px 24px;box-shadow:0 20px 60px rgba(15,23,42,.3)">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;border-bottom:1px solid #e5e7eb;padding-bottom:10px">'
+        +'<div>'
+          +'<div style="font-size:14px;font-weight:900;color:'+headerColor+'">'+headerLabel+'</div>'
+          +'<div style="font-size:11px;color:#6b7280;margin-top:2px">'+escapeHtml(name)+' · '+escapeHtml(email)+'</div>'
+        +'</div>'
+        +'<button onclick="document.getElementById(\'ai-reply-modal\').remove()" style="border:1px solid #e2e8f0;background:#fff;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px">닫기</button>'
+      +'</div>'
+
+      +'<div style="font-size:11px;color:#6b7280;font-weight:700;margin:8px 0 4px">📥 후보자 문의</div>'
+      +'<div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px 12px;font-size:12.5px;white-space:pre-wrap;line-height:1.5">'+escapeHtml(question)+'</div>'
+
+      +(isSensitive
+        ? '<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 12px;margin-top:12px;font-size:12px;color:#991b1b"><b>⚠️ AI가 민감 질문으로 분류했습니다.</b><br/>정치적·법률적·환불·계약 등 회사 공식 입장이 필요한 사안일 수 있습니다. 직접 답변을 작성해주세요.</div>'
+        : '<div style="font-size:11px;color:#6b7280;font-weight:700;margin:12px 0 4px">🤖 AI 초안 (검수 후 발송)</div>'
+      )
+
+      +'<textarea id="ai-reply-body" style="width:100%;min-height:180px;border:1px solid #e5e7eb;border-radius:8px;padding:10px 12px;font-size:12.5px;font-family:inherit;line-height:1.6;margin-top:'+(isSensitive?'8':'0')+'px;resize:vertical">'+escapeHtml(initialBody)+'</textarea>'
+
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:8px">'
+        +'<div style="font-size:11px;color:#9ca3af">📩 발송 후 「답변」 컬럼에 저장됩니다 (다음 AI 학습 데이터)</div>'
+        +'<div style="display:flex;gap:8px">'
+          +'<button onclick="document.getElementById(\'ai-reply-modal\').remove()" style="padding:8px 14px;border:1px solid #e5e7eb;background:#fff;border-radius:8px;cursor:pointer;font-size:12px">취소</button>'
+          +'<button onclick="sendAIReply(\''+email+'\',\''+escapeHtml(name).replace(/\'/g,"&#39;")+'\')" style="padding:8px 16px;border:none;background:#6d28d9;color:#fff;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700">📩 답변 발송</button>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  document.body.appendChild(modal);
+  setTimeout(function(){var t=document.getElementById('ai-reply-body'); if(t) t.focus()},50);
+}
+
+function sendAIReply(email,name){
+  var body=(document.getElementById('ai-reply-body').value||'').trim();
+  if(!body){alert('답변 내용을 입력하세요');return}
+  if(!confirm('"'+name+'"님께 답변 메일을 발송합니다. 진행할까요?')) return;
+
+  var subject='[일꾼을묻다] 문의 답변드립니다';
+  apiSend({
+    action:'send',
+    to:email,
+    subject:subject,
+    body:body,
+    recipient:name,
+    type:'CS 답변',
+    step:'CS',
+    variables:{이름:name}
+  },function(res){
+    if(!res.ok){alert('발송 실패: '+(res.error||''));return}
+    apiSend({
+      action:'updateRow',
+      sheet:'문의관리',
+      keyCol:'이메일',
+      keyValue:email,
+      updates:{'답변':body, 'AI상태':'답변 완료'}
+    },function(){
+      var m=document.getElementById('ai-reply-modal'); if(m) m.remove();
+      loadAllData();
+    });
+  });
 }
 
 function saveInqMemo(email,memo){
@@ -1134,8 +1342,8 @@ function replyToCSFromSheet(i){
   if(!answer){alert('답변 내용을 입력하세요');return}
   if(!d['이메일']){alert('이메일 주소가 없어 발송할 수 없습니다');return}
   if(!confirm('📧 '+d['후보자명']+'님께 답변을 발송하시겠습니까?\n\n· 메일 발송\n· CS 시트 답변/상태 업데이트')){return}
-  var subject='[일꾼을찾다] '+(d['제목']||'')+' 관련 답변드립니다';
-  var body='{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n문의하신 내용에 답변드립니다.\n\n━━━━━━━━━━━━━━━━━━━━\n원본 문의: '+(d['제목']||'')+'\n━━━━━━━━━━━━━━━━━━━━\n\n'+answer+'\n\n━━━━━━━━━━━━━━━━━━━━\n\n추가 문의는 본 메일에 회신해주세요.\n\n감사합니다.\n일꾼을찾다 팀';
+  var subject='[일꾼을묻다] '+(d['제목']||'')+' 관련 답변드립니다';
+  var body='{{이름}}님 안녕하세요, 일꾼을묻다입니다.\n\n문의하신 내용에 답변드립니다.\n\n━━━━━━━━━━━━━━━━━━━━\n원본 문의: '+(d['제목']||'')+'\n━━━━━━━━━━━━━━━━━━━━\n\n'+answer+'\n\n━━━━━━━━━━━━━━━━━━━━\n\n추가 문의는 본 메일에 회신해주세요.\n\n감사합니다.\n일꾼을묻다 팀';
   apiSend({
     action:'send',
     to:d['이메일'],
@@ -1180,9 +1388,9 @@ function closeCSFromSheet(i){
 
 function doLogin(){if(document.getElementById('login-pw').value==='0000'){document.getElementById('login-screen').classList.remove('show');loadAllData();renderAcctTable();loadAttachments();loadInbox();sw('home')}else{document.getElementById('login-err').style.display='block'}}
 function logout(){document.getElementById('login-screen').classList.add('show');document.getElementById('login-pw').value=''}
-var TABS=['home','inq','app','acct','cs','sent','inbox','tpl'];
-var TI={home:{t:'홈 · 요약',i:'dashboard'},inq:{t:'1단계 · 문의 관리',i:'campaign'},app:{t:'2단계 · 신청 관리',i:'assignment'},acct:{t:'계정 발급',i:'vpn_key'},cs:{t:'CS 관리',i:'support_agent'},sent:{t:'발송 내역',i:'send'},inbox:{t:'수신 메일',i:'inbox'},tpl:{t:'템플릿 관리',i:'draft'}};
-function sw(tab){TABS.forEach(function(t){var el=document.getElementById('tab-'+t);if(el)el.style.display=t===tab?'block':'none';var nav=document.getElementById('nav-'+t);if(nav)nav.classList.toggle('on',t===tab)});document.getElementById('tt').textContent=TI[tab].t;document.getElementById('ti').textContent=TI[tab].i;closeP();document.querySelector('.side').classList.remove('mobile-open');if(tab==='home'&&typeof updateHomeSummary==='function')updateHomeSummary()}
+var TABS=['home','inq','app','acct','cs','sent','inbox','tpl','aiset'];
+var TI={home:{t:'홈 · 요약',i:'dashboard'},inq:{t:'1단계 · 문의 관리',i:'campaign'},app:{t:'2단계 · 신청 관리',i:'assignment'},acct:{t:'계정 발급',i:'vpn_key'},cs:{t:'CS 관리',i:'support_agent'},sent:{t:'발송 내역',i:'send'},inbox:{t:'수신 메일',i:'inbox'},tpl:{t:'템플릿 관리',i:'draft'},aiset:{t:'AI 답변 설정',i:'smart_toy'}};
+function sw(tab){TABS.forEach(function(t){var el=document.getElementById('tab-'+t);if(el)el.style.display=t===tab?'block':'none';var nav=document.getElementById('nav-'+t);if(nav)nav.classList.toggle('on',t===tab)});document.getElementById('tt').textContent=TI[tab].t;document.getElementById('ti').textContent=TI[tab].i;closeP();document.querySelector('.side').classList.remove('mobile-open');if(tab==='home'&&typeof updateHomeSummary==='function')updateHomeSummary();if(tab==='aiset'&&typeof aiLoadAll==='function')aiLoadAll()}
 function togAll(m,g){document.querySelectorAll('.rc-'+g).forEach(function(c){c.checked=m.checked})}
 var bulkActiveTab='inq';
 function openBulkFromTab(){
@@ -1434,8 +1642,8 @@ function sendToAdmin(){
   if(!adminEmail){alert('플랫폼 관리자 이메일을 입력하세요');return}
   if(!generatedID||!generatedPW){alert('먼저 ID/PW를 생성하세요');return}
   if(!confirm('📧 '+adminEmail+' 로 계정 생성 요청을 보낼까요?')) return;
-  var subject='[일꾼을찾다] 계정 활성화 요청 - '+name;
-  var body='플랫폼 관리자님,\n\n아래 후보자 계정을 활성화해주세요.\n\n━━━━━━━━━━━━━━━━━━━━\n후보자: '+name+'\n이메일: '+email+'\nID: '+generatedID+'\nPW: '+generatedPW+'\n━━━━━━━━━━━━━━━━━━━━\n\n활성화 완료 후 회신 부탁드립니다.\n\n감사합니다.\n일꾼을찾다 팀';
+  var subject='[일꾼을묻다] 계정 활성화 요청 - '+name;
+  var body='플랫폼 관리자님,\n\n아래 후보자 계정을 활성화해주세요.\n\n━━━━━━━━━━━━━━━━━━━━\n후보자: '+name+'\n이메일: '+email+'\nID: '+generatedID+'\nPW: '+generatedPW+'\n━━━━━━━━━━━━━━━━━━━━\n\n활성화 완료 후 회신 부탁드립니다.\n\n감사합니다.\n일꾼을묻다 팀';
   apiSend({
     action:'send',
     to:adminEmail,
@@ -1458,8 +1666,8 @@ function sendToAdmin(){
 
 function sendToCandidate(idx){
   var entry=acctHistory[idx];
-  var subject='[일꾼을찾다] 대시보드 계정이 발급되었습니다';
-  var body='{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n대시보드 계정이 발급되었습니다.\n\n━━━━━━━━━━━━━━━━━━━━\n🔗 대시보드: https://host.thisishilo.ir\n📧 ID: {{ID}}\n🔑 임시 비밀번호: {{비밀번호}}\n━━━━━━━━━━━━━━━━━━━━\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n\n감사합니다.\n일꾼을찾다 팀';
+  var subject='[일꾼을묻다] 대시보드 계정이 발급되었습니다';
+  var body='{{이름}}님 안녕하세요, 일꾼을묻다입니다.\n\n대시보드 계정이 발급되었습니다.\n\n━━━━━━━━━━━━━━━━━━━━\n🔗 대시보드: https://host.thisishilo.ir\n📧 ID: {{ID}}\n🔑 임시 비밀번호: {{비밀번호}}\n━━━━━━━━━━━━━━━━━━━━\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n\n감사합니다.\n일꾼을묻다 팀';
   apiSend({
     action:'send',
     to:entry.email,
@@ -1542,10 +1750,10 @@ function approveAndIssue(name,email,pos){
     if(!res.ok){alert('❌ 시트 업데이트 실패: '+(res.error||''));return}
 
     // STEP 2: 관리자 + 후보자 이메일 병렬 발송
-    var adminSubject='[일꾼을찾다] 계정 활성화 요청 - '+name;
-    var adminBody='플랫폼 관리자님,\n\n아래 후보자 계정을 활성화해주세요.\n\n━━━━━━━━━━━━━━━━━━━━\n후보자: '+name+'\n후보구분: '+pos+'\n이메일: '+email+'\nID: '+id+'\nPW: '+pw+'\n━━━━━━━━━━━━━━━━━━━━\n\n활성화 완료 후 회신 부탁드립니다.\n\n감사합니다.\n일꾼을찾다 팀';
-    var userSubject='[일꾼을찾다] 대시보드 계정이 발급되었습니다';
-    var userBody='{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n대시보드 계정이 발급되었습니다.\n\n━━━━━━━━━━━━━━━━━━━━\n🔗 대시보드: '+DASHBOARD_URL+'\n📧 ID: {{ID}}\n🔑 임시 비밀번호: {{비밀번호}}\n━━━━━━━━━━━━━━━━━━━━\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n⚠️ 관리자 활성화 후 로그인 가능합니다 (최대 1영업일 소요).\n\n감사합니다.\n일꾼을찾다 팀';
+    var adminSubject='[일꾼을묻다] 계정 활성화 요청 - '+name;
+    var adminBody='플랫폼 관리자님,\n\n아래 후보자 계정을 활성화해주세요.\n\n━━━━━━━━━━━━━━━━━━━━\n후보자: '+name+'\n후보구분: '+pos+'\n이메일: '+email+'\nID: '+id+'\nPW: '+pw+'\n━━━━━━━━━━━━━━━━━━━━\n\n활성화 완료 후 회신 부탁드립니다.\n\n감사합니다.\n일꾼을묻다 팀';
+    var userSubject='[일꾼을묻다] 대시보드 계정이 발급되었습니다';
+    var userBody='{{이름}}님 안녕하세요, 일꾼을묻다입니다.\n\n대시보드 계정이 발급되었습니다.\n\n━━━━━━━━━━━━━━━━━━━━\n🔗 대시보드: '+DASHBOARD_URL+'\n📧 ID: {{ID}}\n🔑 임시 비밀번호: {{비밀번호}}\n━━━━━━━━━━━━━━━━━━━━\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n⚠️ 관리자 활성화 후 로그인 가능합니다 (최대 1영업일 소요).\n\n감사합니다.\n일꾼을묻다 팀';
 
     var adminOK=false,userOK=false,done=0;
     var finish=function(){
@@ -1656,8 +1864,8 @@ function markActivatedSheet(email){
 function resendToCandidate(email,name,id,pw){
   if(!email||!id){alert('계정 정보가 부족합니다');return}
   if(!confirm('"'+name+'"에게 계정 발급 메일을 (재)발송할까요?')) return;
-  var subject='[일꾼을찾다] 대시보드 계정이 발급되었습니다';
-  var body='{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n대시보드 계정이 발급되었습니다.\n\n━━━━━━━━━━━━━━━━━━━━\n🔗 대시보드: '+DASHBOARD_URL+'\n📧 ID: {{ID}}\n🔑 임시 비밀번호: {{비밀번호}}\n━━━━━━━━━━━━━━━━━━━━\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n\n감사합니다.\n일꾼을찾다 팀';
+  var subject='[일꾼을묻다] 대시보드 계정이 발급되었습니다';
+  var body='{{이름}}님 안녕하세요, 일꾼을묻다입니다.\n\n대시보드 계정이 발급되었습니다.\n\n━━━━━━━━━━━━━━━━━━━━\n🔗 대시보드: '+DASHBOARD_URL+'\n📧 ID: {{ID}}\n🔑 임시 비밀번호: {{비밀번호}}\n━━━━━━━━━━━━━━━━━━━━\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n\n감사합니다.\n일꾼을묻다 팀';
   apiSend({action:'send',to:email,recipient:name,subject:subject,body:body,
     step:'2단계',type:'계정 발급',
     variables:{'이름':name,'이메일':email,'ID':id,'비밀번호':pw}},function(res){
@@ -1894,6 +2102,280 @@ function escapeHtml(s){
   return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]});
 }
 
+/* ═══════════════════ AI 답변 설정 ═══════════════════ */
+
+var aiItems={positive:[],negative:[]};
+var aiDocs=[];
+
+function aiLoadAll(){ aiLoadList('positive'); aiLoadList('negative'); aiLoadDocs() }
+
+function aiLoadList(kind){
+  apiSend({action:'listCSItems',kind:kind},function(res){
+    if(!res.ok){alert((kind==='positive'?'Positive':'Negative')+' 목록 로딩 실패: '+(res.error||''));return}
+    aiItems[kind]=res.items||[];
+    aiRenderList(kind);
+    aiRenderActivePreview(kind);
+  });
+}
+
+function aiRenderActivePreview(kind){
+  var list=aiItems[kind]||[];
+  var active=list.find(function(p){return p['활성']===true||String(p['활성']).toUpperCase()==='TRUE'});
+  var boxId=kind==='positive'?'ai-active-positive':'ai-active-negative';
+  var box=document.getElementById(boxId);
+  if(!box) return;
+  if(!active){box.textContent='활성 항목 없음';return}
+  box.innerHTML=
+    '<div style="font-size:11.5px;font-weight:900;color:'+(kind==='positive'?'#1d4ed8':'#dc2626')+';margin-bottom:6px">'+escapeHtml(active['이름']||'-')+' <span style="font-size:10px;color:#9ca3af;font-weight:400">· '+escapeHtml(active['작성자']||'')+' · '+escapeHtml(active['작성일']||'')+'</span></div>'+
+    '<div style="white-space:pre-wrap">'+escapeHtml(active['본문']||'')+'</div>';
+}
+
+function aiRenderList(kind){
+  var list=aiItems[kind]||[];
+  var boxId=kind==='positive'?'ai-positive-list':'ai-negative-list';
+  var box=document.getElementById(boxId);
+  if(!box) return;
+  if(!list.length){box.innerHTML='<p style="font-size:12px;color:#9ca3af;padding:14px;text-align:center">저장된 항목 없음</p>';return}
+  box.innerHTML=list.map(function(p){
+    var isActive=p['활성']===true||String(p['활성']).toUpperCase()==='TRUE';
+    var fullBody=String(p['본문']||'');
+    var preview=fullBody.slice(0,90)+(fullBody.length>90?'...':'');
+    var hasMore=fullBody.length>90;
+    var color=kind==='positive'?'#3b82f6':'#dc2626';
+    var bgActive=kind==='positive'?'#eff6ff':'#fef2f2';
+    var idSafe=String(p['id']).replace(/[^a-zA-Z0-9_-]/g,'_');
+    return ''+
+      '<div style="border:1px solid '+(isActive?color:'#e5e7eb')+';border-radius:10px;padding:12px 14px;margin-bottom:8px;background:'+(isActive?bgActive:'#fff')+'">'+
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">'+
+          '<div style="flex:1;min-width:0;cursor:'+(hasMore?'pointer':'default')+'" '+(hasMore?'onclick="aiToggleBody(\''+idSafe+'\')"':'')+'>'+
+            '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">'+
+              '<b style="font-size:12.5px">'+escapeHtml(p['이름']||'-')+'</b>'+
+              (isActive?'<span style="background:'+color+';color:#fff;font-size:9px;padding:2px 8px;border-radius:999px;font-weight:700">ACTIVE</span>':'')+
+              '<span style="font-size:10px;color:#9ca3af">'+escapeHtml(p['작성자']||'')+' · '+escapeHtml(p['작성일']||'')+'</span>'+
+              (hasMore?'<span class="ms" id="ai-body-icon-'+idSafe+'" style="font-size:14px;color:#9ca3af;margin-left:auto">expand_more</span>':'')+
+            '</div>'+
+            '<div id="ai-body-preview-'+idSafe+'" style="font-size:11px;color:#6b7280;line-height:1.5">'+escapeHtml(preview)+'</div>'+
+            '<div id="ai-body-full-'+idSafe+'" style="font-size:11.5px;color:#374151;line-height:1.6;white-space:pre-wrap;background:#f9fafb;border-radius:6px;padding:10px 12px;margin-top:8px;display:none">'+escapeHtml(fullBody)+'</div>'+
+          '</div>'+
+          '<div style="display:flex;gap:6px;flex-shrink:0">'+
+            '<button class="btn btn-ghost" style="padding:4px 10px;font-size:11px" onclick="aiEditItem(\''+kind+'\',\''+p['id']+'\')"><span class="ms" style="font-size:13px">edit</span>수정</button>'+
+            (!isActive?'<button class="btn btn-ghost" style="padding:4px 10px;font-size:11px;border-color:'+color+';color:'+color+'" onclick="aiActivateItem(\''+kind+'\',\''+p['id']+'\')">활성화</button>':'')+
+            (!isActive?'<button class="btn btn-ghost" style="padding:4px 8px;font-size:11px;color:#dc2626;border-color:#fecaca" onclick="aiDeleteItem(\''+kind+'\',\''+p['id']+'\',\''+escapeHtml(p['이름']||'')+'\')">삭제</button>':'')+
+          '</div>'+
+        '</div>'+
+      '</div>';
+  }).join('');
+}
+
+function aiToggleBody(idSafe){
+  var preview=document.getElementById('ai-body-preview-'+idSafe);
+  var full=document.getElementById('ai-body-full-'+idSafe);
+  var icon=document.getElementById('ai-body-icon-'+idSafe);
+  if(!full) return;
+  var isOpen=full.style.display!=='none';
+  full.style.display=isOpen?'none':'block';
+  if(preview) preview.style.display=isOpen?'block':'none';
+  if(icon) icon.textContent=isOpen?'expand_more':'expand_less';
+}
+
+function aiCardButtons(prefix){
+  var anchor=document.getElementById(prefix+'-name');
+  if(!anchor) return [];
+  var card=anchor.closest('.card');
+  if(!card) return [];
+  return Array.prototype.slice.call(card.querySelectorAll('button.btn'));
+}
+function aiBusy(prefix,on,label){
+  var btns=aiCardButtons(prefix);
+  btns.forEach(function(b){
+    if(on){
+      if(!b.dataset.origText) b.dataset.origText=b.innerHTML;
+      b.disabled=true;
+      b.style.opacity='0.5';
+      b.style.cursor='wait';
+      if(label && !b.classList.contains('btn-ghost')) b.innerHTML='⏳ '+label;
+    }else{
+      b.disabled=false;
+      b.style.opacity='';
+      b.style.cursor='';
+      if(b.dataset.origText){b.innerHTML=b.dataset.origText;delete b.dataset.origText}
+    }
+  });
+}
+
+function aiSaveItem(kind,activate){
+  var prefix=kind==='positive'?'aip':'ain';
+  var name=(document.getElementById(prefix+'-name').value||'').trim();
+  var body=(document.getElementById(prefix+'-body').value||'').trim();
+  var author=(document.getElementById(prefix+'-author').value||'').trim();
+  if(!name){alert('이름을 입력하세요');return}
+  if(body.length<10){alert('본문이 너무 짧음 (10자 이상)');return}
+
+  aiBusy(prefix,true,activate?'저장+활성화 중':'저장 중');
+
+  // edit mode?
+  var editingId=document.getElementById(prefix+'-body').dataset.editingId||'';
+  if(editingId){
+    apiSend({action:'updateCSItem',kind:kind,id:editingId,name:name,body:body},function(res){
+      if(!res.ok){aiBusy(prefix,false);alert('수정 실패: '+(res.error||''));return}
+      if(activate){
+        apiSend({action:'activateCSItem',kind:kind,id:editingId},function(){
+          aiBusy(prefix,false);aiClearForm(kind);aiLoadList(kind);
+          alert('✅ 수정 + 활성화 완료');
+        });
+      }else{
+        aiBusy(prefix,false);aiClearForm(kind);aiLoadList(kind);
+        alert('✅ 수정 완료');
+      }
+    });
+    return;
+  }
+  apiSend({action:'saveCSItem',kind:kind,name:name,body:body,author:author,activate:activate},function(res){
+    aiBusy(prefix,false);
+    if(!res.ok){alert('저장 실패: '+(res.error||''));return}
+    aiClearForm(kind);
+    aiLoadList(kind);
+    alert(activate?'✅ 저장 + 활성화 완료':'✅ 저장 완료');
+  });
+}
+
+function aiEditItem(kind,id){
+  var item=(aiItems[kind]||[]).find(function(p){return String(p['id'])===String(id)});
+  if(!item){alert('항목을 못 찾음');return}
+  var prefix=kind==='positive'?'aip':'ain';
+  document.getElementById(prefix+'-name').value=item['이름']||'';
+  document.getElementById(prefix+'-author').value=item['작성자']||'';
+  document.getElementById(prefix+'-body').value=item['본문']||'';
+  document.getElementById(prefix+'-body').dataset.editingId=id;
+  // Scroll into view
+  document.getElementById(prefix+'-name').scrollIntoView({behavior:'smooth',block:'center'});
+  alert('✏️ 수정 모드: 변경 후 "저장만" 또는 "저장+활성화" 누르면 기존 항목이 수정됩니다.');
+}
+
+function aiActivateItem(kind,id){
+  if(!confirm('이 항목을 활성화하면 다음 신규 문의부터 적용됩니다. 진행할까요?'))return;
+  apiSend({action:'activateCSItem',kind:kind,id:id},function(res){
+    if(!res.ok){alert('활성화 실패: '+(res.error||''));return}
+    aiLoadList(kind);
+  });
+}
+
+function aiDeleteItem(kind,id,name){
+  if(!confirm('"'+name+'" 항목을 삭제할까요? (영구 삭제)'))return;
+  apiSend({action:'deleteCSItem',kind:kind,id:id},function(res){
+    if(!res.ok){alert('삭제 실패: '+(res.error||''));return}
+    aiLoadList(kind);
+  });
+}
+
+function aiClearForm(kind){
+  var prefix=kind==='positive'?'aip':'ain';
+  ['name','author','body'].forEach(function(s){var el=document.getElementById(prefix+'-'+s);if(el)el.value=''});
+  delete document.getElementById(prefix+'-body').dataset.editingId;
+}
+
+/* ── 학습 문서 ── */
+
+function aiLoadDocs(){
+  apiSend({action:'listCSDocuments'},function(res){
+    if(!res.ok){alert('문서 목록 로딩 실패: '+(res.error||''));return}
+    aiDocs=res.docs||[];
+    aiRenderDocsList();
+  });
+}
+
+function aiRenderDocsList(){
+  var box=document.getElementById('ai-docs-list');
+  if(!aiDocs.length){box.innerHTML='<p style="font-size:12px;color:#9ca3af;padding:20px;text-align:center">업로드된 문서 없음</p>';return}
+  box.innerHTML=aiDocs.map(function(d){
+    var isActive=d['활성']===true||String(d['활성']).toUpperCase()==='TRUE';
+    return ''+
+      '<div style="border:1px solid '+(isActive?'#86efac':'#e5e7eb')+';border-radius:10px;padding:12px 14px;margin-bottom:8px;background:'+(isActive?'#f0fdf4':'#fff')+'">'+
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">'+
+          '<div style="flex:1;min-width:0">'+
+            '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">'+
+              '<b style="font-size:12.5px">'+escapeHtml(d['파일명']||'-')+'</b>'+
+              '<span style="background:'+(d['카테고리']==='환불'?'#fef2f2':d['카테고리']==='가입'?'#eff6ff':d['카테고리']==='결제'?'#fffbeb':'#f5f3ff')+';color:#374151;font-size:10px;padding:2px 8px;border-radius:999px;font-weight:700">'+escapeHtml(d['카테고리']||'일반')+'</span>'+
+              (isActive?'<span style="background:#22c55e;color:#fff;font-size:9px;padding:2px 8px;border-radius:999px;font-weight:700">활성</span>':'<span style="background:#9ca3af;color:#fff;font-size:9px;padding:2px 8px;border-radius:999px;font-weight:700">비활성</span>')+
+              '<span style="font-size:10px;color:#9ca3af">'+escapeHtml(d['업로드일']||'')+' · '+(d['내용길이']||0)+'자</span>'+
+            '</div>'+
+            '<div style="font-size:11.5px;color:#6b7280;line-height:1.5;white-space:pre-wrap">'+escapeHtml(d['내용미리보기']||'')+'</div>'+
+          '</div>'+
+          '<div style="display:flex;gap:6px;flex-shrink:0">'+
+            '<button class="btn btn-ghost" style="padding:4px 10px;font-size:11px" onclick="aiToggleDoc(\''+d['id']+'\','+(!isActive)+')">'+(isActive?'비활성화':'활성화')+'</button>'+
+            '<button class="btn btn-ghost" style="padding:4px 8px;font-size:11px;color:#dc2626;border-color:#fecaca" onclick="aiDeleteDoc(\''+d['id']+'\',\''+escapeHtml(d['파일명']||'')+'\')">삭제</button>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+  }).join('');
+}
+
+function aiUploadDoc(){
+  var name=(document.getElementById('ai-doc-name').value||'').trim();
+  var category=document.getElementById('ai-doc-cat').value;
+  var directText=(document.getElementById('ai-doc-text').value||'').trim();
+  var fileInput=document.getElementById('ai-doc-file');
+  var file=fileInput.files[0];
+
+  if(!name){alert('문서 제목을 입력하세요');return}
+  if(!file && !directText){alert('파일 또는 텍스트 중 하나는 입력하세요');return}
+
+  document.getElementById('ai-doc-status').textContent='⏳ 업로드 중...';
+
+  function send(payload){
+    apiSend(payload,function(res){
+      if(!res.ok){
+        document.getElementById('ai-doc-status').textContent='❌ '+(res.error||'실패');
+        return;
+      }
+      document.getElementById('ai-doc-status').textContent='✅ 등록 완료 ('+res.length+'자)';
+      aiClearDocForm();
+      aiLoadDocs();
+    });
+  }
+
+  if(file){
+    var reader=new FileReader();
+    reader.onload=function(e){
+      var dataUrl=e.target.result;
+      var b64=String(dataUrl).split(',')[1];
+      send({
+        action:'uploadCSDocument',
+        name:name,
+        category:category,
+        contentType:file.type||'application/octet-stream',
+        base64:b64,
+        content:directText // fallback
+      });
+    };
+    reader.readAsDataURL(file);
+  }else{
+    send({action:'uploadCSDocument',name:name,category:category,content:directText});
+  }
+}
+
+function aiToggleDoc(id,active){
+  apiSend({action:'toggleCSDocument',id:id,active:active},function(res){
+    if(!res.ok){alert('변경 실패: '+(res.error||''));return}
+    aiLoadDocs();
+  });
+}
+
+function aiDeleteDoc(id,name){
+  if(!confirm('"'+name+'" 문서를 삭제할까요? (Drive 파일도 휴지통으로)'))return;
+  apiSend({action:'deleteCSDocument',id:id},function(res){
+    if(!res.ok){alert('삭제 실패: '+(res.error||''));return}
+    aiLoadDocs();
+  });
+}
+
+function aiClearDocForm(){
+  ['ai-doc-name','ai-doc-text'].forEach(function(id){var el=document.getElementById(id);if(el)el.value=''});
+  var f=document.getElementById('ai-doc-file');if(f)f.value='';
+  document.getElementById('ai-doc-cat').value='일반';
+  document.getElementById('ai-doc-status').textContent='';
+}
+
 function showInboxSnippet(idx){
   var m=inboxData[idx];if(!m)return;
   document.getElementById('dp').classList.add('open');
@@ -1999,16 +2481,16 @@ function registerToCS(idx){
 
 // ═══ 메일 발송 템플릿 (템플릿 관리 탭과 동일 이름) ═══
 var TPL={
-  auto:  {name:'1차 자동 안내 메일', subject:'[일꾼을찾다] 안내서 및 신청서를 보내드립니다', body:'{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n문의 감사합니다.\n안내서와 신청서를 보내드립니다.\n\n📎 첨부파일을 확인해주세요.\n\n신청서 작성 후 후보자 확인증과 함께\n📩 ilkkun.official@gmail.com 으로 보내주세요.\n\n접수 후 1영업일 내 대시보드를 발급해드립니다.\n\n감사합니다.\n일꾼을찾다 팀 드림', type:'자동 안내', step:'1단계'},
-  pw:    {name:'임시 비밀번호', subject:'[일꾼을찾다] 임시 비밀번호 안내', body:'{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n임시 비밀번호를 발급해드립니다.\n\n🔑 임시 비밀번호: {{비밀번호}}\n🔗 대시보드: {{대시보드링크}}\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n\n감사합니다.\n일꾼을찾다 팀', type:'계정 발급', step:'2단계'},
-  acct:  {name:'2단계 · 계정 발급', subject:'[일꾼을찾다] 대시보드 계정이 발급되었습니다', body:'{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n대시보드 계정이 발급되었습니다.\n\n━━━━━━━━━━━━━━━━━━━━\n🔗 대시보드: {{대시보드링크}}\n📧 ID: {{이메일}}\n🔑 임시 비밀번호: {{비밀번호}}\n━━━━━━━━━━━━━━━━━━━━\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n\n감사합니다.\n일꾼을찾다 팀', type:'계정 발급', step:'2단계'},
-  cert:  {name:'2단계 · 증명서 요청', subject:'[일꾼을찾다] 후보자 확인증을 보내주세요', body:'{{이름}}님 안녕하세요.\n\n신청서를 접수받았으나 후보자 확인증이 첨부되어 있지 않습니다.\n\n📩 ilkkun.official@gmail.com 으로 확인증을 보내주세요.\n\n감사합니다.\n일꾼을찾다 팀', type:'증명서', step:'2단계'},
-  cert2: {name:'증명서 재요청', subject:'[일꾼을찾다] 후보자 확인증 재요청', body:'{{이름}}님 안녕하세요.\n\n확인증이 아직 접수되지 않았습니다. 서비스 제공을 위해 빠른 전달 부탁드립니다.\n\n📩 ilkkun.official@gmail.com\n\n감사합니다.\n일꾼을찾다 팀', type:'증명서', step:'2단계'},
-  cs:    {name:'CS 답변', subject:'[일꾼을찾다] 문의 답변드립니다', body:'{{이름}}님 안녕하세요.\n\n문의하신 내용에 답변드립니다.\n\n──────────────────\n(답변 내용)\n──────────────────\n\n추가 문의는 본 메일에 회신해주세요.\n\n감사합니다.\n일꾼을찾다 팀', type:'CS 답변', step:'CS'},
-  svc:   {name:'서비스 안내', subject:'[일꾼을찾다] 서비스 안내', body:'{{이름}}님 안녕하세요, 일꾼을찾다입니다.\n\n서비스 안내드립니다.\n\n감사합니다.\n일꾼을찾다 팀', type:'자동 안내', step:'1단계'},
-  event: {name:'이벤트 할인 안내', subject:'[일꾼을찾다] 🔥 특별 할인 안내', body:'{{이름}}님 안녕하세요.\n\n지금 토큰 충전 시 최대 45% 할인!\n\n🔥 1차 이벤트 (4월): 최대 혜택\n⏰ 2차 이벤트 (5/1~10): 마지막 기회\n\n👉 충전하기: {{대시보드링크}}\n\n감사합니다.\n일꾼을찾다 팀', type:'이벤트 할인', step:'-'},
-  token: {name:'토큰 부족 알림', subject:'[일꾼을찾다] ⚠️ 토큰 부족', body:'{{이름}}님 안녕하세요.\n\n토큰 잔여량이 부족합니다.\n소진 시 AI 아바타 운영이 중단됩니다.\n\n👉 충전하기: {{대시보드링크}}\n\n감사합니다.\n일꾼을찾다 팀', type:'토큰 부족', step:'-'},
-  remind:{name:'리마인더', subject:'[일꾼을찾다] 신청서 제출 안내', body:'{{이름}}님 안녕하세요.\n\n지난번 안내드린 신청서가 아직 접수되지 않았습니다.\n미제출 시 서비스 이용이 불가합니다.\n\n📩 ilkkun.official@gmail.com\n\n감사합니다.\n일꾼을찾다 팀', type:'리마인더', step:'-'}
+  auto:  {name:'1차 자동 안내 메일', subject:'[일꾼을묻다] 안내서 및 신청서를 보내드립니다', body:'{{이름}}님 안녕하세요, 일꾼을묻다입니다.\n\n문의 감사합니다.\n안내서와 신청서를 보내드립니다.\n\n📎 첨부파일을 확인해주세요.\n\n신청서 작성 후 후보자 확인증과 함께\n📩 ilkkun.official@gmail.com 으로 보내주세요.\n\n접수 후 1영업일 내 대시보드를 발급해드립니다.\n\n감사합니다.\n일꾼을묻다 팀 드림', type:'자동 안내', step:'1단계'},
+  pw:    {name:'임시 비밀번호', subject:'[일꾼을묻다] 임시 비밀번호 안내', body:'{{이름}}님 안녕하세요, 일꾼을묻다입니다.\n\n임시 비밀번호를 발급해드립니다.\n\n🔑 임시 비밀번호: {{비밀번호}}\n🔗 대시보드: {{대시보드링크}}\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n\n감사합니다.\n일꾼을묻다 팀', type:'계정 발급', step:'2단계'},
+  acct:  {name:'2단계 · 계정 발급', subject:'[일꾼을묻다] 대시보드 계정이 발급되었습니다', body:'{{이름}}님 안녕하세요, 일꾼을묻다입니다.\n\n대시보드 계정이 발급되었습니다.\n\n━━━━━━━━━━━━━━━━━━━━\n🔗 대시보드: {{대시보드링크}}\n📧 ID: {{이메일}}\n🔑 임시 비밀번호: {{비밀번호}}\n━━━━━━━━━━━━━━━━━━━━\n\n⚠️ 첫 로그인 후 비밀번호를 변경해주세요.\n\n감사합니다.\n일꾼을묻다 팀', type:'계정 발급', step:'2단계'},
+  cert:  {name:'2단계 · 증명서 요청', subject:'[일꾼을묻다] 후보자 확인증을 보내주세요', body:'{{이름}}님 안녕하세요.\n\n신청서를 접수받았으나 후보자 확인증이 첨부되어 있지 않습니다.\n\n📩 ilkkun.official@gmail.com 으로 확인증을 보내주세요.\n\n감사합니다.\n일꾼을묻다 팀', type:'증명서', step:'2단계'},
+  cert2: {name:'증명서 재요청', subject:'[일꾼을묻다] 후보자 확인증 재요청', body:'{{이름}}님 안녕하세요.\n\n확인증이 아직 접수되지 않았습니다. 서비스 제공을 위해 빠른 전달 부탁드립니다.\n\n📩 ilkkun.official@gmail.com\n\n감사합니다.\n일꾼을묻다 팀', type:'증명서', step:'2단계'},
+  cs:    {name:'CS 답변', subject:'[일꾼을묻다] 문의 답변드립니다', body:'{{이름}}님 안녕하세요.\n\n문의하신 내용에 답변드립니다.\n\n──────────────────\n(답변 내용)\n──────────────────\n\n추가 문의는 본 메일에 회신해주세요.\n\n감사합니다.\n일꾼을묻다 팀', type:'CS 답변', step:'CS'},
+  svc:   {name:'서비스 안내', subject:'[일꾼을묻다] 서비스 안내', body:'{{이름}}님 안녕하세요, 일꾼을묻다입니다.\n\n서비스 안내드립니다.\n\n감사합니다.\n일꾼을묻다 팀', type:'자동 안내', step:'1단계'},
+  event: {name:'이벤트 할인 안내', subject:'[일꾼을묻다] 🔥 특별 할인 안내', body:'{{이름}}님 안녕하세요.\n\n지금 토큰 충전 시 최대 45% 할인!\n\n🔥 1차 이벤트 (4월): 최대 혜택\n⏰ 2차 이벤트 (5/1~10): 마지막 기회\n\n👉 충전하기: {{대시보드링크}}\n\n감사합니다.\n일꾼을묻다 팀', type:'이벤트 할인', step:'-'},
+  token: {name:'토큰 부족 알림', subject:'[일꾼을묻다] ⚠️ 토큰 부족', body:'{{이름}}님 안녕하세요.\n\n토큰 잔여량이 부족합니다.\n소진 시 AI 아바타 운영이 중단됩니다.\n\n👉 충전하기: {{대시보드링크}}\n\n감사합니다.\n일꾼을묻다 팀', type:'토큰 부족', step:'-'},
+  remind:{name:'리마인더', subject:'[일꾼을묻다] 신청서 제출 안내', body:'{{이름}}님 안녕하세요.\n\n지난번 안내드린 신청서가 아직 접수되지 않았습니다.\n미제출 시 서비스 이용이 불가합니다.\n\n📩 ilkkun.official@gmail.com\n\n감사합니다.\n일꾼을묻다 팀', type:'리마인더', step:'-'}
 };
 
 function applyTpl(key){

@@ -138,3 +138,12 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 _archive/
+dist/
+
+# Brochure publishing — secrets (NEVER commit)
+scripts/.secrets/
+.clasprc.json
+.clasp.json
+.clasp.json.local
+apps-script/.clasp.json
+apps-script/.deployment-id

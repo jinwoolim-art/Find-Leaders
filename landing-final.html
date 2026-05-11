@@ -521,22 +521,25 @@
   .pricing{background:#fff}
   .pricing-sub{text-align:center;color:var(--ink-3);font-size:14px;margin-bottom:36px}
   .pricing-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;max-width:1080px;margin:0 auto}
+  .pricing-explain{background:#fff;border:1px solid #e9d5ff;border-left:4px solid #7c3aed;border-radius:10px;padding:14px 22px;margin:0 auto 22px;max-width:880px;font-size:13.5px;color:#374151;line-height:1.7}
+  .pricing-explain b{color:#7c3aed;font-weight:900}
   /* 메인 칼라 = 바이올렛(보라), 서브 = 옐로우 */
   .price-card{
     position:relative;
-    background:linear-gradient(180deg,#faf5ff 0%,#fef3c7 100%);
-    border:2px solid var(--purple);border-radius:18px;padding:30px 24px 24px;
+    background:#faf5ff;
+    border:2px dashed var(--purple);border-radius:18px;padding:30px 18px 22px;
     text-align:center;transition:all .15s;
   }
   .price-card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(124,58,237,.18)}
   .price-card::before{
-    content:'추천';position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+    content:'사전등록';position:absolute;top:-12px;left:14px;
     background:var(--purple);color:#fff;font-size:11px;font-weight:900;padding:4px 14px;border-radius:999px;
     box-shadow:0 4px 10px rgba(124,58,237,.3);
   }
-  .price-card .tier{font-size:14px;font-weight:900;color:var(--ink);margin-bottom:12px}
-  .price-card .amount{font-size:36px;font-weight:900;color:var(--ink);line-height:1}
-  .price-card .amount sup{font-size:18px;font-weight:800;margin-left:2px;color:var(--ink-3)}
+  .price-card .tier{font-size:17px;font-weight:900;color:var(--ink);margin-bottom:8px;letter-spacing:-.02em}
+  .price-card .amount{font-size:34px;font-weight:900;color:var(--ink);line-height:1}
+  .price-card .amount sup{font-size:16px;font-weight:800;margin-left:2px;color:var(--ink-3)}
+  .price-card .tier-sub{font-size:11px;color:var(--ink-3);font-weight:700;margin-top:8px;line-height:1.4}
   .price-card{cursor:pointer}
   .price-card .tier-hint{
     margin-top:14px;font-size:11px;color:var(--purple);font-weight:800;
@@ -1019,7 +1022,7 @@
               <div style="min-width:100%;height:100%;padding:20px;display:flex;flex-direction:column;align-items:center;background:#fff;font-size:11px">
                 <div style="width:64px;height:64px;border-radius:20px;overflow:hidden;margin:30px 0 12px;box-shadow:0 8px 20px rgba(124,58,237,.18)"><img src="assets/logo_ask03.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"/></div>
                 <p style="font-size:18px;font-weight:900;margin-bottom:4px">일꾼을묻다</p>
-                <p style="font-size:10px;color:#9ca3af;margin-bottom:24px;text-align:center">AI 아바타와 함께하는 스마트한 선택</p>
+                <p style="font-size:10px;color:#9ca3af;margin-bottom:24px;text-align:center">후보자 정보를 시민에게 한눈에</p>
                 <div style="width:100%;background:#7c3aed;border-radius:12px;padding:12px;text-align:center;margin-bottom:10px"><span style="color:#fff;font-size:13px;font-weight:900">일꾼보기 →</span></div>
                 <div style="width:100%;border:1px solid #e5e7eb;border-radius:12px;padding:11px;text-align:center;margin-bottom:18px"><span style="font-size:11px;color:#6b7280">현 시행되고 있는 정책</span></div>
                 <p style="font-size:12px;font-weight:900;text-align:left;width:100%;margin-bottom:8px">실시간 선거 뉴스</p>
@@ -1111,25 +1114,25 @@
   <div class="wrap">
     <div class="section-head">
       <h2 class="h2">유권자를 만날 준비를 하세요</h2>
-      <p class="lead">일꾼을찾다는 후보자의 도구입니다. 정책을 정리하고, 의견을 듣고, 반영할 준비를 도와드립니다.</p>
+      <p class="lead">일꾼을묻다는 후보자의 도구입니다. 정책을 정리하고, 의견을 듣고, 반영할 준비를 도와드립니다.</p>
     </div>
     <div class="promise-grid">
       <div class="promise">
         <div class="num">1</div>
         <h3><span class="accent">쉽다</span>: 정책자료를 업로드하세요.</h3>
-        <p>흩어진 공약 자료를 AI가 항목별로 정리해 주민이 쉽게 이해할 수 있는 형태로 제공합니다.</p>
+        <p>흩어진 공약 자료를 항목별로 정리해 주민이 쉽게 이해할 수 있는 형태로 제공합니다.</p>
         <ul>
-          <li>공약 10개 AI 정리·요약</li>
+          <li>공약 10개 항목별 정리·요약</li>
           <li>분야별 태그 자동 분류</li>
           <li>핵심 메시지 추출</li>
         </ul>
       </div>
       <div class="promise">
         <div class="num">2</div>
-        <h3><span class="accent">편하다</span>: AI가 질문 대응을 지원합니다</h3>
+        <h3><span class="accent">편하다</span>: 시민 질문에 24시간 자동 응답</h3>
         <p>후보자가 등록한 정보를 기반으로 시민 질문에 자동으로 응답하고 기록합니다</p>
         <ul>
-          <li>AI 아바타 채팅·음성 응대</li>
+          <li>후보자 캐릭터 영상 응답</li>
           <li>모든 대화 로그 수집</li>
           <li>지역구 태깅</li>
         </ul>
@@ -1180,7 +1183,7 @@
       <div class="dashboard-chips" style="margin-top:18px">
         <span>후보자 프로필 페이지</span>
         <span>공약·정책 등록</span>
-        <span>AI 질의응답</span>
+        <span>시민 질문 자동 응답</span>
         <span>시민 관심 질문 확인</span>
         <span>사용량·비용 관리</span>
         <span>SNS 공유 링크 제공</span>
@@ -1210,7 +1213,7 @@
             <div class="dash-kpi-rich">
               <div class="kpi-r"><div class="kpi-r-top"><span class="ms" style="color:var(--purple)">forum</span><span class="kpi-r-delta up">+84 vs 지난주</span></div><div class="kpi-r-val">312</div><div class="kpi-r-lbl">대화수</div></div>
               <div class="kpi-r"><div class="kpi-r-top"><span class="ms" style="color:#f59e0b">celebration</span><span class="kpi-r-delta up">+234 vs 지난주</span></div><div class="kpi-r-val">1,380</div><div class="kpi-r-lbl">모션수</div><div class="kpi-r-emojis">👏 423 · 🌟 523 · 🦋 434</div></div>
-              <div class="kpi-r"><div class="kpi-r-top"><span class="ms" style="color:#7c3aed">deployed_code</span><span class="kpi-r-delta up">+57,400 vs 지난주</span></div><div class="kpi-r-val">365,100</div><div class="kpi-r-lbl">응답량 사용</div></div>
+              <div class="kpi-r"><div class="kpi-r-top"><span class="ms" style="color:#7c3aed">deployed_code</span><span class="kpi-r-delta up">+57,400 vs 지난주</span></div><div class="kpi-r-val">365,100</div><div class="kpi-r-lbl">대화량 사용</div></div>
               <div class="kpi-r"><div class="kpi-r-top"><span class="ms" style="color:#10b981">payments</span><span class="kpi-r-delta up">+₩3,200 vs 지난주</span></div><div class="kpi-r-val">₩16,380</div><div class="kpi-r-lbl">예상 비용</div></div>
             </div>
             <div class="line-chart-card">
@@ -1435,7 +1438,7 @@
       <div class="vs-card win">
         <div class="vs-sub first">✓ 운영 기능</div>
         <ul class="vs-list">
-          <li>AI가 유권자 질문 대응을 24시간 지원</li>
+          <li>유권자 질문에 24시간 자동 응답</li>
           <li>모든 질문·응답이 데이터로 자동 기록</li>
           <li>공약별 반응과 키워드 실시간 확인</li>
           <li>지역·연령별 관심도 분석</li>
@@ -1479,62 +1482,45 @@
     <div class="section-head">
       <p class="pricing-sub">가입비 + 기본 대화량 포함 (추가 사용 시 선택 과금)</p>
     </div>
+    <div class="pricing-explain">
+      <b>등록비</b> — 후보자로서 시민에게 닿기 위한 <b>후보자 페이지 세팅 · 공약·정책 등록 · 프로필 구성 · 후보자 캐릭터 영상 · 시민 질문 응답 기능 · 시민 반응 대시보드</b>까지 <b>운영 준비 일체</b>가 포함됩니다.
+    </div>
     <div class="pricing-grid">
       <div class="price-card" onclick="openTier('gov')" data-tier="gov">
         <div class="tier">광역단체장</div>
-        <div class="amount">299<sup>만</sup></div>
+        <div class="amount">299<sup>만원</sup></div>
+        <div class="tier-sub">(시·도지사 · 광역시장)</div>
         <span class="tier-hint">자세히 보기 ⓘ</span>
       </div>
       <div class="price-card" onclick="openTier('edu')" data-tier="edu">
         <div class="tier">교육감</div>
-        <div class="amount">129<sup>만</sup></div>
+        <div class="amount">129<sup>만원</sup></div>
+        <div class="tier-sub">(시·도 단위 단독 선출)</div>
         <span class="tier-hint">자세히 보기 ⓘ</span>
       </div>
       <div class="price-card" onclick="openTier('mayor')" data-tier="mayor">
         <div class="tier">기초단체장</div>
-        <div class="amount">129<sup>만</sup></div>
+        <div class="amount">129<sup>만원</sup></div>
+        <div class="tier-sub">(시장 · 군수 · 구청장)</div>
         <span class="tier-hint">자세히 보기 ⓘ</span>
       </div>
       <div class="price-card" onclick="openTier('council')" data-tier="council">
         <div class="tier">광역의원</div>
-        <div class="amount">39<sup>만</sup></div>
+        <div class="amount">39<sup>만원</sup></div>
+        <div class="tier-sub">(시·도의원)</div>
         <span class="tier-hint">자세히 보기 ⓘ</span>
       </div>
-      <div class="price-card featured" onclick="openTier('local')" data-tier="local">
+      <div class="price-card" onclick="openTier('local')" data-tier="local">
         <div class="tier">기초의원</div>
-        <div class="amount">19<sup>만</sup></div>
+        <div class="amount">19<sup>만원</sup></div>
+        <div class="tier-sub">(시·군·구 의원)</div>
         <span class="tier-hint">자세히 보기 ⓘ</span>
       </div>
     </div>
-    <div class="price-vat">※ 부가세 별도</div>
-
-    <div class="token-card">
-      <h4>답변 길이 설정</h4>
-      <div class="token-toggles">
-        <button class="token-toggle" data-len="35" type="button">
-          <div class="lbl">짧은답변</div>
-          <div class="desc">~ 50자 · 저비용</div>
-        </button>
-        <button class="token-toggle active" data-len="85" type="button">
-          <div class="lbl">보통답변</div>
-          <div class="desc">~ 100자 · 균형</div>
-        </button>
-        <button class="token-toggle" data-len="135" type="button">
-          <div class="lbl">긴답변</div>
-          <div class="desc">~ 150자 · 높은 만족</div>
-        </button>
-      </div>
-      <div class="token-slider-row">
-        <label>대화당 평균 글자 수</label>
-        <input id="tokenSlider" type="range" min="20" max="150" step="5" value="85"/>
-        <div class="token-value" id="tokenValue">85자</div>
-      </div>
-    </div>
-
-    <div class="pricing-bottom">
-      <h3>사용량을 직접 관리하는 합리적인 구조</h3>
-      <p>후보자는 사용량과 응답 방식을 조절하여 예산에 맞게 운영할 수 있습니다.</p>
-      <p class="small">기본 가입형 기본 사용량 제공 / 초과 사용량 기반 과금 / 1인당 사용 제한 설정 가능</p>
+    <div class="price-vat">
+      ※ 선거 규모와 예상 시민 이용량에 따라 <b style="color:#7c3aed">등록비가 구분</b>됩니다.<br/>
+      ※ 추가 시민 대화량은 필요 시 <b style="color:#7c3aed">대시보드에서 별도 구매</b>할 수 있습니다.<br/>
+      ※ 부가세 별도
     </div>
   </div>
 </section>
@@ -1615,7 +1601,7 @@
           <img src="assets/logo_ask03.png" alt=""/>
           <span>일꾼을묻다</span>
         </div>
-        <p class="tag">일꾼을묻다는 선거 캠페인 운영을 위한 최적의 AI 파트너입니다. 데이터에 기반한 운영 가이드와 24시간 소통 시스템을 제공합니다.</p>
+        <p class="tag">일꾼을묻다는 선거 캠페인 운영을 돕는 디지털 도구입니다. 데이터에 기반한 운영 가이드와 24시간 시민 소통 시스템을 제공합니다.</p>
       </div>
       <div class="footer-contact">
         <div class="row"><span class="ms">mail</span><span>ilkkun.official@gmail.com</span></div>
@@ -1654,7 +1640,7 @@
     </div>
     <p class="tier-desc" id="tierDesc"></p>
     <ul class="tier-features" id="tierFeatures"></ul>
-    <p class="tier-foot">※ 부가세 별도 · 기본 응답량 포함 · 추가 사용 시 선택 과금</p>
+    <p class="tier-foot">※ 부가세 별도 · 기본 대화량 포함 · 추가 사용 시 선택 과금</p>
   </div>
 </div>
 
@@ -1741,58 +1727,43 @@ document.addEventListener('keydown', e => {
 });
 
 /* ───── 1-0. Tier detail modal (요금 카드 자세히 보기) ───── */
+const TIER_FEATURES_FULL = [
+  '후보자 프로필 등록',
+  '공약·정책 등록',
+  '약력·활동 이력 등록',
+  '프로필 사진 등록',
+  '후보자 캐릭터 영상 제공',
+  '시민 질문 응답 기능',
+  '시민 반응 대시보드',
+  '지역별 관심 지표 확인'
+];
+const TIER_FEATURES_LOCAL = TIER_FEATURES_FULL.slice(0, 7);
+
 const TIER_INFO = {
   gov: {
     name: '광역단체장', price: '299',
-    desc: '유권자 규모가 크기 때문에 질문 대응과 함께 유권자 반응 데이터를 기반으로 전략적으로 운영할 수 있습니다.',
-    features: [
-      '후보자 프로필 / 공약 등록',
-      '24시간 질문 자동 응답',
-      '유권자 반응 데이터 대시보드',
-      '질문 로그 / 반응 분석',
-      '지역별 분석',
-      '추가 옵션 제공'
-    ]
+    desc: '시·도지사 · 광역시장. 유권자 규모가 크고 정책 분야가 넓어, 시민 질문 응답과 반응 대시보드를 기반으로 전략적으로 운영할 수 있습니다.',
+    features: TIER_FEATURES_FULL
   },
   edu: {
     name: '교육감', price: '129',
-    desc: '시·도 단위 단독 선출. 교육 정책 질문 대응과 유권자 반응 데이터를 함께 확인할 수 있습니다.',
-    features: [
-      '후보자 프로필 / 공약 등록',
-      '24시간 질문 자동 응답',
-      '유권자 반응 데이터 대시보드',
-      '질문 로그 / 반응 분석'
-    ]
+    desc: '시·도 단위 단독 선출. 교육 정책 중심의 시민 질문 응답과 반응 대시보드를 함께 운영할 수 있습니다.',
+    features: TIER_FEATURES_FULL
   },
   mayor: {
     name: '기초단체장', price: '129',
-    desc: '지역 이슈 대응과 함께 유권자 반응 데이터를 빠르게 확인하고 공약에 반영할 수 있는 구조입니다.',
-    features: [
-      '후보자 프로필 / 공약 등록',
-      '24시간 질문 자동 응답',
-      '유권자 반응 데이터 대시보드',
-      '질문 로그 / 반응 분석'
-    ]
+    desc: '시장 · 군수 · 구청장. 지역 이슈 대응과 함께 유권자 반응 데이터를 빠르게 확인하고 공약에 반영할 수 있는 구조입니다.',
+    features: TIER_FEATURES_FULL
   },
   council: {
     name: '광역의원', price: '39',
-    desc: '유권자 질문 대응과 함께 유권자 반응 데이터를 확인하며 효율적으로 운영할 수 있습니다.',
-    features: [
-      '후보자 프로필 / 공약 등록',
-      '24시간 질문 자동 응답',
-      '유권자 반응 데이터 대시보드',
-      '질문 로그 / 반응 분석'
-    ]
+    desc: '시·도의원. 유권자 질문 대응과 함께 반응 데이터를 확인하며 효율적으로 운영할 수 있습니다.',
+    features: TIER_FEATURES_FULL
   },
   local: {
     name: '기초의원', price: '19',
-    desc: '유권자 질문 대응과 함께 유권자 반응 데이터를 확인하며 필요한 만큼 확장할 수 있습니다.',
-    features: [
-      '후보자 프로필 / 공약 등록',
-      '24시간 질문 자동 응답',
-      '유권자 반응 데이터 대시보드',
-      '질문 로그 / 반응 분석'
-    ]
+    desc: '시·군·구 의원. 생활 밀착형 질문 대응을 중심으로 필요한 만큼 확장할 수 있습니다.',
+    features: TIER_FEATURES_LOCAL
   }
 };
 function openTier(key){

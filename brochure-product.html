@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>일꾼을묻다 · 제품 소개서</title>
+<title>일꾼을묻다 · 서비스 소개서</title>
 <link rel="icon" href="assets/logo_ask03.png"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -61,8 +61,10 @@
     text-align:center;justify-content:center;align-items:center;
   }
   .cover::before{content:'';position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.07) 0%,transparent 70%);top:-150px;right:-120px}
-  .cover-logo-mark{width:78px;height:78px;border-radius:20px;background:#fff;border:1px solid var(--purple-100);display:grid;place-items:center;margin:0 auto 22px;box-shadow:0 14px 30px rgba(124,58,237,.15);overflow:hidden}
-  .cover-logo-mark img{width:60px;height:60px;border-radius:14px;object-fit:cover}
+  .cover-title-block{position:absolute;top:24mm;left:18mm;right:18mm;text-align:left;margin:0}
+  .cover-title-block .cover-title{font-size:25px;font-weight:900;letter-spacing:-.03em;color:var(--ink);margin:0;line-height:1.05}
+  .cover-logo-mark{width:106px;height:106px;border-radius:23px;overflow:hidden;display:grid;place-items:center;margin:0 auto 22px;box-shadow:0 14px 30px rgba(124,58,237,.15)}
+  .cover-logo-mark img{width:100%;height:100%;object-fit:cover}
   .cover .h1{font-size:36px;line-height:1.2;margin-bottom:14px}
   .cover .h1 strong{color:var(--purple)}
   .cover .lead{font-size:14px;color:var(--ink-2);max-width:540px;margin:0 auto 72px}
@@ -309,14 +311,25 @@
   .cat-foot-note b{color:var(--purple)}
 
   /* P10 Pricing */
-  .pricing-head{text-align:center;margin-bottom:18px}
-  .pricing-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;flex:1;align-content:start}
-  .price-card{position:relative;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:16px 14px 14px}
-  .price-card.featured{background:linear-gradient(180deg,#faf5ff 0%,var(--gold-50) 100%);border:2px solid var(--purple)}
-  .price-card .tier{font-size:12px;font-weight:900;color:var(--ink);margin-bottom:4px;letter-spacing:-.01em}
-  .price-card .tier-sub{font-size:9.5px;color:var(--ink-3);margin-bottom:8px;line-height:1.35}
-  .price-card .amount{font-size:24px;font-weight:900;color:var(--ink);line-height:1;letter-spacing:-.02em}
-  .price-card .amount sup{font-size:11px;font-weight:800;margin-left:2px;color:var(--ink-3)}
+  .pricing-head{text-align:center;margin-bottom:14px}
+  .pricing-explain{background:#fff;border:1px solid var(--purple-100);border-left:4px solid var(--purple);border-radius:10px;padding:12px 18px;margin:0 auto 18px;max-width:760px;font-size:12px;color:var(--ink-2);line-height:1.65}
+  .pricing-explain b{color:var(--purple);font-weight:900}
+  .pricing-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-content:start}
+  .price-card{position:relative;background:#faf5ff;border:2px dashed var(--purple);border-radius:14px;padding:22px 12px 14px;transition:transform .15s,box-shadow .15s}
+  .price-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(124,58,237,.18)}
+  .price-card::before{content:'사전등록';position:absolute;top:-10px;left:10px;background:var(--purple);color:#fff;font-size:9px;font-weight:900;padding:3px 10px;border-radius:999px;box-shadow:0 2px 6px rgba(124,58,237,.25);letter-spacing:.02em}
+  .price-card{text-align:center}
+  .price-card .tier{font-size:15px;font-weight:900;color:var(--ink);margin-bottom:6px;letter-spacing:-.02em;line-height:1.15}
+  .price-card .amount{font-size:30px;font-weight:900;color:var(--ink);line-height:1;letter-spacing:-.02em;margin-top:2px}
+  .price-card .amount sup{font-size:12px;font-weight:800;margin-left:2px;color:var(--ink-3)}
+  .price-card .tier-sub{font-size:10px;color:var(--ink-3);font-weight:700;margin-top:8px;line-height:1.35}
+  /* P10 상세 박스 (헤더 카드 바로 아래) */
+  .pricing-detail-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:6px}
+  .price-detail{background:#fff;border:1px solid var(--purple-100);border-radius:12px;padding:14px 12px 12px}
+  .price-detail .detail-quota{font-size:10px;color:var(--purple);font-weight:900;text-align:center;margin-bottom:10px;padding-bottom:8px;border-bottom:1px dashed var(--purple-100)}
+  .price-detail ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px;font-size:10px;color:var(--ink-2);line-height:1.45}
+  .price-detail ul li{display:flex;gap:4px;align-items:flex-start}
+  .price-detail ul li::before{content:"✓";color:var(--purple);font-weight:900;flex-shrink:0}
   .price-card .quota{margin-top:8px;display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--purple);font-weight:800;padding:4px 9px;background:var(--purple-50);border-radius:8px}
   .price-card .quota .ms{font-size:12px}
   .price-card ul{list-style:none;padding:0;margin:10px 0 0;display:flex;flex-direction:column;gap:4px;font-size:10px;color:var(--ink-2);line-height:1.45}
@@ -325,15 +338,22 @@
   .pricing-note{margin-top:18px;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:14px 18px;text-align:center;font-size:12px;color:var(--ink-2);line-height:1.7}
   .pricing-note b{color:var(--purple)}
 
-  /* P11 Breakdown */
-  .breakdown-common{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-top:14px;font-size:11.5px;color:var(--ink-2);line-height:1.65}
-  .breakdown-common .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  .breakdown-common .chip{display:inline-flex;align-items:center;gap:5px;background:var(--purple-50);color:var(--purple);font-weight:800;font-size:10.5px;padding:4px 10px;border-radius:999px}
-  .breakdown-common .chip .ms{font-size:13px}
-  .breakdown-common .note{margin-top:8px;font-size:10.5px;color:var(--ink-3)}
+  /* P11 시민과의 대화 흐름 */
+  .conv-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:18px;align-items:stretch;position:relative}
+  .conv-step{background:linear-gradient(180deg,#faf5ff 0%,#fff 100%);border:2px solid var(--purple);border-radius:14px;padding:18px 14px 16px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
+  .conv-step .step-no{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:11px;font-weight:900;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;box-shadow:0 2px 6px rgba(124,58,237,.3)}
+  .conv-step .step-icon{font-size:28px;margin:6px 0 2px;line-height:1}
+  .conv-step h4{font-size:12px;font-weight:900;color:var(--ink);margin:0;letter-spacing:-.01em;line-height:1.3}
+  .conv-step p{font-size:10.5px;color:var(--ink-2);line-height:1.5;margin:4px 0 0}
+  .conv-statement{margin-top:18px;background:#fff;border:1px solid var(--purple-100);border-radius:14px;padding:18px 22px;box-shadow:0 8px 24px rgba(124,58,237,.08)}
+  .conv-statement p{font-size:12px;color:var(--ink-2);line-height:1.75;margin:0}
+  .conv-statement p+p{margin-top:8px}
+  .conv-statement b{color:var(--purple)}
+  .conv-no-pressure{margin-top:14px;background:linear-gradient(135deg,#fef3c7 0%,#faf5ff 100%);border-left:4px solid var(--purple);border-radius:8px;padding:12px 18px;font-size:11.5px;color:var(--ink-2);line-height:1.7}
+  .conv-no-pressure b{color:var(--purple)}
   .breakdown-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
-  .breakdown-card{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:16px 18px}
-  .breakdown-card.featured{background:linear-gradient(180deg,#faf5ff 0%,#fff 100%);border:2px solid var(--purple)}
+  .breakdown-card{background:linear-gradient(180deg,#faf5ff 0%,#fff 100%);border:2px solid var(--purple);border-radius:12px;padding:16px 18px;transition:transform .15s,box-shadow .15s}
+  .breakdown-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(124,58,237,.14)}
   .breakdown-card .tier-name{font-size:13px;font-weight:900;color:var(--ink);margin-bottom:3px}
   .breakdown-card .tier-tagline{font-size:10.5px;color:var(--ink-3);margin-bottom:10px;line-height:1.5}
   .breakdown-stats{display:flex;flex-direction:column;gap:6px}
@@ -346,15 +366,36 @@
 
   /* P12 Cards */
   .cards-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
-  .card-pkg{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:20px 22px;display:flex;align-items:center;gap:18px;position:relative}
-  .card-pkg.outline{background:linear-gradient(135deg,#faf5ff 0%,#fff 100%);border-color:var(--purple)}
-  .card-pkg .pkg-icon{width:48px;height:48px;border-radius:12px;background:var(--purple-50);display:grid;place-items:center;color:var(--purple);flex-shrink:0}
-  .card-pkg .pkg-icon .ms{font-size:24px}
+  .card-pkg{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:16px;position:relative;overflow:hidden}
+  /* 실물 카드 느낌 — S(베이직) / M(실버) / L(골드) / XL(프리미엄) */
+  .card-pkg.tier-s{background:linear-gradient(135deg,#fafbfc 0%,#fff 60%);border-color:#e2e8f0}
+  .card-pkg.tier-m{background:linear-gradient(135deg,#f3f4f6 0%,#fafbfc 60%);border-color:#cbd5e1}
+  .card-pkg.tier-l{background:linear-gradient(135deg,#fef3c7 0%,#fffaeb 60%);border-color:#fbbf24}
+  .card-pkg.tier-xl{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 60%,#4c1d95 100%);border-color:#312e81;color:#fff}
+  .card-pkg.tier-xl .pkg-name,.card-pkg.tier-xl .pkg-name small{color:rgba(255,255,255,.7)!important}
+  .card-pkg.tier-xl .pkg-price{color:#fff}
+  .card-pkg.tier-xl .pkg-qty,.card-pkg.tier-xl .pkg-qty small{color:rgba(255,255,255,.7)}
+  .card-pkg.tier-xl .pkg-benefits{color:rgba(255,255,255,.8);border-top-color:rgba(255,255,255,.18)}
+  .card-pkg.tier-xl .pkg-icon{background:rgba(255,255,255,.12);color:#fbbf24}
+  .card-pkg.tier-l .pkg-icon{background:#fff5d6;color:#b45309}
+  .card-pkg .pkg-icon{width:46px;height:46px;border-radius:12px;background:var(--purple-50);display:grid;place-items:center;color:var(--purple);flex-shrink:0}
+  .card-pkg .pkg-icon .ms{font-size:22px}
   .card-pkg .body{flex:1}
-  .card-pkg .pkg-name{font-size:13px;font-weight:900;color:var(--ink);margin-bottom:4px}
-  .card-pkg .pkg-qty{font-size:22px;font-weight:900;color:var(--purple);letter-spacing:-.02em}
-  .card-pkg .pkg-qty small{font-size:12px;color:var(--ink-2);font-weight:800;margin-left:2px}
-  .card-pkg .pkg-price{font-size:13px;color:var(--ink-3);font-weight:700;margin-top:2px}
+  .card-pkg .pkg-name{font-size:13px;font-weight:900;color:var(--ink-2);margin-bottom:6px;letter-spacing:.01em}
+  .card-pkg .pkg-price{font-size:28px;font-weight:900;color:var(--ink);letter-spacing:-.03em;line-height:1}
+  .card-pkg .pkg-qty{font-size:11px;font-weight:700;color:var(--ink-3);margin-top:5px}
+  .card-pkg .pkg-qty small{font-size:10.5px;color:var(--ink-3);font-weight:700;margin-left:1px}
+  .card-pkg .pkg-benefits{font-size:9.5px;color:var(--ink-3);font-weight:600;margin-top:7px;line-height:1.5;padding-top:7px;border-top:1px dashed var(--line)}
+  .length-control{margin-top:14px;background:#fff;border:1px solid var(--purple-100);border-radius:12px;padding:14px 18px;display:grid;grid-template-columns:1fr 1.4fr;gap:14px;align-items:center}
+  .length-control .lc-head h4{font-size:12px;font-weight:900;color:var(--ink);margin:0 0 4px;display:flex;align-items:center;gap:6px}
+  .length-control .lc-head h4 .ms{font-size:15px;color:var(--purple)}
+  .length-control .lc-head p{font-size:10.5px;color:var(--ink-3);margin:0;line-height:1.5}
+  .length-control .lc-options{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .length-control .lc-opt{border:1.5px solid var(--line);border-radius:9px;padding:8px 6px;text-align:center;background:#fff}
+  .length-control .lc-opt.active{border-color:var(--purple);background:var(--purple-50)}
+  .length-control .lc-opt .lc-lbl{font-size:11px;font-weight:900;color:var(--ink);margin-bottom:2px}
+  .length-control .lc-opt.active .lc-lbl{color:var(--purple)}
+  .length-control .lc-opt .lc-desc{font-size:9px;color:var(--ink-3);font-weight:700;line-height:1.3}
   .alert-list{margin-top:14px;background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px 20px;display:flex;flex-direction:column;gap:8px}
   .alert-list h4{font-size:12px;font-weight:900;color:var(--purple);letter-spacing:.06em;display:flex;align-items:center;gap:6px}
   .alert-list h4 .ms{font-size:15px}
@@ -431,8 +472,8 @@
 
   /* P13 Trust */
   .trust-hero{background:linear-gradient(135deg,var(--purple-50) 0%,#fff 100%);border:1px solid var(--purple-100);border-radius:16px;padding:22px 26px;margin-top:14px;display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center}
-  .trust-hero .logo-mark{width:64px;height:64px;border-radius:16px;background:#fff;display:grid;place-items:center;border:1px solid var(--purple-100);box-shadow:0 8px 20px rgba(124,58,237,.12);overflow:hidden}
-  .trust-hero .logo-mark img{width:48px;height:48px;border-radius:12px;object-fit:cover}
+  .trust-hero .logo-mark{width:60px;height:60px;border-radius:14px;overflow:hidden;display:grid;place-items:center;box-shadow:0 8px 20px rgba(124,58,237,.12)}
+  .trust-hero .logo-mark img{width:100%;height:100%;object-fit:cover}
   .trust-hero .info h3{font-size:16px;font-weight:900;color:var(--ink);margin-bottom:4px}
   .trust-hero .info p{font-size:12px;color:var(--ink-2);line-height:1.6;margin:0}
   .trust-hero .info .meta{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px 14px;font-size:10.5px;color:var(--ink-3);font-weight:700}
@@ -636,7 +677,7 @@
 <div class="top-bar no-print">
   <div class="ttl">
     <img src="assets/logo_ask03.png" alt=""/>
-    <span>일꾼을묻다 · 제품 소개서 (19p)</span>
+    <span>일꾼을묻다 · 서비스 소개서 (19p)</span>
   </div>
   <div class="actions">
     <a href="registration-guide.html" target="_self">📋 가입 안내서</a>
@@ -647,6 +688,10 @@
 <!-- ═══════════════════ P1. COVER ═══════════════════ -->
 <section class="page cover">
   <div class="pg-brand"><img src="assets/logo_ask03.png" alt=""/><b>일꾼을묻다</b><span>· PRODUCT BROCHURE</span></div>
+
+  <div class="cover-title-block">
+    <h2 class="cover-title">서비스 소개서</h2>
+  </div>
 
   <div class="cover-logo-mark"><img src="assets/logo_ask03.png" alt=""/></div>
 
@@ -1250,43 +1295,41 @@
     <p class="lead">가입비 기준 / 선거기간 운영 기준 / 부가세 별도</p>
   </div>
 
-  <div class="pricing-grid">
-    <div class="price-card featured">
-      <div class="tier">광역단체장</div>
-      <div class="tier-sub">시·도지사 · 광역시장</div>
-      <div class="amount">299<sup>만원</sup></div>
-      <ul>
-        <li>후보자 프로필 등록</li>
-        <li>공약·정책 등록</li>
-        <li>약력·활동 이력 등록</li>
-        <li>프로필 사진 등록</li>
-        <li>후보자 캐릭터 영상 제공</li>
-        <li>시민 질문 응답 기능</li>
-        <li>시민 반응 대시보드</li>
-        <li>지역별 관심 지표 확인</li>
-      </ul>
-    </div>
+  <div class="pricing-explain">
+    <b>등록비</b> — 후보자로서 시민에게 닿기 위한 <b>후보자 페이지 세팅 · 공약·정책 등록 · 프로필 구성 · 후보자 캐릭터 영상 · 시민 질문 응답 기능 · 시민 반응 대시보드</b>까지 <b>운영 준비 일체</b>가 포함됩니다.
+  </div>
 
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="tier">광역단체장</div>
+      <div class="amount">299<sup>만원</sup></div>
+      <div class="tier-sub">(시·도지사 · 광역시장)</div>
+    </div>
     <div class="price-card">
       <div class="tier">교육감</div>
-      <div class="tier-sub">시·도 단위 단독 선출</div>
       <div class="amount">129<sup>만원</sup></div>
-      <ul>
-        <li>후보자 프로필 등록</li>
-        <li>공약·정책 등록</li>
-        <li>약력·활동 이력 등록</li>
-        <li>프로필 사진 등록</li>
-        <li>후보자 캐릭터 영상 제공</li>
-        <li>시민 질문 응답 기능</li>
-        <li>시민 반응 대시보드</li>
-        <li>지역별 관심 지표 확인</li>
-      </ul>
+      <div class="tier-sub">(시·도 단위 단독 선출)</div>
     </div>
-
     <div class="price-card">
       <div class="tier">기초단체장</div>
-      <div class="tier-sub">시장 · 군수 · 구청장</div>
       <div class="amount">129<sup>만원</sup></div>
+      <div class="tier-sub">(시장 · 군수 · 구청장)</div>
+    </div>
+    <div class="price-card">
+      <div class="tier">광역의원</div>
+      <div class="amount">39<sup>만원</sup></div>
+      <div class="tier-sub">(시·도의원)</div>
+    </div>
+    <div class="price-card">
+      <div class="tier">기초의원</div>
+      <div class="amount">19<sup>만원</sup></div>
+      <div class="tier-sub">(시·군·구 의원)</div>
+    </div>
+  </div>
+
+  <div class="pricing-detail-grid">
+    <div class="price-detail">
+      <div class="detail-quota">기본 시민 대화 제공 (5,000건)</div>
       <ul>
         <li>후보자 프로필 등록</li>
         <li>공약·정책 등록</li>
@@ -1298,11 +1341,8 @@
         <li>지역별 관심 지표 확인</li>
       </ul>
     </div>
-
-    <div class="price-card">
-      <div class="tier">광역의원</div>
-      <div class="tier-sub">시·도의원</div>
-      <div class="amount">39<sup>만원</sup></div>
+    <div class="price-detail">
+      <div class="detail-quota">기본 시민 대화 제공 (2,000건)</div>
       <ul>
         <li>후보자 프로필 등록</li>
         <li>공약·정책 등록</li>
@@ -1311,14 +1351,37 @@
         <li>후보자 캐릭터 영상 제공</li>
         <li>시민 질문 응답 기능</li>
         <li>시민 반응 대시보드</li>
-        <li>선거구 관심 지표 확인</li>
+        <li>지역별 관심 지표 확인</li>
       </ul>
     </div>
-
-    <div class="price-card">
-      <div class="tier">기초의원</div>
-      <div class="tier-sub">시·군·구 의원</div>
-      <div class="amount">19<sup>만원</sup></div>
+    <div class="price-detail">
+      <div class="detail-quota">기본 시민 대화 제공 (2,000건)</div>
+      <ul>
+        <li>후보자 프로필 등록</li>
+        <li>공약·정책 등록</li>
+        <li>약력·활동 이력 등록</li>
+        <li>프로필 사진 등록</li>
+        <li>후보자 캐릭터 영상 제공</li>
+        <li>시민 질문 응답 기능</li>
+        <li>시민 반응 대시보드</li>
+        <li>지역별 관심 지표 확인</li>
+      </ul>
+    </div>
+    <div class="price-detail">
+      <div class="detail-quota">기본 시민 대화 제공 (1,000건)</div>
+      <ul>
+        <li>후보자 프로필 등록</li>
+        <li>공약·정책 등록</li>
+        <li>약력·활동 이력 등록</li>
+        <li>프로필 사진 등록</li>
+        <li>후보자 캐릭터 영상 제공</li>
+        <li>시민 질문 응답 기능</li>
+        <li>시민 반응 대시보드</li>
+        <li>지역별 관심 지표 확인</li>
+      </ul>
+    </div>
+    <div class="price-detail">
+      <div class="detail-quota">기본 시민 대화 제공 (500건)</div>
       <ul>
         <li>후보자 프로필 등록</li>
         <li>공약·정책 등록</li>
@@ -1332,86 +1395,61 @@
   </div>
 
   <div class="pricing-note">
-    <b>가입비에는 후보자 페이지 운영에 필요한 기본 기능이 모두 포함</b>됩니다.<br/>
-    질문이 늘어 응답량이 추가로 필요할 경우 <b>대화카드</b>로 필요한 만큼 확장할 수 있습니다.
+    ※ 선거 규모와 예상 시민 이용량에 따라 <b>등록비가 구분</b>됩니다.<br/>
+    ※ 추가 시민 대화량은 필요 시 <b>대시보드에서 별도 구매</b>할 수 있습니다.<br/>
+    ※ 부가세 별도
   </div>
 
   <div class="pg-foot">© 2026 일꾼을묻다 · 후보자 전용 서비스 소개서</div>
   <div class="pg-num"><b>10</b> / 19</div>
 </section>
 
-<!-- ═══════════════════ P11. 직급별 산출 근거 ═══════════════════ -->
+<!-- ═══════════════════ P11. 시민과의 대화 흐름 ═══════════════════ -->
 <section class="page">
-  <div class="pg-brand"><img src="assets/logo_ask03.png" alt=""/><b>일꾼을묻다</b><span>· 11 직급별 산출 근거</span></div>
+  <div class="pg-brand"><img src="assets/logo_ask03.png" alt=""/><b>일꾼을묻다</b><span>· 11 시민과의 대화 흐름</span></div>
 
   <div>
-    <div class="eyebrow"><span class="num">11</span> · 직급별 산출 근거</div>
-    <h2 class="h2">왜 이 응답량이 필요할까요?</h2>
-    <p class="lead">직급별 기본 응답량은 유권자 규모와 캠페인 활동 범위를 바탕으로 산정되었습니다.</p>
+    <div class="eyebrow"><span class="num">11</span> · 시민과의 대화는 이렇게 이어집니다</div>
+    <h2 class="h2">시민과의 대화 흐름</h2>
+    <p class="lead">서비스 도입 후 시민과 후보자님 사이의 자연스러운 연결 흐름입니다.</p>
   </div>
 
-  <div class="breakdown-common">
-    <div class="row">
-      <span class="chip"><span class="ms">event</span>선거기간 운영 기준</span>
-      <span class="chip"><span class="ms">forum</span>질문 1건당 평균 응답 2회</span>
-      <span class="chip"><span class="ms">groups</span>유권자 규모 · 예상 참여율 기준</span>
+  <div class="conv-flow">
+    <div class="conv-step">
+      <span class="step-no">1</span>
+      <div class="step-icon">👁️</div>
+      <h4>시민이 봅니다</h4>
+      <p>프로필 · 공약 · 약력 등 후보자님의 정보가 노출됩니다.</p>
     </div>
-    <p class="note">※ 실제 사용량은 후보자 활동과 지역 상황에 따라 달라질 수 있습니다.</p>
-  </div>
-
-  <div class="breakdown-grid">
-    <div class="breakdown-card featured">
-      <div class="tier-name">광역단체장 (시·도지사)</div>
-      <p class="tier-tagline">유권자 규모가 크고 정책 분야가 넓어 가장 높은 응답량 필요</p>
-      <div class="breakdown-stats">
-        <div class="breakdown-stat"><span class="label">예상 질문 수</span><span class="value">5,000 ~ 20,000건</span></div>
-        <div class="breakdown-stat purple"><span class="label">예상 응답량</span><span class="value">10,000 ~ 40,000건</span></div>
-        <div class="breakdown-stat"><span class="label">1일 평균 응답</span><span class="value">700 ~ 2,800건</span></div>
-      </div>
+    <div class="conv-step">
+      <span class="step-no">2</span>
+      <div class="step-icon">💬</div>
+      <h4>관심이 생기면 질문합니다</h4>
+      <p>24시간 자유롭게 시민이 질문을 남길 수 있습니다.</p>
     </div>
-
-    <div class="breakdown-card">
-      <div class="tier-name">교육감</div>
-      <p class="tier-tagline">시·도 단위 단독 선출, 교육 분야 집중 질문 대응</p>
-      <div class="breakdown-stats">
-        <div class="breakdown-stat"><span class="label">예상 질문 수</span><span class="value">2,000 ~ 10,000건</span></div>
-        <div class="breakdown-stat purple"><span class="label">예상 응답량</span><span class="value">4,000 ~ 20,000건</span></div>
-        <div class="breakdown-stat"><span class="label">1일 평균 응답</span><span class="value">300 ~ 1,400건</span></div>
-      </div>
+    <div class="conv-step">
+      <span class="step-no">3</span>
+      <div class="step-icon">📊</div>
+      <h4>후보자님이 반응을 확인합니다</h4>
+      <p>시민 반응 대시보드 · 지역별 관심 지표를 실시간으로.</p>
     </div>
-
-    <div class="breakdown-card">
-      <div class="tier-name">기초단체장 (시장·군수·구청장)</div>
-      <p class="tier-tagline">지역 이슈 대응 + 빠른 반응 확인이 핵심</p>
-      <div class="breakdown-stats">
-        <div class="breakdown-stat"><span class="label">예상 질문 수</span><span class="value">2,000 ~ 10,000건</span></div>
-        <div class="breakdown-stat purple"><span class="label">예상 응답량</span><span class="value">4,000 ~ 20,000건</span></div>
-        <div class="breakdown-stat"><span class="label">1일 평균 응답</span><span class="value">300 ~ 1,400건</span></div>
-      </div>
-    </div>
-
-    <div class="breakdown-card">
-      <div class="tier-name">광역의원</div>
-      <p class="tier-tagline">시·도 단위 정책 질문에 효율적 대응</p>
-      <div class="breakdown-stats">
-        <div class="breakdown-stat"><span class="label">예상 질문 수</span><span class="value">800 ~ 5,000건</span></div>
-        <div class="breakdown-stat purple"><span class="label">예상 응답량</span><span class="value">1,500 ~ 10,000건</span></div>
-        <div class="breakdown-stat"><span class="label">1일 평균 응답</span><span class="value">100 ~ 700건</span></div>
-      </div>
-    </div>
-
-    <div class="breakdown-card">
-      <div class="tier-name">기초의원</div>
-      <p class="tier-tagline">생활밀착형 질문 위주, 필요한 만큼 확장 가능</p>
-      <div class="breakdown-stats">
-        <div class="breakdown-stat"><span class="label">예상 질문 수</span><span class="value">300 ~ 2,000건</span></div>
-        <div class="breakdown-stat purple"><span class="label">예상 응답량</span><span class="value">600 ~ 4,000건</span></div>
-        <div class="breakdown-stat"><span class="label">1일 평균 응답</span><span class="value">40 ~ 280건</span></div>
-      </div>
+    <div class="conv-step">
+      <span class="step-no">4</span>
+      <div class="step-icon">🔁</div>
+      <h4>대화가 늘어나면 확장합니다</h4>
+      <p>시민 대화카드를 필요한 만큼만 추가합니다.</p>
     </div>
   </div>
 
-  <p class="breakdown-disc">※ 위 수치는 일반적인 활동 범위에서의 예상값이며, 실제 사용량은 캠페인 운영에 따라 달라질 수 있습니다.</p>
+  <div class="conv-statement">
+    <p>시민은 후보자님의 프로필과 공약을 보고 관심이 생기면 질문을 남기게 됩니다.</p>
+    <p>후보자님은 시민의 질문과 공약 반응을 확인하며, 시민이 어떤 문제에 관심을 가지는지 확인할 수 있습니다.</p>
+    <p>가입 시 <b>기본 대화량</b>이 제공되며, 시민과의 대화가 늘어날 경우 필요한 만큼 <b>시민 대화카드</b>를 추가하여 확장할 수 있습니다. 작은 카드부터 부담 없이 시작해 실제 시민 반응을 경험한 뒤 운영 전략에 맞게 확장할 수 있습니다.</p>
+  </div>
+
+  <div class="conv-no-pressure">
+    💡 <b>대화카드를 구매하지 않아도</b> 후보자님의 공약과 정보는 시민에게 공개됩니다 — 홍보 및 정책 안내 용도로 활용 가능합니다.
+  </div>
 
   <div class="pg-foot">© 2026 일꾼을묻다 · 후보자 전용 서비스 소개서</div>
   <div class="pg-num"><b>11</b> / 19</div>
@@ -1422,64 +1460,76 @@
   <div class="pg-brand"><img src="assets/logo_ask03.png" alt=""/><b>일꾼을묻다</b><span>· 12 대화카드</span></div>
 
   <div>
-    <div class="eyebrow"><span class="num">12</span> · 대화카드</div>
-    <h2 class="h2">질문이 늘어날수록<br/>필요한 만큼 확장합니다</h2>
-    <p class="lead">남은 응답량은 대시보드에서 확인할 수 있으며, 부족할 경우 즉시 대화카드를 추가할 수 있습니다.</p>
+    <div class="eyebrow"><span class="num">12</span> · 시민대화카드</div>
+    <h2 class="h2">시민대화카드</h2>
+    <p class="lead"><b style="color:var(--purple)">시민대화카드란?</b> — 시민과의 질문·대화를 통해 후보자님의 공약과 정책을 알리고, 시민 반응과 관심 흐름을 확인할 수 있는 <b>대화 확장 기능</b>입니다.</p>
   </div>
 
   <div class="cards-grid">
-    <div class="card-pkg">
-      <div class="pkg-icon"><span class="ms">credit_card</span></div>
+    <div class="card-pkg tier-s">
+      <div class="pkg-icon"><span class="ms">chat_bubble</span></div>
       <div class="body">
-        <div class="pkg-name">베이직</div>
-        <div class="pkg-qty">1,000<small>건</small></div>
+        <div class="pkg-name">시민대화카드 S <small style="color:var(--ink-3);font-weight:700">· 기본</small></div>
         <div class="pkg-price">5만원</div>
+        <div class="pkg-qty">약 1,000<small>건 시민 대화 가능</small></div>
+        <div class="pkg-benefits">시민 질문 응답 · 공약 기반 대화 · 시민 반응 확인</div>
       </div>
     </div>
-    <div class="card-pkg outline">
-      <div class="pkg-icon"><span class="ms">star</span></div>
+    <div class="card-pkg tier-m">
+      <div class="pkg-icon"><span class="ms">forum</span></div>
       <div class="body">
-        <div class="pkg-name">스탠다드</div>
-        <div class="pkg-qty">5,000<small>건</small></div>
+        <div class="pkg-name">시민대화카드 M <small style="color:var(--ink-3);font-weight:700">· 확장</small></div>
         <div class="pkg-price">20만원</div>
+        <div class="pkg-qty">약 5,000<small>건 시민 대화 가능</small></div>
+        <div class="pkg-benefits">시민 질문 응답 · 공약 기반 대화 · 시민 반응 데이터 확인</div>
       </div>
     </div>
-    <div class="card-pkg">
-      <div class="pkg-icon"><span class="ms">workspace_premium</span></div>
+    <div class="card-pkg tier-l">
+      <div class="pkg-icon"><span class="ms">groups</span></div>
       <div class="body">
-        <div class="pkg-name">프리미엄</div>
-        <div class="pkg-qty">10,000<small>건</small></div>
+        <div class="pkg-name">시민대화카드 L <small style="color:var(--ink-3);font-weight:700">· 집중</small></div>
         <div class="pkg-price">35만원</div>
+        <div class="pkg-qty">약 10,000<small>건 시민 대화 가능</small></div>
+        <div class="pkg-benefits">시민 질문 응답 · 공약 기반 대화 · 시민 반응 데이터 확인</div>
       </div>
     </div>
-    <div class="card-pkg">
-      <div class="pkg-icon"><span class="ms">diamond</span></div>
+    <div class="card-pkg tier-xl">
+      <div class="pkg-icon"><span class="ms">campaign</span></div>
       <div class="body">
-        <div class="pkg-name">메가 프리미엄</div>
-        <div class="pkg-qty">30,000<small>건</small></div>
+        <div class="pkg-name">시민대화카드 XL <small>· 캠페인</small></div>
         <div class="pkg-price">90만원</div>
+        <div class="pkg-qty">약 30,000<small>건 시민 대화 가능</small></div>
+        <div class="pkg-benefits">시민 질문 응답 · 공약 기반 대화 · 시민 반응 데이터 확인</div>
       </div>
+    </div>
+  </div>
+
+  <div class="length-control">
+    <div class="lc-head">
+      <h4><span class="ms">tune</span>답변 길이도 후보자님이 직접 제어합니다</h4>
+      <p>예산과 운영 전략에 맞춰 답변 길이를 조절할 수 있습니다.</p>
+    </div>
+    <div class="lc-options">
+      <div class="lc-opt"><div class="lc-lbl">짧은 답변</div><div class="lc-desc">~50자 · 저비용</div></div>
+      <div class="lc-opt active"><div class="lc-lbl">보통 답변</div><div class="lc-desc">~100자 · 균형 (기본)</div></div>
+      <div class="lc-opt"><div class="lc-lbl">긴 답변</div><div class="lc-desc">~150자 · 높은 만족</div></div>
     </div>
   </div>
 
   <div class="alert-list">
-    <h4><span class="ms">notifications_active</span>응답량 알림 단계</h4>
+    <h4><span class="ms">notifications_active</span>대화량 알림 단계</h4>
     <div class="alert-row">
       <div class="pct">70%</div>
-      <div>응답량 70% 사용 — <b>대시보드에 추가 안내 표시</b>, 다음 카드 추천</div>
+      <div>대화량 70% 사용 — <b>대시보드에 카드 추천 표시</b></div>
     </div>
     <div class="alert-row warn">
       <div class="pct">90%</div>
-      <div>응답량 90% 사용 — <b>이메일·Chat 알림</b>, 질문 대응 유지를 위한 추가 안내</div>
+      <div>대화량 90% 사용 — <b>이메일 안내</b>, 추가 카드로 대응 유지</div>
     </div>
     <div class="alert-row danger">
       <div class="pct">100%</div>
-      <div>응답량 소진 — <b>1클릭 카드 추가 구매 안내</b>, 신규 질문은 접수되며 응답량 확보 후 재개</div>
+      <div>대화량 소진 — <b>시민 질문은 계속 접수</b>되며, 답변은 카드 추가 후 재개</div>
     </div>
-  </div>
-
-  <div class="value-bottom">
-    질문이 늘어나는 것은 <b style="color:var(--purple)">유권자 관심이 늘어나는 신호</b>입니다.
   </div>
 
   <div class="pg-foot">© 2026 일꾼을묻다 · 후보자 전용 서비스 소개서</div>
@@ -1816,8 +1866,8 @@
       <div class="ans">관리자 페이지에서 언제든 수정 가능하며, 수정 후 바로 반영됩니다.</div>
     </details>
     <details class="faq-q">
-      <summary>AI가 이상한 답변을 하면 어떻게 하나요?</summary>
-      <div class="ans">등록된 자료 기반으로만 응답하도록 설계되어 있습니다. 이상 답변은 관리자 페이지에서 즉시 수정 가능하며, 수정 후 바로 반영됩니다.</div>
+      <summary>등록되지 않은 답변이 나가면 어떻게 하나요?</summary>
+      <div class="ans">후보자가 등록한 자료 기반으로만 응답하도록 설계되어 있습니다. 의도와 다른 답변이 발견되면 관리자 페이지에서 즉시 수정 가능하며, 수정 후 바로 반영됩니다.</div>
     </details>
   </div>
 

@@ -1,5 +1,5 @@
 /**
- * 일꾼을찾다 관리자 대시보드 - Google Apps Script 백엔드
+ * 일꾼을묻다 관리자 대시보드 - Google Apps Script 백엔드
  *
  * 액션:
  *   send        - Gmail 실제 발송 + 발송내역 시트 기록
@@ -96,7 +96,7 @@ function doPost(e) {
 }
 
 function doGet() {
-  return json({ok: true, service: '일꾼을찾다 Admin API', version: '1.1'});
+  return json({ok: true, service: '일꾼을묻다 Admin API', version: '1.1'});
 }
 
 /* ═══════════════════════ 발송 ═══════════════════════ */
@@ -110,7 +110,7 @@ function sendMail(data) {
   subject = applyVars(subject, vars);
   body = applyVars(body, vars);
 
-  var options = {name: '일꾼을찾다'};
+  var options = {name: '일꾼을묻다'};
   var ids = data.attachmentIds || [];
   if (ids.length) {
     var atts = [];
@@ -323,7 +323,7 @@ function ensurePositiveSheet() {
     sh.appendRow([
       'pp_default',
       '기본',
-      '당신은 "일꾼을찾다" (정치 후보자 디지털 캠페인 플랫폼) CS 담당자입니다.\n후보자에게 친절하고 전문적인 톤으로 답변하세요.\n답변 끝에는 "감사합니다.\n일꾼을찾다 팀" 을 추가하세요.\n일반 운영·기능·사용법 문의에만 자신감 있게 답변하세요.\n환불·약관 문의 시 학습된 정책 문서를 정확히 참고해서 답변하세요.',
+      '당신은 "일꾼을묻다" (정치 후보자 디지털 캠페인 플랫폼) CS 담당자입니다.\n후보자에게 친절하고 전문적인 톤으로 답변하세요.\n답변 끝에는 "감사합니다.\n일꾼을묻다 팀" 을 추가하세요.\n일반 운영·기능·사용법 문의에만 자신감 있게 답변하세요.\n환불·약관 문의 시 학습된 정책 문서를 정확히 참고해서 답변하세요.',
       true,
       'system',
       today()
@@ -716,7 +716,7 @@ function generateAIDraft(opts) {
   try { positive = getActivePromptBody('positive'); } catch (e) { Logger.log('[AI] getActivePromptBody positive failed: ' + e); }
   try { negative = getActivePromptBody('negative'); } catch (e) { Logger.log('[AI] getActivePromptBody negative failed: ' + e); }
   if (!positive) {
-    positive = '당신은 "일꾼을찾다" CS 담당자입니다. 친절하고 전문적인 톤으로 답변하세요. 답변 끝에 "감사합니다.\n일꾼을찾다 팀" 추가.';
+    positive = '당신은 "일꾼을묻다" CS 담당자입니다. 친절하고 전문적인 톤으로 답변하세요. 답변 끝에 "감사합니다.\n일꾼을묻다 팀" 추가.';
   }
   if (!negative) {
     negative = '다음 중 하나면 정확히 "[민감]" 한 단어만 출력: 정치적 견해, 정당 비교, 선거법 해석, 법률 자문, 분쟁성 환불, 결제 분쟁, 회사 공식 입장 필요 사안.';
@@ -1102,9 +1102,9 @@ function autoSendReminders() {
     try {
       GmailApp.sendEmail(
         row[iEmail],
-        '[일꾼을찾다] 신청서 제출 안내 (리마인더)',
-        (row[iName] || '') + '님 안녕하세요.\n\n지난 문의에 대한 안내서가 아직 발송되지 않았습니다.\n관리자가 곧 처리해드리겠습니다.\n\n감사합니다.\n일꾼을찾다 팀',
-        {name: '일꾼을찾다'}
+        '[일꾼을묻다] 신청서 제출 안내 (리마인더)',
+        (row[iName] || '') + '님 안녕하세요.\n\n지난 문의에 대한 안내서가 아직 발송되지 않았습니다.\n관리자가 곧 처리해드리겠습니다.\n\n감사합니다.\n일꾼을묻다 팀',
+        {name: '일꾼을묻다'}
       );
       sh.getRange(i+1, iSend+1).setValue('리마인더');
       sent++;

@@ -58,9 +58,11 @@
   .cover > *:not(.pg-brand):not(.pg-num):not(.cover-bottom){width:100%;max-width:560px}
   .cover::before{content:'';position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.07) 0%,transparent 70%);top:-150px;right:-120px}
   .cover-doc-tag{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--purple-200);color:var(--purple);font-weight:800;font-size:10.5px;letter-spacing:.08em;padding:6px 14px;border-radius:999px;margin-bottom:24px}
+  .cover-title-block{position:absolute;top:24mm;left:18mm;right:18mm;text-align:left;margin:0}
+  .cover-title-block .cover-title{font-size:25px;font-weight:900;letter-spacing:-.03em;color:var(--ink);margin:0;line-height:1.05}
   .cover-hero{display:flex;flex-direction:column;align-items:center;text-align:center}
-  .cover-logo-mark{width:84px;height:84px;border-radius:22px;background:#fff;border:1px solid var(--purple-100);display:grid;place-items:center;margin:0 auto 20px;box-shadow:0 14px 30px rgba(124,58,237,.15);overflow:hidden;flex-shrink:0}
-  .cover-logo-mark img{width:64px;height:64px;border-radius:14px;object-fit:cover}
+  .cover-logo-mark{width:80px;height:80px;border-radius:18px;overflow:hidden;display:grid;place-items:center;margin:0 auto 20px;box-shadow:0 14px 30px rgba(124,58,237,.15);flex-shrink:0}
+  .cover-logo-mark img{width:100%;height:100%;object-fit:cover}
   .cover .h1{font-size:38px;line-height:1.2;margin-bottom:14px}
   .cover .h1 strong{color:var(--purple)}
   .cover .lead{font-size:14.5px;color:var(--ink-2);max-width:520px;margin:0 auto}
@@ -86,32 +88,37 @@
     font-size:14px;color:var(--ink-2);line-height:1.7;
   }
   .welcome-msg b{color:var(--purple)}
-  .steps-timeline{display:flex;flex-direction:column;gap:24px;width:100%}
+  .steps-timeline{display:flex;flex-direction:column;gap:10px;width:100%}
   .timeline-row{
     display:grid;grid-template-columns:60px 1fr;gap:16px;align-items:center;
-    padding:14px 18px;background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:14px 18px;background:#fff;border:2px solid var(--line);border-radius:14px;
     position:relative;
   }
-  .timeline-row.now{background:linear-gradient(135deg,var(--purple-50) 0%,#fff 100%);border:2px solid var(--purple)}
+  .timeline-row.now{background:linear-gradient(135deg,var(--purple-50) 0%,#fff 100%);border-color:var(--purple);box-shadow:0 8px 20px rgba(124,58,237,.12)}
   .timeline-num{
     width:44px;height:44px;border-radius:50%;background:var(--purple-50);color:var(--purple);
     display:grid;place-items:center;font-weight:900;font-size:17px;
   }
   .timeline-row.now .timeline-num{background:var(--purple);color:#fff;box-shadow:0 6px 14px rgba(124,58,237,.3)}
   .timeline-row.done .timeline-num{background:#ecfdf5;color:var(--green)}
+  .timeline-body{text-align:left}
   .timeline-body h4{font-size:14px;font-weight:900;color:var(--ink);margin:0 0 3px}
   .timeline-body p{font-size:11.5px;color:var(--ink-3);margin:0;line-height:1.5}
 
   /* P3 PAYMENT */
   .pay-head{margin-bottom:0}
   .pay-body{display:flex;flex-direction:column;gap:18px;flex:1;justify-content:center;margin:18px 0}
-  .pay-tier-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-  .pay-tier{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:14px 14px 12px;text-align:center;position:relative}
-  .pay-tier.featured{background:linear-gradient(180deg,#faf5ff 0%,var(--gold-50) 100%);border:2px solid var(--purple)}
-  .pay-tier .t{font-size:11px;font-weight:900;color:var(--ink);margin-bottom:4px}
-  .pay-tier .a{font-size:22px;font-weight:900;color:var(--ink);letter-spacing:-.02em;line-height:1}
+  .pay-tier-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:14px}
+  .pay-tier{background:#faf5ff;border:2px dashed var(--purple);border-radius:12px;padding:22px 12px 14px;text-align:center;position:relative;transition:transform .15s,box-shadow .15s}
+  .pay-tier:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(124,58,237,.18)}
+  .pay-tier::before{content:'사전등록';position:absolute;top:-9px;left:10px;background:var(--purple);color:#fff;font-size:9px;font-weight:900;padding:3px 10px;border-radius:999px;box-shadow:0 2px 6px rgba(124,58,237,.25);letter-spacing:.02em}
+  .pay-tier .t{font-size:13px;font-weight:900;color:var(--ink);margin-bottom:5px;letter-spacing:-.02em}
+  .pay-tier .a{font-size:24px;font-weight:900;color:var(--ink);letter-spacing:-.02em;line-height:1}
   .pay-tier .a sup{font-size:11px;color:var(--ink-3);font-weight:800;margin-left:1px}
-  .pay-tier .q{font-size:9.5px;color:var(--purple);font-weight:800;margin-top:5px}
+  .pay-tier .q{font-size:9.5px;color:var(--ink-3);font-weight:700;margin-top:8px}
+  .pay-tier .s{font-size:9.5px;color:var(--ink-3);font-weight:700;margin-top:6px;line-height:1.35}
+  .pay-tier-foot{margin-top:14px;font-size:11px;color:var(--ink-3);font-weight:600;text-align:center;line-height:1.7}
+  .pay-tier-foot b{color:var(--purple)}
   .pay-process{
     background:linear-gradient(180deg,#faf5ff 0%,#fff 100%);
     border:1.5px solid var(--purple);border-radius:14px;
@@ -247,31 +254,36 @@
     top:-180px;right:-120px;
   }
   .golden-notice{
-    display:inline-flex;flex-direction:column;align-items:center;gap:6px;
     background:#fff;border:2px solid var(--purple);
-    padding:12px 22px;border-radius:12px;
-    margin-bottom:16px;position:relative;
+    padding:18px 26px;border-radius:14px;
+    margin:32px auto 36px;position:relative;
     box-shadow:0 8px 20px rgba(124,58,237,.16);
-    max-width:560px;text-align:center;
-    align-self:center;
+    max-width:600px;text-align:center;
   }
-  .golden-notice .nt-tag{
-    display:inline-flex;align-items:center;gap:6px;
+  .golden-notice p{
+    font-size:13.5px;color:var(--ink);font-weight:700;line-height:1.7;margin:0;
+    word-break:keep-all;
+  }
+  .golden-notice p b{color:var(--purple)}
+  @keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 4px 12px rgba(124,58,237,.35)}50%{transform:scale(1.06);box-shadow:0 6px 18px rgba(124,58,237,.5)}}
+  .golden-dday{
+    display:inline-flex;flex-direction:column;align-items:flex-start;
+    margin:0 auto 8px;position:relative;align-self:center;
+  }
+  .golden-dday .dday-label{
+    position:absolute;top:-4px;left:-6px;
     background:var(--purple);color:#fff;
     font-size:11.5px;font-weight:900;letter-spacing:.06em;
     padding:4px 12px;border-radius:999px;
     animation:pulse 1.8s infinite;
+    z-index:2;
   }
-  .golden-notice p{
-    font-size:13px;color:var(--ink);font-weight:700;line-height:1.65;margin:0;
+  .golden-dday .dday-num{
+    font-size:150px;font-weight:900;letter-spacing:-.05em;line-height:1;
+    color:var(--purple);
+    padding-top:20px;
+    filter:drop-shadow(0 6px 18px rgba(124,58,237,.25));
   }
-  .golden-notice p b{color:var(--purple)}
-  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
-  .golden-page h2{
-    font-size:30px;font-weight:900;letter-spacing:-.03em;line-height:1.2;
-    color:var(--ink);margin-bottom:10px;position:relative;
-  }
-  .golden-page h2 strong{color:var(--purple);font-size:1.4em}
   .golden-page .lead-w{
     font-size:13.5px;color:var(--ink-2);max-width:520px;margin:0 auto 18px;line-height:1.65;
     position:relative;font-weight:600;
@@ -467,7 +479,7 @@
     <span>일꾼을묻다 · 후보자 가입 안내 (5p)</span>
   </div>
   <div class="actions">
-    <a href="brochure-product.html" target="_self">📐 소개서</a>
+    <a href="brochure-product.html" target="_self">📐 서비스 소개서</a>
     <a class="btn-print" onclick="window.print()" href="javascript:void(0)">🖨️ PDF 저장</a>
   </div>
 </div>
@@ -475,6 +487,10 @@
 <!-- ═══════════════════ P1. 표지 + 가입 절차 3단계 ═══════════════════ -->
 <section class="page cover">
   <div class="pg-brand"><img src="assets/logo_ask03.png" alt=""/><b>일꾼을묻다</b><span>· REGISTRATION GUIDE</span></div>
+
+  <div class="cover-title-block">
+    <h2 class="cover-title">가입 안내서</h2>
+  </div>
 
   <div class="cover-hero">
     <div class="cover-logo-mark"><img src="assets/logo_ask03.png" alt=""/></div>
@@ -517,17 +533,21 @@
   <div class="pay-head">
     <div class="eyebrow"><span class="num">02</span> · 가입비 입금</div>
     <h2 class="h2">인터넷 결제로<br/>지금 바로 시작하세요</h2>
-    <p class="lead">가입비 기준 / 선거기간 운영 기준 / 부가세 별도 · 후보자 페이지 세팅 + 자료 등록 + 기본 응답량 포함</p>
+    <p class="lead"><b>등록비</b> — 후보자 페이지 세팅·공약 등록·프로필 구성·후보자 캐릭터 영상·시민 질문 응답·시민 반응 대시보드까지 <b>운영 준비 일체</b>가 포함됩니다.</p>
   </div>
 
   <div class="pay-body">
     <div class="pay-tier-grid">
-      <div class="pay-tier featured"><div class="t">광역단체장</div><div class="a">299<sup>만원</sup></div><div class="q">기본 5,000건</div></div>
-      <div class="pay-tier"><div class="t">교육감</div><div class="a">129<sup>만원</sup></div><div class="q">기본 2,000건</div></div>
-      <div class="pay-tier"><div class="t">기초단체장</div><div class="a">129<sup>만원</sup></div><div class="q">기본 2,000건</div></div>
-      <div class="pay-tier"><div class="t">광역의원</div><div class="a">39<sup>만원</sup></div><div class="q">기본 1,000건</div></div>
-      <div class="pay-tier"><div class="t">기초의원</div><div class="a">19<sup>만원</sup></div><div class="q">기본 500건</div></div>
+      <div class="pay-tier"><div class="t">광역단체장</div><div class="a">299<sup>만원</sup></div><div class="s">(시·도지사 · 광역시장)</div></div>
+      <div class="pay-tier"><div class="t">교육감</div><div class="a">129<sup>만원</sup></div><div class="s">(시·도 단위 단독 선출)</div></div>
+      <div class="pay-tier"><div class="t">기초단체장</div><div class="a">129<sup>만원</sup></div><div class="s">(시장 · 군수 · 구청장)</div></div>
+      <div class="pay-tier"><div class="t">광역의원</div><div class="a">39<sup>만원</sup></div><div class="s">(시·도의원)</div></div>
+      <div class="pay-tier"><div class="t">기초의원</div><div class="a">19<sup>만원</sup></div><div class="s">(시·군·구 의원)</div></div>
     </div>
+    <p class="pay-tier-foot">
+      ※ 선거 규모와 예상 시민 이용량에 따라 <b>등록비가 구분</b>됩니다.<br/>
+      ※ 부가세 별도
+    </p>
 
     <div class="pay-process">
       <div class="pay-step">
@@ -630,11 +650,13 @@
   <div class="pg-brand"><img src="assets/logo_ask03.png" alt=""/><b>일꾼을묻다</b><span>· 04 골든타임</span></div>
 
   <div class="golden-notice">
-    <span class="nt-tag">🔥 1차 모집 안내</span>
-    <p><b>3일 단위로 후보자 확인 후 일괄 발송</b>합니다.<br/>마감 가까이는 확인이 지연될 수 있으니 <b>미리 신청</b>해주세요.</p>
+    <p>1차 모집 기간 내 신청하시면 <b>후보자 페이지 세팅과 자료 등록을 먼저 진행</b>합니다.<br/>선거기간이 짧기 때문에,<br/><b>먼저 등록할수록 시민에게 빠르게 노출</b>되고 질문·반응 데이터를 더 일찍 쌓을 수 있습니다.</p>
   </div>
 
-  <h2>1차 모집 마감까지<br/><strong>D-3</strong></h2>
+  <div class="golden-dday">
+    <span class="dday-label">1차 모집</span>
+    <div class="dday-num">D-3</div>
+  </div>
 
   <div class="countdown-box" id="cdBox">
     <div class="cd-unit"><div class="cd-num" id="cdD">03</div><div class="cd-lbl">DAYS</div></div>
@@ -646,28 +668,28 @@
     <div class="cd-unit"><div class="cd-num" id="cdS">12</div><div class="cd-lbl">SEC</div></div>
   </div>
 
-  <p class="lead-w">왜 1차 안에 신청해야 할까요? 먼저 등록한 후보자가 시민에게<br/><b>더 정확하게 / 더 길게 / 더 빠르게</b> 닿기 때문입니다.</p>
+  <p class="lead-w">왜 빨리 신청해야 할까요? 먼저 등록한 후보자가 시민에게<br/><b>더 정확하게 / 더 길게 / 더 빠르게</b> 닿기 때문입니다.</p>
 
   <div class="adv-grid">
     <div class="adv-card early">
       <div class="num-circle">1</div>
       <span class="ms">menu_book</span>
-      <h4>자료 누적 효과</h4>
-      <p class="desc">일찍 자료를 업로드할수록 답변 데이터가 풍부해집니다. 시민 질문에 더 정확하게 응답합니다.</p>
+      <h4>자료 세팅 우선 진행</h4>
+      <p class="desc">일찍 자료를 등록할수록 시민 질문에 더 풍부하게 응답할 수 있습니다.</p>
       <div class="accent">먼저 = 답변 정확도 ↑</div>
     </div>
     <div class="adv-card early">
       <div class="num-circle">2</div>
       <span class="ms">visibility</span>
-      <h4>시민 노출 시간</h4>
-      <p class="desc">선거기간은 14일로 짧습니다. 일찍 활성화 = 더 많은 시민과 대화 + 공약 노출 확보.</p>
+      <h4>시민 노출 먼저 시작</h4>
+      <p class="desc">선거기간이 짧기 때문에 일찍 페이지가 열리면 더 많은 시민이 후보자님을 보게 됩니다.</p>
       <div class="accent">먼저 = 노출 시간 ↑</div>
     </div>
     <div class="adv-card early">
       <div class="num-circle">3</div>
       <span class="ms">trending_up</span>
-      <h4>반응 데이터 우위</h4>
-      <p class="desc">시민 반응은 시간 누적되며 패턴이 보입니다. 일찍 시작 = 더 많은 인사이트 → 메시지 조정에 즉시 반영.</p>
+      <h4>질문·반응 데이터 조기 확보</h4>
+      <p class="desc">시민 반응은 누적될수록 패턴이 보입니다. 일찍 시작할수록 메시지 조정에 즉시 반영할 수 있습니다.</p>
       <div class="accent">먼저 = 데이터 인사이트 ↑</div>
     </div>
   </div>
