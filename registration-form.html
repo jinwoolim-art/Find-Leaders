@@ -334,10 +334,10 @@
     <p style="font-size:12.5px;color:var(--ink-2);margin-bottom:10px">가입비 기준 · 선거기간 운영 기준 · 부가세 별도</p>
     <p id="priceHint" style="font-size:11.5px;color:var(--ink-3);font-weight:800;margin-bottom:10px">👆 먼저 위에서 후보구분을 선택해주세요.</p>
     <div class="price-table">
-      <div class="price-cell" data-pos="광역단체장" onclick="goCheckout('광역단체장')"><div class="t">광역단체장</div><div class="a">299<sup>만원</sup></div><div class="q">기본 5,000건</div></div>
-      <div class="price-cell" data-pos="교육감" onclick="goCheckout('교육감')"><div class="t">교육감</div><div class="a">129<sup>만원</sup></div><div class="q">기본 2,000건</div></div>
-      <div class="price-cell" data-pos="기초단체장" onclick="goCheckout('기초단체장')"><div class="t">기초단체장</div><div class="a">129<sup>만원</sup></div><div class="q">기본 2,000건</div></div>
-      <div class="price-cell" data-pos="광역의원" onclick="goCheckout('광역의원')"><div class="t">광역의원</div><div class="a">39<sup>만원</sup></div><div class="q">기본 1,000건</div></div>
+      <div class="price-cell" data-pos="광역단체장" onclick="goCheckout('광역단체장')"><div class="t">광역단체장</div><div class="a">299<sup>만원</sup></div><div class="q">기본 20,000건</div></div>
+      <div class="price-cell" data-pos="교육감" onclick="goCheckout('교육감')"><div class="t">교육감</div><div class="a">129<sup>만원</sup></div><div class="q">기본 10,000건</div></div>
+      <div class="price-cell" data-pos="기초단체장" onclick="goCheckout('기초단체장')"><div class="t">기초단체장</div><div class="a">129<sup>만원</sup></div><div class="q">기본 10,000건</div></div>
+      <div class="price-cell" data-pos="광역의원" onclick="goCheckout('광역의원')"><div class="t">광역의원</div><div class="a">39<sup>만원</sup></div><div class="q">기본 2,000건</div></div>
       <div class="price-cell" data-pos="기초의원" onclick="goCheckout('기초의원')"><div class="t">기초의원</div><div class="a">19<sup>만원</sup></div><div class="q">기본 500건</div></div>
     </div>
 
@@ -666,7 +666,7 @@ async function goCheckout(plan){
 }
 
 function defaultQuotaFor(plan){
-  return ({'광역단체장':'기본 5,000건','교육감':'기본 2,000건','기초단체장':'기본 2,000건','광역의원':'기본 1,000건','기초의원':'기본 500건'})[plan]||'';
+  return ({'광역단체장':'기본 20,000건','교육감':'기본 10,000건','기초단체장':'기본 10,000건','광역의원':'기본 2,000건','기초의원':'기본 500건'})[plan]||'';
 }
 
 loadPrefill();
