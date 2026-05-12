@@ -3286,7 +3286,7 @@ function openChat(id) {
     const messages = document.getElementById('chat-messages');
     messages.innerHTML = '';
 
-    addBotMessage(`반갑습니다. 후보자 ${currentChatCandidate.name}의 AI 아바타입니다.\n제가 가진 정책 비전이나 공약에 대해 무엇이든 물어보세요.\n\n※ 현재 데모 샘플 — 본 서비스는 5월 21일 선거운동 시작과 함께 정식 답변을 제공합니다.`);
+    addBotMessage(`안녕하세요. 저는 ${currentChatCandidate.name} 후보자 AI 보좌관이에요.\n만나서 반갑습니다.`);
 
     // 후보자별 아바타 영상 (성별 매핑)
     setChatAvatarVideo(currentChatCandidate.id);
@@ -3525,7 +3525,7 @@ function resetChat() {
     const messages = document.getElementById('chat-messages');
     if (!messages) return;
     messages.innerHTML = '';
-    addBotMessage(`반갑습니다. 후보자 ${currentChatCandidate.name}의 AI 아바타입니다.\n제가 가진 정책 비전이나 공약에 대해 무엇이든 물어보세요.\n\n※ 현재 데모 샘플 — 본 서비스는 5월 21일 선거운동 시작과 함께 정식 답변을 제공합니다.`);
+    addBotMessage(`안녕하세요. 저는 ${currentChatCandidate.name} 후보자 AI 보좌관이에요.\n만나서 반갑습니다.`);
     showToast('대화가 초기화되었습니다');
 }
 
