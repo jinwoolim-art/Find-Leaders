@@ -3286,7 +3286,7 @@ function openChat(id) {
     const messages = document.getElementById('chat-messages');
     messages.innerHTML = '';
 
-    addBotMessage(`반갑습니다. 후보자 ${currentChatCandidate.name}의 AI 아바타입니다.\n제가 가진 정책 비전이나 공약에 대해 무엇이든 물어보세요.`);
+    addBotMessage(`반갑습니다. 후보자 ${currentChatCandidate.name}의 AI 아바타입니다.\n제가 가진 정책 비전이나 공약에 대해 무엇이든 물어보세요.\n\n※ 현재 데모 샘플 — 본 서비스는 5월 21일 선거운동 시작과 함께 정식 답변을 제공합니다.`);
 
     // 후보자별 아바타 영상 (성별 매핑)
     setChatAvatarVideo(currentChatCandidate.id);
@@ -3525,7 +3525,7 @@ function resetChat() {
     const messages = document.getElementById('chat-messages');
     if (!messages) return;
     messages.innerHTML = '';
-    addBotMessage(`반갑습니다. 후보자 ${currentChatCandidate.name}의 AI 아바타입니다.\n제가 가진 정책 비전이나 공약에 대해 무엇이든 물어보세요.`);
+    addBotMessage(`반갑습니다. 후보자 ${currentChatCandidate.name}의 AI 아바타입니다.\n제가 가진 정책 비전이나 공약에 대해 무엇이든 물어보세요.\n\n※ 현재 데모 샘플 — 본 서비스는 5월 21일 선거운동 시작과 함께 정식 답변을 제공합니다.`);
     showToast('대화가 초기화되었습니다');
 }
 
@@ -3806,7 +3806,7 @@ function getResponse(text) {
         return `저는 ${c.party} 소속 기호 ${c.number}번 ${c.name}입니다. 올해 ${c.age}세이며, "${c.slogan}"이라는 슬로건으로 출마했습니다. 궁금한 정책이 있으시면 물어봐주세요!`;
     }
 
-    return `좋은 질문입니다. "${c.slogan}" - 이것이 저의 핵심 가치입니다. 구체적인 정책이 궁금하시다면 '주요 정책', '일자리', '교육', '비전' 등의 키워드로 질문해주세요!`;
+    return `아이고 죄송해요 ㅠㅠ\n\n지금은 샘플이라 제가 답변을 못 드려요.\n하지만 준비 열심히 해서 여러분께 좋은 공약과 정책을 설명드릴게요.\n\n우리 5월 21일에 만나요~~ (공식 선거운동 시작일이에요!)\n기대하셔도 좋아요! 영차 ^^\n\n아래 추천 키워드 버튼으로 샘플 답변을 확인해보실 수 있어요.`;
 }
 
 function sendMessage() {
