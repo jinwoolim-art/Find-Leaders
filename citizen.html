@@ -76,13 +76,16 @@ a{text-decoration:none;color:inherit}
 
 /* ═══ 2P · 앱 미리보기 + CTA ═══ */
 .p2{background:#fff;padding:48px 0 56px}
-.phones-row{display:flex;justify-content:center;align-items:center;gap:24px;flex-wrap:wrap}
-.phone{width:170px;flex-shrink:0}
+.phones-row{display:flex;justify-content:center;align-items:center;gap:28px;flex-wrap:wrap}
+.phone{
+  width:260px;flex-shrink:0;
+  background:#0f172a;border-radius:32px;padding:10px;
+  box-shadow:0 18px 40px rgba(15,23,42,.22);
+}
 .phone-screen{
-  background:#0f172a;border-radius:24px;
-  border:5px solid #1e293b;height:360px;
-  overflow:hidden;display:flex;flex-direction:column;
-  position:relative;box-shadow:0 16px 40px rgba(15,23,42,.18);
+  background:#fafbff;border-radius:22px;
+  height:500px;overflow:hidden;display:flex;flex-direction:column;
+  position:relative;
 }
 .phone-cap{text-align:center;color:var(--purple);font-weight:800;font-size:12px;margin-top:10px}
 .phone-dots{display:flex;justify-content:center;gap:5px;margin-top:8px}
@@ -186,7 +189,7 @@ a{text-decoration:none;color:inherit}
 .app-preview-modal.open{display:flex}
 .app-preview-frame{
   background:#0f172a;border-radius:32px;padding:8px;
-  width:min(420px,90vw);height:min(calc(100vh - 80px),900px);
+  width:min(380px,90vw);height:min(calc(100vh - 80px),760px);
   overflow:hidden;position:relative;
 }
 .app-preview-frame iframe{width:100%;height:100%;border:0;border-radius:24px;background:#fff;display:block}
@@ -196,6 +199,18 @@ a{text-decoration:none;color:inherit}
   background:rgba(255,255,255,.95);border:2px solid #fff;
   display:flex;align-items:center;justify-content:center;cursor:pointer;
   box-shadow:0 4px 14px rgba(0,0,0,.25);z-index:10;
+}
+@media (max-width:768px){
+  .app-preview-modal{padding:50px 14px 20px;align-items:flex-start}
+  .app-preview-frame{
+    width:min(80vw,340px);
+    height:min(calc(100vh - 80px),760px);
+    margin:0 auto;
+  }
+  .app-preview-frame iframe{
+    width:142.857%;height:142.857%;
+    transform:scale(.7);transform-origin:top left;
+  }
 }
 
 /* ═══ MODAL: 6/21 앱스토어 안내 ═══ */
@@ -236,8 +251,8 @@ a{text-decoration:none;color:inherit}
   .p2{padding:64px 0 80px}
   .p3{padding:80px 0}
   .p4{padding:64px 0 0}
-  .phone{width:200px}
-  .phone-screen{height:420px}
+  .phone{width:280px}
+  .phone-screen{height:540px}
 }
 </style>
 </head>
@@ -289,72 +304,72 @@ a{text-decoration:none;color:inherit}
           <div class="phone-screen" style="background:#000;padding:0">
             <div id="appSlider" style="display:flex;transition:transform .6s ease;height:100%;width:100%">
               <!-- 1. 메인 홈 -->
-              <div style="min-width:100%;height:100%;padding:18px;display:flex;flex-direction:column;align-items:center;background:#fff;font-size:11px;overflow:hidden">
-                <div style="width:56px;height:56px;border-radius:16px;overflow:hidden;margin:20px 0 10px;box-shadow:0 8px 20px rgba(124,58,237,.18)"><img src="assets/logo_ask03.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"/></div>
-                <p style="font-size:16px;font-weight:900;margin-bottom:3px">일꾼을묻다</p>
-                <p style="font-size:9px;color:#9ca3af;margin-bottom:18px;text-align:center">후보자 정보를 시민에게 한눈에</p>
-                <div style="width:100%;background:#7c3aed;border-radius:10px;padding:10px;text-align:center;margin-bottom:8px"><span style="color:#fff;font-size:12px;font-weight:900">일꾼보기 →</span></div>
-                <div style="width:100%;border:1px solid #e5e7eb;border-radius:10px;padding:9px;text-align:center;margin-bottom:14px"><span style="font-size:10px;color:#6b7280">현 시행되고 있는 정책</span></div>
-                <p style="font-size:11px;font-weight:900;text-align:left;width:100%;margin-bottom:6px">실시간 선거 뉴스</p>
-                <div style="width:100%;border:1px solid #e8edf3;border-radius:8px;padding:8px;text-align:left;margin-bottom:5px"><p style="font-size:9px;font-weight:700;margin:0">제9회 전국동시지방선거, 5/14 후보자 등록</p><p style="font-size:8px;color:#9ca3af;margin:2px 0 0">1시간 전 · 중앙일보</p></div>
-                <div style="width:100%;border:1px solid #e8edf3;border-radius:8px;padding:8px;text-align:left"><p style="font-size:9px;font-weight:700;margin:0">서울시장 후보 3인, 첫 TV토론회</p><p style="font-size:8px;color:#9ca3af;margin:2px 0 0">2시간 전 · KBS</p></div>
+              <div style="min-width:100%;height:100%;padding:20px;display:flex;flex-direction:column;align-items:center;background:#fff;font-size:11px;overflow:hidden">
+                <div style="width:64px;height:64px;border-radius:20px;overflow:hidden;margin:30px 0 12px;box-shadow:0 8px 20px rgba(124,58,237,.18)"><img src="assets/logo_ask03.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"/></div>
+                <p style="font-size:18px;font-weight:900;margin-bottom:4px">일꾼을묻다</p>
+                <p style="font-size:10px;color:#9ca3af;margin-bottom:24px;text-align:center">후보자 정보를 시민에게 한눈에</p>
+                <div style="width:100%;background:#7c3aed;border-radius:12px;padding:12px;text-align:center;margin-bottom:10px"><span style="color:#fff;font-size:13px;font-weight:900">일꾼보기 →</span></div>
+                <div style="width:100%;border:1px solid #e5e7eb;border-radius:12px;padding:11px;text-align:center;margin-bottom:18px"><span style="font-size:11px;color:#6b7280">현 시행되고 있는 정책</span></div>
+                <p style="font-size:12px;font-weight:900;text-align:left;width:100%;margin-bottom:8px">실시간 선거 뉴스</p>
+                <div style="width:100%;border:1px solid #e8edf3;border-radius:10px;padding:10px;text-align:left;margin-bottom:6px"><p style="font-size:10px;font-weight:700;margin:0">제9회 전국동시지방선거, 5/14 후보자 등록</p><p style="font-size:9px;color:#9ca3af;margin:2px 0 0">1시간 전 · 중앙일보</p></div>
+                <div style="width:100%;border:1px solid #e8edf3;border-radius:10px;padding:10px;text-align:left"><p style="font-size:10px;font-weight:700;margin:0">서울시장 후보 3인, 첫 TV토론회</p><p style="font-size:9px;color:#9ca3af;margin:2px 0 0">2시간 전 · KBS</p></div>
               </div>
               <!-- 2. 선거 종류 선택 -->
-              <div style="min-width:100%;height:100%;padding:18px;background:#fff">
-                <p style="font-size:13px;font-weight:900;margin-bottom:12px;text-align:left">선거 종류 선택</p>
-                <div style="background:#f5f3ff;border-radius:10px;padding:12px;margin-bottom:12px">
-                  <p style="font-size:9px;color:#6b7280;margin-bottom:3px">거주 지역</p>
-                  <p style="font-size:12px;font-weight:900;margin:0">시·도 / 시·군·구를 선택하세요</p>
+              <div style="min-width:100%;height:100%;padding:20px;background:#fff">
+                <p style="font-size:14px;font-weight:900;margin-bottom:14px;text-align:left">선거 종류 선택</p>
+                <div style="background:#f5f3ff;border-radius:12px;padding:14px;margin-bottom:14px">
+                  <p style="font-size:10px;color:#6b7280;margin-bottom:4px">거주 지역</p>
+                  <p style="font-size:13px;font-weight:900;margin:0">시·도 / 시·군·구를 선택하세요</p>
                 </div>
-                <div style="border:2px solid #7c3aed;border-radius:12px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:8px">
-                  <div style="width:30px;height:30px;border-radius:8px;background:#f5f3ff;display:flex;align-items:center;justify-content:center"><span class="ms msf" style="color:#7c3aed;font-size:18px">location_city</span></div>
-                  <div style="flex:1;text-align:left"><p style="font-size:12px;font-weight:900;margin:0">우리지역</p><p style="font-size:8px;color:#9ca3af;margin:2px 0 0">시·도지사 · 구청장 · 시장</p></div>
-                  <span class="ms" style="color:#7c3aed;font-size:16px">arrow_forward</span>
+                <div style="border:2px solid #7c3aed;border-radius:14px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:10px">
+                  <div style="width:36px;height:36px;border-radius:9px;background:#f5f3ff;display:flex;align-items:center;justify-content:center"><span class="ms msf" style="color:#7c3aed;font-size:20px">location_city</span></div>
+                  <div style="flex:1;text-align:left"><p style="font-size:13px;font-weight:900;margin:0">우리지역</p><p style="font-size:9px;color:#9ca3af;margin:2px 0 0">시·도지사 · 구청장 · 시장 · 군수</p></div>
+                  <span class="ms" style="color:#7c3aed;font-size:18px">arrow_forward</span>
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
-                  <div style="border:1px solid #e5e7eb;border-radius:10px;padding:12px;text-align:left"><div style="width:24px;height:24px;border-radius:6px;background:#f5f3ff;display:flex;align-items:center;justify-content:center;margin-bottom:5px"><span class="ms" style="color:#7c3aed;font-size:14px">apartment</span></div><p style="font-size:10px;font-weight:900;margin:0">우리 골목</p><p style="font-size:7px;color:#9ca3af;margin:2px 0 0">시의원 · 구의원</p></div>
-                  <div style="border:1px solid #e5e7eb;border-radius:10px;padding:12px;text-align:left"><div style="width:24px;height:24px;border-radius:6px;background:#eff6ff;display:flex;align-items:center;justify-content:center;margin-bottom:5px"><span class="ms" style="color:#3b82f6;font-size:14px">school</span></div><p style="font-size:10px;font-weight:900;margin:0">우리교육</p><p style="font-size:7px;color:#9ca3af;margin:2px 0 0">교육감 후보</p></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                  <div style="border:1px solid #e5e7eb;border-radius:12px;padding:14px;text-align:left"><div style="width:28px;height:28px;border-radius:7px;background:#f5f3ff;display:flex;align-items:center;justify-content:center;margin-bottom:6px"><span class="ms" style="color:#7c3aed;font-size:16px">apartment</span></div><p style="font-size:11px;font-weight:900;margin:0">우리 골목</p><p style="font-size:8px;color:#9ca3af;margin:2px 0 0">시의원 · 구의원 · 도의원</p></div>
+                  <div style="border:1px solid #e5e7eb;border-radius:12px;padding:14px;text-align:left"><div style="width:28px;height:28px;border-radius:7px;background:#eff6ff;display:flex;align-items:center;justify-content:center;margin-bottom:6px"><span class="ms" style="color:#3b82f6;font-size:16px">school</span></div><p style="font-size:11px;font-weight:900;margin:0">우리교육</p><p style="font-size:8px;color:#9ca3af;margin:2px 0 0">교육감 후보</p></div>
                 </div>
               </div>
               <!-- 3. 후보자 목록 -->
-              <div style="min-width:100%;height:100%;padding:16px;background:#fff;overflow:hidden">
-                <p style="font-size:13px;font-weight:900;margin-bottom:2px;text-align:left">우리지역 후보자</p>
-                <p style="font-size:9px;color:#9ca3af;margin-bottom:10px;text-align:left">서울특별시 관할</p>
-                <div style="display:flex;gap:4px;margin-bottom:10px"><span style="font-size:9px;font-weight:700;color:#7c3aed;border-bottom:2px solid #7c3aed;padding:4px 7px">시·도지사</span><span style="font-size:9px;color:#9ca3af;padding:4px 7px">구청장</span><span style="font-size:9px;color:#9ca3af;padding:4px 7px">시장</span></div>
-                <div style="border:1px solid #e5e7eb;border-radius:10px;padding:10px;margin-bottom:7px;display:flex;gap:8px;align-items:flex-start">
-                  <div style="flex-shrink:0;width:36px;height:36px;border-radius:50%;background-image:url('assets/kim.png');background-size:280%;background-position:50% 3%;background-color:#f3f4f6;border:2px solid #3b82f6"></div>
+              <div style="min-width:100%;height:100%;padding:18px;background:#fff;overflow:hidden">
+                <p style="font-size:14px;font-weight:900;margin-bottom:2px;text-align:left">우리지역 후보자</p>
+                <p style="font-size:10px;color:#9ca3af;margin-bottom:12px;text-align:left">서울특별시 관할</p>
+                <div style="display:flex;gap:5px;margin-bottom:12px"><span style="font-size:10px;font-weight:700;color:#7c3aed;border-bottom:2px solid #7c3aed;padding:5px 8px">시·도지사</span><span style="font-size:10px;color:#9ca3af;padding:5px 8px">구청장</span><span style="font-size:10px;color:#9ca3af;padding:5px 8px">시장</span></div>
+                <div style="border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start">
+                  <div style="flex-shrink:0;width:42px;height:42px;border-radius:50%;background-image:url('assets/kim.png');background-size:280%;background-position:50% 3%;background-repeat:no-repeat;background-color:#f3f4f6;border:2px solid #3b82f6"></div>
                   <div style="flex:1;text-align:left">
-                    <p style="font-size:8px;color:#3b82f6;font-weight:700;margin:0 0 2px">기호 1 · 더불어민주당</p>
-                    <p style="font-size:12px;font-weight:900;margin:0 0 2px">김ㅇ준 <span style="font-size:9px;color:#9ca3af">(52세)</span></p>
-                    <p style="font-size:8px;color:#6b7280;margin:0 0 6px">"시민의 삶을 바꾸는 스마트 시티"</p>
-                    <div style="display:flex;gap:4px"><span style="font-size:8px;font-weight:900;color:#fff;background:#7c3aed;padding:4px 10px;border-radius:5px">대화</span><span style="font-size:8px;font-weight:700;color:#6b7280;border:1px solid #e5e7eb;padding:4px 10px;border-radius:5px">관심</span></div>
+                    <p style="font-size:9px;color:#3b82f6;font-weight:700;margin:0 0 3px">기호 1 · 더불어민주당</p>
+                    <p style="font-size:13px;font-weight:900;margin:0 0 2px">김ㅇ준 <span style="font-size:10px;color:#9ca3af">(52세)</span></p>
+                    <p style="font-size:9px;color:#6b7280;margin:0 0 8px">"시민의 삶을 바꾸는 스마트 시티 서울"</p>
+                    <div style="display:flex;gap:5px"><span style="font-size:9px;font-weight:900;color:#fff;background:#7c3aed;padding:5px 11px;border-radius:6px">대화</span><span style="font-size:9px;font-weight:700;color:#6b7280;border:1px solid #e5e7eb;padding:5px 11px;border-radius:6px">관심 등록</span></div>
                   </div>
                 </div>
-                <div style="border:1px solid #e5e7eb;border-radius:10px;padding:10px;display:flex;gap:8px;align-items:flex-start">
-                  <div style="flex-shrink:0;width:36px;height:36px;border-radius:50%;background-image:url('assets/lee.png');background-size:280%;background-position:50% 3%;background-color:#f3f4f6;border:2px solid #ef4444"></div>
+                <div style="border:1px solid #e5e7eb;border-radius:12px;padding:12px;display:flex;gap:10px;align-items:flex-start">
+                  <div style="flex-shrink:0;width:42px;height:42px;border-radius:50%;background-image:url('assets/lee.png');background-size:280%;background-position:50% 3%;background-repeat:no-repeat;background-color:#f3f4f6;border:2px solid #ef4444"></div>
                   <div style="flex:1;text-align:left">
-                    <p style="font-size:8px;color:#ef4444;font-weight:700;margin:0 0 2px">기호 2 · 국민의힘</p>
-                    <p style="font-size:12px;font-weight:900;margin:0 0 2px">이ㅇ영 <span style="font-size:9px;color:#9ca3af">(45세)</span></p>
-                    <p style="font-size:8px;color:#6b7280;margin:0 0 6px">"다시 뛰는 공정 도시, 새로운 서울"</p>
-                    <div style="display:flex;gap:4px"><span style="font-size:8px;font-weight:900;color:#fff;background:#7c3aed;padding:4px 10px;border-radius:5px">대화</span><span style="font-size:8px;font-weight:700;color:#6b7280;border:1px solid #e5e7eb;padding:4px 10px;border-radius:5px">관심</span></div>
+                    <p style="font-size:9px;color:#ef4444;font-weight:700;margin:0 0 3px">기호 2 · 국민의힘</p>
+                    <p style="font-size:13px;font-weight:900;margin:0 0 2px">이ㅇ영 <span style="font-size:10px;color:#9ca3af">(45세)</span></p>
+                    <p style="font-size:9px;color:#6b7280;margin:0 0 8px">"다시 뛰는 공정 도시, 새로운 서울"</p>
+                    <div style="display:flex;gap:5px"><span style="font-size:9px;font-weight:900;color:#fff;background:#7c3aed;padding:5px 11px;border-radius:6px">대화</span><span style="font-size:9px;font-weight:700;color:#6b7280;border:1px solid #e5e7eb;padding:5px 11px;border-radius:6px">관심 등록</span></div>
                   </div>
                 </div>
               </div>
               <!-- 4. AI 아바타 영상 -->
               <div style="min-width:100%;height:100%;background:#000;position:relative;overflow:hidden">
                 <video id="appSliderVideo" src="assets/선거아바타_선정리(여자).mp4" muted loop playsinline preload="auto" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block"></video>
-                <div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#fff;font-size:8px;font-weight:700;padding:3px 9px;border-radius:99px;backdrop-filter:blur(6px);white-space:nowrap">⚠ 샘플 · AI 가상 아바타 예시</div>
+                <div style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#fff;font-size:9px;font-weight:700;padding:4px 10px;border-radius:99px;backdrop-filter:blur(6px);white-space:nowrap">⚠ 샘플 · AI 가상 아바타 예시</div>
               </div>
               <!-- 5. 후보자 비교 -->
-              <div style="min-width:100%;height:100%;padding:12px 14px;background:#fff;overflow-y:auto">
-                <p style="font-size:12px;font-weight:900;margin-bottom:8px;text-align:left">후보자 비교</p>
-                <div style="display:flex;gap:16px;justify-content:center;margin-bottom:10px">
-                  <div style="text-align:center"><div style="width:36px;height:36px;border-radius:50%;background-image:url('assets/아바타_리얼증명사진/wa34정명사진_14.png');background-size:cover;background-position:center top;background-color:#f3f4f6;margin:0 auto 3px;border:2px solid #3b82f6"></div><p style="font-size:9px;font-weight:900;margin:0">김ㅇ준</p><p style="font-size:7px;color:#3b82f6;margin:0">더불어민주당</p></div>
-                  <div style="text-align:center"><div style="width:36px;height:36px;border-radius:50%;background-image:url('assets/아바타_리얼증명사진/wa33정명사진_14.png');background-size:cover;background-position:center top;background-color:#f3f4f6;margin:0 auto 3px;border:2px solid #ef4444"></div><p style="font-size:9px;font-weight:900;margin:0">이ㅇ영</p><p style="font-size:7px;color:#ef4444;margin:0">국민의힘</p></div>
+              <div style="min-width:100%;height:100%;padding:14px 16px;background:#fff;overflow-y:auto">
+                <p style="font-size:13px;font-weight:900;margin-bottom:10px;text-align:left">후보자 비교</p>
+                <div style="display:flex;gap:18px;justify-content:center;margin-bottom:12px">
+                  <div style="text-align:center"><div style="width:42px;height:42px;border-radius:50%;background-image:url('assets/아바타_리얼증명사진/wa34정명사진_14.png');background-size:cover;background-position:center top;background-color:#f3f4f6;margin:0 auto 4px;border:2px solid #3b82f6"></div><p style="font-size:10px;font-weight:900;margin:0">김ㅇ준</p><p style="font-size:8px;color:#3b82f6;margin:0">더불어민주당</p></div>
+                  <div style="text-align:center"><div style="width:42px;height:42px;border-radius:50%;background-image:url('assets/아바타_리얼증명사진/wa33정명사진_14.png');background-size:cover;background-position:center top;background-color:#f3f4f6;margin:0 auto 4px;border:2px solid #ef4444"></div><p style="font-size:10px;font-weight:900;margin:0">이ㅇ영</p><p style="font-size:8px;color:#ef4444;margin:0">국민의힘</p></div>
                 </div>
-                <div style="margin-bottom:7px"><p style="font-size:9px;font-weight:900;margin:0 0 3px;text-align:left">📋 주요 정책</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:4px"><div style="background:#f8fafc;border-radius:6px;padding:5px;font-size:7px;color:#374151;line-height:1.4;text-align:left">스마트 시티, 디지털 행정</div><div style="background:#f8fafc;border-radius:6px;padding:5px;font-size:7px;color:#374151;line-height:1.4;text-align:left">규제 혁파, 공정한 기회</div></div></div>
-                <div style="margin-bottom:7px"><p style="font-size:9px;font-weight:900;margin:0 0 3px;text-align:left">💼 일자리</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:4px"><div style="background:#f8fafc;border-radius:6px;padding:5px;font-size:7px;color:#374151;line-height:1.4;text-align:left">산업 클러스터, 양질 일자리</div><div style="background:#f8fafc;border-radius:6px;padding:5px;font-size:7px;color:#374151;line-height:1.4;text-align:left">스타트업 규제 샌드박스</div></div></div>
-                <div><p style="font-size:9px;font-weight:900;margin:0 0 3px;text-align:left">🎓 교육</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:4px"><div style="background:#f8fafc;border-radius:6px;padding:5px;font-size:7px;color:#374151;line-height:1.4;text-align:left">디지털 교육, 무상 돌봄</div><div style="background:#f8fafc;border-radius:6px;padding:5px;font-size:7px;color:#374151;line-height:1.4;text-align:left">기초학력 보장</div></div></div>
+                <div style="margin-bottom:9px"><p style="font-size:10px;font-weight:900;margin:0 0 4px;text-align:left">📋 주요 정책</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:5px"><div style="background:#f8fafc;border-radius:7px;padding:6px;font-size:8px;color:#374151;line-height:1.45;text-align:left">스마트 시티 기반 시민 생활 혁신, 디지털 행정</div><div style="background:#f8fafc;border-radius:7px;padding:6px;font-size:8px;color:#374151;line-height:1.45;text-align:left">규제 혁파를 통한 경제 활성화, 공정한 기회</div></div></div>
+                <div style="margin-bottom:9px"><p style="font-size:10px;font-weight:900;margin:0 0 4px;text-align:left">💼 일자리</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:5px"><div style="background:#f8fafc;border-radius:7px;padding:6px;font-size:8px;color:#374151;line-height:1.45;text-align:left">지역 특화 산업 클러스터, 양질 일자리</div><div style="background:#f8fafc;border-radius:7px;padding:6px;font-size:8px;color:#374151;line-height:1.45;text-align:left">스타트업 규제 샌드박스, 청년 창업</div></div></div>
+                <div><p style="font-size:10px;font-weight:900;margin:0 0 4px;text-align:left">🎓 교육</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:5px"><div style="background:#f8fafc;border-radius:7px;padding:6px;font-size:8px;color:#374151;line-height:1.45;text-align:left">디지털 교육 지원 확대, 무상 돌봄</div><div style="background:#f8fafc;border-radius:7px;padding:6px;font-size:8px;color:#374151;line-height:1.45;text-align:left">기초학력 보장, 사교육 부담 감소</div></div></div>
               </div>
             </div>
           </div>
@@ -452,11 +467,10 @@ a{text-decoration:none;color:inherit}
   <div class="store-card">
     <button class="store-close" onclick="closeStoreModal()" aria-label="닫기"><span class="ms" style="font-size:18px">close</span></button>
     <div class="store-icon"><span class="ms msf">rocket_launch</span></div>
-    <p class="store-title">곧 만나요!</p>
-    <p class="store-date">📅 2026년 6월 21일 출시</p>
-    <p class="store-desc">"일꾼을묻다"는 현재 App Store 심사 중이에요.<br/>출시일에 다시 방문해주세요.</p>
+    <p class="store-title">5월 21일에 만나요!</p>
+    <p class="store-desc">일꾼을묻다는 현재 서비스 준비 중입니다.<br/>오픈 후 우리 동네 후보와 공약을 확인하실 수 있습니다.</p>
     <div class="store-actions">
-      <button class="store-btn-pri" onclick="window.open('https://blog.naver.com/ask-muda','_blank');closeStoreModal()">출시 소식 받기 (블로그 구독)</button>
+      <button class="store-btn-pri" onclick="window.open('https://blog.naver.com/ask-muda','_blank');closeStoreModal()">자세히보기</button>
       <button class="store-btn-sec" onclick="closeStoreModal()">닫기</button>
     </div>
   </div>
