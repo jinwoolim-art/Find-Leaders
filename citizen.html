@@ -60,7 +60,15 @@ a{text-decoration:none;color:inherit}
   margin-bottom:36px;
 }
 .hero-img img{width:100%;display:block}
-.problem-heading{text-align:center;font-size:clamp(18px,3.6vw,24px);font-weight:900;margin-bottom:22px;color:var(--ink)}
+.problem-heading{
+  text-align:center;font-size:clamp(22px,4.2vw,30px);font-weight:900;
+  margin-bottom:28px;color:var(--ink);letter-spacing:-.02em;line-height:1.4;
+}
+.problem-heading .accent{color:var(--purple);position:relative;display:inline-block}
+.problem-heading .accent::after{
+  content:'';position:absolute;left:0;right:0;bottom:2px;height:8px;
+  background:rgba(124,58,237,.18);z-index:-1;border-radius:4px;
+}
 .curious-img{max-width:920px;margin:0 auto;border-radius:20px;overflow:hidden}
 .curious-img img{width:100%;display:block}
 .tagline{text-align:center;margin-top:28px;font-size:clamp(18px,3.5vw,22px);font-weight:900;color:var(--ink)}
@@ -80,7 +88,16 @@ a{text-decoration:none;color:inherit}
 .phone-dots{display:flex;justify-content:center;gap:5px;margin-top:8px}
 .phone-dots span{width:5px;height:5px;border-radius:50%;background:var(--purple-200);transition:all .3s}
 .phone-dots span.active{background:var(--purple);width:14px;border-radius:3px}
-.download-text{text-align:center;font-size:18px;font-weight:900;margin:32px 0 18px;color:var(--ink)}
+.download-pill{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin:36px auto 22px;padding:10px 22px;
+  background:linear-gradient(135deg,var(--purple) 0%,#a78bfa 100%);
+  color:#fff;border-radius:99px;width:fit-content;
+  box-shadow:0 10px 24px rgba(124,58,237,.32);
+  font-size:clamp(15px,3.2vw,18px);font-weight:900;letter-spacing:-.01em;
+}
+.download-pill .dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .cta-stack{display:flex;flex-direction:column;gap:10px;margin:0 auto;max-width:420px}
 .cta-btn{
   display:flex;align-items:center;justify-content:center;gap:6px;
@@ -120,16 +137,37 @@ a{text-decoration:none;color:inherit}
 
 /* ═══ 4P · 최종 CTA + 푸터 ═══ */
 .p4{background:#fff;padding:48px 0 0}
-.bottom-img-wrap{max-width:560px;margin:0 auto;position:relative;cursor:pointer}
-.bottom-img-wrap img{width:100%;display:block;border-radius:24px;box-shadow:0 18px 40px rgba(124,58,237,.18)}
-/* 이미지 안의 흰색 "내 지역 후보 확인하기" 버튼 영역 클릭 가능하게 */
-.bottom-img-click{
-  position:absolute;left:4%;right:4%;bottom:5%;
-  height:12%;border-radius:14px;
-  background:transparent;cursor:pointer;
+.bottom-img-wrap{
+  max-width:560px;margin:0 auto;position:relative;
+  border-radius:24px;overflow:hidden;
+  box-shadow:0 18px 40px rgba(124,58,237,.18);
+  background:#7c3aed;
 }
-.bottom-img-click:hover{background:rgba(255,255,255,.08)}
-.bottom-img-click:focus{outline:2px solid rgba(255,255,255,.6);outline-offset:2px}
+.bottom-img-wrap img{width:100%;display:block}
+/* 이미지 하단의 흰 버튼 영역을 보라색으로 덮어버림 */
+.bottom-img-mask{
+  position:absolute;left:0;right:0;bottom:0;
+  height:18%;background:#7c3aed;
+}
+/* 깔끔한 실제 CTA 버튼 */
+.bottom-cta-wrap{
+  position:absolute;left:5%;right:5%;bottom:5.5%;
+}
+.bottom-cta-btn{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:8px;
+  background:#fff;color:var(--purple);font-weight:900;
+  font-size:clamp(14px,3.2vw,16px);padding:15px 18px;
+  border-radius:14px;border:none;cursor:pointer;
+  font-family:inherit;transition:all .15s ease;
+  box-shadow:0 8px 20px rgba(0,0,0,.18);
+}
+.bottom-cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,0,0,.25)}
+.bottom-cta-btn .ms{color:var(--purple);font-size:18px}
+.free-note{
+  text-align:center;font-size:13px;font-weight:700;
+  color:var(--ink-2);margin:20px auto 0;max-width:560px;line-height:1.6;
+}
+.free-note strong{color:var(--purple);font-weight:900}
 
 /* ═══ FOOTER ═══ */
 .footer{padding:42px 20px 50px;text-align:center;background:#fff;margin-top:36px;border-top:1px solid var(--line)}
@@ -222,7 +260,7 @@ a{text-decoration:none;color:inherit}
     <div class="hero-img">
       <img src="assets/시민렌딩_에셋/시민렌딩타이틀이미지.png" alt="우리 동네 후보와 공약을 쉽게 확인하세요"/>
     </div>
-    <h2 class="problem-heading">2026년 6월 3일 지방선거는 특히 이렇습니다.</h2>
+    <h2 class="problem-heading"><span class="accent">2026년 6월 3일</span> 지방선거는<br/>특히 이렇습니다.</h2>
     <div class="curious-img">
       <img src="assets/시민페이지궁금한시민.png" alt="후보가 많습니다 · 공약이 어렵습니다 · 질문할 곳이 없습니다"/>
     </div>
@@ -327,7 +365,7 @@ a{text-decoration:none;color:inherit}
         </div>
       </div>
     </div>
-    <p class="download-text">"2026년 6월 21일 다운로드"</p>
+    <div class="download-pill"><span class="dot"></span>📅 5월 21일 오픈 예정</div>
     <div class="cta-stack">
       <button class="cta-btn cta-btn-ghost" onclick="openAppPreview(event)">
         <span class="ms">smartphone</span>앱 화면 미리보기
@@ -380,10 +418,14 @@ a{text-decoration:none;color:inherit}
 <!-- ══════ 4P · 최종 CTA + 푸터 ══════ -->
 <section class="p4">
   <div class="wrap">
-    <div class="bottom-img-wrap" onclick="openStoreModal(event)">
+    <div class="bottom-img-wrap">
       <img src="assets/시민페이지하단풀이미지.png" alt="우리 동네 후보 확인하기"/>
-      <button class="bottom-img-click" onclick="openStoreModal(event)" aria-label="내 지역 후보 확인하기"></button>
+      <div class="bottom-img-mask"></div>
+      <div class="bottom-cta-wrap">
+        <button class="bottom-cta-btn" onclick="openStoreModal(event)">내 지역 후보 확인하기 →</button>
+      </div>
     </div>
+    <p class="free-note">※ <strong>시민 이용은 무료</strong>입니다.</p>
   </div>
   <footer class="footer">
     <p class="copy">© 2026 일꾼을묻다 · ask</p>
