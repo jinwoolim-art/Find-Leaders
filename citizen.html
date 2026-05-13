@@ -156,8 +156,15 @@ a{text-decoration:none;color:inherit}
   font-family:inherit;transition:all .15s ease;
   box-shadow:0 6px 18px rgba(0,0,0,.22);
   white-space:nowrap;
+  animation:ctaPulse 2.2s ease-in-out infinite;
 }
-.bottom-cta-btn:hover{transform:translateX(-50%) translateY(-1px);box-shadow:0 10px 24px rgba(0,0,0,.28)}
+.bottom-cta-btn:hover{transform:translateX(-50%) translateY(-1px) scale(1.04);box-shadow:0 10px 24px rgba(0,0,0,.28);animation-play-state:paused}
+.bottom-cta-btn .arrow{display:inline-block;transition:transform .3s ease}
+.bottom-cta-btn:hover .arrow{transform:translateX(3px)}
+@keyframes ctaPulse{
+  0%,100%{box-shadow:0 6px 18px rgba(0,0,0,.22),0 0 0 0 rgba(255,255,255,.7)}
+  50%{box-shadow:0 8px 22px rgba(0,0,0,.28),0 0 0 8px rgba(255,255,255,0)}
+}
 .free-note{
   text-align:center;font-size:13px;font-weight:700;
   color:var(--ink-2);margin:20px auto 0;max-width:560px;line-height:1.6;
@@ -427,7 +434,7 @@ a{text-decoration:none;color:inherit}
   <div class="wrap">
     <div class="bottom-card">
       <img src="assets/시민페이지하단풀이미지2.png" alt="우리 동네 후보 확인하기"/>
-      <button class="bottom-cta-btn" onclick="openStoreModal(event)">내 지역 후보 확인하기 →</button>
+      <button class="bottom-cta-btn" onclick="openStoreModal(event)">내 지역 후보 확인하기 <span class="arrow">→</span></button>
     </div>
     <p class="free-note"><strong>시민은 무료로 이용할 수 있습니다.</strong><br/>후보자 정보 확인, 공약 보기, 질문 기능은 시민에게 별도 비용 없이 제공됩니다.</p>
   </div>
