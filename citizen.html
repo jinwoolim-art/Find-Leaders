@@ -61,14 +61,8 @@ a{text-decoration:none;color:inherit}
 }
 .hero-img img{width:100%;display:block}
 .problem-heading{text-align:center;font-size:clamp(18px,3.6vw,24px);font-weight:900;margin-bottom:22px;color:var(--ink)}
-.cards-grid{display:grid;grid-template-columns:1fr;gap:14px}
-.card-slot{
-  background:var(--purple-50);border-radius:16px;
-  aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;
-  border:1px dashed var(--purple-200);overflow:hidden;position:relative;
-}
-.card-slot img{width:100%;height:100%;object-fit:cover}
-.card-slot .placeholder{color:var(--purple-200);font-size:12px;font-weight:600}
+.curious-img{max-width:920px;margin:0 auto;border-radius:20px;overflow:hidden}
+.curious-img img{width:100%;display:block}
 .tagline{text-align:center;margin-top:28px;font-size:clamp(18px,3.5vw,22px);font-weight:900;color:var(--ink)}
 .tagline em{color:var(--purple);font-style:normal}
 
@@ -126,18 +120,16 @@ a{text-decoration:none;color:inherit}
 
 /* ═══ 4P · 최종 CTA + 푸터 ═══ */
 .p4{background:#fff;padding:48px 0 0}
-.bottom-img-wrap{max-width:560px;margin:0 auto 0}
+.bottom-img-wrap{max-width:560px;margin:0 auto;position:relative;cursor:pointer}
 .bottom-img-wrap img{width:100%;display:block;border-radius:24px;box-shadow:0 18px 40px rgba(124,58,237,.18)}
-.final-cta{display:block;max-width:560px;margin:-26px auto 0;position:relative;z-index:2}
-.final-cta-btn{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  background:var(--purple);color:#fff;font-weight:900;font-size:15px;
-  padding:18px;border-radius:16px;cursor:pointer;border:none;
-  width:100%;font-family:inherit;transition:all .15s ease;
-  box-shadow:0 14px 32px rgba(124,58,237,.4);
+/* 이미지 안의 흰색 "내 지역 후보 확인하기" 버튼 영역 클릭 가능하게 */
+.bottom-img-click{
+  position:absolute;left:4%;right:4%;bottom:5%;
+  height:12%;border-radius:14px;
+  background:transparent;cursor:pointer;
 }
-.final-cta-btn:hover{background:var(--purple-dark);transform:translateY(-2px)}
-.final-cta-btn .ms{font-size:18px}
+.bottom-img-click:hover{background:rgba(255,255,255,.08)}
+.bottom-img-click:focus{outline:2px solid rgba(255,255,255,.6);outline-offset:2px}
 
 /* ═══ FOOTER ═══ */
 .footer{padding:42px 20px 50px;text-align:center;background:#fff;margin-top:36px;border-top:1px solid var(--line)}
@@ -145,6 +137,7 @@ a{text-decoration:none;color:inherit}
 .footer .links{display:flex;justify-content:center;gap:18px;flex-wrap:wrap}
 .footer .links a{font-size:12px;color:var(--ink-3);font-weight:600}
 .footer .links a:hover{color:var(--purple)}
+.footer .disclaimer{font-size:11px;color:var(--ink-4);margin-top:18px;line-height:1.6;max-width:520px;margin-left:auto;margin-right:auto}
 
 /* ═══ MODAL: 앱 미리보기 ═══ */
 .app-preview-modal{
@@ -205,7 +198,6 @@ a{text-decoration:none;color:inherit}
   .p2{padding:64px 0 80px}
   .p3{padding:80px 0}
   .p4{padding:64px 0 0}
-  .cards-grid{grid-template-columns:repeat(3,1fr);gap:18px}
   .phone{width:200px}
   .phone-screen{height:420px}
 }
@@ -231,10 +223,8 @@ a{text-decoration:none;color:inherit}
       <img src="assets/시민렌딩_에셋/시민렌딩타이틀이미지.png" alt="우리 동네 후보와 공약을 쉽게 확인하세요"/>
     </div>
     <h2 class="problem-heading">2026년 6월 3일 지방선거는 특히 이렇습니다.</h2>
-    <div class="cards-grid">
-      <div class="card-slot"><img src="assets/시민렌딩_에셋/시민카드1.png" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.placeholder').style.display='block'"/><div class="placeholder" style="display:none">카드 이미지 1</div></div>
-      <div class="card-slot"><img src="assets/시민렌딩_에셋/시민카드2.png" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.placeholder').style.display='block'"/><div class="placeholder" style="display:none">카드 이미지 2</div></div>
-      <div class="card-slot"><img src="assets/시민렌딩_에셋/시민카드3.png" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.placeholder').style.display='block'"/><div class="placeholder" style="display:none">카드 이미지 3</div></div>
+    <div class="curious-img">
+      <img src="assets/시민페이지궁금한시민.png" alt="후보가 많습니다 · 공약이 어렵습니다 · 질문할 곳이 없습니다"/>
     </div>
     <p class="tagline">그래서 <em>"일꾼을 묻다"</em>를 봐야합니다.</p>
   </div>
@@ -255,16 +245,86 @@ a{text-decoration:none;color:inherit}
         <div class="phone-cap">응답 인터페이스</div>
         <div class="phone-dots"><span class="active"></span></div>
       </div>
-      <!-- 우측: 여자 영상 -->
+      <!-- 우측: 5-슬라이드 슬라이더 -->
       <div>
         <div class="phone">
-          <div class="phone-screen">
-            <video src="assets/선거아바타_선정리(여자).mp4" autoplay muted loop playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block"></video>
-            <div style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#fff;font-size:8px;font-weight:700;padding:3px 9px;border-radius:99px;backdrop-filter:blur(6px);white-space:nowrap;z-index:2">⚠ 샘플 · AI 가상 아바타 예시</div>
+          <div class="phone-screen" style="background:#000;padding:0">
+            <div id="appSlider" style="display:flex;transition:transform .6s ease;height:100%;width:100%">
+              <!-- 1. 메인 홈 -->
+              <div style="min-width:100%;height:100%;padding:18px;display:flex;flex-direction:column;align-items:center;background:#fff;font-size:11px;overflow:hidden">
+                <div style="width:56px;height:56px;border-radius:16px;overflow:hidden;margin:20px 0 10px;box-shadow:0 8px 20px rgba(124,58,237,.18)"><img src="assets/logo_ask03.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"/></div>
+                <p style="font-size:16px;font-weight:900;margin-bottom:3px">일꾼을묻다</p>
+                <p style="font-size:9px;color:#9ca3af;margin-bottom:18px;text-align:center">후보자 정보를 시민에게 한눈에</p>
+                <div style="width:100%;background:#7c3aed;border-radius:10px;padding:10px;text-align:center;margin-bottom:8px"><span style="color:#fff;font-size:12px;font-weight:900">일꾼보기 →</span></div>
+                <div style="width:100%;border:1px solid #e5e7eb;border-radius:10px;padding:9px;text-align:center;margin-bottom:14px"><span style="font-size:10px;color:#6b7280">현 시행되고 있는 정책</span></div>
+                <p style="font-size:11px;font-weight:900;text-align:left;width:100%;margin-bottom:6px">실시간 선거 뉴스</p>
+                <div style="width:100%;border:1px solid #e8edf3;border-radius:8px;padding:8px;text-align:left;margin-bottom:5px"><p style="font-size:9px;font-weight:700;margin:0">제9회 전국동시지방선거, 5/14 후보자 등록</p><p style="font-size:8px;color:#9ca3af;margin:2px 0 0">1시간 전 · 중앙일보</p></div>
+                <div style="width:100%;border:1px solid #e8edf3;border-radius:8px;padding:8px;text-align:left"><p style="font-size:9px;font-weight:700;margin:0">서울시장 후보 3인, 첫 TV토론회</p><p style="font-size:8px;color:#9ca3af;margin:2px 0 0">2시간 전 · KBS</p></div>
+              </div>
+              <!-- 2. 선거 종류 선택 -->
+              <div style="min-width:100%;height:100%;padding:18px;background:#fff">
+                <p style="font-size:13px;font-weight:900;margin-bottom:12px;text-align:left">선거 종류 선택</p>
+                <div style="background:#f5f3ff;border-radius:10px;padding:12px;margin-bottom:12px">
+                  <p style="font-size:9px;color:#6b7280;margin-bottom:3px">거주 지역</p>
+                  <p style="font-size:12px;font-weight:900;margin:0">시·도 / 시·군·구를 선택하세요</p>
+                </div>
+                <div style="border:2px solid #7c3aed;border-radius:12px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:8px">
+                  <div style="width:30px;height:30px;border-radius:8px;background:#f5f3ff;display:flex;align-items:center;justify-content:center"><span class="ms msf" style="color:#7c3aed;font-size:18px">location_city</span></div>
+                  <div style="flex:1;text-align:left"><p style="font-size:12px;font-weight:900;margin:0">우리지역</p><p style="font-size:8px;color:#9ca3af;margin:2px 0 0">시·도지사 · 구청장 · 시장</p></div>
+                  <span class="ms" style="color:#7c3aed;font-size:16px">arrow_forward</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+                  <div style="border:1px solid #e5e7eb;border-radius:10px;padding:12px;text-align:left"><div style="width:24px;height:24px;border-radius:6px;background:#f5f3ff;display:flex;align-items:center;justify-content:center;margin-bottom:5px"><span class="ms" style="color:#7c3aed;font-size:14px">apartment</span></div><p style="font-size:10px;font-weight:900;margin:0">우리 골목</p><p style="font-size:7px;color:#9ca3af;margin:2px 0 0">시의원 · 구의원</p></div>
+                  <div style="border:1px solid #e5e7eb;border-radius:10px;padding:12px;text-align:left"><div style="width:24px;height:24px;border-radius:6px;background:#eff6ff;display:flex;align-items:center;justify-content:center;margin-bottom:5px"><span class="ms" style="color:#3b82f6;font-size:14px">school</span></div><p style="font-size:10px;font-weight:900;margin:0">우리교육</p><p style="font-size:7px;color:#9ca3af;margin:2px 0 0">교육감 후보</p></div>
+                </div>
+              </div>
+              <!-- 3. 후보자 목록 -->
+              <div style="min-width:100%;height:100%;padding:16px;background:#fff;overflow:hidden">
+                <p style="font-size:13px;font-weight:900;margin-bottom:2px;text-align:left">우리지역 후보자</p>
+                <p style="font-size:9px;color:#9ca3af;margin-bottom:10px;text-align:left">서울특별시 관할</p>
+                <div style="display:flex;gap:4px;margin-bottom:10px"><span style="font-size:9px;font-weight:700;color:#7c3aed;border-bottom:2px solid #7c3aed;padding:4px 7px">시·도지사</span><span style="font-size:9px;color:#9ca3af;padding:4px 7px">구청장</span><span style="font-size:9px;color:#9ca3af;padding:4px 7px">시장</span></div>
+                <div style="border:1px solid #e5e7eb;border-radius:10px;padding:10px;margin-bottom:7px;display:flex;gap:8px;align-items:flex-start">
+                  <div style="flex-shrink:0;width:36px;height:36px;border-radius:50%;background-image:url('assets/kim.png');background-size:280%;background-position:50% 3%;background-color:#f3f4f6;border:2px solid #3b82f6"></div>
+                  <div style="flex:1;text-align:left">
+                    <p style="font-size:8px;color:#3b82f6;font-weight:700;margin:0 0 2px">기호 1 · 더불어민주당</p>
+                    <p style="font-size:12px;font-weight:900;margin:0 0 2px">김ㅇ준 <span style="font-size:9px;color:#9ca3af">(52세)</span></p>
+                    <p style="font-size:8px;color:#6b7280;margin:0 0 6px">"시민의 삶을 바꾸는 스마트 시티"</p>
+                    <div style="display:flex;gap:4px"><span style="font-size:8px;font-weight:900;color:#fff;background:#7c3aed;padding:4px 10px;border-radius:5px">대화</span><span style="font-size:8px;font-weight:700;color:#6b7280;border:1px solid #e5e7eb;padding:4px 10px;border-radius:5px">관심</span></div>
+                  </div>
+                </div>
+                <div style="border:1px solid #e5e7eb;border-radius:10px;padding:10px;display:flex;gap:8px;align-items:flex-start">
+                  <div style="flex-shrink:0;width:36px;height:36px;border-radius:50%;background-image:url('assets/lee.png');background-size:280%;background-position:50% 3%;background-color:#f3f4f6;border:2px solid #ef4444"></div>
+                  <div style="flex:1;text-align:left">
+                    <p style="font-size:8px;color:#ef4444;font-weight:700;margin:0 0 2px">기호 2 · 국민의힘</p>
+                    <p style="font-size:12px;font-weight:900;margin:0 0 2px">이ㅇ영 <span style="font-size:9px;color:#9ca3af">(45세)</span></p>
+                    <p style="font-size:8px;color:#6b7280;margin:0 0 6px">"다시 뛰는 공정 도시, 새로운 서울"</p>
+                    <div style="display:flex;gap:4px"><span style="font-size:8px;font-weight:900;color:#fff;background:#7c3aed;padding:4px 10px;border-radius:5px">대화</span><span style="font-size:8px;font-weight:700;color:#6b7280;border:1px solid #e5e7eb;padding:4px 10px;border-radius:5px">관심</span></div>
+                  </div>
+                </div>
+              </div>
+              <!-- 4. AI 아바타 영상 -->
+              <div style="min-width:100%;height:100%;background:#000;position:relative;overflow:hidden">
+                <video id="appSliderVideo" src="assets/선거아바타_선정리(여자).mp4" muted loop playsinline preload="auto" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block"></video>
+                <div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#fff;font-size:8px;font-weight:700;padding:3px 9px;border-radius:99px;backdrop-filter:blur(6px);white-space:nowrap">⚠ 샘플 · AI 가상 아바타 예시</div>
+              </div>
+              <!-- 5. 후보자 비교 -->
+              <div style="min-width:100%;height:100%;padding:12px 14px;background:#fff;overflow-y:auto">
+                <p style="font-size:12px;font-weight:900;margin-bottom:8px;text-align:left">후보자 비교</p>
+                <div style="display:flex;gap:16px;justify-content:center;margin-bottom:10px">
+                  <div style="text-align:center"><div style="width:36px;height:36px;border-radius:50%;background-image:url('assets/아바타_리얼증명사진/wa34정명사진_14.png');background-size:cover;background-position:center top;background-color:#f3f4f6;margin:0 auto 3px;border:2px solid #3b82f6"></div><p style="font-size:9px;font-weight:900;margin:0">김ㅇ준</p><p style="font-size:7px;color:#3b82f6;margin:0">더불어민주당</p></div>
+                  <div style="text-align:center"><div style="width:36px;height:36px;border-radius:50%;background-image:url('assets/아바타_리얼증명사진/wa33정명사진_14.png');background-size:cover;background-position:center top;background-color:#f3f4f6;margin:0 auto 3px;border:2px solid #ef4444"></div><p style="font-size:9px;font-weight:900;margin:0">이ㅇ영</p><p style="font-size:7px;color:#ef4444;margin:0">국민의힘</p></div>
+                </div>
+                <div style="margin-bottom:7px"><p style="font-size:9px;font-weight:900;margin:0 0 3px;text-align:left">📋 주요 정책</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:4px"><div style="background:#f8fafc;border-radius:6px;padding:5px;font-size:7px;color:#374151;line-height:1.4;text-align:left">스마트 시티, 디지털 행정</div><div style="background:#f8fafc;border-radius:6px;padding:5px;font-size:7px;color:#374151;line-height:1.4;text-align:left">규제 혁파, 공정한 기회</div></div></div>
+                <div style="margin-bottom:7px"><p style="font-size:9px;font-weight:900;margin:0 0 3px;text-align:left">💼 일자리</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:4px"><div style="background:#f8fafc;border-radius:6px;padding:5px;font-size:7px;color:#374151;line-height:1.4;text-align:left">산업 클러스터, 양질 일자리</div><div style="background:#f8fafc;border-radius:6px;padding:5px;font-size:7px;color:#374151;line-height:1.4;text-align:left">스타트업 규제 샌드박스</div></div></div>
+                <div><p style="font-size:9px;font-weight:900;margin:0 0 3px;text-align:left">🎓 교육</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:4px"><div style="background:#f8fafc;border-radius:6px;padding:5px;font-size:7px;color:#374151;line-height:1.4;text-align:left">디지털 교육, 무상 돌봄</div><div style="background:#f8fafc;border-radius:6px;padding:5px;font-size:7px;color:#374151;line-height:1.4;text-align:left">기초학력 보장</div></div></div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="phone-cap">선거 종류 선택</div>
-        <div class="phone-dots"><span class="active"></span></div>
+        <div class="phone-cap" id="appSliderCap">메인 홈</div>
+        <div class="phone-dots" id="appSliderDots">
+          <span class="active"></span><span></span><span></span><span></span><span></span>
+        </div>
       </div>
     </div>
     <p class="download-text">"2026년 6월 21일 다운로드"</p>
@@ -320,13 +380,9 @@ a{text-decoration:none;color:inherit}
 <!-- ══════ 4P · 최종 CTA + 푸터 ══════ -->
 <section class="p4">
   <div class="wrap">
-    <div class="bottom-img-wrap">
-      <img src="assets/시민페이지하단풀이미지.png" alt="우리 동네 후보 확인"/>
-    </div>
-    <div class="final-cta">
-      <button class="final-cta-btn" onclick="openStoreModal(event)">
-        <span class="ms">search</span>내 지역 후보 확인하기 →
-      </button>
+    <div class="bottom-img-wrap" onclick="openStoreModal(event)">
+      <img src="assets/시민페이지하단풀이미지.png" alt="우리 동네 후보 확인하기"/>
+      <button class="bottom-img-click" onclick="openStoreModal(event)" aria-label="내 지역 후보 확인하기"></button>
     </div>
   </div>
   <footer class="footer">
@@ -336,6 +392,7 @@ a{text-decoration:none;color:inherit}
       <a href="privacy.html">개인정보처리방침</a>
       <a href="https://blog.naver.com/ask-muda" target="_blank" rel="noopener">공식 블로그</a>
     </div>
+    <p class="disclaimer">일꾼을묻다는 특정 정당 또는 후보자를 지지하지 않는 시민용 선거 정보 플랫폼입니다.</p>
   </footer>
 </section>
 
@@ -397,6 +454,35 @@ document.addEventListener('keydown',function(e){
     if(document.getElementById('storeModal').classList.contains('open')) closeStoreModal();
   }
 });
+
+/* ───── 우측 폰 5-슬라이드 자동 순환 (index.html과 동일) ───── */
+var appSliderLabels=['메인 홈','선거 종류 선택','후보자 목록','응답 인터페이스','후보자 비교'];
+var appSlider=document.getElementById('appSlider');
+var appSliderDots=document.getElementById('appSliderDots');
+var appSliderCap=document.getElementById('appSliderCap');
+var appSliderVideo=document.getElementById('appSliderVideo');
+var appSlideIdx=0;
+function showAppSlide(n){
+  appSlideIdx=n;
+  if(appSlider) appSlider.style.transform='translateX(-'+(n*100)+'%)';
+  if(appSliderDots){
+    appSliderDots.querySelectorAll('span').forEach(function(s,i){s.classList.toggle('active',i===n)});
+  }
+  if(appSliderCap) appSliderCap.textContent=appSliderLabels[n];
+  if(appSliderVideo){
+    if(n===3){
+      try{appSliderVideo.currentTime=0;var p=appSliderVideo.play();if(p&&p.catch)p.catch(function(){})}catch(e){}
+    } else {
+      try{appSliderVideo.pause()}catch(e){}
+    }
+  }
+}
+if(appSliderDots){
+  appSliderDots.querySelectorAll('span').forEach(function(s,i){
+    s.addEventListener('click',function(){showAppSlide(i)});
+  });
+}
+setInterval(function(){showAppSlide((appSlideIdx+1)%5)},4000);
 </script>
 </body>
 </html>
