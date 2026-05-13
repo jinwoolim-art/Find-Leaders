@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"/>
+<title>일꾼을묻다 · 우리 동네 후보와 공약을 쉽게 확인하세요</title>
+<meta name="description" content="2026년 6월 3일 지방선거. 우리 동네 후보와 공약을 30초 만에 확인하세요. AI 챗봇과 함께 비교·질문하는 시민용 선거 플랫폼."/>
+<meta name="keywords" content="2026 지방선거, 일꾼을묻다, 후보자 확인, 공약 비교, 우리 동네 후보, 선거 챗봇, 6월 3일 선거"/>
+<link rel="canonical" href="https://www.illkkun.cloud/citizen.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="우리 동네 후보와 공약을 쉽게 확인하세요 · 일꾼을묻다"/>
+<meta property="og:description" content="2026년 6월 3일 지방선거. 30초면 충분해요. 보고·비교하고·질문하는 시민을 위한 선거 정보 플랫폼."/>
+<meta property="og:url" content="https://www.illkkun.cloud/citizen.html"/>
+<meta property="og:site_name" content="일꾼을묻다"/>
+<meta property="og:locale" content="ko_KR"/>
+<meta property="og:image" content="https://www.illkkun.cloud/assets/logo_ask03.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --purple:#7c3aed;
+  --purple-dark:#5b21b6;
+  --purple-50:#f5f3ff;
+  --purple-100:#ede9fe;
+  --purple-200:#c4b5fd;
+  --ink:#0f172a;
+  --ink-2:#334155;
+  --ink-3:#64748b;
+  --ink-4:#94a3b8;
+  --line:#e2e8f0;
+  --bg:#f8fafc;
+  --shadow:0 8px 24px rgba(15,23,42,.06);
+}
+html,body{font-family:'Noto Sans KR',sans-serif;color:var(--ink);background:#fff;line-height:1.6;-webkit-font-smoothing:antialiased}
+.ms{font-family:'Material Symbols Outlined';font-variation-settings:'FILL' 0,'wght' 400}
+.msf{font-variation-settings:'FILL' 1}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+
+/* ═══ NAV ═══ */
+.nav{position:sticky;top:0;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);z-index:50}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:56px;max-width:1100px;margin:0 auto;padding:0 20px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:900;color:var(--ink)}
+.brand img{width:32px;height:32px;border-radius:8px}
+.brand b{font-size:15px}
+.nav-cta{font-size:12px;font-weight:900;color:#fff;background:var(--purple);padding:8px 14px;border-radius:99px}
+
+/* ═══ HERO ═══ */
+.hero{padding:36px 0 30px;background:linear-gradient(180deg,#faf8ff 0%,#fff 100%)}
+.hero-grid{display:grid;grid-template-columns:1fr;gap:30px;align-items:center}
+.hero-card{background:#fff;border-radius:20px;padding:0;overflow:hidden;box-shadow:var(--shadow);position:relative}
+.hero-card img.title-img{width:100%;display:block}
+.hero-copy{padding:14px 22px 24px}
+.election-chip{display:inline-flex;align-items:center;gap:6px;background:var(--purple-50);color:var(--purple);font-weight:800;font-size:12px;padding:6px 12px;border-radius:99px;margin-bottom:14px}
+.election-chip .dot{width:6px;height:6px;border-radius:50%;background:var(--purple);animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.h1{font-size:clamp(26px,5.5vw,36px);font-weight:900;line-height:1.25;margin-bottom:10px;letter-spacing:-.02em}
+.h1 .accent{color:var(--purple)}
+.lead{color:var(--ink-2);font-size:14px;line-height:1.7}
+
+/* phones */
+.phones-row{display:flex;justify-content:center;align-items:center;gap:24px;flex-wrap:wrap;margin-top:14px}
+.phone{width:180px;flex-shrink:0}
+.phone-screen{
+  background:#0f172a;border-radius:24px;
+  border:5px solid #1e293b;height:380px;
+  overflow:hidden;display:flex;flex-direction:column;
+  position:relative;box-shadow:0 16px 40px rgba(15,23,42,.18);
+}
+.phone-cap{text-align:center;color:var(--purple);font-weight:800;font-size:12px;margin-top:10px}
+.phone-dots{display:flex;justify-content:center;gap:5px;margin-top:8px}
+.phone-dots span{width:5px;height:5px;border-radius:50%;background:var(--purple-200);transition:all .3s}
+.phone-dots span.active{background:var(--purple);width:14px;border-radius:3px}
+
+.download-text{text-align:center;font-size:18px;font-weight:900;margin:22px 0 16px;color:var(--ink)}
+
+/* CTA buttons */
+.cta-stack{display:flex;flex-direction:column;gap:10px;margin:0 auto;max-width:420px}
+.cta-btn{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:14px 20px;border-radius:14px;font-weight:800;font-size:14px;
+  cursor:pointer;transition:all .15s ease;border:none;font-family:inherit;
+}
+.cta-btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.cta-btn-ghost:hover{border-color:var(--purple);color:var(--purple)}
+.cta-btn-primary{background:var(--purple);color:#fff;font-size:15px;padding:16px 22px}
+.cta-btn-primary:hover{background:var(--purple-dark)}
+.cta-btn .ms{font-size:18px}
+
+/* ═══ 3 CARDS (이미지 슬롯) ═══ */
+.cards-section{padding:48px 0;background:#fff}
+.cards-section h2{text-align:center;font-size:clamp(20px,4vw,28px);font-weight:900;margin-bottom:24px}
+.cards-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.card-slot{
+  background:var(--purple-50);border-radius:16px;
+  aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;
+  border:1px dashed var(--purple-200);overflow:hidden;
+}
+.card-slot img{width:100%;height:100%;object-fit:cover}
+.card-slot .placeholder{color:var(--purple-200);font-size:12px;font-weight:600}
+.cards-tagline{text-align:center;margin-top:28px;font-size:clamp(18px,3.5vw,24px);font-weight:900;color:var(--ink)}
+.cards-tagline em{color:var(--purple);font-style:normal}
+
+/* ═══ HOW IT WORKS ═══ */
+.how{padding:48px 0 60px;background:linear-gradient(180deg,#fff 0%,#faf8ff 100%)}
+.how-grid{display:grid;grid-template-columns:1fr;gap:30px;align-items:center}
+.how-eyebrow{font-size:11px;font-weight:900;color:var(--purple);letter-spacing:.1em;margin-bottom:8px}
+.how h2{font-size:clamp(22px,4vw,30px);font-weight:900;margin-bottom:24px;letter-spacing:-.02em}
+.steps{display:flex;flex-direction:column;gap:10px}
+.step{
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:14px 18px;display:flex;align-items:center;gap:14px;
+}
+.step .num{
+  width:28px;height:28px;border-radius:8px;
+  background:var(--purple-50);color:var(--purple);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:14px;flex-shrink:0;
+}
+.step .body p{margin:0}
+.step-title{font-weight:900;font-size:14px;margin-bottom:2px}
+.step-sub{font-size:12px;color:var(--ink-3)}
+.official{
+  background:#fff;border:1px solid var(--purple-200);border-radius:14px;
+  padding:12px 18px;display:flex;align-items:center;gap:10px;margin-top:6px;
+}
+.official .ms{color:var(--purple);font-size:20px;flex-shrink:0}
+.official .body p{margin:0;line-height:1.4}
+.official-title{font-weight:900;font-size:13px}
+.official-sub{font-size:11px;color:var(--ink-3);margin-top:2px}
+
+/* sofa scene */
+.sofa-card{
+  background:linear-gradient(180deg,#a78bfa 0%,#7c3aed 100%);
+  border-radius:24px;padding:20px;position:relative;overflow:hidden;
+  box-shadow:0 18px 40px rgba(124,58,237,.25);
+}
+.sofa-img-wrap{position:relative;margin:0 auto 14px}
+.sofa-img-wrap img.sofa{width:100%;display:block}
+.sofa-bubble{position:absolute;width:32%}
+.sofa-bubble.b1{top:-2%;left:2%}
+.sofa-bubble.b2{top:18%;right:-3%}
+.sofa-bubble.heart{top:-14%;left:38%;width:18%}
+.sofa-cta{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  background:#fff;color:var(--ink);font-weight:900;font-size:14px;
+  padding:14px;border-radius:12px;cursor:pointer;border:none;
+  width:100%;font-family:inherit;transition:transform .15s ease;
+}
+.sofa-cta:hover{transform:translateY(-1px)}
+.sofa-cta .ms{color:var(--purple);font-size:18px}
+
+/* ═══ FOOTER ═══ */
+.footer{padding:36px 0 50px;background:#fff;text-align:center;border-top:1px solid var(--line)}
+.footer .copy{font-size:11px;color:var(--ink-3);margin-bottom:10px}
+.footer .links{display:flex;justify-content:center;gap:18px;flex-wrap:wrap}
+.footer .links a{font-size:12px;color:var(--ink-3);font-weight:600}
+.footer .links a:hover{color:var(--purple)}
+
+/* ═══ MODAL: 앱 미리보기 ═══ */
+.app-preview-modal{
+  position:fixed;inset:0;background:rgba(15,23,42,.85);
+  z-index:999;display:none;align-items:center;justify-content:center;
+  padding:50px 14px 20px;
+}
+.app-preview-modal.open{display:flex}
+.app-preview-frame{
+  background:#0f172a;border-radius:32px;padding:8px;
+  width:min(420px,90vw);height:min(calc(100vh - 80px),900px);
+  overflow:hidden;position:relative;
+}
+.app-preview-frame iframe{width:100%;height:100%;border:0;border-radius:24px;background:#fff;display:block}
+.app-preview-close{
+  position:absolute;top:12px;right:12px;
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(255,255,255,.95);border:2px solid #fff;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  box-shadow:0 4px 14px rgba(0,0,0,.25);z-index:10;
+}
+
+/* ═══ MODAL: 6/21 앱스토어 안내 ═══ */
+.store-modal{
+  position:fixed;inset:0;background:rgba(15,23,42,.7);
+  z-index:1000;display:none;align-items:center;justify-content:center;
+  padding:20px;
+}
+.store-modal.open{display:flex}
+.store-card{
+  background:#fff;border-radius:24px;padding:32px 28px;
+  width:min(380px,100%);text-align:center;
+  box-shadow:0 28px 64px rgba(0,0,0,.3);position:relative;
+}
+.store-close{
+  position:absolute;top:14px;right:14px;width:30px;height:30px;
+  border-radius:50%;background:#f1f5f9;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+.store-icon{
+  width:72px;height:72px;border-radius:20px;
+  background:linear-gradient(135deg,var(--purple),#a78bfa);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 18px;box-shadow:0 12px 28px rgba(124,58,237,.35);
+}
+.store-icon .ms{color:#fff;font-size:38px}
+.store-title{font-size:22px;font-weight:900;margin-bottom:8px}
+.store-date{font-size:14px;font-weight:800;color:var(--purple);margin-bottom:12px}
+.store-desc{font-size:13px;color:var(--ink-2);line-height:1.6;margin-bottom:22px}
+.store-actions{display:flex;flex-direction:column;gap:8px}
+.store-btn-pri{background:var(--purple);color:#fff;font-weight:800;font-size:13px;padding:12px;border-radius:10px;border:none;cursor:pointer;font-family:inherit}
+.store-btn-pri:hover{background:var(--purple-dark)}
+.store-btn-sec{background:#fff;color:var(--ink-2);border:1px solid var(--line);font-weight:700;font-size:12px;padding:11px;border-radius:10px;cursor:pointer;font-family:inherit}
+
+/* ═══ DESKTOP ═══ */
+@media (min-width:900px){
+  .hero{padding:60px 0 50px}
+  .hero-grid{grid-template-columns:1fr 1fr;gap:50px}
+  .phone{width:200px}
+  .phone-screen{height:430px}
+  .cards-grid{grid-template-columns:repeat(3,1fr);gap:18px}
+  .cards-section{padding:80px 0}
+  .how{padding:80px 0 100px}
+  .how-grid{grid-template-columns:1fr 1fr;gap:60px}
+  .sofa-card{padding:30px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand">
+      <img src="assets/logo_ask03.png" alt="일꾼을묻다"/>
+      <b>일꾼을묻다</b>
+    </a>
+    <a href="#" class="nav-cta" onclick="openStoreModal(event)">앱 다운로드</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-card">
+          <img class="title-img" src="assets/시민렌딩_에셋/시민렌딩타이틀이미지.png" alt="우리 동네 후보와 공약을 쉽게 확인하세요"/>
+          <div class="hero-copy">
+            <div class="election-chip"><span class="dot"></span> 2026년 6월 3일 지방선거</div>
+            <h1 class="h1">우리 동네 <span class="accent">후보</span>와<br/><span class="accent">공약</span>을 쉽게 확인하세요</h1>
+            <p class="lead">보고 · 비교하고 · 질문하는<br/>시민을 위한 선거 정보 플랫폼</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <!-- 두 폰 미리보기 (index.html의 phones-row와 동일 구조) -->
+        <div class="phones-row">
+          <!-- 좌측: 남자 영상 -->
+          <div>
+            <div class="phone">
+              <div class="phone-screen">
+                <video src="assets/선거아바타_선정리(남자).mp4" autoplay muted loop playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block"></video>
+                <div style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#fff;font-size:8px;font-weight:700;padding:3px 9px;border-radius:99px;backdrop-filter:blur(6px);white-space:nowrap;z-index:2">⚠ 샘플 · AI 가상 아바타 예시</div>
+              </div>
+            </div>
+            <div class="phone-cap">응답 인터페이스</div>
+            <div class="phone-dots"><span class="active"></span></div>
+          </div>
+
+          <!-- 우측: 여자 영상 (단일 영상, 단순화) -->
+          <div>
+            <div class="phone">
+              <div class="phone-screen" style="background:#000">
+                <video src="assets/선거아바타_선정리(여자).mp4" autoplay muted loop playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block"></video>
+                <div style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#fff;font-size:8px;font-weight:700;padding:3px 9px;border-radius:99px;backdrop-filter:blur(6px);white-space:nowrap;z-index:2">⚠ 샘플 · AI 가상 아바타 예시</div>
+              </div>
+            </div>
+            <div class="phone-cap">선거 종류 선택</div>
+            <div class="phone-dots"><span class="active"></span></div>
+          </div>
+        </div>
+
+        <p class="download-text">"2026년 6월 21일 다운로드"</p>
+
+        <div class="cta-stack">
+          <button class="cta-btn cta-btn-ghost" onclick="openAppPreview(event)">
+            <span class="ms">smartphone</span>앱 화면 미리보기
+          </button>
+          <a class="cta-btn cta-btn-primary" href="https://blog.naver.com/ask-muda" target="_blank" rel="noopener">
+            "일꾼을 묻다" 더 자세히보기
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 CARDS (이미지 슬롯) -->
+<section class="cards-section">
+  <div class="wrap">
+    <div class="cards-grid">
+      <div class="card-slot"><img src="assets/시민렌딩_에셋/시민카드1.png" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.placeholder').style.display='block'"/><div class="placeholder" style="display:none">카드 이미지 1</div></div>
+      <div class="card-slot"><img src="assets/시민렌딩_에셋/시민카드2.png" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.placeholder').style.display='block'"/><div class="placeholder" style="display:none">카드 이미지 2</div></div>
+      <div class="card-slot"><img src="assets/시민렌딩_에셋/시민카드3.png" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.placeholder').style.display='block'"/><div class="placeholder" style="display:none">카드 이미지 3</div></div>
+    </div>
+    <p class="cards-tagline">그래서 <em>"일꾼을 묻다"</em>를 봐야합니다.</p>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <div class="wrap">
+    <div class="how-grid">
+      <div>
+        <p class="how-eyebrow">HOW IT WORKS</p>
+        <h2>30초면 충분해요</h2>
+        <div class="steps">
+          <div class="step">
+            <div class="num">1</div>
+            <div class="body">
+              <p class="step-title">내 지역 선택</p>
+              <p class="step-sub">시·도 → 시·군·구를 고르면 끝</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="num">2</div>
+            <div class="body">
+              <p class="step-title">후보 카드 훑어보기</p>
+              <p class="step-sub">프로필·소속·핵심 공약을 한 줄로</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="num">3</div>
+            <div class="body">
+              <p class="step-title">공약 비교 · 질문</p>
+              <p class="step-sub">마음에 드는 후보를 관심 등록까지</p>
+            </div>
+          </div>
+          <div class="official">
+            <span class="ms msf">verified</span>
+            <div class="body">
+              <p class="official-title">중앙선거관리위원회 공식 데이터 기반</p>
+              <p class="official-sub">후보 정보·소속 정당은 공식 API로 가져옵니다</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sofa-card">
+        <div class="sofa-img-wrap">
+          <img class="sofa" src="assets/시민렌딩_에셋/시민렌딩하단이미지.png" alt=""/>
+          <img class="sofa-bubble heart" src="assets/시민렌딩_에셋/시민렌딩하단이미지_하트.png" alt=""/>
+          <img class="sofa-bubble b1" src="assets/시민렌딩_에셋/시민렌딩하단이미지_말풍선1.png" alt=""/>
+          <img class="sofa-bubble b2" src="assets/시민렌딩_에셋/시민렌딩하단이미지_말풍선2.png" alt=""/>
+        </div>
+        <button class="sofa-cta" onclick="openStoreModal(event)">
+          <span class="ms">search</span>내 지역 후보 확인하기 →
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p class="copy">© 2026 일꾼을묻다 · ask</p>
+  <div class="links">
+    <a href="terms.html">이용약관</a>
+    <a href="privacy.html">개인정보처리방침</a>
+    <a href="https://blog.naver.com/ask-muda" target="_blank" rel="noopener">공식 블로그</a>
+  </div>
+</footer>
+
+<!-- 앱 미리보기 모달 -->
+<div id="appPreviewModal" class="app-preview-modal" aria-hidden="true" onclick="if(event.target===this)closeAppPreview()">
+  <div class="app-preview-frame">
+    <button class="app-preview-close" onclick="closeAppPreview()" aria-label="닫기">
+      <span class="ms">close</span>
+    </button>
+    <iframe id="appPreviewIframe" src="" title="일꾼을묻다 미리보기" allow="autoplay"></iframe>
+  </div>
+</div>
+
+<!-- 6/21 앱스토어 안내 모달 -->
+<div id="storeModal" class="store-modal" onclick="if(event.target===this)closeStoreModal()">
+  <div class="store-card">
+    <button class="store-close" onclick="closeStoreModal()" aria-label="닫기"><span class="ms" style="font-size:18px">close</span></button>
+    <div class="store-icon"><span class="ms msf">rocket_launch</span></div>
+    <p class="store-title">곧 만나요!</p>
+    <p class="store-date">📅 2026년 6월 21일 출시</p>
+    <p class="store-desc">"일꾼을묻다"는 현재 App Store 심사 중이에요.<br/>출시일에 다시 방문해주세요.</p>
+    <div class="store-actions">
+      <button class="store-btn-pri" onclick="window.open('https://blog.naver.com/ask-muda','_blank');closeStoreModal()">출시 소식 받기 (블로그 구독)</button>
+      <button class="store-btn-sec" onclick="closeStoreModal()">닫기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openAppPreview(ev){
+  if(ev) ev.preventDefault();
+  var modal=document.getElementById('appPreviewModal');
+  var iframe=document.getElementById('appPreviewIframe');
+  if(!iframe.src.includes('ilgun-platform-v2')) iframe.src='ilgun-platform-v2.html';
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
+  document.body.style.overflow='hidden';
+}
+function closeAppPreview(){
+  var modal=document.getElementById('appPreviewModal');
+  var iframe=document.getElementById('appPreviewIframe');
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden','true');
+  iframe.src='';
+  document.body.style.overflow='';
+}
+function openStoreModal(ev){
+  if(ev) ev.preventDefault();
+  document.getElementById('storeModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeStoreModal(){
+  document.getElementById('storeModal').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    if(document.getElementById('appPreviewModal').classList.contains('open')) closeAppPreview();
+    if(document.getElementById('storeModal').classList.contains('open')) closeStoreModal();
+  }
+});
+</script>
+</body>
+</html>
