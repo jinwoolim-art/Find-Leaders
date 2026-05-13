@@ -481,7 +481,7 @@ function openAppPreview(ev){
   if(ev) ev.preventDefault();
   var modal=document.getElementById('appPreviewModal');
   var iframe=document.getElementById('appPreviewIframe');
-  if(!iframe.src.includes('ilgun-platform-v2')) iframe.src='ilgun-platform-v2.html';
+  if(!iframe.src.includes('ilgun-platform-v2')) iframe.src='ilgun-platform-v2.html?preview=1';
   modal.classList.add('open');
   modal.setAttribute('aria-hidden','false');
   document.body.style.overflow='hidden';

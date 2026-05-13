@@ -231,7 +231,17 @@
         }
         /* flat 모드에서만 숨길 요소들 (정책버튼/뉴스/투표소찾기/안내박스/정당필터) — JS에서 .flat-hide 추가 */
         body.figma-flat .flat-hide { display: none !important; }
+        /* citizen.html 미리보기 모드에서 KO/EN + 다크모드 토글 숨김 */
+        body.preview-mode #lang-toggle,
+        body.preview-mode button[onclick*="toggleDark"] { display: none !important; }
     </style>
+    <script>
+      // ?preview=1 쿼리 파라미터 있을 때만 preview-mode 클래스 추가
+      if (/[?&]preview=1/.test(location.search)) {
+        document.documentElement.classList.add('preview-mode');
+        document.addEventListener('DOMContentLoaded', function(){ document.body.classList.add('preview-mode'); });
+      }
+    </script>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 transition-colors duration-300">
 
