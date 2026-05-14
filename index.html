@@ -283,6 +283,31 @@
   .control .highlight{display:inline-block;font-weight:900;font-size:16px;color:var(--ink);padding:8px 16px;background:var(--purple-50);border-radius:8px;margin-bottom:24px}
   .control .disclaimer{color:var(--ink-3);font-size:13px;line-height:1.7;max-width:700px;margin:0 auto}
   .control .legal-badge{display:inline-flex;align-items:center;gap:6px;color:var(--purple);font-weight:900;font-size:14px;margin-top:14px;padding:8px 16px;border:1px solid var(--purple-200);border-radius:999px;background:var(--purple-50)}
+  /* 공직선거법 제58조의2 확인 카드 */
+  .legal-safety-card{
+    display:flex;align-items:flex-start;gap:16px;
+    max-width:720px;margin:24px auto 0;
+    padding:22px 26px;text-align:left;
+    background:linear-gradient(135deg,#faf8ff 0%,#fff 100%);
+    border:1.5px solid var(--purple-200);
+    border-radius:18px;
+    box-shadow:0 8px 24px rgba(124,58,237,.08);
+  }
+  .legal-safety-card .ls-icon{font-size:30px;line-height:1;flex-shrink:0;margin-top:2px}
+  .legal-safety-card .ls-body{flex:1;min-width:0}
+  .legal-safety-card .ls-title{font-size:16px;font-weight:900;color:var(--purple);margin:0 0 8px;letter-spacing:-.01em}
+  .legal-safety-card .ls-desc{font-size:13px;color:var(--ink-2);line-height:1.7;margin:0 0 6px}
+  .legal-safety-card .ls-desc:last-child{margin-bottom:0}
+  .legal-safety-card .ls-desc b{color:var(--ink);font-weight:800}
+  .legal-safety-card .ls-scope{color:var(--purple);font-weight:700;font-size:12.5px}
+  .legal-safety-card .ls-br{display:none}
+  @media (max-width:640px){
+    .legal-safety-card{padding:18px 20px;gap:12px;border-radius:14px}
+    .legal-safety-card .ls-icon{font-size:24px}
+    .legal-safety-card .ls-title{font-size:14px;margin-bottom:6px}
+    .legal-safety-card .ls-desc{font-size:12.5px}
+    .legal-safety-card .ls-br{display:inline}
+  }
 
   /* ════════ DASHBOARD PREVIEW ════════ */
   .dashboard-section{background:linear-gradient(180deg,#fff 0%,#f8f9fc 100%)}
@@ -1183,6 +1208,14 @@
       <div class="highlight">'실시간 모니터링 및 즉시 수정 가능'</div>
       <p class="disclaimer">본 서비스는 후보자가 등록한 자료와 공개 가능한 정보를 기반으로 운영되며, 선거 관련 법령과 플랫폼 운영 기준을 준수합니다.</p>
       <div class="legal-badge">✓ 선관위 유권해석 완료</div>
+      <div class="legal-safety-card">
+        <div class="ls-icon">🛡️</div>
+        <div class="ls-body">
+          <h3 class="ls-title">선거법 안전성 확인 완료</h3>
+          <p class="ls-desc">본 서비스는 <b>공직선거법 제58조의2</b>에서 허용하는 AI 활용 범위<br class="ls-br"/><span class="ls-scope">(일러스트 · 애니메이션 캐릭터 · 캐리커처)</span> 내에서 운영됩니다.</p>
+          <p class="ls-desc">또한 <b>중앙선거관리위원회의 검수</b>를 거쳐 선거법에 저촉되는 부분이 없음을 확인하였습니다.</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
