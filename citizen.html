@@ -172,6 +172,14 @@ a{text-decoration:none;color:inherit}
 .free-note strong{color:var(--purple);font-weight:900}
 
 /* ═══ FOOTER ═══ */
+/* 후보자/캠프 진입로 (푸터 직전) */
+.candidate-entry{max-width:520px;margin:24px auto 0;padding:14px 18px;background:#f8fafc;border:1px solid #f1f5f9;border-radius:14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.candidate-entry .ce-l{flex:1;min-width:0;text-align:left}
+.candidate-entry b{font-size:13.5px;font-weight:800;color:#0f172a;display:block;margin-bottom:2px}
+.candidate-entry span{font-size:12px;color:var(--ink-3)}
+.candidate-entry a{flex-shrink:0;font-size:12.5px;font-weight:800;color:var(--purple-dark);padding:8px 14px;border-radius:8px;border:1px solid var(--purple-100);background:#fff;text-decoration:none;white-space:nowrap}
+.candidate-entry a:hover{background:var(--purple-50)}
+
 .footer{padding:42px 20px 50px;text-align:center;background:#fff;margin-top:36px;border-top:1px solid var(--line)}
 .footer .copy{font-size:11px;color:var(--ink-3);margin-bottom:10px}
 .footer .links{display:flex;justify-content:center;gap:18px;flex-wrap:wrap}
@@ -437,6 +445,15 @@ a{text-decoration:none;color:inherit}
       <button class="bottom-cta-btn" onclick="openStoreModal(event)">내 지역 후보 확인하기 <span class="arrow">→</span></button>
     </div>
     <p class="free-note"><strong>시민은 무료로 이용할 수 있습니다.</strong><br/>후보자 정보 확인, 공약 보기, 질문 기능은 시민에게 별도 비용 없이 제공됩니다.</p>
+
+    <!-- 후보자/캠프 진입로 -->
+    <div class="candidate-entry">
+      <div class="ce-l">
+        <b>📣 후보자 · 캠프이신가요?</b>
+        <span>서비스 소개 · 가입 · 요금 안내 보기</span>
+      </div>
+      <a href="/">캠프 페이지 →</a>
+    </div>
   </div>
   <footer class="footer">
     <p class="copy">© 2026 일꾼을묻다 · ask</p>
