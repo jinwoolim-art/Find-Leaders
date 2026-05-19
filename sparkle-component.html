@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>노랑 반짝이 컴포넌트 · 가입 후보자 강조용</title>
+<meta name="description" content="가입한 후보자 차별화를 위한 노랑 반짝이(sparkle) 컴포넌트. 프론트 개발자 핸드오프용 단독 데모"/>
+<link rel="icon" href="assets/logo_ask03.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+<style>
+  /* ════════════════════════════════════════════════
+     데모 페이지 자체 스타일 (sparkle 코드는 아래 별도 섹션)
+     ════════════════════════════════════════════════ */
+  *{margin:0;padding:0;box-sizing:border-box;font-family:"Noto Sans KR",-apple-system,sans-serif}
+  body{background:#f8fafc;color:#0f172a;line-height:1.6;padding-bottom:60px}
+  .wrap{max-width:880px;margin:0 auto;padding:32px 24px}
+  header.demo-top{background:#fff;border-bottom:1px solid #e2e8f0;padding:14px 24px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50}
+  header.demo-top img{width:28px;height:28px;border-radius:7px}
+  header.demo-top b{font-size:14px;font-weight:900}
+  header.demo-top span{margin-left:auto;font-size:11px;color:#64748b;font-weight:700}
+
+  h1{font-size:24px;font-weight:900;letter-spacing:-.02em;margin-bottom:8px}
+  .lead{font-size:13.5px;color:#475569;margin-bottom:24px}
+  h2{font-size:15px;font-weight:900;color:#0f172a;margin:32px 0 12px;padding-left:10px;border-left:3px solid #7c3aed}
+  h3{font-size:13px;font-weight:800;color:#334155;margin:18px 0 8px}
+  p.note{font-size:13px;color:#475569;margin-bottom:14px;line-height:1.7}
+
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:22px;margin-bottom:14px}
+  .demo-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:16px 0}
+  .demo-row + .demo-row{border-top:1px dashed #e2e8f0}
+  .demo-label{font-size:11.5px;font-weight:800;color:#64748b;min-width:80px;letter-spacing:.04em;text-transform:uppercase}
+
+  /* 데모용 예시 버튼 스타일 (실제 앱 버튼 흉내) */
+  .btn-chat{display:inline-flex;align-items:center;gap:6px;background:#7c3aed;color:#fff;font-size:13px;font-weight:800;padding:10px 18px;border-radius:10px;border:none;cursor:pointer;font-family:inherit}
+  .btn-chat .material-symbols-outlined{font-size:16px}
+  .btn-chat-sm{padding:7px 12px;font-size:11.5px;border-radius:8px}
+  .btn-chat-lg{padding:13px 22px;font-size:14px;border-radius:12px}
+  .btn-card{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#7c3aed;color:#fff;font-size:12.5px;font-weight:800;padding:10px 16px;border-radius:10px;border:none;cursor:pointer;font-family:inherit;width:140px}
+
+  /* 후보자 카드 모양 */
+  .cand-card{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px;width:100%;max-width:380px}
+  .cand-photo{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#c4b5fd,#7c3aed);flex-shrink:0}
+  .cand-info{flex:1;min-width:0}
+  .cand-name{font-size:14px;font-weight:800;color:#0f172a}
+  .cand-party{font-size:11px;color:#64748b;margin-top:2px}
+
+  pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:10px;font-size:12px;line-height:1.7;overflow-x:auto;font-family:'SF Mono',Menlo,Monaco,Consolas,monospace}
+  pre code{font-family:inherit}
+  .key{color:#fde047}
+  .str{color:#a7f3d0}
+  .com{color:#64748b;font-style:italic}
+  .tag{color:#f9a8d4}
+
+  .badge-on{display:inline-block;font-size:10.5px;font-weight:900;color:#15803d;background:#dcfce7;padding:3px 8px;border-radius:6px;letter-spacing:.05em;vertical-align:middle;margin-left:8px}
+  .badge-off{display:inline-block;font-size:10.5px;font-weight:800;color:#64748b;background:#f1f5f9;padding:3px 8px;border-radius:6px;letter-spacing:.05em;vertical-align:middle;margin-left:8px}
+
+  ul.guide{list-style:none;margin:8px 0}
+  ul.guide li{font-size:13px;color:#334155;margin-bottom:6px;padding-left:22px;position:relative;line-height:1.6}
+  ul.guide li::before{content:"▸";position:absolute;left:6px;top:0;color:#7c3aed;font-weight:900}
+
+  /* ════════════════════════════════════════════════
+     ⭐ 여기서부터 SPARKLE 컴포넌트 코드 (복사 대상)
+     ════════════════════════════════════════════════ */
+
+  /* ─── 1. 호스트(wrapper) ──────────────────────── */
+  .sparkle-host{
+    position:relative;
+    display:inline-block;
+    line-height:0;
+  }
+
+  /* ─── 2. 별 1개 ───────────────────────────────── */
+  .sparkle-host > .sparkle{
+    position:absolute;
+    pointer-events:none;
+    width:14px;
+    height:14px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0 L14.2 9.8 L24 12 L14.2 14.2 L12 24 L9.8 14.2 L0 12 L9.8 9.8 Z' fill='%23FDE047'/%3E%3C/svg%3E");
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:center;
+    opacity:0;
+    filter:drop-shadow(0 0 3px rgba(250,204,21,.65));
+    animation:sparkle-twinkle 1.8s ease-in-out infinite;
+    z-index:1;
+  }
+
+  /* ─── 3. 별 3개 위치/지연 ─────────────────────── */
+  .sparkle-host > .sparkle:nth-of-type(1){
+    top:-6px;
+    left:-4px;
+    animation-delay:0s;
+  }
+  .sparkle-host > .sparkle:nth-of-type(2){
+    top:calc(50% - 7px);
+    right:-8px;
+    width:10px;
+    height:10px;
+    animation-delay:.6s;
+  }
+  .sparkle-host > .sparkle:nth-of-type(3){
+    bottom:-5px;
+    left:38%;
+    width:11px;
+    height:11px;
+    animation-delay:1.2s;
+  }
+
+  /* ─── 4. 깜빡임 keyframes ─────────────────────── */
+  @keyframes sparkle-twinkle{
+    0%,100%{opacity:0;transform:scale(.4) rotate(0deg)}
+    50%{opacity:.95;transform:scale(1.1) rotate(60deg)}
+  }
+
+  /* ─── 5. 크기 변형 (옵션) ─────────────────────── */
+  .sparkle-host.sparkle-sm > .sparkle{width:10px;height:10px}
+  .sparkle-host.sparkle-sm > .sparkle:nth-of-type(2){width:8px;height:8px}
+  .sparkle-host.sparkle-sm > .sparkle:nth-of-type(3){width:8px;height:8px}
+  .sparkle-host.sparkle-lg > .sparkle{width:18px;height:18px}
+  .sparkle-host.sparkle-lg > .sparkle:nth-of-type(2){width:14px;height:14px}
+  .sparkle-host.sparkle-lg > .sparkle:nth-of-type(3){width:14px;height:14px}
+
+  /* 접근성: 모션 줄이기 설정 시 정지 */
+  @media (prefers-reduced-motion: reduce){
+    .sparkle-host > .sparkle{animation:none;opacity:0}
+  }
+  /* ════════════════════════════════════════════════
+     ⭐ SPARKLE 코드 끝
+     ════════════════════════════════════════════════ */
+</style>
+</head>
+<body>
+
+<header class="demo-top">
+  <img src="assets/logo_ask03.png" alt="일꾼을묻다"/>
+  <b>노랑 반짝이 컴포넌트 (.sparkle-host)</b>
+  <span>프론트 개발자 핸드오프용</span>
+</header>
+
+<div class="wrap">
+  <h1>가입 후보자 강조 — 노랑 반짝이</h1>
+  <p class="lead">
+    가입한 후보자(subscribed)의 "AI 대화" 버튼 같은 핵심 CTA에 노랑 별이 깜빡깜빡 — 시민이 자연스럽게 눈길을 주도록.<br/>
+    아래 데모를 보고, "복사용 코드" 섹션을 가져다 쓰면 됩니다.
+  </p>
+
+  <!-- ══════ DEMO ══════ -->
+  <h2>1. 라이브 데모</h2>
+  <div class="card">
+
+    <div class="demo-row">
+      <div class="demo-label">기본 (M)</div>
+      <span class="sparkle-host">
+        <button class="btn-chat"><span class="material-symbols-outlined">forum</span>AI 대화</button>
+        <i class="sparkle"></i><i class="sparkle"></i><i class="sparkle"></i>
+      </span>
+      <span class="badge-on">가입 후보</span>
+    </div>
+
+    <div class="demo-row">
+      <div class="demo-label">미가입</div>
+      <button class="btn-chat"><span class="material-symbols-outlined">forum</span>AI 대화</button>
+      <span class="badge-off">미가입 — 반짝이 없음</span>
+    </div>
+
+    <div class="demo-row">
+      <div class="demo-label">작게 (S)</div>
+      <span class="sparkle-host sparkle-sm">
+        <button class="btn-chat btn-chat-sm">대화</button>
+        <i class="sparkle"></i><i class="sparkle"></i><i class="sparkle"></i>
+      </span>
+      <span style="font-size:12px;color:#64748b">상세·관심페이지처럼 좁은 영역용</span>
+    </div>
+
+    <div class="demo-row">
+      <div class="demo-label">크게 (L)</div>
+      <span class="sparkle-host sparkle-lg">
+        <button class="btn-chat btn-chat-lg"><span class="material-symbols-outlined">forum</span>AI 대화하기</button>
+        <i class="sparkle"></i><i class="sparkle"></i><i class="sparkle"></i>
+      </span>
+      <span style="font-size:12px;color:#64748b">랜딩·메인 CTA용</span>
+    </div>
+
+    <div class="demo-row">
+      <div class="demo-label">카드 안</div>
+      <div class="cand-card">
+        <div class="cand-photo"></div>
+        <div class="cand-info">
+          <div class="cand-name">김ㅇ준</div>
+          <div class="cand-party">더불어민주당 · 기호 1번</div>
+        </div>
+        <span class="sparkle-host">
+          <button class="btn-card"><span class="material-symbols-outlined">forum</span>AI 대화</button>
+          <i class="sparkle"></i><i class="sparkle"></i><i class="sparkle"></i>
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════ HTML 코드 ══════ -->
+  <h2>2. HTML — 복사해서 쓰세요</h2>
+  <p class="note">기존 버튼을 <code>&lt;span class="sparkle-host"&gt;</code>로 감싸고, 별 3개를 자식으로 추가하면 끝.</p>
+  <pre><code><span class="tag">&lt;span</span> <span class="key">class</span>=<span class="str">"sparkle-host"</span><span class="tag">&gt;</span>
+  <span class="com">&lt;!-- 기존 버튼 그대로 --&gt;</span>
+  <span class="tag">&lt;button</span> <span class="key">onclick</span>=<span class="str">"openChat(id)"</span> <span class="key">class</span>=<span class="str">"... 기존 클래스 ..."</span><span class="tag">&gt;</span>
+    AI 대화
+  <span class="tag">&lt;/button&gt;</span>
+  <span class="com">&lt;!-- 별 3개 추가 (가입 후보일 때만) --&gt;</span>
+  <span class="tag">&lt;i</span> <span class="key">class</span>=<span class="str">"sparkle"</span><span class="tag">&gt;&lt;/i&gt;</span>
+  <span class="tag">&lt;i</span> <span class="key">class</span>=<span class="str">"sparkle"</span><span class="tag">&gt;&lt;/i&gt;</span>
+  <span class="tag">&lt;i</span> <span class="key">class</span>=<span class="str">"sparkle"</span><span class="tag">&gt;&lt;/i&gt;</span>
+<span class="tag">&lt;/span&gt;</span></code></pre>
+
+  <!-- ══════ CSS 코드 ══════ -->
+  <h2>3. CSS — 한 번만 추가</h2>
+  <p class="note">전역 CSS 파일에 한 번만 추가하면 모든 페이지에서 재사용. 약 30줄.</p>
+  <pre><code><span class="com">/* sparkle host wrapper */</span>
+.sparkle-host{position:relative;display:inline-block;line-height:0}
+
+<span class="com">/* sparkle dot */</span>
+.sparkle-host > .sparkle{
+  position:absolute; pointer-events:none;
+  width:14px; height:14px;
+  background-image:url(<span class="str">"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0 L14.2 9.8 L24 12 L14.2 14.2 L12 24 L9.8 14.2 L0 12 L9.8 9.8 Z' fill='%23FDE047'/%3E%3C/svg%3E"</span>);
+  background-size:contain; background-repeat:no-repeat; background-position:center;
+  opacity:0;
+  filter:drop-shadow(0 0 3px rgba(250,204,21,.65));
+  animation:sparkle-twinkle 1.8s ease-in-out infinite;
+}
+
+<span class="com">/* 별 3개 위치 + 지연 */</span>
+.sparkle-host > .sparkle:nth-of-type(1){top:-6px; left:-4px; animation-delay:0s}
+.sparkle-host > .sparkle:nth-of-type(2){top:calc(50% - 7px); right:-8px; width:10px; height:10px; animation-delay:.6s}
+.sparkle-host > .sparkle:nth-of-type(3){bottom:-5px; left:38%; width:11px; height:11px; animation-delay:1.2s}
+
+<span class="com">/* twinkle keyframes */</span>
+@keyframes sparkle-twinkle{
+  0%,100% {opacity:0; transform:scale(.4) rotate(0deg)}
+  50%     {opacity:.95; transform:scale(1.1) rotate(60deg)}
+}
+
+<span class="com">/* 크기 변형 (옵션) */</span>
+.sparkle-host.sparkle-sm > .sparkle{width:10px; height:10px}
+.sparkle-host.sparkle-lg > .sparkle{width:18px; height:18px}
+
+<span class="com">/* 접근성 — 사용자가 모션 줄이기 설정 시 정지 */</span>
+@media (prefers-reduced-motion: reduce){
+  .sparkle-host > .sparkle{animation:none; opacity:0}
+}</code></pre>
+
+  <!-- ══════ React/JSX 예시 ══════ -->
+  <h2>4. React/JSX 예시 (조건부 적용)</h2>
+  <p class="note">가입한 후보자에게만 sparkle 적용. <code>candidate.subscribed === true</code> 조건으로 분기.</p>
+  <pre><code><span class="key">function</span> <span class="tag">ChatButton</span>({ candidate }) {
+  <span class="key">const</span> btn = (
+    <span class="tag">&lt;button</span> <span class="key">onClick</span>={<span class="str">() => openChat(candidate.id)</span>} <span class="key">className</span>=<span class="str">"btn-chat"</span><span class="tag">&gt;</span>
+      &lt;span <span class="key">className</span>=<span class="str">"material-symbols-outlined"</span>&gt;forum&lt;/span&gt; AI 대화
+    <span class="tag">&lt;/button&gt;</span>
+  );
+
+  <span class="com">// 미가입은 그냥 버튼만</span>
+  <span class="key">if</span> (!candidate.subscribed) <span class="key">return</span> btn;
+
+  <span class="com">// 가입 후보 — sparkle-host로 감싸고 별 3개 추가</span>
+  <span class="key">return</span> (
+    <span class="tag">&lt;span</span> <span class="key">className</span>=<span class="str">"sparkle-host"</span><span class="tag">&gt;</span>
+      {btn}
+      <span class="tag">&lt;i</span> <span class="key">className</span>=<span class="str">"sparkle"</span> /<span class="tag">&gt;</span>
+      <span class="tag">&lt;i</span> <span class="key">className</span>=<span class="str">"sparkle"</span> /<span class="tag">&gt;</span>
+      <span class="tag">&lt;i</span> <span class="key">className</span>=<span class="str">"sparkle"</span> /<span class="tag">&gt;</span>
+    <span class="tag">&lt;/span&gt;</span>
+  );
+}</code></pre>
+
+  <!-- ══════ 통합 가이드 ══════ -->
+  <h2>5. 통합 가이드</h2>
+  <ul class="guide">
+    <li><b>적용 대상:</b> 가입한 후보자(subscribed === true)의 "AI 대화" 버튼만</li>
+    <li><b>적용 위치:</b> 후보자 카드 목록 3종 (시·도지사 / 의원 / 교육감) — 후보자 상세·관심 페이지는 제외</li>
+    <li><b>플래그 필드명:</b> 백엔드 API 응답에 <code>subscribed: boolean</code> 필드가 있다고 가정. 다른 이름이면 그에 맞게 수정.</li>
+    <li><b>SSR/SEO:</b> 별 자체는 CSS·SVG로만 그려져 SEO·접근성 영향 없음. <code>aria-hidden="true"</code> 추가 권장 (스크린리더 노이즈 방지).</li>
+    <li><b>성능:</b> SVG는 데이터 URI라서 외부 요청 없음. 별 3개 × 카드 N개 정도는 모바일에서도 60fps 유지.</li>
+    <li><b>모션 정책:</b> <code>prefers-reduced-motion: reduce</code> 시 자동으로 정지. 접근성 OK.</li>
+    <li><b>다크모드:</b> 노랑 별 + 글로우라 다크모드에서도 잘 보임. 추가 작업 불필요.</li>
+    <li><b>크기 변형:</b> <code>.sparkle-sm</code>(상세·관심페이지용) / <code>.sparkle-lg</code>(랜딩 메인 CTA용) 추가 가능.</li>
+  </ul>
+
+  <h2>6. 변경 추적</h2>
+  <p class="note" style="font-size:12px;color:#64748b">
+    버전: <b>v1.0</b> · 시행일 2026-05-15 · 일꾼을묻다 (주)플레이4<br/>
+    문의 — 디자인/UX 의도: 가입 후보자 가시성 ↑, 시민 클릭 유도. 정치 중립성 유지(특정 후보 차별 X, 가입 여부만 기준).
+  </p>
+</div>
+
+</body>
+</html>
