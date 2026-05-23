@@ -107,8 +107,14 @@ a{text-decoration:none;color:inherit}
   padding:14px 20px;border-radius:14px;font-weight:800;font-size:14px;
   cursor:pointer;transition:all .15s ease;border:none;font-family:inherit;
 }
-.cta-btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
-.cta-btn-ghost:hover{border-color:var(--purple);color:var(--purple)}
+/* 앱 화면 미리보기 — 형광 노랑 + 블랙 (강조용 큰 버튼) */
+.cta-btn-ghost{
+  background:#FBFF00;color:#000;border:2px solid #000;
+  font-size:28px;padding:21px 30px;font-weight:900;letter-spacing:-.02em;
+  box-shadow:0 6px 18px rgba(251,255,0,.45);
+}
+.cta-btn-ghost:hover{background:#fde047;transform:translateY(-2px);box-shadow:0 10px 26px rgba(251,255,0,.55)}
+.cta-btn-ghost .ms{font-size:32px;color:#000}
 .cta-btn-primary{background:var(--purple);color:#fff;font-size:15px;padding:16px 22px}
 .cta-btn-primary:hover{background:var(--purple-dark)}
 .cta-btn .ms{font-size:18px}
