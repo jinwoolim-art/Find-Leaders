@@ -73,10 +73,10 @@ a{text-decoration:none;color:inherit}
 .curious-img img{width:100%;display:block}
 .tagline{text-align:center;margin-top:22px;font-size:clamp(18px,3.5vw,22px);font-weight:900;color:var(--ink)}
 .tagline em{color:var(--purple);font-style:normal}
-/* 1P 하단 앱 실행 묶음 (아이콘 + 앱 보기 버튼) */
+/* 헤딩 위 앱 실행 묶음 (아이콘 + 앱 보기 버튼) */
 .app-launcher{
   display:flex;align-items:center;justify-content:center;gap:14px;
-  margin:22px auto 0;flex-wrap:wrap;
+  margin:-8px auto 24px;flex-wrap:wrap;
 }
 .app-launcher-icon{
   display:block;width:74px;height:74px;border-radius:18px;overflow:hidden;
@@ -310,17 +310,17 @@ a{text-decoration:none;color:inherit}
     <div class="hero-img">
       <img src="assets/시민렌딩_에셋/시민렌딩타이틀이미지.png" alt="우리 동네 후보와 공약을 쉽게 확인하세요"/>
     </div>
-    <h2 class="problem-heading"><span class="accent">2026년 6월 3일</span> 지방선거는<br/>특히 이렇습니다.</h2>
-    <div class="curious-img">
-      <img src="assets/시민페이지궁금한시민.png" alt="후보가 많습니다 · 공약이 어렵습니다 · 질문할 곳이 없습니다"/>
-    </div>
-    <p class="tagline">그래서 <em>"일꾼을 묻다"</em>를 봐야합니다.</p>
     <div class="app-launcher">
       <a href="#" class="app-launcher-icon" onclick="openStoreModal(event); return false;" aria-label="일꾼을묻다 앱 실행">
         <img src="assets/logo_ask03.png" alt="일꾼을묻다"/>
       </a>
       <button type="button" class="app-launcher-btn" onclick="openStoreModal(event)">앱 보기 ↗</button>
     </div>
+    <h2 class="problem-heading"><span class="accent">2026년 6월 3일</span> 지방선거는<br/>특히 이렇습니다.</h2>
+    <div class="curious-img">
+      <img src="assets/시민페이지궁금한시민.png" alt="후보가 많습니다 · 공약이 어렵습니다 · 질문할 곳이 없습니다"/>
+    </div>
+    <p class="tagline">그래서 <em>"일꾼을 묻다"</em>를 봐야합니다.</p>
   </div>
 </section>
 
