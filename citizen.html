@@ -73,6 +73,28 @@ a{text-decoration:none;color:inherit}
 .curious-img img{width:100%;display:block}
 .tagline{text-align:center;margin-top:22px;font-size:clamp(18px,3.5vw,22px);font-weight:900;color:var(--ink)}
 .tagline em{color:var(--purple);font-style:normal}
+/* 1P 하단 앱 실행 묶음 (아이콘 + 앱 보기 버튼) */
+.app-launcher{
+  display:flex;align-items:center;justify-content:center;gap:14px;
+  margin:22px auto 0;flex-wrap:wrap;
+}
+.app-launcher-icon{
+  display:block;width:74px;height:74px;border-radius:18px;overflow:hidden;
+  background:#fff;cursor:pointer;
+  box-shadow:0 10px 24px rgba(124,58,237,.28);
+  transition:transform .15s ease;
+}
+.app-launcher-icon img{width:100%;height:100%;object-fit:cover;display:block}
+.app-launcher-icon:hover{transform:scale(1.05)}
+.app-launcher-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  background:var(--purple);color:#fff;font-weight:900;
+  padding:14px 26px;border-radius:99px;border:none;cursor:pointer;
+  font-size:clamp(14px,3vw,16px);font-family:inherit;
+  box-shadow:0 8px 20px rgba(124,58,237,.32);
+  transition:all .15s ease;
+}
+.app-launcher-btn:hover{background:var(--purple-dark);transform:translateY(-2px);box-shadow:0 12px 26px rgba(124,58,237,.4)}
 
 /* ═══ 2P · 앱 미리보기 + CTA ═══ */
 .p2{background:#fff;padding:32px 0 40px}
@@ -293,6 +315,12 @@ a{text-decoration:none;color:inherit}
       <img src="assets/시민페이지궁금한시민.png" alt="후보가 많습니다 · 공약이 어렵습니다 · 질문할 곳이 없습니다"/>
     </div>
     <p class="tagline">그래서 <em>"일꾼을 묻다"</em>를 봐야합니다.</p>
+    <div class="app-launcher">
+      <a href="#" class="app-launcher-icon" onclick="openStoreModal(event); return false;" aria-label="일꾼을묻다 앱 실행">
+        <img src="assets/logo_ask03.png" alt="일꾼을묻다"/>
+      </a>
+      <button type="button" class="app-launcher-btn" onclick="openStoreModal(event)">앱 보기 ↗</button>
+    </div>
   </div>
 </section>
 
