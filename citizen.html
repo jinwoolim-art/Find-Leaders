@@ -73,10 +73,13 @@ a{text-decoration:none;color:inherit}
 .curious-img img{width:100%;display:block}
 .tagline{text-align:center;margin-top:22px;font-size:clamp(18px,3.5vw,22px);font-weight:900;color:var(--ink)}
 .tagline em{color:var(--purple);font-style:normal}
-/* 헤딩 위 앱 실행 묶음 (아이콘 + 앱 보기 버튼) */
+/* 헤딩 위 앱 실행 묶음 (아이콘 + 앱 미리보기 버튼) */
 .app-launcher{
   display:flex;align-items:center;justify-content:center;gap:14px;
   margin:-8px auto 24px;flex-wrap:wrap;
+}
+.app-launcher-icon-wrap{
+  display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;
 }
 .app-launcher-icon{
   display:block;width:74px;height:74px;border-radius:18px;overflow:hidden;
@@ -85,7 +88,8 @@ a{text-decoration:none;color:inherit}
   transition:transform .15s ease;
 }
 .app-launcher-icon img{width:100%;height:100%;object-fit:cover;display:block}
-.app-launcher-icon:hover{transform:scale(1.05)}
+.app-launcher-icon-wrap:hover .app-launcher-icon{transform:scale(1.05)}
+.app-launcher-caption{font-size:11px;font-weight:800;color:var(--ink-2);letter-spacing:-.01em}
 .app-launcher-btn{
   display:inline-flex;align-items:center;justify-content:center;gap:6px;
   background:var(--purple);color:#fff;font-weight:900;
@@ -311,10 +315,13 @@ a{text-decoration:none;color:inherit}
       <img src="assets/시민렌딩_에셋/시민렌딩타이틀이미지.png" alt="우리 동네 후보와 공약을 쉽게 확인하세요"/>
     </div>
     <div class="app-launcher">
-      <a href="#" class="app-launcher-icon" onclick="openStoreModal(event); return false;" aria-label="일꾼을묻다 앱 실행">
-        <img src="assets/logo_ask03.png" alt="일꾼을묻다"/>
+      <a href="https://play.google.com/store/apps/details?id=com.play4.ilkkun&hl=ko" target="_blank" rel="noopener" class="app-launcher-icon-wrap" aria-label="일꾼을묻다 앱 다운로드">
+        <span class="app-launcher-icon">
+          <img src="assets/logo_ask03.png" alt="일꾼을묻다"/>
+        </span>
+        <span class="app-launcher-caption">앱 다운로드</span>
       </a>
-      <button type="button" class="app-launcher-btn" onclick="openStoreModal(event)">앱 보기 ↗</button>
+      <button type="button" class="app-launcher-btn" onclick="openAppPreview(event)">앱 미리보기 ↗</button>
     </div>
     <h2 class="problem-heading"><span class="accent">2026년 6월 3일</span> 지방선거는<br/>특히 이렇습니다.</h2>
     <div class="curious-img">
@@ -421,12 +428,11 @@ a{text-decoration:none;color:inherit}
         </div>
       </div>
     </div>
-    <div class="download-pill"><span class="dot"></span>5월 21일 오픈 예정</div>
-    <div class="cta-stack">
+    <div class="cta-stack" style="margin-top:28px">
       <button class="cta-btn cta-btn-ghost" onclick="openAppPreview(event)">
         <span class="ms">smartphone</span>앱 화면 미리보기
       </button>
-      <a class="cta-btn cta-btn-primary" href="https://blog.naver.com/ask-muda" target="_blank" rel="noopener">
+      <a class="cta-btn cta-btn-primary" href="https://blog.naver.com/ask-muda/224283321673" target="_blank" rel="noopener">
         "일꾼을 묻다" 더 자세히보기
       </a>
     </div>
@@ -476,7 +482,7 @@ a{text-decoration:none;color:inherit}
   <div class="wrap">
     <div class="bottom-card">
       <img src="assets/시민페이지하단풀이미지2.png" alt="우리 동네 후보 확인하기"/>
-      <button class="bottom-cta-btn" onclick="openStoreModal(event)">내 지역 후보 확인하기 <span class="arrow">→</span></button>
+      <button class="bottom-cta-btn" onclick="window.open('https://play.google.com/store/apps/details?id=com.play4.ilkkun&hl=ko','_blank')">내 지역 후보 확인하기 <span class="arrow">→</span></button>
     </div>
     <p class="free-note"><strong>시민은 무료로 이용할 수 있습니다.</strong><br/>후보자 정보 확인, 공약 보기, 질문 기능은 시민에게 별도 비용 없이 제공됩니다.</p>
 
