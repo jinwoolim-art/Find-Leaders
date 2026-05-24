@@ -171,16 +171,9 @@
       </defs>
     </svg>
 
-    <!-- ============ COUNTER (컴팩트) ============ -->
-    <section class="relative px-4 pt-1.5 pb-2 text-center" style="overflow: visible;">
-      <p class="leading-none">
-        <span id="counter" class="text-[36px] font-black text-primary tracking-tight">0</span><span class="text-[11px] font-extrabold text-primary ml-1 tracking-wider align-baseline">SENT</span>
-      </p>
-    </section>
-
-    <!-- ============ BALLOON STAGE (시민 소망 풍선) ============ -->
-    <div id="balloon-stage" class="flex-1" style="min-height: 320px; background: linear-gradient(180deg, #F5F3FF 0%, #DDD6FE 55%, #A78BFA 100%);">
-      <!-- 상단 구름 경계 (좌우 패임 비대칭 — 한쪽은 얕게, 한쪽은 깊게) -->
+    <!-- ============ BALLOON STAGE (카운터 overlay 포함) ============ -->
+    <div id="balloon-stage" class="flex-1 relative" style="min-height: 240px; background: linear-gradient(180deg, #F5F3FF 0%, #DDD6FE 55%, #A78BFA 100%);">
+      <!-- 상단 구름 경계 -->
       <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 70px; pointer-events: none; z-index: 5;" viewBox="0 0 400 70" preserveAspectRatio="none" aria-hidden="true">
         <path d="M0,0 L400,0
                  L400,18
@@ -190,21 +183,29 @@
                  C  32,62   26,28    0,30
                  Z" fill="white"/>
       </svg>
+      <!-- 카운터 overlay — stage 안 상단 가운데, 풍선보다 위 (z-index 6 = SVG 위) -->
+      <div class="absolute top-1 left-1/2 -translate-x-1/2 text-center pointer-events-none z-[6]">
+        <p class="leading-none">
+          <span id="counter" class="text-[36px] font-black text-primary tracking-tight">0</span><span class="text-[11px] font-extrabold text-primary ml-1 tracking-wider align-baseline">SENT</span>
+        </p>
+      </div>
       <!-- 풍선이 여기서 떠오름 -->
     </div>
 
     <!-- ============ STICKY BOTTOM BAR ============ -->
     <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-slate-200 z-50 shadow-[0_-6px_24px_-12px_rgba(0,0,0,0.12)]">
-      <!-- Nickname row + 개인정보 안내 -->
-      <div class="px-4 pt-2 pb-1 flex items-center gap-2 bg-white">
+      <!-- Nickname row (안내 문구는 share 모달/info 아이콘에 통합) -->
+      <div class="px-4 py-1.5 flex items-center gap-2 bg-white border-b border-slate-100">
         <span class="material-symbols-outlined text-slate-400 text-base">person</span>
         <input id="main-nickname" type="text" maxlength="2" oninput="onMainNicknameChange()"
           placeholder="시민 이름·닉네임 2자 (선택, 예: 김O)"
           class="flex-1 text-xs bg-transparent focus:outline-none placeholder:text-slate-400">
+        <button onclick="showPrivacyInfo()" class="p-0.5 text-slate-300 hover:text-slate-500" aria-label="개인정보 안내">
+          <span class="material-symbols-outlined text-[16px]">info</span>
+        </button>
       </div>
-      <p class="px-4 pb-1.5 text-[9px] text-slate-400 leading-tight border-b border-slate-100">개인정보 비수집 · 메시지는 후보자에게만 전달되며 본문은 페이지에 노출되지 않습니다</p>
-      <!-- Target chip (동네 + 후보자) -->
-      <button id="target-chip" onclick="openTargetModal()" class="w-full px-4 py-2.5 flex items-center gap-2 border-b border-slate-100 text-left active:bg-slate-50">
+      <!-- Target chip (동네 + 후보자) — 컴팩트 -->
+      <button id="target-chip" onclick="openTargetModal()" class="w-full px-4 py-1.5 flex items-center gap-2 border-b border-slate-100 text-left active:bg-slate-50">
         <span class="material-symbols-outlined text-primary text-base">location_on</span>
         <span id="target-label" class="flex-1 text-xs text-slate-500 truncate">동네와 후보자를 먼저 선택해주세요</span>
         <span class="material-symbols-outlined text-slate-300 text-base">edit</span>
@@ -663,12 +664,12 @@
   }
 
   function startTickerSimulation() {
-    // 1.5초마다 새 풍선 — dur 14~22초와 조합으로 동시 평균 9~14개 떠다님 (모바일 비주얼 풍부)
+    // 3초마다 새 풍선 — dur 14~22초와 조합으로 동시 평균 5~7개 (좁은 모바일 stage에 맞춤)
     setInterval(() => {
       tickerIdx = (tickerIdx + 1) % TICKER_POOL.length;
       const m = { ...TICKER_POOL[tickerIdx] };
       spawnBalloon(m, false);
-    }, 1500);
+    }, 3000);
   }
 
   // ============ COUNTER ============
@@ -1031,6 +1032,10 @@
     const data = { title: '시민의 목소리', text: '우리 동네 후보자에게 한마디 — 가입 없이 한 줄이면 됩니다.', url: location.href };
     if (navigator.share) navigator.share(data).catch(()=>{});
     else { navigator.clipboard.writeText(location.href); showToast('링크가 복사되었습니다'); }
+  }
+
+  function showPrivacyInfo() {
+    alert('개인정보 안내\n\n· 개인정보를 수집하지 않습니다.\n· 메시지는 후보자에게만 전달됩니다.\n· 본문은 페이지에 노출되지 않습니다.\n· 닉네임은 최대 2자, 욕설·후보자명은 자동 차단됩니다.');
   }
 
   init();
