@@ -59,7 +59,10 @@
       will-change: transform, bottom, opacity;
     }
     .balloon.mine {
+      width: 142px;       /* 일반 118 → 강조 */
+      z-index: 10;        /* 다른 풍선 위로 */
       animation-name: floatUpMine;
+      filter: drop-shadow(0 8px 22px rgba(124,58,237,0.4));
     }
     /* 말풍선 꼬리 — 좌하단 약간 안쪽 */
     .balloon::after {
@@ -214,6 +217,7 @@
         </button>
         <div class="flex-1 bg-white rounded-2xl border border-slate-200 flex items-end">
           <textarea id="message" rows="1" maxlength="200" placeholder="동네와 후보자 선택 후 입력 가능"
+            enterkeyhint="send"
             class="flex-1 px-3 py-2.5 text-sm bg-transparent resize-none focus:outline-none disabled:text-slate-400 max-h-[120px]"
             disabled
             oninput="autoResize(this); updateSendBtn();"
@@ -626,7 +630,8 @@
     // 가로 위치: 15~85% 범위 랜덤 (양 끝 여백)
     const startX = 15 + Math.random() * 70;
     const drift  = (Math.random() - 0.5) * 70; // ±35px 좌우 흔들림
-    const dur    = 14 + Math.random() * 8;     // 14~22초 (모바일에서 동시에 더 많은 풍선)
+    // 시뮬레이션 14~22초 / 내 풍선 30초 (천천히 + 더 오래 보임)
+    const dur    = isMine ? 30 : (14 + Math.random() * 8);
     balloon.style.left = `${startX}%`;
     balloon.style.setProperty('--drift', `${drift}px`);
     balloon.style.setProperty('--dur', `${dur}s`);
@@ -967,6 +972,8 @@
     msgEl.value = '';
     autoResize(msgEl);
     updateSendBtn();
+    // 모바일 키보드 자동으로 내려서 stage 풀화면 보이게
+    msgEl.blur();
     showToast('소망 풍선이 하늘로 올라갑니다 🎈');
   }
 
