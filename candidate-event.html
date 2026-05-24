@@ -130,6 +130,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;padding:0}
 .data-chips .chip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700;color:var(--ink-2)}
 .data-chips .chip .ms{font-size:14px;color:var(--purple)}
 .browser-card{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,.06);max-width:900px;width:100%;margin:0 auto;isolation:isolate;-webkit-transform:translateZ(0);transform:translateZ(0)}
+.dash-card-mobile-secondary{display:none}
 .dash-stage{position:relative;max-width:1100px;width:100%;margin:0 auto}
 .dash-arrow{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:#fff;border:1.5px solid var(--line);cursor:pointer;display:grid;place-items:center;color:var(--purple);box-shadow:0 6px 18px rgba(15,23,42,.08);transition:background .15s,transform .15s,box-shadow .15s,border-color .15s;z-index:5}
 .dash-arrow:hover{background:var(--purple);color:#fff;border-color:var(--purple);box-shadow:0 10px 24px rgba(124,58,237,.28)}
@@ -259,11 +260,18 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;padding:0}
 .dash-disc{margin-top:12px;font-size:11px;color:var(--ink-3);text-align:center}
 
 @media (max-width:768px){
-  /* 데이터가 시연용 더미라 모바일에서 강 톤다운 — 양옆 큰 여백 + h2 폰트 다운 */
+  /* 데이터 두 카드 가로 + 시차 — 헤딩은 톤다운 유지 */
   .dashboard-section .h2{font-size:22px;line-height:1.3}
   .dashboard-section .lead{font-size:12px}
-  .dash-stage{max-width:78%}
-  .browser-card{max-width:100%}
+  .dash-stage{display:flex;gap:8px;align-items:flex-start;max-width:none;width:100%;padding:0 4px;box-sizing:border-box}
+  .browser-card{flex:1 1 0;min-width:0;max-width:none;width:auto;margin:0}
+  .dash-card-mobile-secondary{display:flex;flex-direction:column}
+  /* 두 번째 카드의 dots/label은 숨김 (시차라 표시 위치 헷갈림 방지) */
+  .dash-card-mobile-secondary .pagination,
+  .dash-card-mobile-secondary .data-cap{display:none}
+  /* 두 카드 양 끝에 화살표 위치 */
+  .dash-arrow.prev{left:-4px}
+  .dash-arrow.next{right:-4px}
   .dash-slide{padding:14px 12px}
   .dash-kpi-rich{grid-template-columns:1fr 1fr;gap:8px}
   .kpi-r-val{font-size:18px}
@@ -329,30 +337,15 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;padding:0}
 .price-includes b{color:var(--purple-dark);font-weight:800}
 .price-includes a{color:var(--purple-dark);font-weight:800;text-decoration:underline}
 @media (max-width:768px){
-  /* 2-3 배열 — 위 2장(prominent), 아래 3장. 6 col 그리드로 span 분배 */
-  .price-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
-  .price-card:nth-child(1),
-  .price-card:nth-child(2){grid-column:span 3}
-  .price-card:nth-child(3),
-  .price-card:nth-child(4),
-  .price-card:nth-child(5){grid-column:span 2}
-  /* 카드 내부 폰트·패딩 다운 (3열 33% 폭에도 맞게) */
-  .price-card{padding:12px 8px 10px;gap:3px}
-  .price-card .tier{margin-top:4px}
-  .price-card .tier-name{font-size:12.5px}
-  .price-card .tier-sub{font-size:9px;line-height:1.35}
-  .price-old{font-size:14px}
-  .price-new{font-size:17px}
-  .price-new sup{font-size:8.5px}
-  .price-new-row{padding:6px 6px;flex-direction:row;align-items:baseline;justify-content:center;gap:4px}
-  .price-new-label{font-size:9.5px}
-  .price-arrow{margin:2px 0}
-  .price-arrow .arr{border-left-width:7px;border-right-width:7px;border-top-width:10px}
-  .price-arrow .pct{font-size:13px}
-  .price-vat-tag{font-size:8.5px;margin-top:2px}
-  /* preregister 칩 white-space:nowrap — 좁은 카드에서도 한 줄 보장 */
-  .price-card .preregister-pill{font-size:9.5px;padding:3px 9px;top:-9px;white-space:nowrap}
-  .price-card .tier-hint{font-size:9.5px;padding:4px 9px;margin-top:5px}
+  /* 1단 — 한 카드 한 카드 큰 사이즈로 5개 세로 stack */
+  .price-grid{grid-template-columns:1fr;gap:18px}
+  .price-old{font-size:24px}
+  .price-new{font-size:26px}
+  .price-new-row{padding:10px 14px;flex-direction:row;align-items:baseline;justify-content:center;gap:6px}
+  .price-new-label{font-size:11px}
+  .price-arrow .arr{border-left-width:14px;border-right-width:14px;border-top-width:18px}
+  .price-arrow .pct{font-size:18px}
+  .price-card .preregister-pill{white-space:nowrap}
 }
 
 /* 선착순 1줄 */
@@ -493,7 +486,7 @@ body.is-expired .apply-submit{opacity:.55;pointer-events:none}
     <h2 class="problem-heading"><span class="accent">2026년 6월 3일</span> 지방선거는<br/>특히 이렇습니다.</h2>
     <div class="curious-img">
       <img class="curious-img-desktop" src="assets/시민페이지궁금한시민_v2.png" alt="후보가 많습니다 · 공약이 어렵습니다 · 질문할 곳이 없습니다"/>
-      <img class="curious-img-mobile" src="assets/시민페이지궁금한시민_v2_mobile.png" alt="후보가 많습니다 · 공약이 어렵습니다 · 질문할 곳이 없습니다"/>
+      <img class="curious-img-mobile" src="assets/시민페이지궁금한시민_v3_mobile.png" alt="후보가 많습니다 · 공약이 어렵습니다 · 질문할 곳이 없습니다"/>
     </div>
     <p class="tagline">그래서 <em>"일꾼을 묻다"</em>를 봐야합니다.</p>
   </div>
@@ -826,6 +819,20 @@ body.is-expired .apply-submit{opacity:.55;pointer-events:none}
         </div>
         <div class="data-cap" id="dashSlideLabel">사용 현황</div>
       </div>
+      <!-- 모바일 전용 두 번째 카드 (시차 +1) — 콘텐츠는 JS로 첫 카드 cloneNode -->
+      <div class="browser-card dash-card-mobile-secondary" aria-hidden="true">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot" style="background:#ef4444"></div>
+            <div class="browser-dot" style="background:#f59e0b"></div>
+            <div class="browser-dot" style="background:#22c55e"></div>
+          </div>
+          <div class="browser-url">findleaders.kr/dashboard — 후보자 전용 대시보드</div>
+        </div>
+        <div class="dash-slider-wrap">
+          <div class="dash-slider" id="dashSlider2"></div>
+        </div>
+      </div>
     </div>
     <p class="dash-disc">※ 위 수치는 UI 예시용 샘플입니다. 실제 데이터는 후보자 계정에 연동된 수집 결과만 집계됩니다.</p>
   </div>
@@ -1119,6 +1126,7 @@ var EVENT_TAG   = '[50% 사전등록 이벤트]';
 (function(){
   var dashSlideLabels = ['사용 현황', '시민 인사이트', '정책 반응 분석', '운영 현황 + 비교 분석', '답변 만족도 분석'];
   var dashSlider = document.getElementById('dashSlider');
+  var dashSlider2 = document.getElementById('dashSlider2');
   var dashDots = document.getElementById('dashDots');
   var dashSlideLabel = document.getElementById('dashSlideLabel');
   var dashPrev = document.getElementById('dashPrev');
@@ -1126,9 +1134,20 @@ var EVENT_TAG   = '[50% 사전등록 이벤트]';
   var DASH_TOTAL = 5;
   var dashIdx = 0;
   var dashAutoStopped = false;
+  /* 두 번째 카드(모바일 전용) 콘텐츠는 첫 슬라이더 cloneNode로 채움 + 초기 시차 +1 설정 */
+  if (dashSlider && dashSlider2 && dashSlider2.children.length === 0) {
+    for (var i = 0; i < dashSlider.children.length; i++) {
+      dashSlider2.appendChild(dashSlider.children[i].cloneNode(true));
+    }
+    dashSlider2.style.transform = 'translateX(-100%)';
+  }
   function showDashSlide(n){
     dashIdx = ((n % DASH_TOTAL) + DASH_TOTAL) % DASH_TOTAL;
     if (dashSlider) dashSlider.style.transform = 'translateX(-' + (dashIdx*100) + '%)';
+    if (dashSlider2) {
+      var idx2 = (dashIdx + 1) % DASH_TOTAL;
+      dashSlider2.style.transform = 'translateX(-' + (idx2*100) + '%)';
+    }
     if (dashDots) dashDots.querySelectorAll('span').forEach(function(s, i){ s.classList.toggle('active', i === dashIdx); });
     if (dashSlideLabel) dashSlideLabel.textContent = dashSlideLabels[dashIdx];
   }
