@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>시민의 목소리 — 우리 동네 후보자에게 한마디</title>
+  <meta name="description" content="가입 없이 한 줄로 끝. 우리 동네 후보자에게 시민의 한마디를 전달합니다.">
+  <meta property="og:title" content="시민의 목소리 — 우리 동네 후보자에게 한마디">
+  <meta property="og:description" content="23,481명이 참여한 시민의 한마디. 가입 없이 한 줄이면 충분합니다.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: '#7C3AED', primaryDark: '#6D28D9' },
+          fontFamily: { sans: ['Pretendard', 'system-ui', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Pretendard', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+    @keyframes pulseDot { 0%,100% { opacity: 1;} 50% { opacity: 0.35;} }
+    .pulse-dot { animation: pulseDot 1.2s infinite; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .count-pop { animation: countPop 0.5s ease-out; }
+    @keyframes countPop {
+      0%   { transform: scale(1); text-shadow: none; }
+      25%  { transform: scale(1.3); color: #C026D3; text-shadow: 0 0 28px rgba(192,38,211,0.55); }
+      60%  { transform: scale(1.1); }
+      100% { transform: scale(1); text-shadow: none; color: #7C3AED; }
+    }
+
+    /* ============ SPEECH BUBBLE (말풍선) ============ */
+    #balloon-stage {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .balloon {
+      position: absolute;
+      bottom: 0;
+      width: 144px;
+      padding: 10px 12px 12px;
+      border-radius: 18px;
+      text-align: center;
+      background: var(--bg, #A78BFA);
+      color: var(--fg, #fff);
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.18));
+      animation: floatUp var(--dur, 10s) ease-out forwards;
+      transform: translateX(-50%);
+      will-change: transform, bottom, opacity;
+    }
+    .balloon.mine {
+      animation-name: floatUpMine;
+    }
+    /* 말풍선 꼬리 — 좌하단 약간 안쪽 */
+    .balloon::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 26%;
+      width: 14px;
+      height: 14px;
+      background: inherit;
+      border-radius: 0 0 0 4px;
+      transform: rotate(45deg);
+      filter: none;
+    }
+    @keyframes floatUp {
+      0%   { bottom: 0;   opacity: 0; transform: translateX(-50%) scale(0.86); }
+      8%   { opacity: 1;  transform: translateX(-50%) scale(1); }
+      25%  { transform: translateX(-50%) translateX(calc(var(--drift) * 0.4)) rotate(2deg); }
+      50%  { transform: translateX(-50%) translateX(calc(var(--drift) * -0.3)) rotate(-2deg); }
+      75%  { transform: translateX(-50%) translateX(calc(var(--drift) * 0.6)) rotate(1.5deg); }
+      90%  { opacity: 1; }
+      100% { bottom: 100%; opacity: 0; transform: translateX(-50%) translateX(var(--drift)) rotate(0) scale(0.78); }
+    }
+    @keyframes floatUpMine {
+      0%   { bottom: 0;   opacity: 0; transform: translateX(-50%) scale(0.5); }
+      8%   { opacity: 1;  transform: translateX(-50%) scale(1.1); }
+      15%  { transform: translateX(-50%) scale(1); }
+      30%  { transform: translateX(-50%) translateX(calc(var(--drift) * 0.4)) rotate(2deg); }
+      55%  { transform: translateX(-50%) translateX(calc(var(--drift) * -0.3)) rotate(-2deg); }
+      80%  { transform: translateX(-50%) translateX(calc(var(--drift) * 0.6)) rotate(1.5deg); }
+      90%  { opacity: 1; }
+      100% { bottom: 100%; opacity: 0; transform: translateX(-50%) translateX(var(--drift)) rotate(0) scale(0.78); }
+    }
+
+    /* ============ CLOUDS (구름) ============ */
+    .cloud {
+      position: absolute;
+      pointer-events: none;
+      user-select: none;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.04));
+      animation: cloudFloat 5s ease-in-out infinite;
+    }
+    .cloud.c2 { animation-duration: 7s; animation-delay: -2s; }
+    .cloud.c3 { animation-duration: 6s; animation-delay: -3s; }
+    .cloud.c4 { animation-duration: 8s; animation-delay: -1s; }
+    @keyframes cloudFloat {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-5px); }
+    }
+
+    /* 풍선이 구름에 닿는 순간 — 풍선 burst */
+    .balloon.reached {
+      animation: balloonBurst 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+    }
+    @keyframes balloonBurst {
+      0%   { opacity: 1; transform: translateX(-50%) scale(1); }
+      35%  { opacity: 1; transform: translateX(-50%) scale(1.18) rotate(-3deg); filter: drop-shadow(0 0 18px rgba(255,255,255,0.7)) drop-shadow(0 6px 14px rgba(0,0,0,0.18)); }
+      100% { opacity: 0; transform: translateX(-50%) scale(0.5) rotate(2deg); }
+    }
+    /* 카운터 ring 폭발 — 풍선 도달 시 카운터 숫자 주변에 동심원 ring */
+    .counter-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 200px;
+      height: 200px;
+      border: 3px solid;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.4);
+      animation: counterRing 1.2s ease-out forwards;
+      z-index: 0;
+    }
+    @keyframes counterRing {
+      0%   { opacity: 0.9; transform: translate(-50%, -50%) scale(0.4); }
+      40%  { opacity: 0.7; }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(2.6); }
+    }
+    /* 카운터 펄스 강화 — 풍선 도달 시 빛 효과 */
+    .count-pop { animation: countPop 0.7s ease-out !important; }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen">
+  <div class="max-w-[480px] mx-auto bg-white min-h-screen relative pb-[192px] shadow-sm flex flex-col">
+
+    <!-- ============ HEADER ============ -->
+    <header class="sticky top-0 z-40 bg-white px-5 pt-6 pb-2">
+      <div class="flex items-start justify-between">
+        <h1 class="text-[26px] font-extrabold text-slate-900 leading-tight tracking-tight">제9회<br>전국동시지방선거</h1>
+        <button onclick="share()" class="p-1.5 rounded-full hover:bg-slate-100 -mr-1 mt-1" aria-label="공유">
+          <span class="material-symbols-outlined text-slate-400 text-lg">ios_share</span>
+        </button>
+      </div>
+      <p class="text-[10px] text-slate-400 mt-2 leading-snug">개인정보를 수집하지 않습니다. 메시지는 후보자에게만 전달되며 본문은 페이지에 노출되지 않습니다.</p>
+    </header>
+
+    <!-- SVG sprite — cloud shape -->
+    <svg width="0" height="0" style="position: absolute;" aria-hidden="true">
+      <defs>
+        <symbol id="cloud-shape" viewBox="0 0 100 60">
+          <ellipse cx="30" cy="40" rx="22" ry="16"/>
+          <ellipse cx="58" cy="35" rx="28" ry="22"/>
+          <ellipse cx="80" cy="44" rx="18" ry="14"/>
+          <ellipse cx="50" cy="50" rx="40" ry="10"/>
+        </symbol>
+      </defs>
+    </svg>
+
+    <!-- ============ COUNTER ============ -->
+    <section class="relative px-4 pt-5 pb-3 text-center" style="overflow: visible;">
+      <p class="leading-none">
+        <span id="counter" class="text-[56px] font-black text-primary tracking-tight">0</span><span class="text-[16px] font-extrabold text-primary ml-1 tracking-wider align-baseline">SENT</span>
+      </p>
+    </section>
+
+    <!-- ============ BALLOON STAGE (시민 소망 풍선) ============ -->
+    <div id="balloon-stage" class="flex-1" style="min-height: 320px; background: linear-gradient(180deg, #F5F3FF 0%, #DDD6FE 55%, #A78BFA 100%);">
+      <!-- 상단 구름 경계 (좌우 패임 비대칭 — 한쪽은 얕게, 한쪽은 깊게) -->
+      <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 70px; pointer-events: none; z-index: 5;" viewBox="0 0 400 70" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0,0 L400,0
+                 L400,18
+                 C 388,18  396,38  348,38
+                 C 290,38  288,8   210,6
+                 C 130,4   140,66   72,64
+                 C  32,62   26,28    0,30
+                 Z" fill="white"/>
+      </svg>
+      <!-- 풍선이 여기서 떠오름 -->
+    </div>
+
+    <!-- ============ STICKY BOTTOM BAR ============ -->
+    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-slate-200 z-50 shadow-[0_-6px_24px_-12px_rgba(0,0,0,0.12)]">
+      <!-- Nickname row -->
+      <div class="px-4 py-2 flex items-center gap-2 border-b border-slate-100 bg-white">
+        <span class="material-symbols-outlined text-slate-400 text-base">person</span>
+        <input id="main-nickname" type="text" maxlength="2" oninput="onMainNicknameChange()"
+          placeholder="시민 이름·닉네임 2자 (선택, 예: 김O)"
+          class="flex-1 text-xs bg-transparent focus:outline-none placeholder:text-slate-400">
+      </div>
+      <!-- Target chip (동네 + 후보자) -->
+      <button id="target-chip" onclick="openTargetModal()" class="w-full px-4 py-2.5 flex items-center gap-2 border-b border-slate-100 text-left active:bg-slate-50">
+        <span class="material-symbols-outlined text-primary text-base">location_on</span>
+        <span id="target-label" class="flex-1 text-xs text-slate-500 truncate">동네와 후보자를 먼저 선택해주세요</span>
+        <span class="material-symbols-outlined text-slate-300 text-base">edit</span>
+      </button>
+
+      <!-- KakaoTalk-style input bar -->
+      <div class="px-3 py-2 flex items-end gap-2 bg-slate-50">
+        <button onclick="openIlkkunApp()" aria-label="묻다 앱 다운로드" class="hidden size-9 items-center justify-center text-slate-500 shrink-0 hover:text-primary active:scale-95 transition-all">
+          <span class="material-symbols-outlined text-xl">add</span>
+        </button>
+        <div class="flex-1 bg-white rounded-2xl border border-slate-200 flex items-end">
+          <textarea id="message" rows="1" maxlength="200" placeholder="동네와 후보자 선택 후 입력 가능"
+            class="flex-1 px-3 py-2.5 text-sm bg-transparent resize-none focus:outline-none disabled:text-slate-400 max-h-[120px]"
+            disabled
+            oninput="autoResize(this); updateSendBtn();"
+            onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); submitMessage();}"></textarea>
+          <span id="char-count" class="text-[10px] text-slate-300 px-2 pb-2">0/200</span>
+        </div>
+        <button id="send-btn" onclick="submitMessage()" disabled
+          class="size-10 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center transition-all shrink-0">
+          <span class="material-symbols-outlined text-base">send</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ============ TARGET MODAL ============ -->
+    <div id="target-modal" class="fixed inset-0 z-[60] hidden">
+      <div class="absolute inset-0 bg-black/50" onclick="closeTargetModal()"></div>
+      <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white rounded-t-3xl max-h-[85vh] overflow-y-auto">
+        <div class="sticky top-0 bg-white px-5 pt-4 pb-3 border-b border-slate-100 z-10">
+          <div class="w-10 h-1 bg-slate-300 rounded-full mx-auto mb-3"></div>
+          <div class="flex items-center justify-between">
+            <h3 class="text-base font-bold text-slate-800">우리 동네 후보자에게</h3>
+            <button onclick="closeTargetModal()" class="p-1 rounded-full hover:bg-slate-100">
+              <span class="material-symbols-outlined text-slate-400">close</span>
+            </button>
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5">가입·로그인 없이 보낼 수 있어요</p>
+        </div>
+        <div class="p-5 space-y-5">
+          <!-- Step 1: 동네 -->
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="size-5 bg-primary/10 text-primary text-[11px] font-bold rounded-full flex items-center justify-center">1</span>
+              <p class="text-xs font-bold text-slate-700">어디 시민이신가요?</p>
+            </div>
+            <div class="grid grid-cols-2 gap-2 mb-2">
+              <select id="sel-sido" onchange="onSidoChange()" class="w-full px-3 py-2.5 text-sm rounded-lg border border-slate-200 bg-white focus:outline-none focus:border-primary">
+                <option value="">시·도 선택</option>
+              </select>
+              <select id="sel-sigungu" onchange="onSigunguChange()" disabled class="w-full px-3 py-2.5 text-sm rounded-lg border border-slate-200 bg-white disabled:opacity-50 focus:outline-none focus:border-primary">
+                <option value="">시·군·구 선택</option>
+              </select>
+            </div>
+            <input id="sel-dong" type="text" maxlength="20" oninput="onDongChange()" disabled placeholder="읍·면·동 직접 입력 (선택, 예: 논현동)"
+              class="w-full px-3 py-2.5 text-sm rounded-lg border border-slate-200 bg-white disabled:opacity-50 focus:outline-none focus:border-primary">
+            <input id="sel-nickname" type="text" maxlength="2" oninput="onNicknameChange()" placeholder="이름·닉네임 2자 (선택, 예: 김O)"
+              class="mt-2 w-full px-3 py-2.5 text-sm rounded-lg border border-slate-200 bg-white focus:outline-none focus:border-primary">
+          </div>
+          <!-- Step 2: 선거 유형 -->
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="size-5 bg-primary/10 text-primary text-[11px] font-bold rounded-full flex items-center justify-center">2</span>
+              <p class="text-xs font-bold text-slate-700">어떤 선거의 후보자에게 보낼까요?</p>
+            </div>
+            <div id="election-type-list" class="grid grid-cols-2 gap-2">
+              <p class="col-span-2 text-xs text-slate-400 text-center py-6 bg-slate-50 rounded-xl">동네를 먼저 선택해주세요</p>
+            </div>
+          </div>
+          <!-- Step 3: 후보자 -->
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="size-5 bg-primary/10 text-primary text-[11px] font-bold rounded-full flex items-center justify-center">3</span>
+              <p class="text-xs font-bold text-slate-700">누구에게 보낼까요?</p>
+            </div>
+            <div id="party-filter" class="hidden gap-1.5 overflow-x-auto scrollbar-hide mb-2 -mx-1 px-1 pb-1"></div>
+            <div id="candidate-list" class="space-y-2">
+              <p class="text-xs text-slate-400 text-center py-6 bg-slate-50 rounded-xl">선거 유형을 먼저 선택해주세요</p>
+            </div>
+            <p id="cand-hint" class="hidden text-[10px] text-slate-400 mt-1.5 px-1">← 좌우로 밀어서 후보자 모두 보기</p>
+          </div>
+          <button id="confirm-target" onclick="confirmTarget()" disabled
+            class="w-full py-3.5 rounded-xl bg-primary text-white font-bold text-sm disabled:bg-slate-200 disabled:text-slate-400 active:scale-[0.98] transition-all">
+            이 후보자에게 한마디 쓰기
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TOAST ============ -->
+    <div id="toast" class="fixed bottom-36 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-4 py-2.5 rounded-full opacity-0 transition-opacity pointer-events-none z-[70]"></div>
+  </div>
+
+<script>
+  // ============ DUMMY DATA (실제 운영 시 NEC 데이터로 교체) ============
+  // 전국 17개 시·도 + 시·군·구 (행정안전부 2024 기준)
+  const REGIONS = {
+    '서울특별시': ['종로구','중구','용산구','성동구','광진구','동대문구','중랑구','성북구','강북구','도봉구','노원구','은평구','서대문구','마포구','양천구','강서구','구로구','금천구','영등포구','동작구','관악구','서초구','강남구','송파구','강동구'],
+    '부산광역시': ['중구','서구','동구','영도구','부산진구','동래구','남구','북구','해운대구','사하구','금정구','강서구','연제구','수영구','사상구','기장군'],
+    '대구광역시': ['중구','동구','서구','남구','북구','수성구','달서구','달성군','군위군'],
+    '인천광역시': ['미추홀구','연수구','남동구','부평구','계양구','서구','검단구','영종구','제물포구','강화군','옹진군'],
+    '대전광역시': ['동구','중구','서구','유성구','대덕구'],
+    '울산광역시': ['중구','남구','동구','북구','울주군'],
+    '세종특별자치시': ['세종특별자치시'],
+    '경기도': ['수원시 장안구','수원시 권선구','수원시 팔달구','수원시 영통구','성남시 수정구','성남시 중원구','성남시 분당구','의정부시','안양시 만안구','안양시 동안구','부천시','광명시','평택시','동두천시','안산시 상록구','안산시 단원구','고양시 덕양구','고양시 일산동구','고양시 일산서구','과천시','구리시','남양주시','오산시','시흥시','군포시','의왕시','하남시','용인시 처인구','용인시 기흥구','용인시 수지구','파주시','이천시','안성시','김포시','화성시','광주시','양주시','포천시','여주시','연천군','가평군','양평군'],
+    '강원특별자치도': ['춘천시','원주시','강릉시','동해시','태백시','속초시','삼척시','홍천군','횡성군','영월군','평창군','정선군','철원군','화천군','양구군','인제군','고성군','양양군'],
+    '충청북도': ['청주시 상당구','청주시 서원구','청주시 흥덕구','청주시 청원구','충주시','제천시','보은군','옥천군','영동군','증평군','진천군','괴산군','음성군','단양군'],
+    '충청남도': ['천안시 동남구','천안시 서북구','공주시','보령시','아산시','서산시','논산시','계룡시','당진시','금산군','부여군','서천군','청양군','홍성군','예산군','태안군'],
+    '전북특별자치도': ['전주시 완산구','전주시 덕진구','군산시','익산시','정읍시','남원시','김제시','완주군','진안군','무주군','장수군','임실군','순창군','고창군','부안군'],
+    // 광주광역시 + 전라남도 통합 (2026 행정구역 개편)
+    '전남광주통합특별시': ['동구','서구','남구','북구','광산구','목포시','여수시','순천시','나주시','광양시','담양군','곡성군','구례군','고흥군','보성군','화순군','장흥군','강진군','해남군','영암군','무안군','함평군','영광군','장성군','완도군','진도군','신안군'],
+    '경상북도': ['포항시 남구','포항시 북구','경주시','김천시','안동시','구미시','영주시','영천시','상주시','문경시','경산시','의성군','청송군','영양군','영덕군','청도군','고령군','성주군','칠곡군','예천군','봉화군','울진군','울릉군'],
+    '경상남도': ['창원시 의창구','창원시 성산구','창원시 마산합포구','창원시 마산회원구','창원시 진해구','진주시','통영시','사천시','김해시','밀양시','거제시','양산시','의령군','함안군','창녕군','고성군','남해군','하동군','산청군','함양군','거창군','합천군'],
+    '제주특별자치도': ['제주시','서귀포시']
+  };
+
+  // 6/3 지방선거 5개 선거 유형 (NEC sgTypecode 기준)
+  const ELECTION_TYPES = [
+    { id: 'governor',    label: '시·도지사',         icon: 'location_city',  desc: '광역단체장' },
+    { id: 'head',        label: '시장·군수·구청장',  icon: 'apartment',      desc: '기초단체장' },
+    { id: 'provincial',  label: '시·도의원',         icon: 'gavel',          desc: '광역의원' },
+    { id: 'local',       label: '시·군·구의원',     icon: 'how_to_vote',    desc: '기초의원' },
+    { id: 'education',   label: '교육감',             icon: 'school',         desc: '시·도교육감' }
+  ];
+
+  const CANDIDATES_BY_REGION = {
+    '서울특별시|강남구': [
+      { id: 1,  electionType: 'governor',   election: '서울특별시장',          name: '박민수', party: '국민의힘' },
+      { id: 2,  electionType: 'head',       election: '강남구청장',            name: '홍길동', party: '더불어민주당' },
+      { id: 3,  electionType: 'head',       election: '강남구청장',            name: '김철수', party: '국민의힘' },
+      { id: 4,  electionType: 'provincial', election: '서울특별시의원 강남갑', name: '이영희', party: '더불어민주당' },
+      { id: 5,  electionType: 'local',      election: '강남구의원 가선거구',   name: '오민지', party: '더불어민주당' },
+      { id: 6,  electionType: 'education',  election: '서울특별시교육감',      name: '한송이', party: '교육감' }
+    ],
+    '서울특별시|서초구': [
+      { id: 11, electionType: 'governor',   election: '서울특별시장',          name: '박민수', party: '국민의힘' },
+      { id: 12, electionType: 'head',       election: '서초구청장',            name: '정현우', party: '국민의힘' },
+      { id: 13, electionType: 'education',  election: '서울특별시교육감',      name: '한송이', party: '교육감' }
+    ],
+    '서울특별시|마포구': [
+      { id: 21, electionType: 'governor',   election: '서울특별시장',          name: '박민수', party: '국민의힘' },
+      { id: 22, electionType: 'head',       election: '마포구청장',            name: '강예진', party: '더불어민주당' },
+      { id: 23, electionType: 'education',  election: '서울특별시교육감',      name: '한송이', party: '교육감' }
+    ],
+    '부산광역시|해운대구': [
+      { id: 31, electionType: 'governor',   election: '부산광역시장',          name: '김상철', party: '더불어민주당' },
+      { id: 32, electionType: 'head',       election: '해운대구청장',          name: '정태호', party: '국민의힘' },
+      { id: 33, electionType: 'education',  election: '부산광역시교육감',      name: '문지원', party: '교육감' }
+    ],
+    '부산광역시|수영구': [
+      { id: 41, electionType: 'governor',   election: '부산광역시장',          name: '김상철', party: '더불어민주당' },
+      { id: 42, electionType: 'head',       election: '수영구청장',            name: '윤도현', party: '국민의힘' },
+      { id: 43, electionType: 'education',  election: '부산광역시교육감',      name: '문지원', party: '교육감' }
+    ],
+    '경기도|수원시 영통구': [
+      { id: 51, electionType: 'governor',   election: '경기도지사',            name: '최영수', party: '더불어민주당' },
+      { id: 52, electionType: 'head',       election: '수원시장',              name: '한지석', party: '국민의힘' },
+      { id: 53, electionType: 'local',      election: '수원시의원 영통구',     name: '강나래', party: '국민의힘' },
+      { id: 54, electionType: 'education',  election: '경기도교육감',          name: '서민경', party: '교육감' }
+    ],
+    '경기도|성남시 분당구': [
+      { id: 61, electionType: 'governor',   election: '경기도지사',            name: '최영수', party: '더불어민주당' },
+      { id: 62, electionType: 'head',       election: '성남시장',              name: '윤지혜', party: '더불어민주당' },
+      { id: 63, electionType: 'education',  election: '경기도교육감',          name: '서민경', party: '교육감' }
+    ]
+  };
+
+  const DUMMY_MESSAGES = [
+    { sido: '서울', sigungu: '강남구', dong: '논현동', nickname: '김O', electionTypeLabel: '시장·군수·구청장', election: '강남구청장',          candidate: '홍길동', candidateNumber: 1, party: '더불어민주당', topic: '교통',       ago: '방금' },
+    { sido: '부산', sigungu: '해운대구', dong: '우동',                  electionTypeLabel: '시·도지사',         election: '부산광역시장',        candidate: '김상철', candidateNumber: 1, party: '더불어민주당', topic: '관광',       ago: '3분 전' },
+    { sido: '경기', sigungu: '수원시 영통구', dong: '영통동', nickname: '이O', electionTypeLabel: '시장·군수·구청장', election: '수원시장',          candidate: '최영수', candidateNumber: 1, party: '더불어민주당', topic: '보육',       ago: '7분 전' },
+    { sido: '서울', sigungu: '마포구', dong: '망원동',                  electionTypeLabel: '시·도지사',         election: '서울특별시장',        candidate: '박민수', candidateNumber: 2, party: '국민의힘',     topic: '도시재생',   ago: '12분 전' },
+    { sido: '서울', sigungu: '강남구', dong: '역삼동', nickname: '박O', electionTypeLabel: '시·도의원',         election: '서울 강남갑 시의원',  candidate: '이영희', candidateNumber: 1, party: '더불어민주당', topic: '안전',       ago: '15분 전' },
+    { sido: '경기', sigungu: '성남시 분당구', dong: '정자동',             electionTypeLabel: '시장·군수·구청장', election: '성남시장',            candidate: '윤지혜', candidateNumber: 4, party: '개혁신당',     topic: '노인 일자리', ago: '23분 전' },
+    { sido: '부산', sigungu: '수영구', dong: '광안동', nickname: '최O', electionTypeLabel: '시장·군수·구청장', election: '수영구청장',          candidate: '윤도현', candidateNumber: 2, party: '국민의힘',     topic: '주차',       ago: '31분 전' },
+    { sido: '서울', sigungu: '서초구', dong: '반포동',                  electionTypeLabel: '시장·군수·구청장', election: '서초구청장',          candidate: '정현우', candidateNumber: 2, party: '국민의힘',     topic: '공원/체육',  ago: '42분 전' }
+  ];
+
+  // ============ STATE ============
+  let selected = { sido: '', sigungu: '', dong: '', nickname: '', electionType: '', partyFilter: '', candidate: null };
+  let counterValue = 0;
+
+  // NEC 실 후보자 데이터 (assets/candidates-real.json fetch로 로드)
+  const NEC = { loaded: false, governor: [], mayor: [], council: [], superintendent: [] };
+
+  // ============ NEC HELPERS ============
+  const normSig = s => (s || '').replace(/\s/g, '');
+  const isProvincialSgg = sgg => /제\s*\d+선거구/.test(sgg || '');
+
+  function getElectionLabel(c, et) {
+    if (c.election) return c.election; // dummy fallback (이미 election 텍스트 있음)
+    const sido = c.sido || '';
+    if (et === 'governor') {
+      if (sido === '세종특별자치시') return '세종특별자치시장';
+      if (sido.endsWith('특별자치도')) return sido + '지사';
+      if (sido.endsWith('도')) return sido + '지사';
+      if (sido.endsWith('특별시')) return sido + '장';
+      if (sido.endsWith('광역시')) return sido + '장';
+      return sido + '장';
+    }
+    if (et === 'head') {
+      const sgg = c.sggName || c.wiwName || '';
+      if (sgg.endsWith('구')) return sgg + '청장';
+      if (sgg.endsWith('군')) return sgg + '수';
+      if (sgg.endsWith('시')) return sgg + '장';
+      return sgg + '장';
+    }
+    if (et === 'provincial') {
+      return sido + '의원 ' + (c.sggName || '');
+    }
+    if (et === 'local') {
+      const wiw = c.wiwName || '';
+      const sgg = (c.sggName || '').replace(wiw, '');
+      return wiw + '의원 ' + sgg;
+    }
+    if (et === 'education') return sido + '교육감';
+    return '후보자';
+  }
+
+  function getCandidatesFor(sido, sigungu, electionType) {
+    let pool = [];
+    if (NEC.loaded) {
+      if (electionType === 'governor')      pool = NEC.governor.filter(c => c.sido === sido);
+      else if (electionType === 'education') pool = NEC.superintendent.filter(c => c.sido === sido);
+      else if (electionType === 'head') {
+        const sn = normSig(sigungu);
+        pool = NEC.mayor.filter(c => c.sido === sido && (sn === normSig(c.sggName) || sn.startsWith(normSig(c.sggName))));
+      }
+      else if (electionType === 'provincial' || electionType === 'local') {
+        const sn = normSig(sigungu);
+        pool = NEC.council.filter(c => {
+          if (c.sido !== sido) return false;
+          const prov = isProvincialSgg(c.sggName);
+          if (electionType === 'provincial' && !prov) return false;
+          if (electionType === 'local' && prov) return false;
+          return normSig(c.wiwName) === sn;
+        });
+      }
+    } else {
+      // fallback: dummy CANDIDATES_BY_REGION (NEC 로드 안 됐을 때)
+      const key = `${sido}|${sigungu}`;
+      pool = (CANDIDATES_BY_REGION[key] || []).filter(c => c.electionType === electionType);
+    }
+    // dedupe by id
+    const seen = new Set();
+    return pool.filter(c => seen.has(c.id) ? false : (seen.add(c.id), true))
+      .sort((a, b) => (a.number || 99) - (b.number || 99));
+  }
+
+  function getAvailableElectionTypes(sido, sigungu) {
+    const types = new Set();
+    ELECTION_TYPES.forEach(t => {
+      if (getCandidatesFor(sido, sigungu, t.id).length > 0) types.add(t.id);
+    });
+    return types;
+  }
+
+  async function loadNECCandidates() {
+    try {
+      const res = await fetch('assets/candidates-real.json');
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      NEC.governor = data.governor || [];
+      NEC.mayor = data.mayor || [];
+      NEC.council = data.council || [];
+      NEC.superintendent = data.superintendent || [];
+      NEC.loaded = true;
+      console.log('NEC 후보자 로드 완료:',
+        `governor ${NEC.governor.length}, mayor ${NEC.mayor.length}, council ${NEC.council.length}, superintendent ${NEC.superintendent.length}`);
+      // 모달이 열려있고 시·군·구가 선택돼 있으면 재렌더
+      if (selected.sido && selected.sigungu) {
+        renderElectionTypes();
+        renderCandidates();
+      }
+    } catch (e) {
+      console.warn('NEC 후보자 로드 실패 — http 서버로 띄워야 작동합니다 (python3 -m http.server). 더미 데이터로 진행합니다.', e);
+    }
+  }
+
+  // ============ INIT ============
+  function init() {
+    const sidoSel = document.getElementById('sel-sido');
+    Object.keys(REGIONS).forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s; opt.textContent = s;
+      sidoSel.appendChild(opt);
+    });
+    // production 모드 — 가짜 시민 풍선/카운터 시뮬레이션 비활성
+    // 실제 시민이 메시지 보낼 때만 풍선 띄우고 카운터 +1
+    // renderTicker();           // dummy 초기 풍선 비활성
+    // startCounterAnimation();  // dummy 자동 카운터 증가 비활성
+    // startTickerSimulation();  // dummy 풍선 무한 spawn 비활성
+    loadNECCandidates();
+    syncStickyPadding();
+    window.addEventListener('resize', syncStickyPadding);
+  }
+
+  // sticky bottom 실제 높이와 body padding-bottom을 동기화 — stage가 sticky bottom 윗까지 정확히 닿음
+  function syncStickyPadding() {
+    const sticky = document.querySelector('.fixed.bottom-0');
+    const container = sticky?.parentElement;
+    if (sticky && container) {
+      container.style.paddingBottom = sticky.offsetHeight + 'px';
+    }
+  }
+
+  // ============ BALLOON STAGE (시민 소망 풍선) ============
+  const TICKER_POOL = [
+    ...DUMMY_MESSAGES,
+    { sido: '인천', sigungu: '연수구', dong: '송도동',                electionTypeLabel: '시·도지사',         election: '인천광역시장',    candidate: '한지원', candidateNumber: 1, party: '더불어민주당', topic: '교통' },
+    { sido: '대구', sigungu: '수성구', dong: '범어동', nickname: '정O', electionTypeLabel: '시장·군수·구청장', election: '수성구청장',      candidate: '오민호', candidateNumber: 2, party: '국민의힘',     topic: '안전' },
+    { sido: '광주', sigungu: '북구',   dong: '운암동',                electionTypeLabel: '시·도지사',         election: '광주광역시장',    candidate: '서지영', candidateNumber: 1, party: '더불어민주당', topic: '청년 일자리' },
+    { sido: '대전', sigungu: '유성구', dong: '관평동', nickname: '한O', electionTypeLabel: '시·도지사',         election: '대전광역시장',    candidate: '문영수', candidateNumber: 2, party: '국민의힘',     topic: '교통' },
+    { sido: '울산', sigungu: '남구',   dong: '삼산동',                electionTypeLabel: '시·도지사',         election: '울산광역시장',    candidate: '배현주', candidateNumber: 2, party: '국민의힘',     topic: '환경' },
+    { sido: '제주', sigungu: '제주시', dong: '노형동', nickname: '고O', electionTypeLabel: '시·도지사',         election: '제주특별자치도지사', candidate: '고은석', candidateNumber: 7, party: '무소속',       topic: '주차' }
+  ];
+  let tickerIdx = 0;
+
+  // 정당별 풍선 색상 (NEC 데이터의 실제 정당명에 맞춤)
+  const PARTY_COLORS = {
+    // 주요 정당
+    '더불어민주당': { bg: '#0050B3', fg: '#fff' },
+    '국민의힘':     { bg: '#E61E2B', fg: '#fff' },
+    '조국혁신당':   { bg: '#1A45A0', fg: '#fff' },
+    '개혁신당':     { bg: '#FF7920', fg: '#fff' },
+    '정의당':       { bg: '#FFCC00', fg: '#1F2937' },
+    '진보당':       { bg: '#D6001C', fg: '#fff' },
+    '새미래민주당': { bg: '#00B5E2', fg: '#fff' },
+    // 소수 정당
+    '녹색당':       { bg: '#16A34A', fg: '#fff' },
+    '노동당':       { bg: '#DC2626', fg: '#fff' },
+    '기본소득당':   { bg: '#06B6D4', fg: '#fff' },
+    '사회민주당':   { bg: '#EC4899', fg: '#fff' },
+    '여성의당':     { bg: '#9333EA', fg: '#fff' },
+    '자유민주당':   { bg: '#1E3A8A', fg: '#fff' },
+    '자유통일당':   { bg: '#1D469A', fg: '#fff' },
+    '자유와혁신':   { bg: '#7C2D12', fg: '#fff' },
+    '국민연합':     { bg: '#1E40AF', fg: '#fff' },
+    '국민주권당':   { bg: '#475569', fg: '#fff' },
+    '미래연대':     { bg: '#64748B', fg: '#fff' },
+    '한국독립당':   { bg: '#334155', fg: '#fff' },
+    '무소속':       { bg: '#6B7280', fg: '#fff' }
+  };
+  const DEFAULT_BALLOON_COLOR = { bg: '#A78BFA', fg: '#fff' }; // 매핑 안 된 정당 또는 정당 없음(교육감 등)
+
+  function getPartyColor(party) {
+    return PARTY_COLORS[party] || DEFAULT_BALLOON_COLOR;
+  }
+
+  // 약식 sido → 풀네임 (후보자 표기용)
+  function fullSidoName(s) {
+    const map = {
+      '서울':'서울특별시','부산':'부산광역시','대구':'대구광역시','인천':'인천광역시',
+      '광주':'광주광역시','대전':'대전광역시','울산':'울산광역시','세종':'세종특별자치시',
+      '경기':'경기도','강원':'강원특별자치도','충북':'충청북도','충남':'충청남도',
+      '전북':'전북특별자치도','전남':'전라남도','경북':'경상북도','경남':'경상남도','제주':'제주특별자치도'
+    };
+    return map[s] || s;
+  }
+
+  // 선거유형 라벨을 후보자 지역/직책에 맞춰 구체화
+  //   광역단체장: sido 끝 글자로 → "도지사" / "시장"
+  //   기초단체장: election 텍스트 끝으로 → "구청장" / "군수" / "시장"
+  //   시·도의원: sido 끝으로 → "도의원" / "시의원"
+  //   시·군·구의원: sigungu 끝 글자로 → "구의원" / "군의원" / "시의원"
+  function adaptElectionLabel(sido, etLabel, m) {
+    if (etLabel === '시·도지사') {
+      const s = fullSidoName(sido) || sido;
+      return s.endsWith('도') ? '도지사' : '시장';
+    }
+    if (etLabel === '시장·군수·구청장') {
+      const e = (m && m.election) || '';
+      if (e.endsWith('구청장')) return '구청장';
+      if (e.endsWith('군수'))   return '군수';
+      if (e.endsWith('시장'))   return '시장';
+      return etLabel;
+    }
+    if (etLabel === '시·도의원') {
+      const s = fullSidoName(sido) || sido;
+      return s.endsWith('도') ? '도의원' : '시의원';
+    }
+    if (etLabel === '시·군·구의원') {
+      const sg = ((m && m.sigungu) || '').replace(/\s/g, '');
+      if (sg.endsWith('구')) return '구의원';
+      if (sg.endsWith('군')) return '군의원';
+      if (sg.endsWith('시')) return '시의원';
+      return etLabel;
+    }
+    return etLabel;
+  }
+
+  function balloonInner(m, isMine) {
+    const candSido = fullSidoName(m.sido);          // 후보자 출마 지역 — 풀네임
+    const citizenLoc = `${m.sido} ${m.sigungu}${m.dong ? ' ' + m.dong : ''}`; // 시민 지역 — 약식
+    const citizenName = m.nickname ? escapeHtml(m.nickname) : '';
+    const mineBadge = isMine ? ' <span class="text-[9px] font-bold opacity-90">(나)</span>' : '';
+    const topic = m.topic || '정책';
+    const etLabel = adaptElectionLabel(m.sido, m.electionTypeLabel || '', m);
+    const numBadge = m.candidateNumber
+      ? `<span class="inline-flex items-center justify-center min-w-[16px] h-[16px] px-1 bg-white/35 text-[10px] font-extrabold rounded-md mx-1 align-middle">${m.candidateNumber}</span>`
+      : '';
+    const party = m.party || '';
+    return `
+      <p class="text-[9px] opacity-80 truncate leading-tight">${escapeHtml(candSido)}${etLabel ? '  ' + escapeHtml(etLabel) : ''}</p>
+      <p class="truncate mt-1 leading-tight">
+        ${party ? `<span class="text-[9px] opacity-85 align-middle mr-1">${escapeHtml(party)}</span>` : ''}${numBadge}<span class="text-[14px] font-extrabold align-middle">${escapeHtml(m.candidate)}</span>
+      </p>
+      <div class="my-1.5 border-t border-white/30"></div>
+      <span class="inline-block text-[9px] font-bold px-2 py-0.5 bg-white/30 rounded-full max-w-full truncate">🏷 ${escapeHtml(topic)}</span>
+      <p class="text-[9px] opacity-80 truncate leading-tight mt-1.5">${escapeHtml(citizenLoc)}</p>
+      <p class="text-[11px] font-bold truncate mt-0.5 leading-tight">${citizenName ? citizenName + ' 시민' : '시민'}${mineBadge}</p>
+    `;
+  }
+
+  function spawnBalloon(msg, isMine) {
+    const stage = document.getElementById('balloon-stage');
+    if (!stage) return;
+    const balloon = document.createElement('div');
+    balloon.className = 'balloon' + (isMine ? ' mine' : '');
+    // 후보자 정당 컬러로 풍선 색상 결정 — 본인 풍선도 동일 (정당 컬러로 통일, .mine은 spawn 시 scale-up bounce만 유지)
+    const color = getPartyColor(msg.party);
+    // 가로 위치: 15~85% 범위 랜덤 (양 끝 여백)
+    const startX = 15 + Math.random() * 70;
+    const drift  = (Math.random() - 0.5) * 70; // ±35px 좌우 흔들림
+    const dur    = 24 + Math.random() * 12;    // 24~36초 (더 천천히)
+    balloon.style.left = `${startX}%`;
+    balloon.style.setProperty('--drift', `${drift}px`);
+    balloon.style.setProperty('--dur', `${dur}s`);
+    balloon.style.setProperty('--bg', color.bg);
+    balloon.style.setProperty('--fg', color.fg);
+    balloon.innerHTML = balloonInner(msg, !!isMine);
+    stage.appendChild(balloon);
+
+    // 구름 도달 시점 정확히 계산 — 풍선이 stage 안에서 구름 SVG 영역(상단 70px)에 닿는 순간
+    const CLOUD_AREA = 70;
+    const stageH = stage.clientHeight;
+    const reachProgress = Math.max(0.5, (stageH - CLOUD_AREA) / stageH); // 안전 하한
+    const reachMs = dur * 1000 * reachProgress;
+    setTimeout(() => {
+      if (!balloon.isConnected) return;
+      bumpCounter(1);
+    }, reachMs);
+    // 풍선이 stage 위로 사라진 뒤 DOM 제거
+    setTimeout(() => balloon.remove(), dur * 1000 + 200);
+  }
+
+  function renderTicker() {
+    // 초기 3개 풍선 spawn (시간차로)
+    for (let i = 0; i < 3; i++) {
+      const m = { ...TICKER_POOL[i % TICKER_POOL.length] };
+      setTimeout(() => spawnBalloon(m, false), i * 1500);
+    }
+  }
+
+  function startTickerSimulation() {
+    // 일정 간격으로 새 풍선 spawn — 화면에 동시에 3~5개 떠다님
+    setInterval(() => {
+      tickerIdx = (tickerIdx + 1) % TICKER_POOL.length;
+      const m = { ...TICKER_POOL[tickerIdx] };
+      spawnBalloon(m, false);
+    }, 2800);
+  }
+
+  // ============ COUNTER ============
+  function bumpCounter(by) {
+    counterValue += by;
+    const el = document.getElementById('counter');
+    el.textContent = counterValue.toLocaleString();
+  }
+
+  function startCounterAnimation() {
+    setInterval(() => {
+      if (Math.random() < 0.4) bumpCounter(Math.floor(Math.random() * 2) + 1);
+    }, 3200);
+  }
+
+  // ============ MODAL ============
+  function openTargetModal() {
+    document.getElementById('target-modal').classList.remove('hidden');
+  }
+  function closeTargetModal() {
+    document.getElementById('target-modal').classList.add('hidden');
+  }
+
+  function onSidoChange() {
+    selected.sido = document.getElementById('sel-sido').value;
+    const sigunguSel = document.getElementById('sel-sigungu');
+    sigunguSel.innerHTML = '<option value="">시·군·구 선택</option>';
+    if (selected.sido) {
+      (REGIONS[selected.sido] || []).forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s; opt.textContent = s;
+        sigunguSel.appendChild(opt);
+      });
+      sigunguSel.disabled = false;
+    } else { sigunguSel.disabled = true; }
+    const dongInput = document.getElementById('sel-dong');
+    dongInput.value = '';
+    dongInput.disabled = true;
+    selected.sigungu = ''; selected.dong = ''; selected.electionType = ''; selected.partyFilter = ''; selected.candidate = null;
+    renderElectionTypes();
+    renderPartyChips();
+    renderCandidates();
+    refreshConfirmBtn();
+  }
+
+  function onSigunguChange() {
+    selected.sigungu = document.getElementById('sel-sigungu').value;
+    const dongInput = document.getElementById('sel-dong');
+    if (selected.sigungu) {
+      dongInput.disabled = false;
+    } else {
+      dongInput.disabled = true;
+      dongInput.value = '';
+    }
+    selected.dong = ''; selected.electionType = ''; selected.partyFilter = ''; selected.candidate = null;
+    renderElectionTypes();
+    renderPartyChips();
+    renderCandidates();
+    refreshConfirmBtn();
+  }
+
+  function onDongChange() {
+    selected.dong = document.getElementById('sel-dong').value.trim();
+    refreshConfirmBtn();
+  }
+
+  function onNicknameChange() {
+    selected.nickname = document.getElementById('sel-nickname').value.trim();
+    const main = document.getElementById('main-nickname');
+    if (main && main.value !== selected.nickname) main.value = selected.nickname;
+    applyNicknameValidationStyle();
+  }
+
+  function onMainNicknameChange() {
+    selected.nickname = document.getElementById('main-nickname').value.trim();
+    const modal = document.getElementById('sel-nickname');
+    if (modal && modal.value !== selected.nickname) modal.value = selected.nickname;
+    applyNicknameValidationStyle();
+  }
+
+  // 닉네임 입력 시 시각 피드백 — 부적절하면 빨강
+  function applyNicknameValidationStyle() {
+    const invalid = isInvalidNickname(selected.nickname);
+    ['main-nickname', 'sel-nickname'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.toggle('text-red-500', invalid);
+        el.classList.toggle('border-red-300', invalid);
+      }
+    });
+  }
+
+  function renderElectionTypes() {
+    const wrap = document.getElementById('election-type-list');
+    if (!selected.sido || !selected.sigungu) {
+      wrap.innerHTML = '<p class="col-span-2 text-xs text-slate-400 text-center py-6 bg-slate-50 rounded-xl">동네를 먼저 선택해주세요</p>';
+      return;
+    }
+    const availableTypes = getAvailableElectionTypes(selected.sido, selected.sigungu);
+    wrap.innerHTML = ELECTION_TYPES.map(t => {
+      const has = availableTypes.has(t.id);
+      const disabledCls = has ? '' : 'opacity-40 pointer-events-none';
+      return `
+        <button onclick="selectElectionType('${t.id}')" data-tid="${t.id}"
+          class="etype-btn ${disabledCls} p-3 border-2 border-slate-200 rounded-xl text-left transition-all active:scale-[0.99]">
+          <div class="flex items-center gap-1.5 mb-0.5">
+            <span class="material-symbols-outlined text-primary text-[16px]">${t.icon}</span>
+            <span class="text-[12px] font-bold text-slate-800">${t.label}</span>
+          </div>
+          <p class="text-[10px] text-slate-400 ml-[22px]">${t.desc}</p>
+        </button>
+      `;
+    }).join('');
+  }
+
+  function selectElectionType(tid) {
+    selected.electionType = tid;
+    selected.candidate = null;
+    selected.partyFilter = ''; // 선거 유형 바뀌면 정당 필터 리셋
+    document.querySelectorAll('.etype-btn').forEach(b => {
+      const isSel = b.dataset.tid === tid;
+      b.classList.toggle('border-primary', isSel);
+      b.classList.toggle('bg-violet-50', isSel);
+      b.classList.toggle('border-slate-200', !isSel);
+    });
+    renderPartyChips();
+    renderCandidates();
+    refreshConfirmBtn();
+  }
+
+  function renderPartyChips() {
+    const wrap = document.getElementById('party-filter');
+    if (!selected.sido || !selected.sigungu || !selected.electionType) {
+      wrap.className = 'hidden';
+      return;
+    }
+    const raw = getCandidatesFor(selected.sido, selected.sigungu, selected.electionType);
+    // 정당 종류가 2개 이상일 때만 chip 표시 (1개면 필터 의미 없음)
+    const parties = Array.from(new Set(raw.map(c => c.party).filter(Boolean)));
+    if (parties.length < 2) {
+      wrap.className = 'hidden';
+      return;
+    }
+    wrap.className = 'flex gap-1.5 overflow-x-auto scrollbar-hide mb-2 -mx-1 px-1 pb-1';
+    const chips = ['', ...parties]; // '' = 전체
+    wrap.innerHTML = chips.map(p => {
+      const isActive = (selected.partyFilter || '') === p;
+      const label = p || '전체';
+      const color = p ? getPartyColor(p) : { bg: '#E5E7EB', fg: '#1F2937' };
+      const style = isActive
+        ? `background:${color.bg};color:${color.fg};border-color:transparent;`
+        : `background:#F3F4F6;color:#4B5563;border-color:transparent;`;
+      const ringStyle = isActive ? 'box-shadow:0 0 0 2px rgba(124,58,237,0.25);' : '';
+      return `<button onclick="setPartyFilter('${p.replace(/'/g, "\\'")}')"
+        class="shrink-0 text-[11px] font-bold px-3 py-1.5 rounded-full transition-all border whitespace-nowrap"
+        style="${style}${ringStyle}">${escapeHtml(label)}</button>`;
+    }).join('');
+  }
+
+  function setPartyFilter(p) {
+    selected.partyFilter = p || '';
+    selected.candidate = null;
+    renderPartyChips();
+    renderCandidates();
+    refreshConfirmBtn();
+  }
+
+  function renderCandidates() {
+    const wrap = document.getElementById('candidate-list');
+    const hint = document.getElementById('cand-hint');
+    hint.classList.add('hidden');
+    if (!selected.sido || !selected.sigungu) {
+      wrap.className = 'block';
+      wrap.innerHTML = '<p class="text-xs text-slate-400 text-center py-6 bg-slate-50 rounded-xl">동네를 먼저 선택해주세요</p>';
+      return;
+    }
+    if (!selected.electionType) {
+      wrap.className = 'block';
+      wrap.innerHTML = '<p class="text-xs text-slate-400 text-center py-6 bg-slate-50 rounded-xl">선거 유형을 먼저 선택해주세요</p>';
+      return;
+    }
+    let cands = getCandidatesFor(selected.sido, selected.sigungu, selected.electionType);
+    if (selected.partyFilter) {
+      cands = cands.filter(c => c.party === selected.partyFilter);
+    }
+    if (cands.length === 0) {
+      wrap.className = 'block';
+      const msg = NEC.loaded
+        ? '이 지역·선거 후보자 정보가 곧 공개됩니다'
+        : '후보자 데이터 불러오는 중... (http 서버 필요)';
+      wrap.innerHTML = `<p class="text-xs text-slate-400 text-center py-6 bg-slate-50 rounded-xl">${msg}</p>`;
+      return;
+    }
+    // 가로 스크롤 carousel
+    wrap.className = 'flex gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-5 px-5 snap-x snap-mandatory';
+    wrap.innerHTML = cands.map(c => {
+      const label = getElectionLabel(c, selected.electionType);
+      const num = c.number ? `<span class="absolute top-1 right-1 size-5 bg-primary/10 text-primary text-[10px] font-bold rounded-full flex items-center justify-center">${c.number}</span>` : '';
+      return `
+        <button onclick="selectCandidate('${String(c.id).replace(/'/g, "\\'")}')" data-cid="${String(c.id)}"
+          class="cand-btn relative shrink-0 snap-start w-[140px] p-3 border-2 border-slate-200 rounded-xl text-center transition-all active:scale-[0.99] bg-white">
+          ${num}
+          <div class="size-14 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 text-lg font-bold mx-auto mb-2">${escapeHtml(c.name[0])}</div>
+          <p class="text-sm font-bold text-slate-900 truncate">${escapeHtml(c.name)}</p>
+          <p class="text-[10px] text-slate-500 mt-0.5 truncate">${escapeHtml(label)}</p>
+          <span class="inline-block mt-1.5 text-[9px] text-slate-500 px-2 py-0.5 bg-slate-100 rounded-full truncate max-w-full">${escapeHtml(c.party || '')}</span>
+        </button>
+      `;
+    }).join('');
+    if (cands.length > 2) {
+      hint.textContent = `← 좌우로 밀어서 ${cands.length}명 후보자 모두 보기`;
+      hint.classList.remove('hidden');
+    }
+  }
+
+  function selectCandidate(cid) {
+    const cands = getCandidatesFor(selected.sido, selected.sigungu, selected.electionType);
+    const c = cands.find(x => String(x.id) === String(cid));
+    if (!c) return;
+    selected.candidate = {
+      id: c.id,
+      name: c.name,
+      party: c.party,
+      number: c.number,
+      election: getElectionLabel(c, selected.electionType)
+    };
+    document.querySelectorAll('.cand-btn').forEach(b => {
+      const isSelected = b.dataset.cid === String(cid);
+      b.classList.toggle('border-primary', isSelected);
+      b.classList.toggle('bg-violet-50', isSelected);
+      b.classList.toggle('border-slate-200', !isSelected);
+    });
+    refreshConfirmBtn();
+  }
+
+  function refreshConfirmBtn() {
+    // 동(dong)은 선택 사항 — 시·도/시·군·구/선거 유형/후보자만 필수
+    const ok = selected.sido && selected.sigungu && selected.electionType && selected.candidate;
+    document.getElementById('confirm-target').disabled = !ok;
+  }
+
+  function confirmTarget() {
+    if (!(selected.sido && selected.sigungu && selected.electionType && selected.candidate)) return;
+    const locText = selected.dong ? `${selected.sigungu} ${selected.dong}` : selected.sigungu;
+    document.getElementById('target-label').innerHTML =
+      `<span class="text-slate-700 font-semibold">${locText}</span> · ` +
+      `<span class="text-primary font-bold">${selected.candidate.election} ${selected.candidate.name}</span>`;
+    const msgEl = document.getElementById('message');
+    msgEl.disabled = false;
+    msgEl.placeholder = '한마디를 적어주세요...';
+    updateSendBtn();
+    closeTargetModal();
+    setTimeout(() => msgEl.focus(), 250);
+  }
+
+  // ============ INPUT ============
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+    document.getElementById('char-count').textContent = `${el.value.length}/200`;
+  }
+
+  function updateSendBtn() {
+    const msg = document.getElementById('message').value.trim();
+    const btn = document.getElementById('send-btn');
+    const active = msg.length > 0 && selected.candidate;
+    btn.disabled = !active;
+    btn.classList.toggle('bg-primary', active);
+    btn.classList.toggle('text-white', active);
+    btn.classList.toggle('bg-slate-200', !active);
+    btn.classList.toggle('text-slate-400', !active);
+  }
+
+  function submitMessage() {
+    const msgEl = document.getElementById('message');
+    const msg = msgEl.value.trim();
+    if (!msg || !selected.candidate) return;
+    if (containsProfanity(msg)) {
+      showToast('부적절한 표현이 포함되어 등록되지 않습니다');
+      return;
+    }
+    if (isInvalidNickname(selected.nickname)) {
+      showToast('닉네임에 부적절한 표현이 포함되어 있습니다');
+      return;
+    }
+    const etLabel = (ELECTION_TYPES.find(t => t.id === selected.electionType) || {}).label || '';
+    const m = {
+      sido: selected.sido.replace('특별시','').replace('광역시','').replace('도','').trim() || selected.sido,
+      sigungu: selected.sigungu, dong: selected.dong,
+      nickname: selected.nickname,
+      electionType: selected.electionType,
+      electionTypeLabel: etLabel,
+      election: selected.candidate.election, candidate: selected.candidate.name,
+      party: selected.candidate.party,  // 풍선 색상에 사용
+      candidateNumber: selected.candidate.number,
+      topic: '정책 제안', // 실제 운영: 백엔드 LLM 분류 결과 사용
+      ago: '방금'
+    };
+    // 풍선으로 띄움 — 위로 떠오르며 카운터에 도달하면 +1
+    spawnBalloon(m, true);
+    msgEl.value = '';
+    autoResize(msgEl);
+    updateSendBtn();
+    showToast('소망 풍선이 하늘로 올라갑니다 🎈');
+  }
+
+  // 시연용 1차 욕설 필터 (운영 시 한국어 사전 + 자모 분리 변형 대응)
+  function containsProfanity(text) {
+    const list = ['시발','씨발','병신','개새','좆','존나','지랄','꺼져'];
+    const stripped = text.replace(/\s/g, '');
+    return list.some(w => stripped.includes(w));
+  }
+
+  // 2자 닉네임 전용 차단 사전 — 짧고 명확한 욕설만 (false positive 최소화)
+  const NICKNAME_BLOCKLIST = [
+    // 욕설
+    '시발','씨발','씨바','시바','씨방','싯팔',
+    '좆까','존나','졸라','좆나','좃까',
+    '지랄','지롤',
+    '병신','빙신',
+    '새끼','색끼','쌔끼','쌔퀴',
+    '등신',
+    '니미','늬미',
+    '꺼져',
+    '엿같','엿먹',
+    '빡쳐','뒈져','뒤져',
+    // 자모 단축 욕설
+    'ㅅㅂ','ㅆㅂ','ㅄ','ㅂㅅ','ㅈㄹ','ㄱㅅ','ㅂㅂ',
+    // 후보자/정당 약식 (대표 케이스 — 운영 시 NEC 데이터 기반 자동 확장)
+    '오훈','재명','석열','민주','국힘','혁신'
+  ];
+
+  function isInvalidNickname(text) {
+    if (!text) return false;
+    const stripped = text.replace(/\s/g, '').toLowerCase();
+    if (stripped.length === 0) return false;
+    return NICKNAME_BLOCKLIST.some(w => stripped.includes(w));
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function showToast(text) {
+    const toast = document.getElementById('toast');
+    toast.textContent = text;
+    toast.style.opacity = '1';
+    setTimeout(() => { toast.style.opacity = '0'; }, 2200);
+  }
+
+  // 묻다 앱 다운로드 (Google Play). iOS 추가 시 UA 분기로 App Store 연결.
+  function openIlkkunApp() {
+    const PLAY_URL = 'https://play.google.com/store/apps/details?id=com.play4.ilkkun&hl=ko';
+    window.open(PLAY_URL, '_blank', 'noopener,noreferrer');
+  }
+
+  function share() {
+    const data = { title: '시민의 목소리', text: '우리 동네 후보자에게 한마디 — 가입 없이 한 줄이면 됩니다.', url: location.href };
+    if (navigator.share) navigator.share(data).catch(()=>{});
+    else { navigator.clipboard.writeText(location.href); showToast('링크가 복사되었습니다'); }
+  }
+
+  init();
+</script>
+</body>
+</html>
