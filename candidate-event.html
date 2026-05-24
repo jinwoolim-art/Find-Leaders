@@ -73,6 +73,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;padding:0}
 .problem-heading .accent::after{content:'';position:absolute;left:0;right:0;bottom:2px;height:8px;background:rgba(124,58,237,.18);z-index:-1;border-radius:4px}
 .curious-img{max-width:920px;margin:0 auto;border-radius:20px;overflow:hidden}
 .curious-img img{width:100%;display:block}
+.curious-img-mobile{display:none}
 .tagline{text-align:center;margin-top:22px;font-size:clamp(18px,3.5vw,22px);font-weight:900;color:var(--ink)}
 .tagline em{color:var(--purple);font-style:normal}
 .app-launcher{display:flex;align-items:center;justify-content:center;gap:14px;margin:-8px auto 24px;flex-wrap:wrap}
@@ -106,8 +107,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;padding:0}
 }
 /* §3 카툰 카드 + §4 폰 mockup — 모바일 한 화면 최적화 */
 @media (max-width:768px){
-  /* §3 — wrap padding(24px) 상쇄해 카툰 카드 풀폭으로 */
+  /* §3 — 데스크탑 가로 이미지 숨기고 모바일용 세로 이미지 표시, wrap padding 상쇄 */
   .curious-img{margin-left:-24px;margin-right:-24px;max-width:none;width:calc(100% + 48px);border-radius:0}
+  .curious-img-desktop{display:none}
+  .curious-img-mobile{display:block}
   /* §4 — 두 폰 가로 나란히 (scale로 축소, layout 공간은 margin-bottom으로 보정) */
   .app-preview .phones-row{flex-wrap:nowrap;gap:8px;justify-content:center;align-items:flex-start;padding:0 6px;margin-top:20px}
   .app-preview .phones-row > div{flex:0 0 calc(50% - 4px);max-width:calc(50% - 4px);overflow:visible;display:flex;flex-direction:column;align-items:center}
@@ -256,8 +259,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;padding:0}
 .dash-disc{margin-top:12px;font-size:11px;color:var(--ink-3);text-align:center}
 
 @media (max-width:768px){
-  /* 데이터가 시연용 더미라 모바일에서 톤다운 — 양옆 여백 + 패딩 축소 */
-  .dash-stage{max-width:92%}
+  /* 데이터가 시연용 더미라 모바일에서 강 톤다운 — 양옆 큰 여백 + h2 폰트 다운 */
+  .dashboard-section .h2{font-size:22px;line-height:1.3}
+  .dashboard-section .lead{font-size:12px}
+  .dash-stage{max-width:78%}
+  .browser-card{max-width:100%}
   .dash-slide{padding:14px 12px}
   .dash-kpi-rich{grid-template-columns:1fr 1fr;gap:8px}
   .kpi-r-val{font-size:18px}
@@ -323,26 +329,30 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;padding:0}
 .price-includes b{color:var(--purple-dark);font-weight:800}
 .price-includes a{color:var(--purple-dark);font-weight:800;text-decoration:underline}
 @media (max-width:768px){
-  /* 2단 그리드 — 5단계 한눈에 비교 가능하게 */
-  .price-grid{grid-template-columns:1fr 1fr;gap:10px}
-  /* 5번째 카드(기초의원)는 외톨이 → 가로 가운데 정렬, 절반 폭 유지 */
-  .price-card:nth-child(5){grid-column:span 2;max-width:calc(50% - 5px);justify-self:center}
-  /* 카드 내부 폰트·패딩 다운 */
-  .price-card{padding:14px 10px 12px;gap:3px}
+  /* 2-3 배열 — 위 2장(prominent), 아래 3장. 6 col 그리드로 span 분배 */
+  .price-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+  .price-card:nth-child(1),
+  .price-card:nth-child(2){grid-column:span 3}
+  .price-card:nth-child(3),
+  .price-card:nth-child(4),
+  .price-card:nth-child(5){grid-column:span 2}
+  /* 카드 내부 폰트·패딩 다운 (3열 33% 폭에도 맞게) */
+  .price-card{padding:12px 8px 10px;gap:3px}
   .price-card .tier{margin-top:4px}
-  .price-card .tier-name{font-size:13px}
-  .price-card .tier-sub{font-size:9.5px}
-  .price-old{font-size:16px}
-  .price-new{font-size:20px}
-  .price-new sup{font-size:9px}
-  .price-new-row{padding:7px 8px;flex-direction:row;align-items:baseline;justify-content:center;gap:5px}
-  .price-new-label{font-size:10px}
-  .price-arrow{margin:3px 0}
-  .price-arrow .arr{border-left-width:9px;border-right-width:9px;border-top-width:12px}
-  .price-arrow .pct{font-size:14px}
-  .price-vat-tag{font-size:9px;margin-top:3px}
-  .price-card .preregister-pill{font-size:10px;padding:4px 11px;top:-10px}
-  .price-card .tier-hint{font-size:10px;padding:5px 10px;margin-top:6px}
+  .price-card .tier-name{font-size:12.5px}
+  .price-card .tier-sub{font-size:9px;line-height:1.35}
+  .price-old{font-size:14px}
+  .price-new{font-size:17px}
+  .price-new sup{font-size:8.5px}
+  .price-new-row{padding:6px 6px;flex-direction:row;align-items:baseline;justify-content:center;gap:4px}
+  .price-new-label{font-size:9.5px}
+  .price-arrow{margin:2px 0}
+  .price-arrow .arr{border-left-width:7px;border-right-width:7px;border-top-width:10px}
+  .price-arrow .pct{font-size:13px}
+  .price-vat-tag{font-size:8.5px;margin-top:2px}
+  /* preregister 칩 white-space:nowrap — 좁은 카드에서도 한 줄 보장 */
+  .price-card .preregister-pill{font-size:9.5px;padding:3px 9px;top:-9px;white-space:nowrap}
+  .price-card .tier-hint{font-size:9.5px;padding:4px 9px;margin-top:5px}
 }
 
 /* 선착순 1줄 */
@@ -482,7 +492,8 @@ body.is-expired .apply-submit{opacity:.55;pointer-events:none}
     </div>
     <h2 class="problem-heading"><span class="accent">2026년 6월 3일</span> 지방선거는<br/>특히 이렇습니다.</h2>
     <div class="curious-img">
-      <img src="assets/시민페이지궁금한시민_v2.png" alt="후보가 많습니다 · 공약이 어렵습니다 · 질문할 곳이 없습니다"/>
+      <img class="curious-img-desktop" src="assets/시민페이지궁금한시민_v2.png" alt="후보가 많습니다 · 공약이 어렵습니다 · 질문할 곳이 없습니다"/>
+      <img class="curious-img-mobile" src="assets/시민페이지궁금한시민_v2_mobile.png" alt="후보가 많습니다 · 공약이 어렵습니다 · 질문할 곳이 없습니다"/>
     </div>
     <p class="tagline">그래서 <em>"일꾼을 묻다"</em>를 봐야합니다.</p>
   </div>
