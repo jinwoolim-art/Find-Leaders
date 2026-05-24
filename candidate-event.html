@@ -73,7 +73,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;padding:0}
 .problem-heading .accent::after{content:'';position:absolute;left:0;right:0;bottom:2px;height:8px;background:rgba(124,58,237,.18);z-index:-1;border-radius:4px}
 .curious-img{max-width:920px;margin:0 auto;border-radius:20px;overflow:hidden}
 .curious-img img{width:100%;display:block}
-.curious-img-mobile{display:none}
 .tagline{text-align:center;margin-top:22px;font-size:clamp(18px,3.5vw,22px);font-weight:900;color:var(--ink)}
 .tagline em{color:var(--purple);font-style:normal}
 .app-launcher{display:flex;align-items:center;justify-content:center;gap:14px;margin:-8px auto 24px;flex-wrap:wrap}
@@ -105,21 +104,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;padding:0}
 @media (max-width:960px){
   .app-preview .app-link-side{display:none}
 }
-/* §3 카툰 카드 + §4 폰 mockup — 모바일 한 화면 최적화 */
-@media (max-width:768px){
-  /* §3 — 데스크탑 가로 이미지 숨기고 모바일용 세로 이미지 표시, wrap padding 상쇄 */
-  .curious-img{margin-left:-24px;margin-right:-24px;max-width:none;width:calc(100% + 48px);border-radius:0}
-  .curious-img-desktop{display:none}
-  .curious-img-mobile{display:block}
-  /* §4 — 두 폰 가로 나란히 (scale 축소 + 폰 layout box가 옆 폰과 겹치지 않게 wrapper overflow:hidden) */
-  .app-preview .phones-row{flex-wrap:nowrap;gap:16px;justify-content:center;align-items:flex-start;padding:0 8px;margin-top:20px}
-  .app-preview .phones-row > div{flex:0 0 calc(50% - 8px);max-width:calc(50% - 8px);overflow:hidden;display:flex;flex-direction:column;align-items:center}
-  .app-preview .phone{transform:scale(.5);transform-origin:top center;margin-bottom:-300px}
-  .app-preview .phone-cap{margin-top:0;font-size:13px;font-weight:900}
-  .app-preview .phone-dots{margin-top:8px}
-  .app-preview .phone-dots span{width:5px;height:5px}
-  .app-preview .phone-dots span.active{width:14px}
-}
 
 /* ═══ § 5 · 대시보드 (본 랜딩 발췌) ═══ */
 .dashboard-section{background:linear-gradient(180deg,#fff 0%,#f8f9fc 100%)}
@@ -130,7 +114,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;padding:0}
 .data-chips .chip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700;color:var(--ink-2)}
 .data-chips .chip .ms{font-size:14px;color:var(--purple)}
 .browser-card{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,.06);max-width:900px;width:100%;margin:0 auto;isolation:isolate;-webkit-transform:translateZ(0);transform:translateZ(0)}
-.dash-card-mobile-secondary{display:none}
 .dash-stage{position:relative;max-width:1100px;width:100%;margin:0 auto}
 .dash-arrow{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:#fff;border:1.5px solid var(--line);cursor:pointer;display:grid;place-items:center;color:var(--purple);box-shadow:0 6px 18px rgba(15,23,42,.08);transition:background .15s,transform .15s,box-shadow .15s,border-color .15s;z-index:5}
 .dash-arrow:hover{background:var(--purple);color:#fff;border-color:var(--purple);box-shadow:0 10px 24px rgba(124,58,237,.28)}
@@ -260,19 +243,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;padding:0}
 .dash-disc{margin-top:12px;font-size:11px;color:var(--ink-3);text-align:center}
 
 @media (max-width:768px){
-  /* 데이터 두 카드 가로 + 시차 — 헤딩은 톤다운 유지 */
-  .dashboard-section .h2{font-size:22px;line-height:1.3}
-  .dashboard-section .lead{font-size:12px}
-  .dash-stage{display:flex;gap:8px;align-items:flex-start;max-width:none;width:100%;padding:0 4px;box-sizing:border-box}
-  .browser-card{flex:1 1 0;min-width:0;max-width:none;width:auto;margin:0}
-  .dash-card-mobile-secondary{display:flex;flex-direction:column}
-  /* 두 번째 카드의 dots/label은 숨김 (시차라 표시 위치 헷갈림 방지) */
-  .dash-card-mobile-secondary .pagination,
-  .dash-card-mobile-secondary .data-cap{display:none}
-  /* 두 카드 양 끝에 화살표 위치 */
-  .dash-arrow.prev{left:-4px}
-  .dash-arrow.next{right:-4px}
-  .dash-slide{padding:14px 12px}
+  .dash-slide{padding:18px 14px}
   .dash-kpi-rich{grid-template-columns:1fr 1fr;gap:8px}
   .kpi-r-val{font-size:18px}
   .insight-grid{grid-template-columns:1fr;gap:14px}
@@ -283,8 +254,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;padding:0}
   .compare-table{font-size:10.5px}
   .compare-table th,.compare-table td{padding:6px 7px}
   .browser-url{font-size:9px}
-  .data-cap{font-size:12px;margin-top:10px}
-  .dash-disc{font-size:11px;color:var(--ink-3);opacity:.9}
 }
 
 /* ═══ § 6 · 가격 + 선착순 ═══ */
@@ -337,7 +306,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;padding:0}
 .price-includes b{color:var(--purple-dark);font-weight:800}
 .price-includes a{color:var(--purple-dark);font-weight:800;text-decoration:underline}
 @media (max-width:768px){
-  /* 1단 — 한 카드 한 카드 큰 사이즈로 5개 세로 stack */
   .price-grid{grid-template-columns:1fr;gap:18px}
   .price-old{font-size:24px}
   .price-new{font-size:26px}
@@ -345,7 +313,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;padding:0}
   .price-new-label{font-size:11px}
   .price-arrow .arr{border-left-width:14px;border-right-width:14px;border-top-width:18px}
   .price-arrow .pct{font-size:18px}
-  .price-card .preregister-pill{white-space:nowrap}
 }
 
 /* 선착순 1줄 */
@@ -485,8 +452,7 @@ body.is-expired .apply-submit{opacity:.55;pointer-events:none}
     </div>
     <h2 class="problem-heading"><span class="accent">2026년 6월 3일</span> 지방선거는<br/>특히 이렇습니다.</h2>
     <div class="curious-img">
-      <img class="curious-img-desktop" src="assets/시민페이지궁금한시민_v2.png" alt="후보가 많습니다 · 공약이 어렵습니다 · 질문할 곳이 없습니다"/>
-      <img class="curious-img-mobile" src="assets/시민페이지궁금한시민_v3_mobile.png" alt="후보가 많습니다 · 공약이 어렵습니다 · 질문할 곳이 없습니다"/>
+      <img src="assets/시민페이지궁금한시민_v2.png" alt="후보가 많습니다 · 공약이 어렵습니다 · 질문할 곳이 없습니다"/>
     </div>
     <p class="tagline">그래서 <em>"일꾼을 묻다"</em>를 봐야합니다.</p>
   </div>
@@ -819,20 +785,6 @@ body.is-expired .apply-submit{opacity:.55;pointer-events:none}
         </div>
         <div class="data-cap" id="dashSlideLabel">사용 현황</div>
       </div>
-      <!-- 모바일 전용 두 번째 카드 (시차 +1) — 콘텐츠는 JS로 첫 카드 cloneNode -->
-      <div class="browser-card dash-card-mobile-secondary" aria-hidden="true">
-        <div class="browser-bar">
-          <div class="browser-dots">
-            <div class="browser-dot" style="background:#ef4444"></div>
-            <div class="browser-dot" style="background:#f59e0b"></div>
-            <div class="browser-dot" style="background:#22c55e"></div>
-          </div>
-          <div class="browser-url">findleaders.kr/dashboard — 후보자 전용 대시보드</div>
-        </div>
-        <div class="dash-slider-wrap">
-          <div class="dash-slider" id="dashSlider2"></div>
-        </div>
-      </div>
     </div>
     <p class="dash-disc">※ 위 수치는 UI 예시용 샘플입니다. 실제 데이터는 후보자 계정에 연동된 수집 결과만 집계됩니다.</p>
   </div>
@@ -1126,7 +1078,6 @@ var EVENT_TAG   = '[50% 사전등록 이벤트]';
 (function(){
   var dashSlideLabels = ['사용 현황', '시민 인사이트', '정책 반응 분석', '운영 현황 + 비교 분석', '답변 만족도 분석'];
   var dashSlider = document.getElementById('dashSlider');
-  var dashSlider2 = document.getElementById('dashSlider2');
   var dashDots = document.getElementById('dashDots');
   var dashSlideLabel = document.getElementById('dashSlideLabel');
   var dashPrev = document.getElementById('dashPrev');
@@ -1134,20 +1085,9 @@ var EVENT_TAG   = '[50% 사전등록 이벤트]';
   var DASH_TOTAL = 5;
   var dashIdx = 0;
   var dashAutoStopped = false;
-  /* 두 번째 카드(모바일 전용) 콘텐츠는 첫 슬라이더 cloneNode로 채움 + 초기 시차 +1 설정 */
-  if (dashSlider && dashSlider2 && dashSlider2.children.length === 0) {
-    for (var i = 0; i < dashSlider.children.length; i++) {
-      dashSlider2.appendChild(dashSlider.children[i].cloneNode(true));
-    }
-    dashSlider2.style.transform = 'translateX(-100%)';
-  }
   function showDashSlide(n){
     dashIdx = ((n % DASH_TOTAL) + DASH_TOTAL) % DASH_TOTAL;
     if (dashSlider) dashSlider.style.transform = 'translateX(-' + (dashIdx*100) + '%)';
-    if (dashSlider2) {
-      var idx2 = (dashIdx + 1) % DASH_TOTAL;
-      dashSlider2.style.transform = 'translateX(-' + (idx2*100) + '%)';
-    }
     if (dashDots) dashDots.querySelectorAll('span').forEach(function(s, i){ s.classList.toggle('active', i === dashIdx); });
     if (dashSlideLabel) dashSlideLabel.textContent = dashSlideLabels[dashIdx];
   }
