@@ -47,9 +47,9 @@
     .balloon {
       position: absolute;
       bottom: 0;
-      width: 144px;
-      padding: 10px 12px 12px;
-      border-radius: 18px;
+      width: 118px;
+      padding: 8px 10px 10px;
+      border-radius: 16px;
       text-align: center;
       background: var(--bg, #A78BFA);
       color: var(--fg, #fff);
@@ -146,15 +146,14 @@
 <body class="bg-slate-100 min-h-screen">
   <div class="max-w-[480px] mx-auto bg-white relative pb-[192px] shadow-sm flex flex-col overflow-hidden" style="height: 100vh; height: 100dvh;">
 
-    <!-- ============ HEADER ============ -->
-    <header class="sticky top-0 z-40 bg-white px-5 pt-6 pb-2">
-      <div class="flex items-start justify-between">
-        <h1 class="text-[26px] font-extrabold text-slate-900 leading-tight tracking-tight">제9회<br>전국동시지방선거</h1>
-        <button onclick="share()" class="p-1.5 rounded-full hover:bg-slate-100 -mr-1 mt-1" aria-label="공유">
-          <span class="material-symbols-outlined text-slate-400 text-lg">ios_share</span>
+    <!-- ============ HEADER (컴팩트) ============ -->
+    <header class="sticky top-0 z-40 bg-white px-4 pt-3 pb-1.5">
+      <div class="flex items-center justify-between">
+        <h1 class="text-[18px] font-extrabold text-slate-900 leading-tight tracking-tight">제9회 전국동시지방선거</h1>
+        <button onclick="share()" class="p-1 rounded-full hover:bg-slate-100 -mr-1" aria-label="공유">
+          <span class="material-symbols-outlined text-slate-400 text-base">ios_share</span>
         </button>
       </div>
-      <p class="text-[10px] text-slate-400 mt-2 leading-snug">개인정보를 수집하지 않습니다. 메시지는 후보자에게만 전달되며 본문은 페이지에 노출되지 않습니다.</p>
     </header>
 
     <!-- SVG sprite — cloud shape -->
@@ -169,10 +168,10 @@
       </defs>
     </svg>
 
-    <!-- ============ COUNTER ============ -->
-    <section class="relative px-4 pt-5 pb-3 text-center" style="overflow: visible;">
+    <!-- ============ COUNTER (컴팩트) ============ -->
+    <section class="relative px-4 pt-1.5 pb-2 text-center" style="overflow: visible;">
       <p class="leading-none">
-        <span id="counter" class="text-[56px] font-black text-primary tracking-tight">0</span><span class="text-[16px] font-extrabold text-primary ml-1 tracking-wider align-baseline">SENT</span>
+        <span id="counter" class="text-[36px] font-black text-primary tracking-tight">0</span><span class="text-[11px] font-extrabold text-primary ml-1 tracking-wider align-baseline">SENT</span>
       </p>
     </section>
 
@@ -193,13 +192,14 @@
 
     <!-- ============ STICKY BOTTOM BAR ============ -->
     <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-slate-200 z-50 shadow-[0_-6px_24px_-12px_rgba(0,0,0,0.12)]">
-      <!-- Nickname row -->
-      <div class="px-4 py-2 flex items-center gap-2 border-b border-slate-100 bg-white">
+      <!-- Nickname row + 개인정보 안내 -->
+      <div class="px-4 pt-2 pb-1 flex items-center gap-2 bg-white">
         <span class="material-symbols-outlined text-slate-400 text-base">person</span>
         <input id="main-nickname" type="text" maxlength="2" oninput="onMainNicknameChange()"
           placeholder="시민 이름·닉네임 2자 (선택, 예: 김O)"
           class="flex-1 text-xs bg-transparent focus:outline-none placeholder:text-slate-400">
       </div>
+      <p class="px-4 pb-1.5 text-[9px] text-slate-400 leading-tight border-b border-slate-100">개인정보 비수집 · 메시지는 후보자에게만 전달되며 본문은 페이지에 노출되지 않습니다</p>
       <!-- Target chip (동네 + 후보자) -->
       <button id="target-chip" onclick="openTargetModal()" class="w-full px-4 py-2.5 flex items-center gap-2 border-b border-slate-100 text-left active:bg-slate-50">
         <span class="material-symbols-outlined text-primary text-base">location_on</span>
@@ -489,11 +489,11 @@
       opt.value = s; opt.textContent = s;
       sidoSel.appendChild(opt);
     });
-    // production 모드 — 가짜 시민 풍선/카운터 시뮬레이션 비활성
-    // 실제 시민이 메시지 보낼 때만 풍선 띄우고 카운터 +1
-    // renderTicker();           // dummy 초기 풍선 비활성
-    // startCounterAnimation();  // dummy 자동 카운터 증가 비활성
-    // startTickerSimulation();  // dummy 풍선 무한 spawn 비활성
+    // 비주얼: 시뮬레이션 풍선 활성 (참여 인상). 단 카운터는 실제 시민(isMine)만 +1
+    // 풍선엔 본문 X — 가짜 의견 노출 0, 선거법 안전
+    renderTicker();           // 초기 풍선 spawn
+    startTickerSimulation();  // 일정 간격으로 새 풍선 spawn
+    // startCounterAnimation(); // 가짜 카운트는 비활성 — 0부터 실제 시민만
     loadNECCandidates();
     syncStickyPadding();
     window.addEventListener('resize', syncStickyPadding);
@@ -626,7 +626,7 @@
     // 가로 위치: 15~85% 범위 랜덤 (양 끝 여백)
     const startX = 15 + Math.random() * 70;
     const drift  = (Math.random() - 0.5) * 70; // ±35px 좌우 흔들림
-    const dur    = 24 + Math.random() * 12;    // 24~36초 (더 천천히)
+    const dur    = 14 + Math.random() * 8;     // 14~22초 (모바일에서 동시에 더 많은 풍선)
     balloon.style.left = `${startX}%`;
     balloon.style.setProperty('--drift', `${drift}px`);
     balloon.style.setProperty('--dur', `${dur}s`);
@@ -642,7 +642,8 @@
     const reachMs = dur * 1000 * reachProgress;
     setTimeout(() => {
       if (!balloon.isConnected) return;
-      bumpCounter(1);
+      // 카운터는 실제 시민(isMine=true)이 보낸 풍선만 +1. 시뮬레이션은 비주얼만.
+      if (isMine) bumpCounter(1);
     }, reachMs);
     // 풍선이 stage 위로 사라진 뒤 DOM 제거
     setTimeout(() => balloon.remove(), dur * 1000 + 200);
@@ -657,12 +658,12 @@
   }
 
   function startTickerSimulation() {
-    // 일정 간격으로 새 풍선 spawn — 화면에 동시에 3~5개 떠다님
+    // 1.5초마다 새 풍선 — dur 14~22초와 조합으로 동시 평균 9~14개 떠다님 (모바일 비주얼 풍부)
     setInterval(() => {
       tickerIdx = (tickerIdx + 1) % TICKER_POOL.length;
       const m = { ...TICKER_POOL[tickerIdx] };
       spawnBalloon(m, false);
-    }, 2800);
+    }, 1500);
   }
 
   // ============ COUNTER ============
