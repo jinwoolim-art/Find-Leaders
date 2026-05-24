@@ -111,10 +111,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;padding:0}
   .curious-img{margin-left:-24px;margin-right:-24px;max-width:none;width:calc(100% + 48px);border-radius:0}
   .curious-img-desktop{display:none}
   .curious-img-mobile{display:block}
-  /* §4 — 두 폰 가로 나란히 (scale로 축소, layout 공간은 margin-bottom으로 보정) */
-  .app-preview .phones-row{flex-wrap:nowrap;gap:8px;justify-content:center;align-items:flex-start;padding:0 6px;margin-top:20px}
-  .app-preview .phones-row > div{flex:0 0 calc(50% - 4px);max-width:calc(50% - 4px);overflow:visible;display:flex;flex-direction:column;align-items:center}
-  .app-preview .phone{transform:scale(.55);transform-origin:top center;margin-bottom:-270px}
+  /* §4 — 두 폰 가로 나란히 (scale 축소 + 폰 layout box가 옆 폰과 겹치지 않게 wrapper overflow:hidden) */
+  .app-preview .phones-row{flex-wrap:nowrap;gap:16px;justify-content:center;align-items:flex-start;padding:0 8px;margin-top:20px}
+  .app-preview .phones-row > div{flex:0 0 calc(50% - 8px);max-width:calc(50% - 8px);overflow:hidden;display:flex;flex-direction:column;align-items:center}
+  .app-preview .phone{transform:scale(.5);transform-origin:top center;margin-bottom:-300px}
   .app-preview .phone-cap{margin-top:0;font-size:13px;font-weight:900}
   .app-preview .phone-dots{margin-top:8px}
   .app-preview .phone-dots span{width:5px;height:5px}
