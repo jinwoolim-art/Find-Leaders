@@ -1494,9 +1494,7 @@
 <!-- ══════ 8a. COUNTDOWN ══════ -->
 <section class="countdown-section">
   <div class="wrap">
-    <div class="sale-badge"><span>🎁</span> 사전 등록 후보자 한정 혜택 · 2026년 5월 20일 종료</div>
     <h2>지금 등록하세요</h2>
-    <p class="lead">사전 등록 후보자에게만 제공되는 한정 혜택 — 할인된 가격으로 사전 구성 데이터를 먼저 확보하세요.</p>
     <div class="countdown" id="countdown">
       <div class="cd-unit"><div class="cd-num" id="cdD">00</div><div class="cd-lbl">DAYS</div></div>
       <div class="cd-colon">:</div>
@@ -1998,7 +1996,7 @@ setInterval(() => {
 }, 5500);
 
 /* ───── 6. 카운트다운 (사전 오픈 특가 2026-05-20 23:59:59 KST) ───── */
-const COUNTDOWN_TARGET = new Date('2026-05-20T23:59:59+09:00').getTime();
+const COUNTDOWN_TARGET = new Date('2026-06-03T23:59:59+09:00').getTime();
 function tickCountdown(){
   const diff = Math.max(0, COUNTDOWN_TARGET - Date.now());
   const d = Math.floor(diff / 86400000);
