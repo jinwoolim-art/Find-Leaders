@@ -88,6 +88,7 @@ function doPost(e) {
     if (action === 'listCSDocuments') return listCSDocuments(data);
     if (action === 'toggleCSDocument') return toggleCSDocument(data);
     if (action === 'deleteCSDocument') return deleteCSDocument(data);
+    if (action === 'fetchElectionCandidates') return fetchElectionCandidates(data);
 
     return json({ok: false, error: 'unknown action: ' + action});
   } catch (err) {
@@ -1832,5 +1833,138 @@ function testDriveAccess() {
     Logger.log('❌ 에러: ' + e.toString());
     Logger.log('스택: ' + (e.stack || 'N/A'));
     return 'ERROR: ' + e.toString();
+  }
+}
+
+/* ═══════════════════════ NEC 후보자 조회 (data.go.kr OpenAPI) ═══════════════════════ */
+
+/**
+ * 중앙선관위 OpenAPI로 후보자 등록 정보 조회.
+ * admin-dashboard 의 "선관위 후보자 정보 조회" 모달에서 호출.
+ *
+ * 입력 data: { sgId, sgTypecode, sdName, keyword? }
+ *   - sgId: 선거 ID (예: '20260603' = 2026 제9회 전국동시지방선거)
+ *   - sgTypecode: '3'(시·도지사) / '4'(구·시·군의장) / '5'(시·도의원) / '6'(구·시·군의원) / '11'(교육감)
+ *   - sdName: 정식 시·도명 (예: '서울특별시')
+ *   - keyword: 이름·선거구·정당 부분일치 필터 (선택)
+ *
+ * 출력: { ok, candidates: [{name, party, district, num, giho, gihoSangse, huboid, sigunguName, sggName, status}], total }
+ *
+ * 함정 (메모리 reference_election_openapi):
+ *   - 키는 Properties.DATA_GO_KR_API_KEY
+ *   - 응답은 _type=json 줘도 XML 반환되는 경우 다수 → XmlService 파싱
+ *   - status='등록'만 노출, '사퇴'·'등록무효' 제외
+ *   - sgTypecode=6 (구·시·군의원): 기호 복합 문자열 "1-가" (giho + '-' + gihoSangse)
+ *   - INFO-03: 정상이지만 데이터 없음 (등록 기간 이전). 본 후보자 등록은 2026-05-13 부터 채워짐.
+ */
+function fetchElectionCandidates(data) {
+  try {
+    var apiKey = PropertiesService.getScriptProperties().getProperty('DATA_GO_KR_API_KEY');
+    if (!apiKey) return json({ok: false, error: 'DATA_GO_KR_API_KEY not configured'});
+
+    var sgId       = (data.sgId || '20260603').toString().trim();
+    var sgTypecode = (data.sgTypecode || '').toString().trim();
+    var sdName     = (data.sdName || '').trim();
+    var keyword    = (data.keyword || '').trim();
+
+    if (!sgTypecode) return json({ok: false, error: 'sgTypecode 필수'});
+    if (!sdName)     return json({ok: false, error: 'sdName 필수 (정식 시·도명, 예: 서울특별시)'});
+
+    // 페이지네이션: totalCount 까지 누적 (NEC API는 numOfRows 크게 줘도 더 적게 반환할 수 있음)
+    var allItems = [];
+    var totalCount = 0;
+    var pageNo = 1;
+    var MAX_PAGES = 30;  // safety: 30 페이지 * 500/페이지 = 15,000건 한도
+
+    while (pageNo <= MAX_PAGES) {
+      var url = 'https://apis.data.go.kr/9760000/PofelcddInfoInqireService/getPofelcddRegistSttusInfoInqire'
+              + '?serviceKey=' + encodeURIComponent(apiKey)
+              + '&sgId='       + encodeURIComponent(sgId)
+              + '&sgTypecode=' + encodeURIComponent(sgTypecode)
+              + '&sdName='     + encodeURIComponent(sdName)
+              + '&numOfRows=500&pageNo=' + pageNo;
+
+      var resp = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
+      if (resp.getResponseCode() !== 200) {
+        return json({ok: false, error: 'NEC HTTP ' + resp.getResponseCode() + ' (page ' + pageNo + ')'});
+      }
+
+      var text = resp.getContentText('UTF-8');
+      var doc, root;
+      try {
+        doc  = XmlService.parse(text);
+        root = doc.getRootElement();
+      } catch (parseErr) {
+        return json({ok: false, error: 'NEC XML 파싱 실패 (page ' + pageNo + '): ' + parseErr});
+      }
+
+      var header = root.getChild('header');
+      var resultCode = header ? header.getChildText('resultCode') : '';
+      var resultMsg  = header ? header.getChildText('resultMsg')  : '';
+
+      if (resultCode === 'INFO-03') {
+        return json({ok: true, candidates: [], total: 0, note: 'INFO-03: 등록 기간 이전 또는 해당 선거구 데이터 없음'});
+      }
+      if (resultCode && resultCode !== 'INFO-00' && resultCode !== '00') {
+        return json({ok: false, error: 'NEC ' + resultCode + ': ' + resultMsg});
+      }
+
+      var body = root.getChild('body');
+      if (!body) break;
+
+      if (pageNo === 1) totalCount = parseInt(body.getChildText('totalCount') || '0', 10);
+
+      var items = body.getChild('items');
+      var pageItems = items ? items.getChildren('item') : [];
+      if (pageItems.length === 0) break;
+
+      for (var pi = 0; pi < pageItems.length; pi++) allItems.push(pageItems[pi]);
+
+      if (allItems.length >= totalCount) break;
+      pageNo++;
+    }
+
+    var kwLower = keyword.toLowerCase();
+    var out = [];
+    for (var i = 0; i < allItems.length; i++) {
+      var it = allItems[i];
+      var status = it.getChildText('status') || '';
+      if (status && status !== '등록') continue;
+
+      var name       = it.getChildText('name') || '';
+      var party      = it.getChildText('jdName') || '';
+      var sggName    = it.getChildText('sggName') || '';
+      var wiwName    = it.getChildText('wiwName') || '';
+      var giho       = it.getChildText('giho') || '';
+      var gihoSangse = it.getChildText('gihoSangse') || '';
+      var huboid     = it.getChildText('huboid') || '';
+      var sdNameItem = it.getChildText('sdName') || sdName;
+
+      var num = giho;
+      if (sgTypecode === '6' && gihoSangse) num = giho + '-' + gihoSangse;
+
+      if (keyword) {
+        var hay = (name + ' ' + sggName + ' ' + wiwName + ' ' + party).toLowerCase();
+        if (hay.indexOf(kwLower) < 0) continue;
+      }
+
+      out.push({
+        name: name,
+        party: party,
+        district: sggName,
+        num: num,
+        giho: giho,
+        gihoSangse: gihoSangse,
+        huboid: huboid,
+        sigunguName: wiwName,
+        sggName: sggName,
+        sdName: sdNameItem,
+        status: status
+      });
+    }
+
+    return json({ok: true, candidates: out, total: out.length, totalCount: totalCount, fetched: allItems.length, pages: pageNo});
+  } catch (e) {
+    return json({ok: false, error: 'fetchElectionCandidates exception: ' + (e && e.message || e)});
   }
 }
