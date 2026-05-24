@@ -1870,49 +1870,64 @@ function fetchElectionCandidates(data) {
     if (!sgTypecode) return json({ok: false, error: 'sgTypecode 필수'});
     if (!sdName)     return json({ok: false, error: 'sdName 필수 (정식 시·도명, 예: 서울특별시)'});
 
-    var url = 'https://apis.data.go.kr/9760000/PofelcddInfoInqireService/getPofelcddRegistSttusInfoInqire'
-            + '?serviceKey=' + encodeURIComponent(apiKey)
-            + '&sgId='       + encodeURIComponent(sgId)
-            + '&sgTypecode=' + encodeURIComponent(sgTypecode)
-            + '&sdName='     + encodeURIComponent(sdName)
-            + '&numOfRows=300&pageNo=1';
+    // 페이지네이션: totalCount 까지 누적 (NEC API는 numOfRows 크게 줘도 더 적게 반환할 수 있음)
+    var allItems = [];
+    var totalCount = 0;
+    var pageNo = 1;
+    var MAX_PAGES = 30;  // safety: 30 페이지 * 500/페이지 = 15,000건 한도
 
-    var resp = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
-    if (resp.getResponseCode() !== 200) {
-      return json({ok: false, error: 'NEC HTTP ' + resp.getResponseCode()});
+    while (pageNo <= MAX_PAGES) {
+      var url = 'https://apis.data.go.kr/9760000/PofelcddInfoInqireService/getPofelcddRegistSttusInfoInqire'
+              + '?serviceKey=' + encodeURIComponent(apiKey)
+              + '&sgId='       + encodeURIComponent(sgId)
+              + '&sgTypecode=' + encodeURIComponent(sgTypecode)
+              + '&sdName='     + encodeURIComponent(sdName)
+              + '&numOfRows=500&pageNo=' + pageNo;
+
+      var resp = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
+      if (resp.getResponseCode() !== 200) {
+        return json({ok: false, error: 'NEC HTTP ' + resp.getResponseCode() + ' (page ' + pageNo + ')'});
+      }
+
+      var text = resp.getContentText('UTF-8');
+      var doc, root;
+      try {
+        doc  = XmlService.parse(text);
+        root = doc.getRootElement();
+      } catch (parseErr) {
+        return json({ok: false, error: 'NEC XML 파싱 실패 (page ' + pageNo + '): ' + parseErr});
+      }
+
+      var header = root.getChild('header');
+      var resultCode = header ? header.getChildText('resultCode') : '';
+      var resultMsg  = header ? header.getChildText('resultMsg')  : '';
+
+      if (resultCode === 'INFO-03') {
+        return json({ok: true, candidates: [], total: 0, note: 'INFO-03: 등록 기간 이전 또는 해당 선거구 데이터 없음'});
+      }
+      if (resultCode && resultCode !== 'INFO-00' && resultCode !== '00') {
+        return json({ok: false, error: 'NEC ' + resultCode + ': ' + resultMsg});
+      }
+
+      var body = root.getChild('body');
+      if (!body) break;
+
+      if (pageNo === 1) totalCount = parseInt(body.getChildText('totalCount') || '0', 10);
+
+      var items = body.getChild('items');
+      var pageItems = items ? items.getChildren('item') : [];
+      if (pageItems.length === 0) break;
+
+      for (var pi = 0; pi < pageItems.length; pi++) allItems.push(pageItems[pi]);
+
+      if (allItems.length >= totalCount) break;
+      pageNo++;
     }
-
-    var text = resp.getContentText('UTF-8');
-    var doc, root;
-    try {
-      doc  = XmlService.parse(text);
-      root = doc.getRootElement();
-    } catch (parseErr) {
-      return json({ok: false, error: 'NEC 응답 XML 파싱 실패: ' + parseErr});
-    }
-
-    var header = root.getChild('header');
-    var resultCode = header ? header.getChildText('resultCode') : '';
-    var resultMsg  = header ? header.getChildText('resultMsg')  : '';
-
-    if (resultCode === 'INFO-03') {
-      return json({ok: true, candidates: [], total: 0, note: 'INFO-03: 등록 기간 이전 또는 해당 선거구 데이터 없음'});
-    }
-    if (resultCode && resultCode !== 'INFO-00' && resultCode !== '00') {
-      return json({ok: false, error: 'NEC ' + resultCode + ': ' + resultMsg});
-    }
-
-    var body = root.getChild('body');
-    if (!body) return json({ok: true, candidates: [], total: 0});
-
-    var totalCount = parseInt(body.getChildText('totalCount') || '0', 10);
-    var items = body.getChild('items');
-    var itemList = items ? items.getChildren('item') : [];
 
     var kwLower = keyword.toLowerCase();
     var out = [];
-    for (var i = 0; i < itemList.length; i++) {
-      var it = itemList[i];
+    for (var i = 0; i < allItems.length; i++) {
+      var it = allItems[i];
       var status = it.getChildText('status') || '';
       if (status && status !== '등록') continue;
 
@@ -1948,7 +1963,7 @@ function fetchElectionCandidates(data) {
       });
     }
 
-    return json({ok: true, candidates: out, total: out.length, totalCount: totalCount});
+    return json({ok: true, candidates: out, total: out.length, totalCount: totalCount, fetched: allItems.length, pages: pageNo});
   } catch (e) {
     return json({ok: false, error: 'fetchElectionCandidates exception: ' + (e && e.message || e)});
   }
