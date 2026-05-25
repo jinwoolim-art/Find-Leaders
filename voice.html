@@ -147,7 +147,7 @@
   </style>
 </head>
 <body class="bg-slate-100 min-h-screen">
-  <div class="max-w-[480px] mx-auto bg-white relative pb-[192px] shadow-sm flex flex-col overflow-hidden" style="height: 100vh; height: 100dvh;">
+  <div class="max-w-[480px] mx-auto bg-white relative shadow-sm flex flex-col overflow-hidden" style="height: 100vh; height: 100dvh;">
 
     <!-- ============ HEADER (컴팩트) ============ -->
     <header class="sticky top-0 z-40 bg-white px-4 pt-3 pb-1.5">
@@ -190,45 +190,44 @@
         </p>
       </div>
       <!-- 풍선이 여기서 떠오름 -->
-    </div>
 
-    <!-- ============ STICKY BOTTOM BAR ============ -->
-    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-slate-200 z-50 shadow-[0_-6px_24px_-12px_rgba(0,0,0,0.12)]">
-      <!-- Nickname row (안내 문구는 share 모달/info 아이콘에 통합) -->
-      <div class="px-4 py-1.5 flex items-center gap-2 bg-white border-b border-slate-100">
-        <span class="material-symbols-outlined text-slate-400 text-base">person</span>
-        <input id="main-nickname" type="text" maxlength="2" oninput="onMainNicknameChange()"
-          placeholder="시민 이름·닉네임 2자 (선택, 예: 김O)"
-          class="flex-1 text-xs bg-transparent focus:outline-none placeholder:text-slate-400">
-        <button onclick="showPrivacyInfo()" class="p-0.5 text-slate-300 hover:text-slate-500" aria-label="개인정보 안내">
-          <span class="material-symbols-outlined text-[16px]">info</span>
-        </button>
-      </div>
-      <!-- Target chip (동네 + 후보자) — 컴팩트 -->
-      <button id="target-chip" onclick="openTargetModal()" class="w-full px-4 py-1.5 flex items-center gap-2 border-b border-slate-100 text-left active:bg-slate-50">
-        <span class="material-symbols-outlined text-primary text-base">location_on</span>
-        <span id="target-label" class="flex-1 text-xs text-slate-500 truncate">동네와 후보자를 먼저 선택해주세요</span>
-        <span class="material-symbols-outlined text-slate-300 text-base">edit</span>
-      </button>
-
-      <!-- KakaoTalk-style input bar -->
-      <div class="px-3 py-2 flex items-end gap-2 bg-slate-50">
-        <button onclick="openIlkkunApp()" aria-label="묻다 앱 다운로드" class="hidden size-9 items-center justify-center text-slate-500 shrink-0 hover:text-primary active:scale-95 transition-all">
-          <span class="material-symbols-outlined text-xl">add</span>
-        </button>
-        <div class="flex-1 bg-white rounded-2xl border border-slate-200 flex items-end">
-          <textarea id="message" rows="1" maxlength="200" placeholder="동네와 후보자 선택 후 입력 가능"
-            enterkeyhint="send"
-            class="flex-1 px-3 py-2.5 text-sm bg-transparent resize-none focus:outline-none disabled:text-slate-400 max-h-[120px]"
-            disabled
-            oninput="autoResize(this); updateSendBtn();"
-            onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); submitMessage();}"></textarea>
-          <span id="char-count" class="text-[10px] text-slate-300 px-2 pb-2">0/200</span>
+      <!-- ============ INPUT OVERLAY (stage 안 floating, 풍선이 뒤로 흘러갈 수 있게 반투명) ============ -->
+      <div class="absolute bottom-0 left-0 right-0 z-20 bg-white/85 backdrop-blur-md border-t border-slate-200/60">
+        <!-- Nickname row -->
+        <div class="px-4 py-1.5 flex items-center gap-2 border-b border-slate-100/60">
+          <span class="material-symbols-outlined text-slate-400 text-base">person</span>
+          <input id="main-nickname" type="text" maxlength="2" oninput="onMainNicknameChange()"
+            placeholder="시민 이름·닉네임 2자 (선택, 예: 김O)"
+            class="flex-1 text-xs bg-transparent focus:outline-none placeholder:text-slate-400">
+          <button onclick="showPrivacyInfo()" class="p-0.5 text-slate-300 hover:text-slate-500" aria-label="개인정보 안내">
+            <span class="material-symbols-outlined text-[16px]">info</span>
+          </button>
         </div>
-        <button id="send-btn" onclick="submitMessage()" disabled
-          class="size-10 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center transition-all shrink-0">
-          <span class="material-symbols-outlined text-base">send</span>
+        <!-- Target chip -->
+        <button id="target-chip" onclick="openTargetModal()" class="w-full px-4 py-1.5 flex items-center gap-2 border-b border-slate-100/60 text-left active:bg-slate-50/60">
+          <span class="material-symbols-outlined text-primary text-base">location_on</span>
+          <span id="target-label" class="flex-1 text-xs text-slate-500 truncate">동네와 후보자를 먼저 선택해주세요</span>
+          <span class="material-symbols-outlined text-slate-300 text-base">edit</span>
         </button>
+        <!-- KakaoTalk-style input bar -->
+        <div class="px-3 py-2 flex items-end gap-2 bg-slate-50/60">
+          <button onclick="openIlkkunApp()" aria-label="묻다 앱 다운로드" class="hidden size-9 items-center justify-center text-slate-500 shrink-0 hover:text-primary active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-xl">add</span>
+          </button>
+          <div class="flex-1 bg-white rounded-2xl border border-slate-200 flex items-end">
+            <textarea id="message" rows="1" maxlength="200" placeholder="동네와 후보자 선택 후 입력 가능"
+              enterkeyhint="send"
+              class="flex-1 px-3 py-2.5 text-sm bg-transparent resize-none focus:outline-none disabled:text-slate-400 max-h-[120px]"
+              disabled
+              oninput="autoResize(this); updateSendBtn();"
+              onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); submitMessage();}"></textarea>
+            <span id="char-count" class="text-[10px] text-slate-300 px-2 pb-2">0/200</span>
+          </div>
+          <button id="send-btn" onclick="submitMessage()" disabled
+            class="size-10 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center transition-all shrink-0">
+            <span class="material-symbols-outlined text-base">send</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -500,17 +499,6 @@
     startTickerSimulation();  // 일정 간격으로 새 풍선 spawn
     // startCounterAnimation(); // 가짜 카운트는 비활성 — 0부터 실제 시민만
     loadNECCandidates();
-    syncStickyPadding();
-    window.addEventListener('resize', syncStickyPadding);
-  }
-
-  // sticky bottom 실제 높이와 body padding-bottom을 동기화 — stage가 sticky bottom 윗까지 정확히 닿음
-  function syncStickyPadding() {
-    const sticky = document.querySelector('.fixed.bottom-0');
-    const container = sticky?.parentElement;
-    if (sticky && container) {
-      container.style.paddingBottom = sticky.offsetHeight + 'px';
-    }
   }
 
   // ============ BALLOON STAGE (시민 소망 풍선) ============
