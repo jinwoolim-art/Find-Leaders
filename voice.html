@@ -281,16 +281,20 @@
 
     <!-- ============ BALLOON STAGE (카운터 overlay 포함) ============ -->
     <div id="balloon-stage" class="flex-1 relative" style="min-height: 240px; background: linear-gradient(180deg, #F5F3FF 0%, #DDD6FE 55%, #A78BFA 100%);">
-      <!-- 상단 구름 경계 — 큰 솟음 가로 1.6배 + 우측 shift (카운터가 흰 영역 안) -->
-      <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 105px; pointer-events: none; z-index: 5;" viewBox="0 0 400 105" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M0,0 L400,0
-                 L400,12
-                 C 390,10  370,8   340,8
-                 C 290,8   260,10  220,12
-                 C 185,16  165,22  140,32
-                 C 110,45  85,58   60,58
-                 C  35,56  20,52   10,54
-                 C   5,55  2,56    0,56
+      <!-- 상단 구름 경계 — 둥근 호 3개 + 호 사이 V자 꺾임 (디테일) -->
+      <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 130px; pointer-events: none; z-index: 5;" viewBox="0 0 400 130" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M 0,0 L 400,0
+                 L 400,42
+                 C 400,42  380,92  340,92
+                 L 320,55
+                 L 310,92
+                 C 290,112 240,122 200,122
+                 C 180,122 170,92  170,92
+                 L 155,55
+                 L 140,92
+                 C 130,112  90,92  70,92
+                 L 52,55
+                 C 32,55   12,55   0,55
                  Z" fill="white"/>
       </svg>
       <!-- 카운터 overlay — stage 안 상단 가운데, 풍선·overlay보다 위 (z-30) -->
