@@ -65,11 +65,11 @@
       animation-name: floatUpMine;
       filter: drop-shadow(0 8px 22px rgba(124,58,237,0.4));
     }
-    /* 내 풍선 아래 실 + 매달린 하트 (살랑살랑) */
+    /* 내 풍선 아래 실 + 매달린 하트 — 말풍선 꼬리(좌하단 26%) 위치에서 시작 */
     .balloon-string {
       position: absolute;
       top: 100%;
-      left: 50%;
+      left: 26%;
       width: 1.5px;
       height: 36px;
       background: linear-gradient(180deg, rgba(124,58,237,0.7), rgba(168,85,247,0.4));
@@ -280,14 +280,15 @@
 
     <!-- ============ BALLOON STAGE (카운터 overlay 포함) ============ -->
     <div id="balloon-stage" class="flex-1 relative" style="min-height: 240px; background: linear-gradient(180deg, #F5F3FF 0%, #DDD6FE 55%, #A78BFA 100%);">
-      <!-- 상단 구름 경계 -->
+      <!-- 상단 구름 경계 (가운데~우측 평평한 흰 영역 — 카운터 숫자가 그 안에 들어감) -->
       <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 70px; pointer-events: none; z-index: 5;" viewBox="0 0 400 70" preserveAspectRatio="none" aria-hidden="true">
         <path d="M0,0 L400,0
-                 L400,18
-                 C 388,18  396,38  348,38
-                 C 290,38  288,8   210,6
-                 C 130,4   140,66   72,64
-                 C  32,62   26,28    0,30
+                 L400,42
+                 C 380,42  370,38  340,40
+                 C 290,42  260,38  220,42
+                 C 180,46  155,52  120,56
+                 C  85,60   55,40   30,42
+                 C  18,43   10,30    0,32
                  Z" fill="white"/>
       </svg>
       <!-- 카운터 overlay — stage 안 상단 가운데, 풍선·overlay보다 위 (z-30) -->
@@ -405,24 +406,6 @@
               <p class="text-xs text-slate-400 text-center py-6 bg-slate-50 rounded-xl">선거 유형을 먼저 선택해주세요</p>
             </div>
             <p id="cand-hint" class="hidden text-[10px] text-slate-400 mt-1.5 px-1">← 좌우로 밀어서 후보자 모두 보기</p>
-          </div>
-          <!-- Step 4: 풍선 끝 매달림 이모지 -->
-          <div>
-            <div class="flex items-center gap-2 mb-2">
-              <span class="size-5 bg-primary/10 text-primary text-[11px] font-bold rounded-full flex items-center justify-center">4</span>
-              <p class="text-xs font-bold text-slate-700">풍선 끝에 매달 이모지</p>
-            </div>
-            <div id="modal-emoji-picker" class="flex items-center gap-1 overflow-x-auto scrollbar-hide -mx-1 px-1">
-              <button type="button" class="emoji-btn selected" data-emoji="💜" onclick="selectTailEmoji('💜', this)">💜</button>
-              <button type="button" class="emoji-btn" data-emoji="👏" onclick="selectTailEmoji('👏', this)">👏</button>
-              <button type="button" class="emoji-btn" data-emoji="⚡" onclick="selectTailEmoji('⚡', this)">⚡</button>
-              <button type="button" class="emoji-btn" data-emoji="👑" onclick="selectTailEmoji('👑', this)">👑</button>
-              <button type="button" class="emoji-btn" data-emoji="😊" onclick="selectTailEmoji('😊', this)">😊</button>
-              <button type="button" class="emoji-btn" data-emoji="🎉" onclick="selectTailEmoji('🎉', this)">🎉</button>
-              <button type="button" class="emoji-btn" data-emoji="⭐" onclick="selectTailEmoji('⭐', this)">⭐</button>
-              <button type="button" class="emoji-btn" data-emoji="🌸" onclick="selectTailEmoji('🌸', this)">🌸</button>
-              <button type="button" class="emoji-btn" data-emoji="🙏" onclick="selectTailEmoji('🙏', this)">🙏</button>
-            </div>
           </div>
           <button id="confirm-target" onclick="confirmTarget()" disabled
             class="w-full py-3.5 rounded-xl bg-primary text-white font-bold text-sm disabled:bg-slate-200 disabled:text-slate-400 active:scale-[0.98] transition-all">
