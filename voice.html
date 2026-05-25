@@ -50,7 +50,7 @@
       width: 118px;
       padding: 8px 10px 10px;
       border-radius: 16px;
-      pointer-events: none; /* 풍선이 tap-hint/input 클릭 가로채지 않게 */
+      pointer-events: none;
       text-align: center;
       background: var(--bg, #A78BFA);
       color: var(--fg, #fff);
@@ -58,18 +58,19 @@
       animation: floatUp var(--dur, 10s) ease-out forwards;
       transform: translateX(-50%);
       will-change: transform, bottom, opacity;
+      z-index: 1;         /* 구름(z-5)보다 아래 — 풍선이 구름 영역 들어가면 뒤로 사라짐 */
     }
     .balloon.mine {
-      width: 142px;       /* 일반 118 → 강조 */
-      z-index: 10;        /* 다른 풍선 위로 */
+      width: 142px;
+      z-index: 2;         /* 다른 풍선보단 위, 구름보단 아래 */
       animation-name: floatUpMine;
       filter: drop-shadow(0 8px 22px rgba(124,58,237,0.4));
     }
-    /* 내 풍선 아래 실 + 매달린 하트 — 말풍선 꼬리(좌하단 26%) 위치에서 시작 */
+    /* 내 풍선 아래 실 + 매달린 하트 — 말풍선 꼬리 위치(38%)에서 시작 */
     .balloon-string {
       position: absolute;
       top: 100%;
-      left: 26%;
+      left: 38%;
       width: 1.5px;
       height: 36px;
       background: linear-gradient(180deg, rgba(124,58,237,0.7), rgba(168,85,247,0.4));
@@ -131,12 +132,12 @@
       padding-bottom: 4px;
       opacity: 1;
     }
-    /* 말풍선 꼬리 — 좌하단 약간 안쪽 */
+    /* 말풍선 꼬리 — 38% 위치 (실·이모지와 같은 라인) */
     .balloon::after {
       content: '';
       position: absolute;
       bottom: -5px;
-      left: 26%;
+      left: 38%;
       width: 14px;
       height: 14px;
       background: inherit;
@@ -280,15 +281,16 @@
 
     <!-- ============ BALLOON STAGE (카운터 overlay 포함) ============ -->
     <div id="balloon-stage" class="flex-1 relative" style="min-height: 240px; background: linear-gradient(180deg, #F5F3FF 0%, #DDD6FE 55%, #A78BFA 100%);">
-      <!-- 상단 구름 경계 (가운데~우측 평평한 흰 영역 — 카운터 숫자가 그 안에 들어감) -->
+      <!-- 상단 구름 경계 (부드러운 파동 — 우측 솟음·중앙 흰영역·좌측 큰 패임) -->
       <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 70px; pointer-events: none; z-index: 5;" viewBox="0 0 400 70" preserveAspectRatio="none" aria-hidden="true">
         <path d="M0,0 L400,0
-                 L400,42
-                 C 380,42  370,38  340,40
-                 C 290,42  260,38  220,42
-                 C 180,46  155,52  120,56
-                 C  85,60   55,40   30,42
-                 C  18,43   10,30    0,32
+                 L400,32
+                 C 380,34  365,16  330,18
+                 C 295,20  275,38  240,38
+                 C 210,38  195,28  170,30
+                 C 140,32  125,52   90,54
+                 C  55,55   35,32   20,34
+                 C  10,35   5,36    0,38
                  Z" fill="white"/>
       </svg>
       <!-- 카운터 overlay — stage 안 상단 가운데, 풍선·overlay보다 위 (z-30) -->
