@@ -542,6 +542,14 @@
       }
       // 새 메시지 spawn (오래된 것부터)
       const voices = (data.voices || []).sort((a, b) => a.ts - b.ts);
+      // 첫 페이지 로드 시 누적 풍선은 한꺼번에 spawn 안 함 (시각·카운트 시점 충돌 방지)
+      // 카운트는 위에서 server 동기화 완료. lastSeenTs 만 갱신해 그 후 polling 에서 새 풍선만 spawn
+      if (lastSeenTs === 0) {
+        if (voices.length > 0) {
+          lastSeenTs = voices[voices.length - 1].ts;
+        }
+        return;
+      }
       for (const v of voices) {
         if (v.ts <= lastSeenTs) continue;
         if (myRecentTs.has(v.ts)) { lastSeenTs = v.ts; continue; } // 내 거 중복 skip
