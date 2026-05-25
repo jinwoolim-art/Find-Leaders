@@ -737,6 +737,18 @@
     return PARTY_COLORS[party] || DEFAULT_BALLOON_COLOR;
   }
 
+  // 정당 약자 — 풍선 안 짧은 표기 (짤림 방지)
+  const PARTY_ABBR = {
+    '더불어민주당': '민주', '국민의힘': '국힘', '조국혁신당': '조국',
+    '개혁신당': '개혁', '정의당': '정의', '진보당': '진보',
+    '새미래민주당': '새미래', '녹색당': '녹색', '노동당': '노동',
+    '기본소득당': '기본', '사회민주당': '사민', '여성의당': '여성',
+    '자유민주당': '자민', '자유통일당': '자통', '자유와혁신': '자혁',
+    '국민연합': '국민연합', '국민주권당': '주권', '미래연대': '미래',
+    '한국독립당': '독립', '무소속': '무소속'
+  };
+  function getPartyAbbr(p) { return PARTY_ABBR[p] || p; }
+
   // 약식 sido → 풀네임 (후보자 표기용)
   function fullSidoName(s) {
     const map = {
@@ -797,7 +809,7 @@
       ${heartTail}
       <p class="text-[7px] opacity-80 truncate leading-tight">${escapeHtml(candSido)}${etLabel ? ' ' + escapeHtml(etLabel) : ''}</p>
       <p class="truncate mt-0.5 leading-tight">
-        ${party ? `<span class="text-[6px] opacity-85 align-middle mr-0.5">${escapeHtml(party)}</span>` : ''}${numBadge}<span class="text-[10px] font-extrabold align-middle">${escapeHtml(m.candidate)}</span>
+        ${party ? `<span class="text-[7px] opacity-85 align-middle mr-0.5">${escapeHtml(getPartyAbbr(party))}</span>` : ''}${numBadge}<span class="text-[10px] font-extrabold align-middle">${escapeHtml(m.candidate)}</span>
       </p>
       <div class="my-1 border-t border-white/30"></div>
       <span class="inline-block text-[7px] font-bold px-1.5 py-0.5 bg-white/30 rounded-full max-w-full truncate">🏷 ${escapeHtml(topic)}</span>
@@ -1138,7 +1150,15 @@
   function submitMessage() {
     const msgEl = document.getElementById('message');
     const msg = msgEl.value.trim();
-    if (!msg || !selected.candidate) return;
+    if (!msg) {
+      showToast('한마디를 적어주세요');
+      return;
+    }
+    if (!selected.candidate) {
+      showToast('후보자를 먼저 선택해주세요');
+      openTargetModal();
+      return;
+    }
     if (containsProfanity(msg)) {
       showToast('부적절한 표현이 포함되어 등록되지 않습니다');
       return;
