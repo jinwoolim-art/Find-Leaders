@@ -530,9 +530,12 @@
       const res = await fetch(url);
       const data = await res.json();
       if (!data || !data.ok) return;
-      // 카운터 항상 서버 값으로 동기화
+      // 카운터 monotonic 동기화: 절대 내려가지 않음
+      // - bumpCounter(+1)로 자기 풍선 도달 시점에 시각적 +1
+      // - 시트 쓰기 지연 / 폴링 시간차로 server count가 일시 작아도 떨어지지 않음
+      // - 다른 시민 풍선으로 server count가 더 커지면 그 값으로 올라감
       if (typeof data.count === 'number') {
-        counterValue = data.count;
+        counterValue = Math.max(counterValue, data.count);
         document.getElementById('counter').textContent = counterValue.toLocaleString();
       }
       // 새 메시지 spawn (오래된 것부터)
