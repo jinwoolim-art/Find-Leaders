@@ -903,8 +903,10 @@
     balloon.innerHTML = balloonInner(msg, !!isMine);
     stage.appendChild(balloon);
 
-    // 카운터는 폴링(loadVoices)으로 server count 만 단일 진실로 동기화.
-    // 풍선 도달 시점에 즉시 +1 시각효과는 제거 — 다른 모바일과 카운트 불일치 충돌 방지.
+    // 자기 풍선이면 spawn 직후 즉시 카운트 +1 (UX 즉각성)
+    // 풍선이 26초 동안 올라가는 사이 폴링이 server count 동기화 → 다른 모바일도 자연 +1 반영
+    // (Math.max로 monotonic 보장, server count +1 시점과 거의 동시라 이중 카운트 없음)
+    if (isMine) bumpCounter(1);
     // 풍선이 stage 위로 사라진 뒤 DOM 제거
     setTimeout(() => balloon.remove(), dur * 1000 + 200);
   }
