@@ -613,11 +613,10 @@
       opt.value = s; opt.textContent = s;
       sidoSel.appendChild(opt);
     });
-    // 비주얼: 시뮬레이션 풍선 활성 (참여 인상). 단 카운터는 실제 시민(isMine)만 +1
-    // 풍선엔 본문 X — 가짜 의견 노출 0, 선거법 안전
-    renderTicker();           // 초기 풍선 spawn
-    startTickerSimulation();  // 일정 간격으로 새 풍선 spawn
-    // startCounterAnimation(); // 가짜 카운트는 비활성 — 0부터 실제 시민만
+    // production 모드 — 모든 dummy 비활성. 실제 시민 입력만 풍선·카운터 반영.
+    // renderTicker();
+    // startTickerSimulation();
+    // startCounterAnimation();
     loadNECCandidates();
     setupInputOverlayToggle();
   }
