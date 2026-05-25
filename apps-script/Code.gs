@@ -2195,7 +2195,10 @@ function submitVoice(data) {
     var mod = moderateAndClassify(message);
     // 닉네임도 한 번 더 검수 (LLM은 본문만 봄)
     var nicknameBad = containsProfanityServer(String(data.nickname || ''));
-    var blocked = mod.profanity || nicknameBad || (mod.violations && mod.violations.length > 0);
+    // 차단 정책: 명확한 욕설만 즉시 차단(blocked). 선거법 위반 카테고리(violations)는
+    // 시트 P컬럼에만 기록하고 노출은 허용 — 운영진이 시트에서 검토 후 수동 처리.
+    // (정상 정책 제안 false positive 차단 방지 — 시민 의견 묻히는 것이 더 큰 리스크)
+    var blocked = mod.profanity || nicknameBad;
     var status = blocked ? 'blocked' : 'safe';
     var topic = mod.topic || classifyTopic(message);
     sheet.appendRow([
