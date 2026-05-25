@@ -1195,9 +1195,11 @@
 
   // ============ INPUT ============
   function autoResize(el) {
+    if (!el) return;
     el.style.height = 'auto';
     el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-    document.getElementById('char-count').textContent = `${el.value.length}/200`;
+    const cc = document.getElementById('char-count');
+    if (cc) cc.textContent = `${el.value.length}/200`;
   }
 
   function updateSendBtn() {
