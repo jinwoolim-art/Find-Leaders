@@ -329,24 +329,16 @@
           <button type="button" class="emoji-btn" data-emoji="🌸" onclick="selectTailEmoji('🌸', this)">🌸</button>
           <button type="button" class="emoji-btn" data-emoji="🙏" onclick="selectTailEmoji('🙏', this)">🙏</button>
         </div>
-        <!-- KakaoTalk-style input bar (배경 통일 — input overlay와 한 컨테이너 느낌) -->
-        <div class="px-2 py-2 flex items-end gap-1.5">
-          <button onclick="openIlkkunApp()" aria-label="묻다 앱 다운로드" class="hidden size-9 items-center justify-center text-slate-500 shrink-0 hover:text-primary active:scale-95 transition-all">
-            <span class="material-symbols-outlined text-xl">add</span>
-          </button>
-          <div class="flex-1 bg-white rounded-2xl border border-slate-200 flex items-end">
+        <!-- 입력창만 — 키보드 enter/전송 키로 발송, 버튼 없음 -->
+        <div class="px-3 py-2.5">
+          <div class="bg-white rounded-2xl border border-slate-200">
             <textarea id="message" rows="1" maxlength="200" placeholder="동네와 후보자 선택 후 입력 가능"
               enterkeyhint="send"
-              class="flex-1 px-3 py-2.5 text-sm bg-transparent resize-none focus:outline-none disabled:text-slate-400 max-h-[120px]"
+              class="w-full px-4 py-2.5 text-sm bg-transparent resize-none focus:outline-none disabled:text-slate-400 max-h-[120px]"
               disabled
               oninput="autoResize(this); updateSendBtn();"
               onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); submitMessage();}"></textarea>
           </div>
-          <button id="send-btn" onclick="submitMessage()" disabled
-            class="size-10 rounded-full bg-slate-300 text-white flex items-center justify-center transition-all shrink-0 shadow-md"
-            style="-webkit-tap-highlight-color: rgba(255,255,255,0.3);">
-            <span class="material-symbols-outlined text-[20px]">send</span>
-          </button>
         </div>
       </div>
     </div>
@@ -1143,12 +1135,7 @@
   }
 
   function updateSendBtn() {
-    const msg = document.getElementById('message').value.trim();
-    const btn = document.getElementById('send-btn');
-    const active = msg.length > 0 && selected.candidate;
-    btn.disabled = !active;
-    btn.classList.toggle('bg-primary', active);
-    btn.classList.toggle('bg-slate-300', !active);
+    // send 버튼 제거됨 — enter 키로만 발송. 호환성 위해 함수는 유지.
   }
 
   function submitMessage() {
@@ -1189,9 +1176,9 @@
     spawnBalloon(m, true);
     msgEl.value = '';
     autoResize(msgEl);
-    updateSendBtn();
-    // 옵션 1 — 발송 후 이모지 picker만 숨김, input·키보드는 유지 (연속 발송)
+    // 발송 후 이모지 picker 숨김 + 키보드 자동 닫힘 (모바일 "완료" 불필요)
     document.getElementById('emoji-picker')?.classList.remove('show');
+    msgEl.blur();
     showToast('소망 풍선이 하늘로 올라갑니다 🎈');
   }
 
