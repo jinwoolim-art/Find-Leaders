@@ -530,13 +530,10 @@
       const res = await fetch(url);
       const data = await res.json();
       if (!data || !data.ok) return;
-      // 카운터 동기화: server count 에서 spawn된 미도달 풍선분 차감 후 monotonic 갱신
-      // - 자기/다른 시민 풍선 모두 spawn 직후 pendingArrivalCount++ → polling 차감 → 도달 전엔 변화 없음
-      // - 풍선 구름 도달 시 bumpCounter(+1) + pendingArrivalCount-- → 그때 비로소 카운트 +1
-      // - Math.max 로 절대 내려가지 않음, server count 가 spawn 안 한 풍선 만큼 크면 안전망 보충
+      // 카운터: server count 와만 동기화 (가장 안정적 — 모든 모바일 동일 값, 깜빡임 0, 이중 카운트 0)
+      // Math.max 로 monotonic 보장 (안전망)
       if (typeof data.count === 'number') {
-        const adjusted = Math.max(0, data.count - pendingArrivalCount);
-        counterValue = Math.max(counterValue, adjusted);
+        counterValue = Math.max(counterValue, data.count);
         document.getElementById('counter').textContent = counterValue.toLocaleString();
       }
       // 새 메시지 spawn (오래된 것부터)
@@ -581,7 +578,6 @@
   // ============ STATE ============
   let selected = { sido: '', sigungu: '', dong: '', nickname: '', electionType: '', partyFilter: '', candidate: null, tailEmoji: '💜' };
   let counterValue = 0;
-  let pendingArrivalCount = 0; // spawn 됐지만 아직 구름 도달 안 한 풍선 수 (자기/다른 시민 모두 포함, 이중 카운트 방지)
 
   // NEC 실 후보자 데이터 (assets/candidates-real.json fetch로 로드)
   const NEC = { loaded: false, governor: [], mayor: [], council: [], superintendent: [] };
@@ -913,19 +909,7 @@
     balloon.innerHTML = balloonInner(msg, !!isMine);
     stage.appendChild(balloon);
 
-    // 모든 풍선(자기/다른 시민 무관) → 구름 도달 시 카운트 +1 ("구름에 들어간다" 컨셉, 모바일 간 일관성)
-    // spawn 직후 pendingArrivalCount++ 로 polling 동기화 시 차감 → 도달 전엔 counter 변화 없음
-    // 도달 setTimeout: bumpCounter(+1) + pendingArrivalCount-- → 그때 비로소 카운트 +1 (이중 카운트 없음)
-    pendingArrivalCount++;
-    // 구름 도달 시점 = spawn 후 reachMs (대략 26초, 풍선 dur 의 ~90% 지점)
-    const CLOUD_AREA = 70;
-    const stageH = stage.clientHeight;
-    const reachProgress = Math.max(0.5, (stageH - CLOUD_AREA) / stageH);
-    const reachMs = dur * 1000 * reachProgress;
-    setTimeout(() => {
-      bumpCounter(1);
-      pendingArrivalCount = Math.max(0, pendingArrivalCount - 1);
-    }, reachMs);
+    // 카운터는 polling(3초마다)으로 server count 와만 동기화 — spawn/도달 시 카운트 변화 없음 (안정성 우선)
     // 풍선이 stage 위로 사라진 뒤 DOM 제거
     setTimeout(() => balloon.remove(), dur * 1000 + 200);
   }
