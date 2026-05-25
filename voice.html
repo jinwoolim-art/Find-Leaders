@@ -183,16 +183,16 @@
                  C  32,62   26,28    0,30
                  Z" fill="white"/>
       </svg>
-      <!-- 카운터 overlay — stage 안 상단 가운데, 풍선보다 위 (z-index 6 = SVG 위) -->
-      <div class="absolute top-1 left-1/2 -translate-x-1/2 text-center pointer-events-none z-[6]">
+      <!-- 카운터 overlay — stage 안 상단 가운데, 풍선·overlay보다 위 (z-30) -->
+      <div class="absolute top-1 left-1/2 -translate-x-1/2 text-center pointer-events-none z-30">
         <p class="leading-none">
           <span id="counter" class="text-[36px] font-black text-primary tracking-tight">0</span><span class="text-[11px] font-extrabold text-primary ml-1 tracking-wider align-baseline">SENT</span>
         </p>
       </div>
       <!-- 풍선이 여기서 떠오름 -->
 
-      <!-- ============ INPUT OVERLAY (stage 안 floating, 풍선이 뒤로 흘러갈 수 있게 반투명) ============ -->
-      <div class="absolute bottom-0 left-0 right-0 z-20 bg-white/85 backdrop-blur-md border-t border-slate-200/60">
+      <!-- ============ INPUT OVERLAY (stage 안 floating, 더 투명하게 — 풍선 뒤로 보임) ============ -->
+      <div class="absolute bottom-0 left-0 right-0 z-20 bg-white/60 backdrop-blur-md border-t border-white/40">
         <!-- Nickname row -->
         <div class="px-4 py-1.5 flex items-center gap-2 border-b border-slate-100/60">
           <span class="material-symbols-outlined text-slate-400 text-base">person</span>
