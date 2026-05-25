@@ -530,12 +530,14 @@
       const res = await fetch(url);
       const data = await res.json();
       if (!data || !data.ok) return;
-      // 카운터 monotonic 동기화: 절대 내려가지 않음
-      // - bumpCounter(+1)로 자기 풍선 도달 시점에 시각적 +1
-      // - 시트 쓰기 지연 / 폴링 시간차로 server count가 일시 작아도 떨어지지 않음
-      // - 다른 시민 풍선으로 server count가 더 커지면 그 값으로 올라감
+      // 카운터 동기화: server count 에서 자기 풍선 미도달분 차감 후 monotonic 갱신
+      // - 자기 풍선이 시트에 들어가 server count 가 +1 되어도, 도달 전까지는 카운트 안 올림
+      //   (구름 도달 시점 bumpCounter +1 과 이중 카운트 방지)
+      // - 다른 시민 풍선 → server count +N → 즉시 반영 (myPendingCount 영향 없음)
+      // - Math.max 로 절대 내려가지 않음
       if (typeof data.count === 'number') {
-        counterValue = Math.max(counterValue, data.count);
+        const adjusted = Math.max(0, data.count - myPendingCount);
+        counterValue = Math.max(counterValue, adjusted);
         document.getElementById('counter').textContent = counterValue.toLocaleString();
       }
       // 새 메시지 spawn (오래된 것부터)
@@ -572,6 +574,7 @@
   // ============ STATE ============
   let selected = { sido: '', sigungu: '', dong: '', nickname: '', electionType: '', partyFilter: '', candidate: null, tailEmoji: '💜' };
   let counterValue = 0;
+  let myPendingCount = 0; // 발송했지만 아직 구름 도달 안 한 자기 풍선 수 (이중 카운트 방지용)
 
   // NEC 실 후보자 데이터 (assets/candidates-real.json fetch로 로드)
   const NEC = { loaded: false, governor: [], mayor: [], council: [], superintendent: [] };
@@ -903,10 +906,22 @@
     balloon.innerHTML = balloonInner(msg, !!isMine);
     stage.appendChild(balloon);
 
-    // 자기 풍선이면 spawn 직후 즉시 카운트 +1 (UX 즉각성)
-    // 풍선이 26초 동안 올라가는 사이 폴링이 server count 동기화 → 다른 모바일도 자연 +1 반영
-    // (Math.max로 monotonic 보장, server count +1 시점과 거의 동시라 이중 카운트 없음)
-    if (isMine) bumpCounter(1);
+    // 자기 풍선 → 구름 도달 시 카운트 +1 ("구름에 들어간다" 컨셉)
+    // 발송 직후 myPendingCount++ 로 polling 동기화가 자기 풍선 server 반영을 차감 →
+    // 도달 시점에만 비로소 카운트 +1 일어남 (이중 카운트 없음).
+    // 다른 모바일은 polling 시간차로 약간 빨리 +1 (시민 입장 자연 해석)
+    if (isMine) {
+      myPendingCount++;
+      // 구름 도달 시점 = spawn 후 reachMs (대략 26초, 풍선 dur 의 ~90% 지점)
+      const CLOUD_AREA = 70;
+      const stageH = stage.clientHeight;
+      const reachProgress = Math.max(0.5, (stageH - CLOUD_AREA) / stageH);
+      const reachMs = dur * 1000 * reachProgress;
+      setTimeout(() => {
+        bumpCounter(1);
+        myPendingCount = Math.max(0, myPendingCount - 1);
+      }, reachMs);
+    }
     // 풍선이 stage 위로 사라진 뒤 DOM 제거
     setTimeout(() => balloon.remove(), dur * 1000 + 200);
   }
