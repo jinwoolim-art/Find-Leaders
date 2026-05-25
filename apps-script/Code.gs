@@ -2024,37 +2024,78 @@ function containsProfanityServer(text) {
   return false;
 }
 
-// Claude Haiku 1회 호출로 욕설/위반 카테고리 판정 + 12 토픽 분류 동시
+// 토픽 enum (LLM 응답 검증용 — 이 외 응답은 키워드 fallback 으로 대체)
+var TOPIC_ENUM = [
+  '교통', '주차', '보육', '안전', '환경',
+  '청년 일자리', '노인 일자리', '복지', '교육', '주거',
+  '도시재생', '관광', '공원/체육', '기타'
+];
+var VIOLATION_ENUM = ['비방','허위사실','지지','반대','투표권유','개인정보','정당후보자명','욕설'];
+
+// Claude Haiku 1회 호출로 욕설/위반 카테고리 판정 + 토픽 분류 동시
 // 응답 형식: { profanity: bool, topic: string, violations: string[] }
-// 실패 시 키워드 fallback 사용 (서비스 안정성 우선)
+// 실패·이탈 응답 시 키워드 fallback 사용 (서비스 안정성 우선)
 function moderateAndClassify(message) {
-  var fallback = function() {
+  var fallback = function(reason) {
     return {
       profanity: containsProfanityServer(message),
       topic: classifyTopic(message),
       violations: [],
-      source: 'fallback'
+      source: 'fallback' + (reason ? ':' + reason : '')
     };
   };
   if (!message) return { profanity: false, topic: '기타', violations: [], source: 'empty' };
   var apiKey = PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY');
-  if (!apiKey) return fallback();
+  if (!apiKey) return fallback('no-key');
 
-  var systemPrompt = '당신은 한국 지방선거 캠페인 페이지에 시민이 입력한 한마디를 검수하는 모더레이터입니다.\n\n' +
-    '다음 JSON 형식으로 정확히 응답하세요(다른 텍스트 X):\n' +
-    '{"profanity": true|false, "topic": "...", "violations": [...]}\n\n' +
-    'profanity: 욕설·비속어·자모분리 변형·외래어 욕설 포함 여부.\n\n' +
-    'topic: 다음 13개 중 정확히 1개 선택(공백·괄호 포함 그대로): ' +
-    '"교통", "주차", "보육", "안전", "환경", "청년 일자리", "노인 일자리", "복지", "교육", "주거", "도시재생", "관광", "공원/체육", "기타"\n\n' +
-    'violations: 아래 7개 카테고리 중 해당하는 것들의 배열(없으면 []):\n' +
-    '- "비방": 후보자·정당·특정인 비하·인신공격\n' +
-    '- "허위사실": 검증 불가·거짓 주장\n' +
-    '- "지지": 특정 후보 지지 호소\n' +
-    '- "반대": 특정 후보 낙선 호소\n' +
-    '- "투표권유": 투표 행동 직접 권유\n' +
-    '- "개인정보": 전화번호·주소·주민번호·계좌 노출\n' +
-    '- "정당후보자명": 본문 자체가 정당명/후보자명 나열·홍보\n\n' +
-    '단순 정책 제안·민원·고충은 violations 비움. 한 줄 응답만.';
+  // 프롬프트 캐시 효과 극대화 위해 동일 문자열 유지 (변경 시 캐시 무효)
+  var systemPrompt = [
+    '당신은 한국 지방선거 캠페인 페이지의 모더레이터입니다. 시민이 자기 동네 후보자에게 보내는 한마디를 검수·분류합니다.',
+    '',
+    '## 응답 형식 (다른 텍스트 절대 출력 금지)',
+    '오직 아래 JSON 한 줄만 출력하세요. 코드블록·설명·인사말 모두 금지.',
+    '{"profanity": false, "topic": "...", "violations": []}',
+    '',
+    '## profanity (boolean)',
+    'true: 명확한 욕설·비속어·자모분리 변형(ㅅㅂ, ㅂㅅ)·외래어 욕설·인종/성별 비하어가 본문에 포함.',
+    'false: 강한 불만·비판·답답함 표현은 포함하더라도 욕설 단어 자체가 없으면 false.',
+    '예: "답답해 죽겠네요" → false. "시발 진짜" → true.',
+    '',
+    '## topic (string — 아래 14개 중 정확히 1개, 띄어쓰기·슬래시 포함 그대로 복사)',
+    '"교통", "주차", "보육", "안전", "환경", "청년 일자리", "노인 일자리", "복지", "교육", "주거", "도시재생", "관광", "공원/체육", "기타"',
+    '',
+    '🚨 위 14개 외 다른 단어·변형·축약 출력 절대 금지. ',
+    '예: "청년 지원" ❌ → "청년 일자리" ✅',
+    '예: "체육" ❌ → "공원/체육" ✅',
+    '예: "환경 보호" ❌ → "환경" ✅',
+    '메시지가 명확한 토픽에 안 맞으면 "기타".',
+    '',
+    '## violations (string[] — 0개 이상)',
+    '엄격한 위반만 포함. 단순 정책 제안·민원·고충·요청·불만 표현은 무조건 빈 배열 [].',
+    '',
+    '- "비방": 후보자·정당·특정인 비하·인신공격·욕설성 호칭 (단순 비판/평가 아님)',
+    '- "허위사실": 거짓·왜곡 사실 진술 (의견·전망 아님)',
+    '- "지지": 특정 후보 당선/지지 명시 호소 ("○○ 뽑아주세요", "○○ 찍자")',
+    '- "반대": 특정 후보 낙선 호소 ("○○ 떨어뜨려야")',
+    '- "투표권유": 투표 행동 직접 권유 ("꼭 투표하세요")',
+    '- "개인정보": 전화번호·주소·주민번호·계좌·신용카드 번호 노출',
+    '- "정당후보자명": 본문 전체가 단순히 정당명/후보자명 나열·홍보 목적',
+    '',
+    '판정 원칙: 모호하면 빈 배열 []. 시민의 정상 의견을 차단하는 false positive 가 가장 큰 비용.',
+    '',
+    '## 예시',
+    '입력: "어르신 일자리가 부족해요"',
+    '출력: {"profanity": false, "topic": "노인 일자리", "violations": []}',
+    '',
+    '입력: "재래시장 좀 살려주세요"',
+    '출력: {"profanity": false, "topic": "도시재생", "violations": []}',
+    '',
+    '입력: "○○○ 후보 꼭 당선되어야 합니다"',
+    '출력: {"profanity": false, "topic": "기타", "violations": ["지지"]}',
+    '',
+    '입력: "시발 정치인들 다 똑같아"',
+    '출력: {"profanity": true, "topic": "기타", "violations": ["비방"]}'
+  ].join('\n');
 
   try {
     var res = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {
@@ -2067,6 +2108,7 @@ function moderateAndClassify(message) {
       payload: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 200,
+        temperature: 0, // 결정적 응답 — 동일 입력에 동일 출력
         system: [{
           type: 'text',
           text: systemPrompt,
@@ -2082,23 +2124,38 @@ function moderateAndClassify(message) {
     var code = res.getResponseCode();
     if (code < 200 || code >= 300) {
       console.warn('moderateAndClassify HTTP ' + code + ': ' + res.getContentText().slice(0, 300));
-      return fallback();
+      return fallback('http-' + code);
     }
     var body = JSON.parse(res.getContentText());
     var text = (body.content && body.content[0] && body.content[0].text || '').trim();
-    // JSON 추출 (모델이 가끔 코드블록으로 감쌈)
     var jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) return fallback();
-    var parsed = JSON.parse(jsonMatch[0]);
+    if (!jsonMatch) return fallback('no-json');
+    var parsed;
+    try { parsed = JSON.parse(jsonMatch[0]); }
+    catch (pe) { return fallback('json-parse'); }
+
+    // ── 응답 검증 + 정규화 ───────────────────────────────────────
+    // topic: 14 enum 외면 키워드 분류로 대체
+    var topic = String(parsed.topic || '').trim();
+    if (TOPIC_ENUM.indexOf(topic) === -1) {
+      topic = classifyTopic(message); // 키워드 fallback
+    }
+    // violations: 7 enum 만 허용, 그 외 항목 제거
+    var rawViolations = Array.isArray(parsed.violations) ? parsed.violations : [];
+    var violations = [];
+    for (var i = 0; i < rawViolations.length; i++) {
+      var v = String(rawViolations[i] || '').trim();
+      if (VIOLATION_ENUM.indexOf(v) !== -1) violations.push(v);
+    }
     return {
       profanity: !!parsed.profanity,
-      topic: parsed.topic || classifyTopic(message),
-      violations: Array.isArray(parsed.violations) ? parsed.violations : [],
+      topic: topic,
+      violations: violations,
       source: 'llm'
     };
   } catch (e) {
     console.warn('moderateAndClassify exception: ' + e);
-    return fallback();
+    return fallback('exception');
   }
 }
 
