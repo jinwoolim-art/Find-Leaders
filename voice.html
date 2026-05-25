@@ -93,6 +93,28 @@
       0%, 100% { opacity: 1; transform: scale(1); }
       50%      { opacity: 0.65; transform: scale(1.2); }
     }
+
+    /* 이모지 picker — 풍선 끝 매달림 아이콘 선택 */
+    .emoji-btn {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .emoji-btn.selected {
+      background: rgba(124,58,237,0.12);
+      border-color: #7C3AED;
+    }
+    .emoji-btn:active { transform: scale(0.88); }
     /* 말풍선 꼬리 — 좌하단 약간 안쪽 */
     .balloon::after {
       content: '';
@@ -279,6 +301,20 @@
           <span id="target-label" class="flex-1 text-xs text-slate-500 truncate">동네와 후보자를 먼저 선택해주세요</span>
           <span class="material-symbols-outlined text-slate-300 text-base">edit</span>
         </button>
+        <!-- 이모지 picker (풍선 매달림 아이콘) -->
+        <div id="emoji-picker" class="px-3 pt-1 pb-1 flex items-center gap-0.5 overflow-x-auto scrollbar-hide border-b border-slate-100/60">
+          <span class="text-[10px] text-slate-400 mr-1 shrink-0">매달기</span>
+          <button type="button" class="emoji-btn selected" data-emoji="💜" onclick="selectTailEmoji('💜', this)">💜</button>
+          <button type="button" class="emoji-btn" data-emoji="❤️" onclick="selectTailEmoji('❤️', this)">❤️</button>
+          <button type="button" class="emoji-btn" data-emoji="👏" onclick="selectTailEmoji('👏', this)">👏</button>
+          <button type="button" class="emoji-btn" data-emoji="⚡" onclick="selectTailEmoji('⚡', this)">⚡</button>
+          <button type="button" class="emoji-btn" data-emoji="👑" onclick="selectTailEmoji('👑', this)">👑</button>
+          <button type="button" class="emoji-btn" data-emoji="😊" onclick="selectTailEmoji('😊', this)">😊</button>
+          <button type="button" class="emoji-btn" data-emoji="🎉" onclick="selectTailEmoji('🎉', this)">🎉</button>
+          <button type="button" class="emoji-btn" data-emoji="⭐" onclick="selectTailEmoji('⭐', this)">⭐</button>
+          <button type="button" class="emoji-btn" data-emoji="🌸" onclick="selectTailEmoji('🌸', this)">🌸</button>
+          <button type="button" class="emoji-btn" data-emoji="🙏" onclick="selectTailEmoji('🙏', this)">🙏</button>
+        </div>
         <!-- KakaoTalk-style input bar -->
         <div class="px-3 py-2 flex items-end gap-2 bg-slate-50/60">
           <button onclick="openIlkkunApp()" aria-label="묻다 앱 다운로드" class="hidden size-9 items-center justify-center text-slate-500 shrink-0 hover:text-primary active:scale-95 transition-all">
@@ -458,7 +494,7 @@
   ];
 
   // ============ STATE ============
-  let selected = { sido: '', sigungu: '', dong: '', nickname: '', electionType: '', partyFilter: '', candidate: null };
+  let selected = { sido: '', sigungu: '', dong: '', nickname: '', electionType: '', partyFilter: '', candidate: null, tailEmoji: '💜' };
   let counterValue = 0;
 
   // NEC 실 후보자 데이터 (assets/candidates-real.json fetch로 로드)
@@ -726,8 +762,9 @@
       ? `<span class="inline-flex items-center justify-center min-w-[16px] h-[16px] px-1 bg-white/35 text-[10px] font-extrabold rounded-md mx-1 align-middle">${m.candidateNumber}</span>`
       : '';
     const party = m.party || '';
-    // 내 풍선만 — 실 + 매달린 하트 (살랑살랑)
-    const heartTail = isMine ? '<div class="balloon-string"><div class="heart-tail">💜</div></div>' : '';
+    // 내 풍선만 — 실 + 매달린 이모지 (살랑살랑). 사용자가 선택한 이모지 사용
+    const tailEmoji = m.tailEmoji || '💜';
+    const heartTail = isMine ? `<div class="balloon-string"><div class="heart-tail">${tailEmoji}</div></div>` : '';
     return `
       ${heartTail}
       <p class="text-[9px] opacity-80 truncate leading-tight">${escapeHtml(candSido)}${etLabel ? '  ' + escapeHtml(etLabel) : ''}</p>
@@ -1089,6 +1126,7 @@
       election: selected.candidate.election, candidate: selected.candidate.name,
       party: selected.candidate.party,  // 풍선 색상에 사용
       candidateNumber: selected.candidate.number,
+      tailEmoji: selected.tailEmoji,
       topic: '정책 제안', // 실제 운영: 백엔드 LLM 분류 결과 사용
       ago: '방금'
     };
@@ -1150,6 +1188,11 @@
   function openIlkkunApp() {
     const PLAY_URL = 'https://play.google.com/store/apps/details?id=com.play4.ilkkun&hl=ko';
     window.open(PLAY_URL, '_blank', 'noopener,noreferrer');
+  }
+
+  function selectTailEmoji(emoji, btn) {
+    selected.tailEmoji = emoji;
+    document.querySelectorAll('.emoji-btn').forEach(b => b.classList.toggle('selected', b === btn));
   }
 
   function share() {
