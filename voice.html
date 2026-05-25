@@ -498,6 +498,70 @@
     { sido: '서울', sigungu: '서초구', dong: '반포동',                  electionTypeLabel: '시장·군수·구청장', election: '서초구청장',          candidate: '정현우', candidateNumber: 2, party: '국민의힘',     topic: '공원/체육',  ago: '42분 전' }
   ];
 
+  // ============ BACKEND ============
+  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby7xcDYmlJgXvriMkqi8ZUO9y1Q-Y7yrZYGiQoiLdE69tn8GzZ8UUbxlmX8gqiJxCQIYw/exec';
+  let lastSeenTs = 0;     // 마지막으로 spawn한 풍선의 timestamp
+  let myRecentTs = new Set(); // 내가 방금 보낸 ts (폴링 응답에서 중복 spawn 방지)
+
+  async function postVoice(payload) {
+    try {
+      const res = await fetch(WEB_APP_URL, {
+        method: 'POST',
+        // Content-Type text/plain → preflight 없음 (CORS 통과)
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(Object.assign({ action: 'submitVoice' }, payload))
+      });
+      const data = await res.json();
+      if (data && data.ok && data.ts) myRecentTs.add(data.ts);
+      return data;
+    } catch (e) {
+      console.warn('postVoice failed:', e);
+      return { ok: false, error: String(e) };
+    }
+  }
+
+  async function loadVoices() {
+    try {
+      const url = `${WEB_APP_URL}?action=listVoices&since=${lastSeenTs}&limit=20`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (!data || !data.ok) return;
+      // 카운터 항상 서버 값으로 동기화
+      if (typeof data.count === 'number') {
+        counterValue = data.count;
+        document.getElementById('counter').textContent = counterValue.toLocaleString();
+      }
+      // 새 메시지 spawn (오래된 것부터)
+      const voices = (data.voices || []).sort((a, b) => a.ts - b.ts);
+      for (const v of voices) {
+        if (v.ts <= lastSeenTs) continue;
+        if (myRecentTs.has(v.ts)) { lastSeenTs = v.ts; continue; } // 내 거 중복 skip
+        spawnBalloon({
+          sido: shortSido(v.sido),
+          sigungu: v.sigungu,
+          dong: v.dong,
+          nickname: v.nickname,
+          electionType: v.electionType,
+          electionTypeLabel: v.electionLabel,
+          election: v.electionLabel,
+          candidate: v.candidate,
+          party: v.party,
+          candidateNumber: v.candidateNumber,
+          topic: v.topic || '정책 제안',
+          tailEmoji: v.tailEmoji || '💜',
+          ago: '방금'
+        }, false);
+        lastSeenTs = v.ts;
+      }
+    } catch (e) {
+      console.warn('loadVoices failed:', e);
+    }
+  }
+
+  function shortSido(s) {
+    return (s || '').replace('특별시', '').replace('광역시', '').replace('특별자치도', '').replace('특별자치시', '').replace('도', '').trim() || s;
+  }
+
   // ============ STATE ============
   let selected = { sido: '', sigungu: '', dong: '', nickname: '', electionType: '', partyFilter: '', candidate: null, tailEmoji: '💜' };
   let counterValue = 0;
@@ -613,10 +677,9 @@
       opt.value = s; opt.textContent = s;
       sidoSel.appendChild(opt);
     });
-    // production 모드 — 모든 dummy 비활성. 실제 시민 입력만 풍선·카운터 반영.
-    // renderTicker();
-    // startTickerSimulation();
-    // startCounterAnimation();
+    // production — Apps Script 백엔드 폴링 (다른 시민 메시지 + 카운터 동기화)
+    loadVoices();                            // 초기 로드
+    setInterval(loadVoices, 5000);           // 5초마다 폴링
     loadNECCandidates();
     setupInputOverlayToggle();
   }
@@ -1171,8 +1234,23 @@
       topic: '정책 제안', // 실제 운영: 백엔드 LLM 분류 결과 사용
       ago: '방금'
     };
-    // 풍선으로 띄움 — 위로 떠오르며 카운터에 도달하면 +1
+    // 1) 즉시 내 풍선 띄움 (즉각 피드백) + 카운터 +1
     spawnBalloon(m, true);
+    // 2) 백엔드 저장 — 다른 시민들에게도 보임 + 후보자 전달용 저장
+    postVoice({
+      sido: selected.sido,                    // 풀네임으로 저장
+      sigungu: selected.sigungu,
+      dong: selected.dong,
+      nickname: selected.nickname,
+      electionType: selected.electionType,
+      electionLabel: etLabel,
+      candidate: selected.candidate.name,
+      party: selected.candidate.party,
+      candidateNumber: selected.candidate.number,
+      message: msg,                            // 본문은 시트에만 저장 (페이지 노출 X)
+      topic: m.topic,
+      tailEmoji: selected.tailEmoji
+    });
     msgEl.value = '';
     autoResize(msgEl);
     // 발송 후 이모지 picker 숨김 + 키보드 자동 닫힘 (모바일 "완료" 불필요)

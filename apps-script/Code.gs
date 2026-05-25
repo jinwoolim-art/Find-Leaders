@@ -24,6 +24,7 @@ var INQUIRY_SHEET = '문의관리';
 var ACCT_SHEET    = '계정';
 var BROCHURE_SHEET= '소개서신청';
 var REGISTRATION_SHEET = '가입신청';
+var VOICE_SHEET   = '시민의풍선';
 var REGISTRATION_DOCS_FOLDER_NAME = '가입신청_증빙자료';
 var LANDING_URL = 'https://www.illkkun.cloud/';
 var REGISTRATION_FORM_BASE_URL = 'https://www.illkkun.cloud/registration-form.html';
@@ -89,6 +90,7 @@ function doPost(e) {
     if (action === 'toggleCSDocument') return toggleCSDocument(data);
     if (action === 'deleteCSDocument') return deleteCSDocument(data);
     if (action === 'fetchElectionCandidates') return fetchElectionCandidates(data);
+    if (action === 'submitVoice') return submitVoice(data);
 
     return json({ok: false, error: 'unknown action: ' + action});
   } catch (err) {
@@ -96,8 +98,10 @@ function doPost(e) {
   }
 }
 
-function doGet() {
-  return json({ok: true, service: '일꾼을묻다 Admin API', version: '1.1'});
+function doGet(e) {
+  var action = (e && e.parameter && e.parameter.action) || '';
+  if (action === 'listVoices') return listVoices(e.parameter);
+  return json({ok: true, service: '일꾼을묻다 Admin API', version: '1.2'});
 }
 
 /* ═══════════════════════ 발송 ═══════════════════════ */
@@ -1966,5 +1970,85 @@ function fetchElectionCandidates(data) {
     return json({ok: true, candidates: out, total: out.length, totalCount: totalCount, fetched: allItems.length, pages: pageNo});
   } catch (e) {
     return json({ok: false, error: 'fetchElectionCandidates exception: ' + (e && e.message || e)});
+  }
+}
+
+
+/* ═══════════════════════ 시민의 풍선 (voice.html) ═══════════════════════
+ * voice.html — 무인증 시민 한마디 캠페인. 시트의 '시민의풍선' 탭에 누적.
+ * POST submitVoice  → 1 row append
+ * GET  listVoices?since=ts&limit=N → 최근 N개 + 총 개수 (본문은 응답 제외)
+ */
+
+function getOrCreateVoiceSheet() {
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sheet = ss.getSheetByName(VOICE_SHEET);
+  if (!sheet) {
+    sheet = ss.insertSheet(VOICE_SHEET);
+    sheet.appendRow([
+      'timestamp', 'sido', 'sigungu', 'dong', 'nickname',
+      'electionType', 'electionLabel', 'candidate', 'party', 'candidateNumber',
+      'message', 'topic', 'tailEmoji'
+    ]);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function submitVoice(data) {
+  try {
+    var sheet = getOrCreateVoiceSheet();
+    var ts = new Date();
+    sheet.appendRow([
+      ts,
+      String(data.sido || ''),
+      String(data.sigungu || ''),
+      String(data.dong || ''),
+      String(data.nickname || ''),
+      String(data.electionType || ''),
+      String(data.electionLabel || ''),
+      String(data.candidate || ''),
+      String(data.party || ''),
+      String(data.candidateNumber || ''),
+      String(data.message || ''),
+      String(data.topic || ''),
+      String(data.tailEmoji || '💜')
+    ]);
+    return json({ok: true, ts: ts.getTime()});
+  } catch (e) {
+    return json({ok: false, error: 'submitVoice exception: ' + (e && e.message || e)});
+  }
+}
+
+function listVoices(params) {
+  try {
+    var sheet = getOrCreateVoiceSheet();
+    var lastRow = sheet.getLastRow();
+    var totalCount = Math.max(0, lastRow - 1); // 헤더 제외
+    var since = parseFloat(params.since || '0') || 0;
+    var limit = Math.max(1, Math.min(50, parseInt(params.limit || '20', 10)));
+    if (totalCount === 0) {
+      return json({ok: true, count: 0, voices: []});
+    }
+    var startRow = Math.max(2, lastRow - limit + 1);
+    var rowsCount = lastRow - startRow + 1;
+    var values = sheet.getRange(startRow, 1, rowsCount, 13).getValues();
+    var voices = [];
+    for (var i = 0; i < values.length; i++) {
+      var r = values[i];
+      var ts = r[0] ? new Date(r[0]).getTime() : 0;
+      if (ts <= since) continue; // since 이후만
+      voices.push({
+        ts: ts,
+        sido: r[1], sigungu: r[2], dong: r[3], nickname: r[4],
+        electionType: r[5], electionLabel: r[6],
+        candidate: r[7], party: r[8], candidateNumber: r[9],
+        // message: r[10] — 본문은 응답 제외 (페이지 노출 X)
+        topic: r[11], tailEmoji: r[12]
+      });
+    }
+    return json({ok: true, count: totalCount, voices: voices});
+  } catch (e) {
+    return json({ok: false, error: 'listVoices exception: ' + (e && e.message || e)});
   }
 }
