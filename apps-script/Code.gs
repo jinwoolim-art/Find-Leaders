@@ -1988,219 +1988,17 @@ function getOrCreateVoiceSheet() {
     sheet.appendRow([
       'timestamp', 'sido', 'sigungu', 'dong', 'nickname',
       'electionType', 'electionLabel', 'candidate', 'party', 'candidateNumber',
-      'message', 'topic', 'tailEmoji', 'clientId', 'status', 'violations'
+      'message', 'topic', 'tailEmoji'
     ]);
     sheet.setFrozenRows(1);
   }
   return sheet;
 }
 
-// 서버 사이드 욕설 사전 (LLM fallback용 — 클라이언트 우회 시 마지막 방어선)
-var PROFANITY_KEYWORDS = [
-  '시발','씨발','씨바','시바','씨방','싯팔','싸발','쒸발','쉬발',
-  '좆까','졸라','존나','좃까','좃나','좆나','좇',
-  '지랄','지롤','지롸',
-  '병신','빙신','뱅신',
-  '새끼','색끼','쌔끼','쌔퀴','싀끼',
-  '등신','똥신',
-  '니미','늬미','네에미',
-  '꺼져','꺼저',
-  '엿같','엿먹',
-  '뒈져','뒤져','뒤짐',
-  'ㅅㅂ','ㅆㅂ','ㅄ','ㅂㅅ','ㅈㄹ','ㅁㅊ',
-  'fuck','shit','bitch','asshole',
-  '깜둥','짱깨','쪽바리','김치녀','한남충'
-];
-
-function containsProfanityServer(text) {
-  if (!text) return false;
-  var lowered = String(text).toLowerCase();
-  var normalized = lowered.replace(/\s/g, '');
-  var stripped = normalized.replace(/[^가-힣ㄱ-ㅎa-z]/g, ''); // 숫자·기호로 우회한 변형(시1발) 차단
-  for (var i = 0; i < PROFANITY_KEYWORDS.length; i++) {
-    var kw = PROFANITY_KEYWORDS[i].toLowerCase();
-    if (normalized.indexOf(kw) !== -1 || stripped.indexOf(kw) !== -1) return true;
-  }
-  return false;
-}
-
-// 토픽 enum (LLM 응답 검증용 — 이 외 응답은 키워드 fallback 으로 대체)
-var TOPIC_ENUM = [
-  '교통', '주차', '보육', '안전', '환경',
-  '청년 일자리', '노인 일자리', '복지', '교육', '주거',
-  '도시재생', '관광', '공원/체육', '기타'
-];
-var VIOLATION_ENUM = ['비방','허위사실','지지','반대','투표권유','개인정보','정당후보자명','욕설'];
-
-// Claude Haiku 1회 호출로 욕설/위반 카테고리 판정 + 토픽 분류 동시
-// 응답 형식: { profanity: bool, topic: string, violations: string[] }
-// 실패·이탈 응답 시 키워드 fallback 사용 (서비스 안정성 우선)
-function moderateAndClassify(message) {
-  var fallback = function(reason) {
-    return {
-      profanity: containsProfanityServer(message),
-      topic: classifyTopic(message),
-      violations: [],
-      source: 'fallback' + (reason ? ':' + reason : '')
-    };
-  };
-  if (!message) return { profanity: false, topic: '기타', violations: [], source: 'empty' };
-  var apiKey = PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY');
-  if (!apiKey) return fallback('no-key');
-
-  // 프롬프트 캐시 효과 극대화 위해 동일 문자열 유지 (변경 시 캐시 무효)
-  var systemPrompt = [
-    '당신은 한국 지방선거 캠페인 페이지의 모더레이터입니다. 시민이 자기 동네 후보자에게 보내는 한마디를 검수·분류합니다.',
-    '',
-    '## 응답 형식 (다른 텍스트 절대 출력 금지)',
-    '오직 아래 JSON 한 줄만 출력하세요. 코드블록·설명·인사말 모두 금지.',
-    '{"profanity": false, "topic": "...", "violations": []}',
-    '',
-    '## profanity (boolean)',
-    'true: 명확한 욕설·비속어·자모분리 변형(ㅅㅂ, ㅂㅅ)·외래어 욕설·인종/성별 비하어가 본문에 포함.',
-    'false: 강한 불만·비판·답답함 표현은 포함하더라도 욕설 단어 자체가 없으면 false.',
-    '예: "답답해 죽겠네요" → false. "시발 진짜" → true.',
-    '',
-    '## topic (string — 아래 14개 중 정확히 1개, 띄어쓰기·슬래시 포함 그대로 복사)',
-    '"교통", "주차", "보육", "안전", "환경", "청년 일자리", "노인 일자리", "복지", "교육", "주거", "도시재생", "관광", "공원/체육", "기타"',
-    '',
-    '🚨 위 14개 외 다른 단어·변형·축약 출력 절대 금지. ',
-    '예: "청년 지원" ❌ → "청년 일자리" ✅',
-    '예: "체육" ❌ → "공원/체육" ✅',
-    '예: "환경 보호" ❌ → "환경" ✅',
-    '메시지가 명확한 토픽에 안 맞으면 "기타".',
-    '',
-    '## violations (string[] — 0개 이상)',
-    '엄격한 위반만 포함. 단순 정책 제안·민원·고충·요청·불만 표현은 무조건 빈 배열 [].',
-    '',
-    '- "비방": 후보자·정당·특정인 비하·인신공격·욕설성 호칭 (단순 비판/평가 아님)',
-    '- "허위사실": 거짓·왜곡 사실 진술 (의견·전망 아님)',
-    '- "지지": 특정 후보 당선/지지 명시 호소 ("○○ 뽑아주세요", "○○ 찍자")',
-    '- "반대": 특정 후보 낙선 호소 ("○○ 떨어뜨려야")',
-    '- "투표권유": 투표 행동 직접 권유 ("꼭 투표하세요")',
-    '- "개인정보": 전화번호·주소·주민번호·계좌·신용카드 번호 노출',
-    '- "정당후보자명": 본문 전체가 단순히 정당명/후보자명 나열·홍보 목적',
-    '',
-    '판정 원칙: 모호하면 빈 배열 []. 시민의 정상 의견을 차단하는 false positive 가 가장 큰 비용.',
-    '',
-    '## 예시',
-    '입력: "어르신 일자리가 부족해요"',
-    '출력: {"profanity": false, "topic": "노인 일자리", "violations": []}',
-    '',
-    '입력: "재래시장 좀 살려주세요"',
-    '출력: {"profanity": false, "topic": "도시재생", "violations": []}',
-    '',
-    '입력: "○○○ 후보 꼭 당선되어야 합니다"',
-    '출력: {"profanity": false, "topic": "기타", "violations": ["지지"]}',
-    '',
-    '입력: "시발 정치인들 다 똑같아"',
-    '출력: {"profanity": true, "topic": "기타", "violations": ["비방"]}'
-  ].join('\n');
-
-  try {
-    var res = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {
-      method: 'post',
-      contentType: 'application/json',
-      headers: {
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      payload: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 200,
-        temperature: 0, // 결정적 응답 — 동일 입력에 동일 출력
-        system: [{
-          type: 'text',
-          text: systemPrompt,
-          cache_control: { type: 'ephemeral' } // 시스템 프롬프트 캐시(5분 TTL) — 비용 절감
-        }],
-        messages: [{
-          role: 'user',
-          content: '시민 한마디: "' + String(message).slice(0, 500) + '"'
-        }]
-      }),
-      muteHttpExceptions: true
-    });
-    var code = res.getResponseCode();
-    if (code < 200 || code >= 300) {
-      console.warn('moderateAndClassify HTTP ' + code + ': ' + res.getContentText().slice(0, 300));
-      return fallback('http-' + code);
-    }
-    var body = JSON.parse(res.getContentText());
-    var text = (body.content && body.content[0] && body.content[0].text || '').trim();
-    var jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) return fallback('no-json');
-    var parsed;
-    try { parsed = JSON.parse(jsonMatch[0]); }
-    catch (pe) { return fallback('json-parse'); }
-
-    // ── 응답 검증 + 정규화 ───────────────────────────────────────
-    // topic: 14 enum 외면 키워드 분류로 대체
-    var topic = String(parsed.topic || '').trim();
-    if (TOPIC_ENUM.indexOf(topic) === -1) {
-      topic = classifyTopic(message); // 키워드 fallback
-    }
-    // violations: 7 enum 만 허용, 그 외 항목 제거
-    var rawViolations = Array.isArray(parsed.violations) ? parsed.violations : [];
-    var violations = [];
-    for (var i = 0; i < rawViolations.length; i++) {
-      var v = String(rawViolations[i] || '').trim();
-      if (VIOLATION_ENUM.indexOf(v) !== -1) violations.push(v);
-    }
-    return {
-      profanity: !!parsed.profanity,
-      topic: topic,
-      violations: violations,
-      source: 'llm'
-    };
-  } catch (e) {
-    console.warn('moderateAndClassify exception: ' + e);
-    return fallback('exception');
-  }
-}
-
-// 시민 메시지 → 12개 토픽 키워드 분류 (LLM 미적용 시 fallback. 운영 중 키워드 보강)
-function classifyTopic(message) {
-  if (!message) return '기타';
-  var m = String(message).replace(/\s/g, '');
-  var keywords = {
-    '교통':       ['교통','출퇴근','도로','지하철','버스','차량','막혀','정체','신호','노선'],
-    '주차':       ['주차','주차장','주차난','갓길','불법주차'],
-    '보육':       ['어린이집','유치원','보육','육아','맞벌이','돌봄','영유아','산모','출산'],
-    '안전':       ['안전','위험','사고','신호등','CCTV','범죄','치안','순찰','가로등'],
-    '환경':       ['환경','미세먼지','쓰레기','재활용','오염','매연','소음','분리수거'],
-    '청년 일자리': ['청년','일자리','취업','고용','창업','스타트업','인턴'],
-    '노인 일자리': ['노인','어르신','경로','노후','은퇴','연금','시니어'],
-    '복지':       ['복지','의료','건강','병원','요양','장애','기초생활','수급'],
-    '교육':       ['교육','학교','학원','입시','학생','선생','교사','급식','방과후'],
-    '주거':       ['주거','집','아파트','전세','월세','재건축','분양','임대','부동산'],
-    '도시재생':   ['재개발','재생','구도심','노후','정비','상권'],
-    '관광':       ['관광','여행','명소','관광객','외국인','축제'],
-    '공원/체육':  ['공원','체육','운동','자전거','산책','한강','산책로','체육관']
-  };
-  for (var topic in keywords) {
-    for (var i = 0; i < keywords[topic].length; i++) {
-      if (m.indexOf(keywords[topic][i]) !== -1) return topic;
-    }
-  }
-  return '기타';
-}
-
 function submitVoice(data) {
   try {
     var sheet = getOrCreateVoiceSheet();
     var ts = new Date();
-    var message = String(data.message || '');
-    // 모더레이션 + 토픽 분류 (LLM 1회 호출, 실패 시 키워드 fallback)
-    var mod = moderateAndClassify(message);
-    // 닉네임도 한 번 더 검수 (LLM은 본문만 봄)
-    var nicknameBad = containsProfanityServer(String(data.nickname || ''));
-    // 차단 정책: 명확한 욕설만 즉시 차단(blocked). 선거법 위반 카테고리(violations)는
-    // 시트 P컬럼에만 기록하고 노출은 허용 — 운영진이 시트에서 검토 후 수동 처리.
-    // (정상 정책 제안 false positive 차단 방지 — 시민 의견 묻히는 것이 더 큰 리스크)
-    var blocked = mod.profanity || nicknameBad;
-    var status = blocked ? 'blocked' : 'safe';
-    var topic = mod.topic || classifyTopic(message);
     sheet.appendRow([
       ts,
       String(data.sido || ''),
@@ -2212,22 +2010,11 @@ function submitVoice(data) {
       String(data.candidate || ''),
       String(data.party || ''),
       String(data.candidateNumber || ''),
-      message,
-      topic,
-      String(data.tailEmoji || '💜'),
-      String(data.clientId || ''),
-      status,
-      (mod.violations || []).join(',')
+      String(data.message || ''),
+      String(data.topic || ''),
+      String(data.tailEmoji || '💜')
     ]);
-    if (blocked) {
-      return json({
-        ok: false,
-        blocked: true,
-        error: '부적절한 표현 또는 선거법 위반 소지가 있어 등록되지 않았습니다',
-        violations: mod.violations || (nicknameBad ? ['닉네임욕설'] : ['욕설'])
-      });
-    }
-    return json({ok: true, ts: ts.getTime(), topic: topic});
+    return json({ok: true, ts: ts.getTime()});
   } catch (e) {
     return json({ok: false, error: 'submitVoice exception: ' + (e && e.message || e)});
   }
@@ -2237,55 +2024,31 @@ function listVoices(params) {
   try {
     var sheet = getOrCreateVoiceSheet();
     var lastRow = sheet.getLastRow();
+    var totalCount = Math.max(0, lastRow - 1); // 헤더 제외
     var since = parseFloat(params.since || '0') || 0;
     var limit = Math.max(1, Math.min(50, parseInt(params.limit || '20', 10)));
-    if (lastRow < 2) {
+    if (totalCount === 0) {
       return json({ok: true, count: 0, voices: []});
     }
     var startRow = Math.max(2, lastRow - limit + 1);
     var rowsCount = lastRow - startRow + 1;
-    var values = sheet.getRange(startRow, 1, rowsCount, 16).getValues();
+    var values = sheet.getRange(startRow, 1, rowsCount, 13).getValues();
     var voices = [];
-    var safeCount = 0;
     for (var i = 0; i < values.length; i++) {
       var r = values[i];
-      // status는 15번째(index 14). 빈 값이면 구버전 row → safe 간주(하위 호환)
-      var rowStatus = String(r[14] || 'safe').toLowerCase();
-      if (rowStatus !== 'safe') continue; // blocked/review 는 응답 제외 (페이지 노출 X)
-      safeCount++;
       var ts = r[0] ? new Date(r[0]).getTime() : 0;
-      if (ts <= since) continue;
+      if (ts <= since) continue; // since 이후만
       voices.push({
         ts: ts,
         sido: r[1], sigungu: r[2], dong: r[3], nickname: r[4],
         electionType: r[5], electionLabel: r[6],
         candidate: r[7], party: r[8], candidateNumber: r[9],
         // message: r[10] — 본문은 응답 제외 (페이지 노출 X)
-        topic: r[11], tailEmoji: r[12],
-        clientId: String(r[13] || '')
+        topic: r[11], tailEmoji: r[12]
       });
     }
-    // 카운터는 safe 메시지만 (페이지에 보일 수 있는 풍선 수와 일관) — 전체 lastRow-1 대신
-    // 다만 현재 window만 본 값이라 누적 count는 별도 산출 필요. 간단히 safe row 전체 count 추산.
-    var totalSafe = countSafeVoiceRows(sheet, lastRow);
-    return json({ok: true, count: totalSafe, voices: voices});
+    return json({ok: true, count: totalCount, voices: voices});
   } catch (e) {
     return json({ok: false, error: 'listVoices exception: ' + (e && e.message || e)});
-  }
-}
-
-// 전체 시트에서 status='safe'(또는 비어 있음=구버전 호환) row 개수 카운트
-function countSafeVoiceRows(sheet, lastRow) {
-  if (lastRow < 2) return 0;
-  try {
-    var statusCol = sheet.getRange(2, 15, lastRow - 1, 1).getValues();
-    var n = 0;
-    for (var i = 0; i < statusCol.length; i++) {
-      var s = String(statusCol[i][0] || 'safe').toLowerCase();
-      if (s === 'safe') n++;
-    }
-    return n;
-  } catch (e) {
-    return Math.max(0, lastRow - 1); // fallback
   }
 }
