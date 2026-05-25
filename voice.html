@@ -679,7 +679,7 @@
     });
     // production — Apps Script 백엔드 폴링 (다른 시민 메시지 + 카운터 동기화)
     loadVoices();                            // 초기 로드
-    setInterval(loadVoices, 5000);           // 5초마다 폴링
+    setInterval(loadVoices, 3000);           // 3초마다 폴링 (자기 풍선 빠르게 spawn)
     loadNECCandidates();
     setupInputOverlayToggle();
   }
@@ -1234,9 +1234,7 @@
       topic: '정책 제안', // 실제 운영: 백엔드 LLM 분류 결과 사용
       ago: '방금'
     };
-    // 1) 즉시 내 풍선 띄움 (즉각 피드백) + 카운터 +1
-    spawnBalloon(m, true);
-    // 2) 백엔드 저장 — 다른 시민들에게도 보임 + 후보자 전달용 저장
+    // 백엔드 저장만 — 풍선은 다음 폴링(최대 5초)에서 spawn (중복 방지)
     postVoice({
       sido: selected.sido,                    // 풀네임으로 저장
       sigungu: selected.sigungu,
@@ -1256,7 +1254,7 @@
     // 발송 후 이모지 picker 숨김 + 키보드 자동 닫힘 (모바일 "완료" 불필요)
     document.getElementById('emoji-picker')?.classList.remove('show');
     msgEl.blur();
-    showToast('소망 풍선이 하늘로 올라갑니다 🎈');
+    showToast('소망 풍선이 곧 떠오릅니다 🎈');
   }
 
   // 시연용 1차 욕설 필터 (운영 시 한국어 사전 + 자모 분리 변형 대응)
