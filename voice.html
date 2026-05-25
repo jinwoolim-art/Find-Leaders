@@ -115,6 +115,22 @@
       border-color: #7C3AED;
     }
     .emoji-btn:active { transform: scale(0.88); }
+
+    /* 이모지 picker — 입력 시작 시 표시(.show), 발송 후 숨김 */
+    #emoji-picker {
+      max-height: 0;
+      overflow: hidden;
+      padding-top: 0;
+      padding-bottom: 0;
+      opacity: 0;
+      transition: max-height 0.25s ease, padding 0.25s ease, opacity 0.2s ease;
+    }
+    #emoji-picker.show {
+      max-height: 60px;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      opacity: 1;
+    }
     /* 말풍선 꼬리 — 좌하단 약간 안쪽 */
     .balloon::after {
       content: '';
@@ -283,14 +299,32 @@
       <!-- 풍선이 여기서 떠오름 -->
 
 
-      <!-- ============ INPUT OVERLAY (탭으로 열고닫음 — 주소 + 입력만 컴팩트) ============ -->
-      <div id="input-overlay" class="input-overlay absolute bottom-0 left-0 right-0 z-20 bg-white/90 backdrop-blur-md border-t border-white/40">
-        <!-- Target chip (주소·후보자) — 클릭 시 모달에서 닉네임/이모지/지역/후보자 모두 설정 -->
-        <button id="target-chip" onclick="openTargetModal()" class="w-full px-4 py-2 flex items-center gap-2 border-b border-slate-100/60 text-left active:bg-slate-50/60">
-          <span class="material-symbols-outlined text-primary text-base">location_on</span>
-          <span id="target-label" class="flex-1 text-xs text-slate-500 truncate">동네와 후보자를 먼저 선택해주세요</span>
-          <span class="material-symbols-outlined text-slate-300 text-base">edit</span>
-        </button>
+      <!-- ============ INPUT OVERLAY (옵션 1 — 시민 정체성 + 이모지 토글 + 연속 발송) ============ -->
+      <div id="input-overlay" class="input-overlay absolute bottom-0 left-0 right-0 z-20 bg-white/92 backdrop-blur-md border-t border-white/40">
+        <!-- Citizen row: ← 뒤로가기 + 시민 정체성 chip -->
+        <div class="flex items-center gap-1 px-2 py-2 border-b border-slate-100/60">
+          <button id="back-btn" onclick="openTargetModal()" class="p-1.5 rounded-full hover:bg-slate-100 active:scale-95" aria-label="다른 후보자/지역 선택">
+            <span class="material-symbols-outlined text-slate-500 text-[20px]">arrow_back</span>
+          </button>
+          <button id="target-chip" onclick="openTargetModal()" class="flex-1 px-2 py-1 flex items-center gap-2 text-left active:bg-slate-50/60 rounded-lg">
+            <span class="material-symbols-outlined text-primary text-base">location_on</span>
+            <span id="target-label" class="flex-1 text-xs text-slate-500 truncate">동네와 후보자를 먼저 선택해주세요</span>
+            <span class="material-symbols-outlined text-slate-300 text-[16px]">edit</span>
+          </button>
+        </div>
+        <!-- 이모지 picker (입력 시작 시 표시, 발송 후 숨김) -->
+        <div id="emoji-picker" class="emoji-picker px-3 pt-1 pb-1 flex items-center gap-0.5 overflow-x-auto scrollbar-hide border-b border-slate-100/60">
+          <span class="text-[10px] text-slate-400 mr-1 shrink-0">매달기</span>
+          <button type="button" class="emoji-btn selected" data-emoji="💜" onclick="selectTailEmoji('💜', this)">💜</button>
+          <button type="button" class="emoji-btn" data-emoji="👏" onclick="selectTailEmoji('👏', this)">👏</button>
+          <button type="button" class="emoji-btn" data-emoji="⚡" onclick="selectTailEmoji('⚡', this)">⚡</button>
+          <button type="button" class="emoji-btn" data-emoji="👑" onclick="selectTailEmoji('👑', this)">👑</button>
+          <button type="button" class="emoji-btn" data-emoji="😊" onclick="selectTailEmoji('😊', this)">😊</button>
+          <button type="button" class="emoji-btn" data-emoji="🎉" onclick="selectTailEmoji('🎉', this)">🎉</button>
+          <button type="button" class="emoji-btn" data-emoji="⭐" onclick="selectTailEmoji('⭐', this)">⭐</button>
+          <button type="button" class="emoji-btn" data-emoji="🌸" onclick="selectTailEmoji('🌸', this)">🌸</button>
+          <button type="button" class="emoji-btn" data-emoji="🙏" onclick="selectTailEmoji('🙏', this)">🙏</button>
+        </div>
         <!-- KakaoTalk-style input bar -->
         <div class="px-3 py-2 flex items-end gap-2 bg-slate-50/60">
           <button onclick="openIlkkunApp()" aria-label="묻다 앱 다운로드" class="hidden size-9 items-center justify-center text-slate-500 shrink-0 hover:text-primary active:scale-95 transition-all">
@@ -651,12 +685,21 @@
       else openInputOverlay();
     });
 
-    // 비활성 input 클릭(터치) 시 — 모달 자동 열기
+    // 비활성 input 클릭 시 모달, 활성 시 이모지 picker 표시
     msgEl.addEventListener('click', (e) => {
       if (msgEl.disabled) {
         e.preventDefault();
         openTargetModal();
+      } else {
+        document.getElementById('emoji-picker')?.classList.add('show');
       }
+    });
+    msgEl.addEventListener('focus', () => {
+      if (!msgEl.disabled) document.getElementById('emoji-picker')?.classList.add('show');
+    });
+    // 입력 시작 시 picker 다시 표시 (발송 후 다시 입력하는 경우)
+    msgEl.addEventListener('input', () => {
+      if (msgEl.value.length > 0) document.getElementById('emoji-picker')?.classList.add('show');
     });
   }
 
@@ -1064,19 +1107,24 @@
 
   function confirmTarget() {
     if (!(selected.sido && selected.sigungu && selected.electionType && selected.candidate)) return;
+    // 옵션 1 — 상단 chip은 시민 정체성 ("📍 강남구 논현동 · 김O 시민")
     const locText = selected.dong ? `${selected.sigungu} ${selected.dong}` : selected.sigungu;
+    const nick = selected.nickname ? selected.nickname + ' ' : '';
     document.getElementById('target-label').innerHTML =
-      `<span class="text-slate-700 font-semibold">${locText}</span> · ` +
-      `<span class="text-primary font-bold">${selected.candidate.election} ${selected.candidate.name}</span>`;
+      `<span class="text-slate-700 font-semibold">${escapeHtml(locText)}</span>` +
+      `<span class="text-slate-500"> · </span>` +
+      `<span class="text-primary font-bold">${escapeHtml(nick)}시민</span>`;
     const msgEl = document.getElementById('message');
     msgEl.disabled = false;
-    msgEl.placeholder = '한마디를 적어주세요...';
+    // 후보자 정보는 placeholder로
+    msgEl.placeholder = `${selected.candidate.election} ${selected.candidate.name}에게 한마디...`;
     updateSendBtn();
     closeTargetModal();
-    // 모달 닫히면 overlay 표시 + input focus (키보드 자동)
+    // 모달 닫히면 overlay 표시 + input focus (키보드 자동) + 이모지 picker 표시
     const overlay = document.getElementById('input-overlay');
     overlay?.classList.add('show');
     document.getElementById('tap-hint')?.classList.add('hidden');
+    document.getElementById('emoji-picker')?.classList.add('show');
     setTimeout(() => msgEl.focus(), 250);
   }
 
@@ -1129,7 +1177,8 @@
     msgEl.value = '';
     autoResize(msgEl);
     updateSendBtn();
-    // input 유지 + 키보드 유지 → 연속 발송 가능 (사용자가 stage 다른 곳 탭 시 자동 닫힘)
+    // 옵션 1 — 발송 후 이모지 picker만 숨김, input·키보드는 유지 (연속 발송)
+    document.getElementById('emoji-picker')?.classList.remove('show');
     showToast('소망 풍선이 하늘로 올라갑니다 🎈');
   }
 
