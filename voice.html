@@ -341,11 +341,11 @@
               disabled
               oninput="autoResize(this); updateSendBtn();"
               onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); submitMessage();}"></textarea>
-            <span id="char-count" class="text-[10px] text-slate-300 px-2 pb-2">0/200</span>
           </div>
           <button id="send-btn" onclick="submitMessage()" disabled
-            class="size-10 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center transition-all shrink-0">
-            <span class="material-symbols-outlined text-base">send</span>
+            class="size-10 rounded-full bg-slate-300 text-white flex items-center justify-center transition-all shrink-0 shadow-md"
+            style="-webkit-tap-highlight-color: rgba(255,255,255,0.3);">
+            <span class="material-symbols-outlined text-[20px]">send</span>
           </button>
         </div>
       </div>
@@ -787,7 +787,7 @@
     const topic = m.topic || '정책';
     const etLabel = adaptElectionLabel(m.sido, m.electionTypeLabel || '', m);
     const numBadge = m.candidateNumber
-      ? `<span class="inline-flex items-center justify-center min-w-[16px] h-[16px] px-1 bg-white/35 text-[10px] font-extrabold rounded-md mx-1 align-middle">${m.candidateNumber}</span>`
+      ? `<span class="inline-flex items-center justify-center min-w-[13px] h-[13px] px-0.5 bg-white/35 text-[8px] font-extrabold rounded-md mx-0.5 align-middle">${m.candidateNumber}</span>`
       : '';
     const party = m.party || '';
     // 내 풍선만 — 실 + 매달린 이모지 (살랑살랑). 사용자가 선택한 이모지 사용
@@ -795,14 +795,14 @@
     const heartTail = isMine ? `<div class="balloon-string"><div class="heart-tail">${tailEmoji}</div></div>` : '';
     return `
       ${heartTail}
-      <p class="text-[9px] opacity-80 truncate leading-tight">${escapeHtml(candSido)}${etLabel ? '  ' + escapeHtml(etLabel) : ''}</p>
-      <p class="truncate mt-1 leading-tight">
-        ${party ? `<span class="text-[9px] opacity-85 align-middle mr-1">${escapeHtml(party)}</span>` : ''}${numBadge}<span class="text-[14px] font-extrabold align-middle">${escapeHtml(m.candidate)}</span>
+      <p class="text-[7px] opacity-80 truncate leading-tight">${escapeHtml(candSido)}${etLabel ? ' ' + escapeHtml(etLabel) : ''}</p>
+      <p class="truncate mt-0.5 leading-tight">
+        ${party ? `<span class="text-[6px] opacity-85 align-middle mr-0.5">${escapeHtml(party)}</span>` : ''}${numBadge}<span class="text-[10px] font-extrabold align-middle">${escapeHtml(m.candidate)}</span>
       </p>
-      <div class="my-1.5 border-t border-white/30"></div>
-      <span class="inline-block text-[9px] font-bold px-2 py-0.5 bg-white/30 rounded-full max-w-full truncate">🏷 ${escapeHtml(topic)}</span>
-      <p class="text-[9px] opacity-80 truncate leading-tight mt-1.5">${escapeHtml(citizenLoc)}</p>
-      <p class="text-[11px] font-bold truncate mt-0.5 leading-tight">${citizenName ? citizenName + ' 시민' : '시민'}${mineBadge}</p>
+      <div class="my-1 border-t border-white/30"></div>
+      <span class="inline-block text-[7px] font-bold px-1.5 py-0.5 bg-white/30 rounded-full max-w-full truncate">🏷 ${escapeHtml(topic)}</span>
+      <p class="text-[7px] opacity-80 truncate leading-tight mt-1">${escapeHtml(citizenLoc)}</p>
+      <p class="text-[8px] font-bold truncate mt-0.5 leading-tight">${citizenName ? citizenName + ' 시민' : '시민'}${mineBadge}</p>
     `;
   }
 
@@ -1132,9 +1132,7 @@
     const active = msg.length > 0 && selected.candidate;
     btn.disabled = !active;
     btn.classList.toggle('bg-primary', active);
-    btn.classList.toggle('text-white', active);
-    btn.classList.toggle('bg-slate-200', !active);
-    btn.classList.toggle('text-slate-400', !active);
+    btn.classList.toggle('bg-slate-300', !active);
   }
 
   function submitMessage() {
