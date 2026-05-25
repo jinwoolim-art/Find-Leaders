@@ -232,7 +232,7 @@
       <!-- 풍선이 여기서 떠오름 -->
 
       <!-- 첫 진입 안내 (overlay 닫혔을 때만 보임 — 직접 클릭 가능) -->
-      <button id="tap-hint" onclick="openInputOverlay()" class="tap-hint">탭하여 한마디 쓰기 ↑</button>
+      <button id="tap-hint" type="button" class="tap-hint">탭하여 한마디 쓰기 ↑</button>
 
       <!-- ============ INPUT OVERLAY (탭으로 열고닫음 — 기본 숨김) ============ -->
       <div id="input-overlay" class="input-overlay absolute bottom-0 left-0 right-0 z-20 bg-white/85 backdrop-blur-md border-t border-white/40">
@@ -569,12 +569,23 @@
   function setupInputOverlayToggle() {
     const stage = document.getElementById('balloon-stage');
     const overlay = document.getElementById('input-overlay');
+    const hint = document.getElementById('tap-hint');
     const msgEl = document.getElementById('message');
     if (!stage || !overlay) return;
 
-    // stage 영역(풍선·구름 포함) 어디든 탭 → overlay 토글
+    // tap-hint button — pointerdown(터치+클릭 통합) 즉시 반응
+    if (hint) {
+      const hintHandler = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openInputOverlay();
+      };
+      hint.addEventListener('pointerdown', hintHandler);
+      hint.addEventListener('click', hintHandler); // fallback
+    }
+
+    // stage 영역 어디든 탭 → overlay 토글
     stage.addEventListener('click', (e) => {
-      // overlay 내부 클릭/tap-hint 버튼 클릭은 자기 핸들러로 처리됨 (별도 무시)
       if (e.target.closest('#input-overlay') || e.target.closest('#tap-hint')) return;
       if (overlay.classList.contains('show')) closeInputOverlay();
       else openInputOverlay();
