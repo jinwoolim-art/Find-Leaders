@@ -329,15 +329,18 @@
           <button type="button" class="emoji-btn" data-emoji="🌸" onclick="selectTailEmoji('🌸', this)">🌸</button>
           <button type="button" class="emoji-btn" data-emoji="🙏" onclick="selectTailEmoji('🙏', this)">🙏</button>
         </div>
-        <!-- 입력창만 — 키보드 enter/전송 키로 발송, 버튼 없음 -->
+        <!-- 입력창 + 카톡 스타일 send 버튼 (input 안 우측) -->
         <div class="px-3 py-2.5">
-          <div class="bg-white rounded-2xl border border-slate-200">
+          <div class="bg-white rounded-2xl border border-slate-200 flex items-end gap-1">
             <textarea id="message" rows="1" maxlength="200" placeholder="동네와 후보자 선택 후 입력 가능"
-              enterkeyhint="send"
-              class="w-full px-4 py-2.5 text-sm bg-transparent resize-none focus:outline-none disabled:text-slate-400 max-h-[120px]"
+              class="flex-1 px-4 py-2.5 text-sm bg-transparent resize-none focus:outline-none disabled:text-slate-400 max-h-[120px]"
               disabled
-              oninput="autoResize(this); updateSendBtn();"
-              onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); submitMessage();}"></textarea>
+              oninput="autoResize(this); updateSendBtn();"></textarea>
+            <button id="send-btn" type="button" onclick="submitMessage()"
+              class="size-8 mr-1.5 mb-1.5 rounded-full bg-slate-300 text-white flex items-center justify-center shrink-0 transition-colors active:scale-90"
+              aria-label="한마디 보내기">
+              <span class="material-symbols-outlined text-[18px]">arrow_upward</span>
+            </button>
           </div>
         </div>
       </div>
@@ -507,15 +510,16 @@
     try {
       const res = await fetch(WEB_APP_URL, {
         method: 'POST',
-        // Content-Type text/plain → preflight 없음 (CORS 통과)
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(Object.assign({ action: 'submitVoice' }, payload))
       });
       const data = await res.json();
-      if (data && data.ok && data.ts) myRecentTs.add(data.ts);
+      if (data && data.ok && data.ts) {
+        // 즉시 spawn한 풍선의 서버 ts를 lastSeenTs로 갱신 → 다음 폴링에서 자기 메시지 skip
+        if (data.ts > lastSeenTs) lastSeenTs = data.ts;
+      }
       return data;
     } catch (e) {
-      console.warn('postVoice failed:', e);
       return { ok: false, error: String(e) };
     }
   }
@@ -1197,7 +1201,13 @@
   }
 
   function updateSendBtn() {
-    // send 버튼 제거됨 — enter 키로만 발송. 호환성 위해 함수는 유지.
+    const msg = document.getElementById('message').value.trim();
+    const btn = document.getElementById('send-btn');
+    if (!btn) return;
+    const active = msg.length > 0 && selected.candidate;
+    // disabled 속성은 건드리지 않음 (IME 이슈 무관 항상 클릭 가능, submitMessage 안에서 검증)
+    btn.classList.toggle('bg-primary', active);
+    btn.classList.toggle('bg-slate-300', !active);
   }
 
   function submitMessage() {
@@ -1234,7 +1244,10 @@
       topic: '정책 제안', // 실제 운영: 백엔드 LLM 분류 결과 사용
       ago: '방금'
     };
-    // 백엔드 저장만 — 풍선은 다음 폴링(최대 5초)에서 spawn (중복 방지)
+    // 1) 즉시 내 풍선 띄움 (UX — 즉각 피드백)
+    spawnBalloon(m, true);
+    // 2) 백엔드 저장 — 응답 ts로 lastSeenTs 갱신해 다음 폴링에서 자기 메시지 skip
+    //    (TODO: Google Sheets Date ms 정밀도 손실 시 중복 가능 — 다음 세션에서 clientId 컬럼 추가로 정밀화)
     postVoice({
       sido: selected.sido,                    // 풀네임으로 저장
       sigungu: selected.sigungu,
