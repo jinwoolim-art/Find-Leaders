@@ -47,9 +47,9 @@
     .balloon {
       position: absolute;
       bottom: 0;
-      width: 118px;
-      padding: 8px 10px 10px;
-      border-radius: 16px;
+      width: 82px;
+      padding: 6px 7px 8px;
+      border-radius: 14px;
       pointer-events: none;
       text-align: center;
       background: var(--bg, #A78BFA);
@@ -61,7 +61,7 @@
       z-index: 1;         /* 구름(z-5)보다 아래 — 풍선이 구름 영역 들어가면 뒤로 사라짐 */
     }
     .balloon.mine {
-      width: 142px;
+      width: 100px;
       z-index: 2;         /* 다른 풍선보단 위, 구름보단 아래 */
       animation-name: floatUpMine;
       filter: drop-shadow(0 8px 22px rgba(124,58,237,0.4));
@@ -282,7 +282,7 @@
     <!-- ============ BALLOON STAGE (카운터 overlay 포함) ============ -->
     <div id="balloon-stage" class="flex-1 relative" style="min-height: 240px; background: linear-gradient(180deg, #F5F3FF 0%, #DDD6FE 55%, #A78BFA 100%);">
       <!-- 상단 구름 경계 — Q 반원 호 + L V자 cusp. 가로 200% + 좌측 -50% shift → 화면 중앙 정렬, 호·V자 가로 2배 -->
-      <svg style="position: absolute; top: 0; left: -55%; width: 200%; height: 195px; pointer-events: none; z-index: 5;" viewBox="0 0 400 130" preserveAspectRatio="none" aria-hidden="true">
+      <svg style="position: absolute; top: 0; left: -55%; width: 200%; height: 130px; pointer-events: none; z-index: 5;" viewBox="0 0 400 130" preserveAspectRatio="none" aria-hidden="true">
         <path d="M 0,0 L 400,0
                  L 400,42
                  Q 360,100  320,42
@@ -295,7 +295,7 @@
                  Z" fill="white"/>
       </svg>
       <!-- 카운터 overlay — stage 안 상단 가운데, 풍선·overlay보다 위 (z-30) -->
-      <div class="absolute top-10 left-1/2 -translate-x-1/2 text-center pointer-events-none z-30">
+      <div class="absolute top-3 left-1/2 -translate-x-1/2 text-center pointer-events-none z-30">
         <p class="leading-none">
           <span id="counter" class="text-[36px] font-black text-primary tracking-tight">0</span><span class="text-[11px] font-extrabold text-primary ml-1 tracking-wider align-baseline">SENT</span>
         </p>
@@ -330,7 +330,7 @@
           <button type="button" class="emoji-btn" data-emoji="🙏" onclick="selectTailEmoji('🙏', this)">🙏</button>
         </div>
         <!-- KakaoTalk-style input bar (배경 통일 — input overlay와 한 컨테이너 느낌) -->
-        <div class="px-3 py-2 flex items-end gap-2">
+        <div class="px-2 py-2 flex items-end gap-1.5">
           <button onclick="openIlkkunApp()" aria-label="묻다 앱 다운로드" class="hidden size-9 items-center justify-center text-slate-500 shrink-0 hover:text-primary active:scale-95 transition-all">
             <span class="material-symbols-outlined text-xl">add</span>
           </button>
