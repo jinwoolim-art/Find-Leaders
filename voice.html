@@ -113,6 +113,44 @@
       50%     { transform: translateY(-5px); }
     }
 
+    /* Input overlay 토글 — 기본 숨김, .show 시 슬라이드 업 */
+    .input-overlay {
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+    }
+    .input-overlay.show {
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* 첫 진입 안내 — overlay 닫혔을 때 stage 하단에 작은 힌트 */
+    .tap-hint {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 15;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(8px);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #6D28D9;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      pointer-events: none;
+      animation: tapHintPulse 2s ease-in-out infinite;
+    }
+    .input-overlay.show ~ .tap-hint, .tap-hint.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    @keyframes tapHintPulse {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50%     { transform: translateX(-50%) translateY(-4px); }
+    }
+
     /* 풍선이 구름에 닿는 순간 — 풍선 burst */
     .balloon.reached {
       animation: balloonBurst 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
@@ -191,8 +229,11 @@
       </div>
       <!-- 풍선이 여기서 떠오름 -->
 
-      <!-- ============ INPUT OVERLAY (stage 안 floating, 더 투명하게 — 풍선 뒤로 보임) ============ -->
-      <div class="absolute bottom-0 left-0 right-0 z-20 bg-white/60 backdrop-blur-md border-t border-white/40">
+      <!-- 첫 진입 안내 (overlay 닫혔을 때만 보임) -->
+      <div id="tap-hint" class="tap-hint">탭하여 한마디 쓰기 ↑</div>
+
+      <!-- ============ INPUT OVERLAY (탭으로 열고닫음 — 기본 숨김) ============ -->
+      <div id="input-overlay" class="input-overlay absolute bottom-0 left-0 right-0 z-20 bg-white/85 backdrop-blur-md border-t border-white/40">
         <!-- Nickname row -->
         <div class="px-4 py-1.5 flex items-center gap-2 border-b border-slate-100/60">
           <span class="material-symbols-outlined text-slate-400 text-base">person</span>
@@ -499,6 +540,44 @@
     startTickerSimulation();  // 일정 간격으로 새 풍선 spawn
     // startCounterAnimation(); // 가짜 카운트는 비활성 — 0부터 실제 시민만
     loadNECCandidates();
+    setupInputOverlayToggle();
+  }
+
+  // Input overlay 토글 — stage 터치 시 열고/닫고, 발송 후 유지(키보드 그대로면 계속 발송)
+  function setupInputOverlayToggle() {
+    const stage = document.getElementById('balloon-stage');
+    const overlay = document.getElementById('input-overlay');
+    const hint = document.getElementById('tap-hint');
+    const msgEl = document.getElementById('message');
+    if (!stage || !overlay) return;
+
+    // stage 영역 어디든 터치 → overlay 토글 (단 overlay 내부 클릭은 무시)
+    stage.addEventListener('click', (e) => {
+      if (e.target.closest('#input-overlay')) return;
+      overlay.classList.toggle('show');
+      if (overlay.classList.contains('show')) {
+        // 표시 시 — 시민이름/지역/후보자 미설정이면 즉시 모달 열어 안내
+        if (!selected.candidate) {
+          openTargetModal();
+        } else {
+          // 설정 완료 상태면 input 자동 focus → 키보드 자동
+          setTimeout(() => msgEl.focus(), 100);
+        }
+      } else {
+        // 숨김 시 — input blur → 키보드 자동 닫힘
+        msgEl.blur();
+      }
+      // tap-hint 숨김/표시
+      if (hint) hint.classList.toggle('hidden', overlay.classList.contains('show'));
+    });
+
+    // 비활성 input 클릭(터치) 시 — 모달 자동 열기 (시민이름/지역/후보자 안내)
+    msgEl.addEventListener('click', (e) => {
+      if (msgEl.disabled) {
+        e.preventDefault();
+        openTargetModal();
+      }
+    });
   }
 
   // ============ BALLOON STAGE (시민 소망 풍선) ============
@@ -910,6 +989,10 @@
     msgEl.placeholder = '한마디를 적어주세요...';
     updateSendBtn();
     closeTargetModal();
+    // 모달 닫히면 overlay 표시 + input focus (키보드 자동)
+    const overlay = document.getElementById('input-overlay');
+    overlay?.classList.add('show');
+    document.getElementById('tap-hint')?.classList.add('hidden');
     setTimeout(() => msgEl.focus(), 250);
   }
 
@@ -961,8 +1044,8 @@
     msgEl.value = '';
     autoResize(msgEl);
     updateSendBtn();
-    // 모바일 키보드 자동으로 내려서 stage 풀화면 보이게
-    msgEl.blur();
+    // 발송 후 input·키보드 유지 — 사용자가 계속 입력하면 연속 발송 가능
+    // (사용자가 stage 다른 곳 터치 시 overlay·키보드 자동 닫힘)
     showToast('소망 풍선이 하늘로 올라갑니다 🎈');
   }
 
