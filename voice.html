@@ -903,16 +903,8 @@
     balloon.innerHTML = balloonInner(msg, !!isMine);
     stage.appendChild(balloon);
 
-    // 구름 도달 시점 정확히 계산 — 풍선이 stage 안에서 구름 SVG 영역(상단 70px)에 닿는 순간
-    const CLOUD_AREA = 70;
-    const stageH = stage.clientHeight;
-    const reachProgress = Math.max(0.5, (stageH - CLOUD_AREA) / stageH); // 안전 하한
-    const reachMs = dur * 1000 * reachProgress;
-    setTimeout(() => {
-      if (!balloon.isConnected) return;
-      // 카운터는 실제 시민(isMine=true)이 보낸 풍선만 +1. 시뮬레이션은 비주얼만.
-      if (isMine) bumpCounter(1);
-    }, reachMs);
+    // 카운터는 폴링(loadVoices)으로 server count 만 단일 진실로 동기화.
+    // 풍선 도달 시점에 즉시 +1 시각효과는 제거 — 다른 모바일과 카운트 불일치 충돌 방지.
     // 풍선이 stage 위로 사라진 뒤 DOM 제거
     setTimeout(() => balloon.remove(), dur * 1000 + 200);
   }
