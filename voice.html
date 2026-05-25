@@ -124,24 +124,26 @@
       pointer-events: auto;
     }
 
-    /* 첫 진입 안내 — overlay 닫혔을 때 stage 하단에 작은 힌트 */
+    /* 첫 진입 안내 — overlay 닫혔을 때 stage 하단에 작은 힌트 (button, 직접 클릭 가능) */
     .tap-hint {
       position: absolute;
       bottom: 24px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 15;
-      padding: 8px 16px;
-      background: rgba(255,255,255,0.85);
+      z-index: 25;
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.95);
       backdrop-filter: blur(8px);
       border-radius: 999px;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
       color: #6D28D9;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      pointer-events: none;
+      box-shadow: 0 6px 18px rgba(124,58,237,0.25);
+      border: none;
+      cursor: pointer;
       animation: tapHintPulse 2s ease-in-out infinite;
     }
+    .tap-hint:active { transform: translateX(-50%) scale(0.96); }
     .input-overlay.show ~ .tap-hint, .tap-hint.hidden {
       opacity: 0;
       pointer-events: none;
@@ -229,8 +231,8 @@
       </div>
       <!-- 풍선이 여기서 떠오름 -->
 
-      <!-- 첫 진입 안내 (overlay 닫혔을 때만 보임) -->
-      <div id="tap-hint" class="tap-hint">탭하여 한마디 쓰기 ↑</div>
+      <!-- 첫 진입 안내 (overlay 닫혔을 때만 보임 — 직접 클릭 가능) -->
+      <button id="tap-hint" onclick="openInputOverlay()" class="tap-hint">탭하여 한마디 쓰기 ↑</button>
 
       <!-- ============ INPUT OVERLAY (탭으로 열고닫음 — 기본 숨김) ============ -->
       <div id="input-overlay" class="input-overlay absolute bottom-0 left-0 right-0 z-20 bg-white/85 backdrop-blur-md border-t border-white/40">
@@ -544,34 +546,41 @@
   }
 
   // Input overlay 토글 — stage 터치 시 열고/닫고, 발송 후 유지(키보드 그대로면 계속 발송)
-  function setupInputOverlayToggle() {
-    const stage = document.getElementById('balloon-stage');
+  function openInputOverlay() {
     const overlay = document.getElementById('input-overlay');
     const hint = document.getElementById('tap-hint');
     const msgEl = document.getElementById('message');
+    overlay.classList.add('show');
+    if (hint) hint.classList.add('hidden');
+    if (!selected.candidate) {
+      openTargetModal();
+    } else {
+      setTimeout(() => msgEl.focus(), 100);
+    }
+  }
+  function closeInputOverlay() {
+    const overlay = document.getElementById('input-overlay');
+    const hint = document.getElementById('tap-hint');
+    const msgEl = document.getElementById('message');
+    overlay.classList.remove('show');
+    if (hint) hint.classList.remove('hidden');
+    msgEl.blur();
+  }
+  function setupInputOverlayToggle() {
+    const stage = document.getElementById('balloon-stage');
+    const overlay = document.getElementById('input-overlay');
+    const msgEl = document.getElementById('message');
     if (!stage || !overlay) return;
 
-    // stage 영역 어디든 터치 → overlay 토글 (단 overlay 내부 클릭은 무시)
+    // stage 영역(풍선·구름 포함) 어디든 탭 → overlay 토글
     stage.addEventListener('click', (e) => {
-      if (e.target.closest('#input-overlay')) return;
-      overlay.classList.toggle('show');
-      if (overlay.classList.contains('show')) {
-        // 표시 시 — 시민이름/지역/후보자 미설정이면 즉시 모달 열어 안내
-        if (!selected.candidate) {
-          openTargetModal();
-        } else {
-          // 설정 완료 상태면 input 자동 focus → 키보드 자동
-          setTimeout(() => msgEl.focus(), 100);
-        }
-      } else {
-        // 숨김 시 — input blur → 키보드 자동 닫힘
-        msgEl.blur();
-      }
-      // tap-hint 숨김/표시
-      if (hint) hint.classList.toggle('hidden', overlay.classList.contains('show'));
+      // overlay 내부 클릭/tap-hint 버튼 클릭은 자기 핸들러로 처리됨 (별도 무시)
+      if (e.target.closest('#input-overlay') || e.target.closest('#tap-hint')) return;
+      if (overlay.classList.contains('show')) closeInputOverlay();
+      else openInputOverlay();
     });
 
-    // 비활성 input 클릭(터치) 시 — 모달 자동 열기 (시민이름/지역/후보자 안내)
+    // 비활성 input 클릭(터치) 시 — 모달 자동 열기
     msgEl.addEventListener('click', (e) => {
       if (msgEl.disabled) {
         e.preventDefault();
