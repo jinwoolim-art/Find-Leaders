@@ -283,37 +283,14 @@
       <!-- 풍선이 여기서 떠오름 -->
 
 
-      <!-- ============ INPUT OVERLAY (탭으로 열고닫음 — 기본 숨김) ============ -->
-      <div id="input-overlay" class="input-overlay absolute bottom-0 left-0 right-0 z-20 bg-white/85 backdrop-blur-md border-t border-white/40">
-        <!-- Nickname row -->
-        <div class="px-4 py-1.5 flex items-center gap-2 border-b border-slate-100/60">
-          <span class="material-symbols-outlined text-slate-400 text-base">person</span>
-          <input id="main-nickname" type="text" maxlength="2" oninput="onMainNicknameChange()"
-            placeholder="시민 이름·닉네임 2자 (선택, 예: 김O)"
-            class="flex-1 text-xs bg-transparent focus:outline-none placeholder:text-slate-400">
-          <button onclick="showPrivacyInfo()" class="p-0.5 text-slate-300 hover:text-slate-500" aria-label="개인정보 안내">
-            <span class="material-symbols-outlined text-[16px]">info</span>
-          </button>
-        </div>
-        <!-- Target chip -->
-        <button id="target-chip" onclick="openTargetModal()" class="w-full px-4 py-1.5 flex items-center gap-2 border-b border-slate-100/60 text-left active:bg-slate-50/60">
+      <!-- ============ INPUT OVERLAY (탭으로 열고닫음 — 주소 + 입력만 컴팩트) ============ -->
+      <div id="input-overlay" class="input-overlay absolute bottom-0 left-0 right-0 z-20 bg-white/90 backdrop-blur-md border-t border-white/40">
+        <!-- Target chip (주소·후보자) — 클릭 시 모달에서 닉네임/이모지/지역/후보자 모두 설정 -->
+        <button id="target-chip" onclick="openTargetModal()" class="w-full px-4 py-2 flex items-center gap-2 border-b border-slate-100/60 text-left active:bg-slate-50/60">
           <span class="material-symbols-outlined text-primary text-base">location_on</span>
           <span id="target-label" class="flex-1 text-xs text-slate-500 truncate">동네와 후보자를 먼저 선택해주세요</span>
           <span class="material-symbols-outlined text-slate-300 text-base">edit</span>
         </button>
-        <!-- 이모지 picker (풍선 매달림 아이콘 — 기본 숨김, 입력 시작 시 표시) -->
-        <div id="emoji-picker" class="emoji-picker px-3 pt-1 pb-1 flex items-center gap-0.5 overflow-x-auto scrollbar-hide border-b border-slate-100/60">
-          <span class="text-[10px] text-slate-400 mr-1 shrink-0">매달기</span>
-          <button type="button" class="emoji-btn selected" data-emoji="💜" onclick="selectTailEmoji('💜', this)">💜</button>
-          <button type="button" class="emoji-btn" data-emoji="👏" onclick="selectTailEmoji('👏', this)">👏</button>
-          <button type="button" class="emoji-btn" data-emoji="⚡" onclick="selectTailEmoji('⚡', this)">⚡</button>
-          <button type="button" class="emoji-btn" data-emoji="👑" onclick="selectTailEmoji('👑', this)">👑</button>
-          <button type="button" class="emoji-btn" data-emoji="😊" onclick="selectTailEmoji('😊', this)">😊</button>
-          <button type="button" class="emoji-btn" data-emoji="🎉" onclick="selectTailEmoji('🎉', this)">🎉</button>
-          <button type="button" class="emoji-btn" data-emoji="⭐" onclick="selectTailEmoji('⭐', this)">⭐</button>
-          <button type="button" class="emoji-btn" data-emoji="🌸" onclick="selectTailEmoji('🌸', this)">🌸</button>
-          <button type="button" class="emoji-btn" data-emoji="🙏" onclick="selectTailEmoji('🙏', this)">🙏</button>
-        </div>
         <!-- KakaoTalk-style input bar -->
         <div class="px-3 py-2 flex items-end gap-2 bg-slate-50/60">
           <button onclick="openIlkkunApp()" aria-label="묻다 앱 다운로드" class="hidden size-9 items-center justify-center text-slate-500 shrink-0 hover:text-primary active:scale-95 transition-all">
@@ -1134,8 +1111,7 @@
     msgEl.value = '';
     autoResize(msgEl);
     updateSendBtn();
-    // 발송 깔끔하게 닫음 — input overlay 사라지고 tap-hint 버튼 다시 표시 (반복)
-    closeInputOverlay();
+    // input 유지 + 키보드 유지 → 연속 발송 가능 (사용자가 stage 다른 곳 탭 시 자동 닫힘)
     showToast('소망 풍선이 하늘로 올라갑니다 🎈');
   }
 
