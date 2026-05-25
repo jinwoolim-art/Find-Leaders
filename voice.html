@@ -301,11 +301,10 @@
           <span id="target-label" class="flex-1 text-xs text-slate-500 truncate">동네와 후보자를 먼저 선택해주세요</span>
           <span class="material-symbols-outlined text-slate-300 text-base">edit</span>
         </button>
-        <!-- 이모지 picker (풍선 매달림 아이콘) -->
-        <div id="emoji-picker" class="px-3 pt-1 pb-1 flex items-center gap-0.5 overflow-x-auto scrollbar-hide border-b border-slate-100/60">
+        <!-- 이모지 picker (풍선 매달림 아이콘 — 기본 숨김, 입력 시작 시 표시) -->
+        <div id="emoji-picker" class="emoji-picker px-3 pt-1 pb-1 flex items-center gap-0.5 overflow-x-auto scrollbar-hide border-b border-slate-100/60">
           <span class="text-[10px] text-slate-400 mr-1 shrink-0">매달기</span>
           <button type="button" class="emoji-btn selected" data-emoji="💜" onclick="selectTailEmoji('💜', this)">💜</button>
-          <button type="button" class="emoji-btn" data-emoji="❤️" onclick="selectTailEmoji('❤️', this)">❤️</button>
           <button type="button" class="emoji-btn" data-emoji="👏" onclick="selectTailEmoji('👏', this)">👏</button>
           <button type="button" class="emoji-btn" data-emoji="⚡" onclick="selectTailEmoji('⚡', this)">⚡</button>
           <button type="button" class="emoji-btn" data-emoji="👑" onclick="selectTailEmoji('👑', this)">👑</button>
@@ -1135,8 +1134,8 @@
     msgEl.value = '';
     autoResize(msgEl);
     updateSendBtn();
-    // 발송 후 input·키보드 유지 — 사용자가 계속 입력하면 연속 발송 가능
-    // (사용자가 stage 다른 곳 터치 시 overlay·키보드 자동 닫힘)
+    // 발송 깔끔하게 닫음 — input overlay 사라지고 tap-hint 버튼 다시 표시 (반복)
+    closeInputOverlay();
     showToast('소망 풍선이 하늘로 올라갑니다 🎈');
   }
 
