@@ -688,10 +688,14 @@
     msgEl.addEventListener('focus', () => {
       if (!msgEl.disabled) document.getElementById('emoji-picker')?.classList.add('show');
     });
-    // 입력 시작 시 picker 다시 표시 (발송 후 다시 입력하는 경우)
-    msgEl.addEventListener('input', () => {
-      if (msgEl.value.length > 0) document.getElementById('emoji-picker')?.classList.add('show');
-    });
+    // 한글 IME 대응 — input 외에 keyup, compositionend, change도 listen
+    // (모바일 일부 브라우저에서 한글 composition 중 input 이벤트 발생 안 함)
+    const refreshSend = () => { autoResize(msgEl); updateSendBtn();
+      if (msgEl.value.length > 0) document.getElementById('emoji-picker')?.classList.add('show'); };
+    msgEl.addEventListener('input', refreshSend);
+    msgEl.addEventListener('keyup', refreshSend);
+    msgEl.addEventListener('compositionend', refreshSend);
+    msgEl.addEventListener('change', refreshSend);
   }
 
   // ============ BALLOON STAGE (시민 소망 풍선) ============
