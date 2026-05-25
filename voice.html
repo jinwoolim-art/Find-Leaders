@@ -125,27 +125,27 @@
       pointer-events: auto;
     }
 
-    /* 첫 진입 안내 — overlay 닫혔을 때 stage 하단에 작은 힌트 (button, 직접 클릭 가능) */
+    /* 탭 힌트 — viewport 기준 fixed (stage 외부, 어떤 element와도 충돌 X) */
     .tap-hint {
-      position: absolute;
-      bottom: 24px;
+      position: fixed;
+      bottom: 32px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 25;
-      padding: 10px 20px;
-      background: rgba(255,255,255,0.95);
-      backdrop-filter: blur(8px);
+      z-index: 100;
+      padding: 14px 28px;
+      background: #7C3AED;
       border-radius: 999px;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 700;
-      color: #6D28D9;
-      box-shadow: 0 6px 18px rgba(124,58,237,0.25);
+      color: white;
+      box-shadow: 0 8px 24px rgba(124,58,237,0.45);
       border: none;
       cursor: pointer;
       animation: tapHintPulse 2s ease-in-out infinite;
+      -webkit-tap-highlight-color: rgba(255,255,255,0.3);
     }
-    .tap-hint:active { transform: translateX(-50%) scale(0.96); }
-    .input-overlay.show ~ .tap-hint, .tap-hint.hidden {
+    .tap-hint:active { transform: translateX(-50%) scale(0.95); }
+    .tap-hint.hidden {
       opacity: 0;
       pointer-events: none;
     }
@@ -232,8 +232,6 @@
       </div>
       <!-- 풍선이 여기서 떠오름 -->
 
-      <!-- 첫 진입 안내 (overlay 닫혔을 때만 보임 — 직접 클릭 가능) -->
-      <button id="tap-hint" type="button" class="tap-hint">탭하여 한마디 쓰기 ↑</button>
 
       <!-- ============ INPUT OVERLAY (탭으로 열고닫음 — 기본 숨김) ============ -->
       <div id="input-overlay" class="input-overlay absolute bottom-0 left-0 right-0 z-20 bg-white/85 backdrop-blur-md border-t border-white/40">
@@ -274,6 +272,9 @@
         </div>
       </div>
     </div>
+
+    <!-- ============ TAP-HINT (viewport fixed, stage 외부 — 어떤 element에도 영향 안 받음) ============ -->
+    <button id="tap-hint" type="button" onclick="openInputOverlay()" class="tap-hint">탭하여 한마디 쓰기 ↑</button>
 
     <!-- ============ TARGET MODAL ============ -->
     <div id="target-modal" class="fixed inset-0 z-[60] hidden">
