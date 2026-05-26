@@ -925,7 +925,8 @@
       <a href="#pain">시민 만남</a>
       <a href="#tools">도구</a>
       <a href="#dashboard">반응 대시보드</a>
-      <a href="#pricing">요금</a>
+      <!-- 2026-05-26: 등록비 정책 변경(무료화)으로 요금 메뉴 히든 처리. 복구 시 style 제거. -->
+      <a href="#pricing" style="display:none">요금</a>
       <a href="#" class="app-link" onclick="openAppPreview(event)">앱 보기 ↗</a>
       <a href="/citizen.html" class="citizen-link">🙋 시민용 ↗</a>
       <a class="btn" href="#contact">후보자 등록</a>
@@ -1526,15 +1527,17 @@
 </section>
 
 <!-- ══════ 8a. COUNTDOWN ══════ -->
+<!-- 2026-05-26: 등록비 정책 변경(무료화)으로 "할인된 가격" 카피 제거 + 헤더 문구 변경. -->
 <section class="countdown-section">
   <div class="wrap">
-    <h2>지금 등록하세요</h2>
-    <p class="lead">사전 등록 후보자에게만 제공되는 한정 혜택 — 할인된 가격으로 사전 구성 데이터를 먼저 확보하세요.</p>
+    <h2>후보자님, 등록비 무료입니다</h2>
+    <p style="margin-top:10px;font-size:18px;font-weight:800;color:#475569">지금 바로 시작하세요</p>
   </div>
 </section>
 
 <!-- ══════ 8. PRICING ══════ -->
-<section class="section pricing" id="pricing">
+<!-- 2026-05-26: 등록비 정책 변경(무료화)으로 가격 섹션 히든 처리. 복구 시 style 제거. -->
+<section class="section pricing" id="pricing" style="display:none" aria-hidden="true">
   <div class="wrap">
     <div class="section-head">
       <p class="pricing-sub">가입비 + 기본 대화량 포함 (추가 사용 시 선택 과금)</p>

@@ -6,6 +6,8 @@
 <title>🎯 사전등록 D-Day · 오늘 자정까지 50% 할인 · 일꾼을묻다</title>
 <meta name="description" content="2026 지방선거 후보자 사전등록 이벤트. 오늘 23:59까지 등록 시 50% 할인. 각 선거구·선거유형별 선착순."/>
 <meta name="robots" content="noindex,nofollow"/>
+<!-- 2026-05-26: 등록비 정책 변경(무료화)으로 사전등록 50% 할인 이벤트 페이지를 공식 페이지로 자동 이동. -->
+<meta http-equiv="refresh" content="0; url=landing-final.html"/>
 <link rel="canonical" href="https://www.illkkun.cloud/candidate-event.html"/>
 <meta property="og:type" content="website"/>
 <meta property="og:title" content="🎯 사전등록 D-Day · 오늘 자정까지 50% 할인"/>
@@ -424,9 +426,12 @@ body.is-expired .apply-submit{opacity:.55;pointer-events:none}
 </head>
 <body>
 
+<!-- 2026-05-26: 정책 변경에 따라 즉시 공식 페이지로 이동. meta refresh 외 보조 redirect. -->
+<script>location.replace('landing-final.html');</script>
+
 <!-- 마감 후 노출 -->
 <div class="expired-banner">
-  사전등록 50% 할인 이벤트가 종료되었습니다 · 정상가 등록은 <a href="landing-final.html" style="color:#fff;text-decoration:underline">공식 페이지</a>에서 진행하실 수 있습니다.
+  사전등록 50% 할인 이벤트가 종료되었습니다 · 등록 신청은 <a href="landing-final.html" style="color:#fff;text-decoration:underline">공식 페이지</a>에서 진행하실 수 있습니다.
 </div>
 
 <!-- NAV -->
@@ -797,7 +802,8 @@ body.is-expired .apply-submit{opacity:.55;pointer-events:none}
 </section>
 
 <!-- ══════ § 6 · PRICING ══════ -->
-<section class="pricing">
+<!-- 2026-05-26: 등록비 정책 변경(무료화)으로 가격 섹션 히든 처리. redirect 실패 시 fallback 노출 방지. -->
+<section class="pricing" style="display:none" aria-hidden="true">
   <div class="wrap">
     <div class="pricing-head-block">
       <p style="text-align:center;font-size:clamp(20px,5vw,28px);font-weight:900;color:var(--purple-dark);margin-bottom:14px;letter-spacing:-.02em;line-height:1.35"><span style="background:linear-gradient(180deg,transparent 55%,#fde047 55%);padding:0 6px">5월 24일까지 등록 후보자님께</span></p>
