@@ -310,18 +310,18 @@
       <!-- ============ INPUT OVERLAY (옵션 1 — 시민 정체성 + 이모지 토글 + 연속 발송) ============ -->
       <div id="input-overlay" class="input-overlay absolute bottom-0 left-0 right-0 z-20 bg-white/92 backdrop-blur-md border-t border-white/40">
         <!-- Citizen row: ← 뒤로가기 + 시민 정체성 chip -->
-        <div class="flex items-center gap-1 px-2 pt-2 pb-1">
-          <button id="back-btn" onclick="openTargetModal()" class="p-1.5 rounded-full hover:bg-slate-100 active:scale-95" aria-label="다른 후보자/지역 선택">
+        <div class="flex items-center gap-1 px-2 pt-1.5 pb-0.5">
+          <button id="back-btn" onclick="openTargetModal()" class="p-1 rounded-full hover:bg-slate-100 active:scale-95" aria-label="다른 후보자/지역 선택">
             <span class="material-symbols-outlined text-slate-500 text-[20px]">arrow_back</span>
           </button>
-          <button id="target-chip" onclick="openTargetModal()" class="flex-1 px-2 py-1 flex items-center gap-2 text-left active:bg-slate-50/60 rounded-lg">
+          <button id="target-chip" onclick="openTargetModal()" class="flex-1 px-2 py-0.5 flex items-center gap-2 text-left active:bg-slate-50/60 rounded-lg">
             <span class="material-symbols-outlined text-primary text-base">location_on</span>
             <span id="target-label" class="flex-1 text-xs text-slate-500 truncate">동네와 후보자를 먼저 선택해주세요</span>
             <span class="material-symbols-outlined text-slate-300 text-[16px]">edit</span>
           </button>
         </div>
         <!-- 캠페인 URL — 스크린샷 시 함께 캡처되어 바이럴 확산 -->
-        <p class="text-[10px] text-slate-400 text-center pb-1.5 border-b border-slate-100/60 tracking-wide">www.illkkun.cloud/voice.html</p>
+        <p class="text-[10px] text-white/90 text-center pb-1 border-b border-slate-100/60 tracking-wide">www.illkkun.cloud/voice.html</p>
         <!-- 이모지 picker (입력 시작 시 표시, 발송 후 숨김) -->
         <div id="emoji-picker" class="emoji-picker px-3 pt-1 pb-1 flex items-center gap-0.5 overflow-x-auto scrollbar-hide border-b border-slate-100/60">
           <span class="text-[10px] text-slate-400 mr-1 shrink-0">매달기</span>
