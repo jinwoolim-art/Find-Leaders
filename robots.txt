@@ -7,4 +7,7 @@ Disallow: /admin-dashboard-bundle.html
 Disallow: /candidate-dashboard-bundle.html
 Disallow: /candidate-dashboard-bundle_02.html
 
+# 비공개 archive 폴더 (만료/내부 보존용)
+Disallow: /archive/
+
 Sitemap: https://www.illkkun.cloud/sitemap.xml
