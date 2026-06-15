@@ -1318,10 +1318,16 @@
                         <p class="text-[11px] text-[#4c669a] dark:text-gray-400 font-medium ml-6">남겨주신 의견을 많은 후보자에게 전달하겠습니다</p>
                     </div>
                 </div>
-                <button onclick="toggleDark()" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
-                    <span class="material-symbols-outlined text-gray-600 dark:text-gray-400 block dark:hidden">dark_mode</span>
-                    <span class="material-symbols-outlined text-gray-400 hidden dark:block">light_mode</span>
-                </button>
+                <div class="flex items-center gap-1">
+                    <button onclick="openNotifModal()" class="relative p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800" aria-label="알림">
+                        <span class="material-symbols-outlined text-gray-600 dark:text-gray-400">notifications</span>
+                        <span id="notif-badge" class="hidden absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center leading-none"></span>
+                    </button>
+                    <button onclick="toggleDark()" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+                        <span class="material-symbols-outlined text-gray-600 dark:text-gray-400 block dark:hidden">dark_mode</span>
+                        <span class="material-symbols-outlined text-gray-400 hidden dark:block">light_mode</span>
+                    </button>
+                </div>
             </div>
         </header>
 
@@ -1338,7 +1344,7 @@
                     <p class="text-[11px] text-slate-400 dark:text-slate-500"><span id="citizens-body-count">0</span>/200</p>
                 </div>
 
-                <button onclick="submitCitizenOpinion()" class="mt-3 w-full bg-primary hover:bg-violet-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
+                <button onclick="submitCitizenOpinion(this)" class="mt-3 w-full bg-primary hover:bg-violet-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
                     <span class="material-symbols-outlined text-lg">campaign</span>
                     의견 올리기
                 </button>
@@ -1354,6 +1360,65 @@
             </div>
 
         </main>
+    </div>
+
+    <!-- ==================== 시민 의견 AI 요약 확인 모달 ==================== -->
+    <div id="cv-confirm-modal" class="fixed inset-0 z-[75] hidden">
+        <div class="absolute inset-0 bg-black/55" onclick="closeCvConfirm()"></div>
+        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white dark:bg-slate-900 rounded-t-3xl max-h-[88vh] overflow-y-auto shadow-2xl">
+            <div class="sticky top-0 bg-white dark:bg-slate-900 px-5 pt-4 pb-3 border-b border-slate-200 dark:border-slate-700 z-10">
+                <div class="w-10 h-1 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto mb-3"></div>
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-bold flex items-center gap-2"><span class="material-symbols-outlined text-primary">auto_awesome</span>내용 확인</h3>
+                    <button onclick="closeCvConfirm()" class="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+                        <span class="material-symbols-outlined text-slate-500">close</span>
+                    </button>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">아래 요약이 후보자에게 전달됩니다. 맞는지 확인하고, 필요하면 수정하세요.</p>
+            </div>
+            <div class="p-5 space-y-4">
+                <div>
+                    <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 mb-1.5">내가 작성한 내용</p>
+                    <p id="cv-original" class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-800 rounded-xl p-3 whitespace-pre-line"></p>
+                </div>
+                <div>
+                    <div class="flex items-center gap-1.5 mb-1.5">
+                        <span class="material-symbols-outlined text-primary text-base">auto_awesome</span>
+                        <p class="text-[11px] font-bold text-primary">AI가 정리한 한 줄 요약 (수정 가능)</p>
+                    </div>
+                    <textarea id="cv-summary" maxlength="200" rows="3" class="w-full px-3 py-3 text-sm rounded-xl border border-primary/40 dark:border-primary/50 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-primary resize-none"></textarea>
+                </div>
+                <label class="flex items-start gap-2.5 cursor-pointer select-none">
+                    <input id="cv-confirm-check" type="checkbox" class="mt-0.5 w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary accent-[#135bec]">
+                    <span class="text-sm text-slate-700 dark:text-slate-200 leading-snug">위 내용이 맞습니다. 이 내용으로 후보자에게 전달하는 데 동의합니다.</span>
+                </label>
+                <button id="cv-submit-btn" onclick="confirmCitizenVoice()" class="w-full bg-primary hover:bg-violet-700 text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100">
+                    <span class="material-symbols-outlined text-lg">send</span>
+                    후보자에게 전달
+                </button>
+                <p class="text-[10px] text-slate-400 dark:text-slate-500 text-center">원문·AI 요약·내 확정본·확인 시각이 함께 안전하게 기록됩니다.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 알림 목록 모달 ==================== -->
+    <div id="notif-modal" class="fixed inset-0 z-[75] hidden">
+        <div class="absolute inset-0 bg-black/55" onclick="closeNotifModal()"></div>
+        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white dark:bg-slate-900 rounded-t-3xl max-h-[85vh] overflow-y-auto shadow-2xl">
+            <div class="sticky top-0 bg-white dark:bg-slate-900 px-5 pt-4 pb-3 border-b border-slate-200 dark:border-slate-700 z-10">
+                <div class="w-10 h-1 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto mb-3"></div>
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-bold flex items-center gap-2"><span class="material-symbols-outlined text-primary">notifications</span>알림</h3>
+                    <div class="flex items-center gap-1">
+                        <button onclick="markAllNotifRead()" class="text-xs font-bold text-primary px-2 py-1 rounded-lg hover:bg-primary/10">모두 읽음</button>
+                        <button onclick="closeNotifModal()" class="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+                            <span class="material-symbols-outlined text-slate-500">close</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="notif-list" class="p-4 space-y-2"></div>
+        </div>
     </div>
 
     <!-- ==================== 후보자 공약 상세 모달 ==================== -->
@@ -1432,21 +1497,27 @@ function huboidOf(candidateId) {
     // c.id 형식 "nec_100162984" → "100162984"
     return typeof candidateId === 'string' && candidateId.startsWith('nec_') ? candidateId.slice(4) : null;
 }
+let _citizenTokenPromise = null; // 동시 호출 시 guest-login 중복 방지 (race → 백엔드 deviceId 충돌 500 방지)
 async function ensureGuestSession() {
     if (_citizenToken) return _citizenToken;
-    try {
-        const res = await fetch(`${CITIZEN_API_BASE}/auth/mobile/guest-login`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            // 백엔드 guest-login 이 현재 android/ios 만 허용 → 데모는 android 로 전송.
-            // (정식화 시 백엔드 MOBILE_DEVICE_TYPE 에 'web' 추가 예정)
-            body: JSON.stringify({ deviceId: citizenDeviceId(), deviceType: 'android' })
-        });
-        if (!res.ok) return null;
-        const d = await res.json();
-        _citizenToken = d.access_token || d.accessToken || d.token || (d.data && (d.data.access_token || d.data.accessToken || d.data.token)) || null;
-        if (_citizenToken) localStorage.setItem('citizen_token', _citizenToken);
-        return _citizenToken;
-    } catch (_) { return null; }
+    if (_citizenTokenPromise) return _citizenTokenPromise;
+    _citizenTokenPromise = (async () => {
+        try {
+            const res = await fetch(`${CITIZEN_API_BASE}/auth/mobile/guest-login`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                // 백엔드 guest-login 이 현재 android/ios 만 허용 → 데모는 android 로 전송.
+                // (정식화 시 백엔드 MOBILE_DEVICE_TYPE 에 'web' 추가 예정)
+                body: JSON.stringify({ deviceId: citizenDeviceId(), deviceType: 'android' })
+            });
+            if (!res.ok) return null;
+            const d = await res.json();
+            _citizenToken = d.access_token || d.accessToken || d.token || (d.data && (d.data.access_token || d.data.accessToken || d.data.token)) || null;
+            if (_citizenToken) localStorage.setItem('citizen_token', _citizenToken);
+            return _citizenToken;
+        } catch (_) { return null; }
+        finally { _citizenTokenPromise = null; }
+    })();
+    return _citizenTokenPromise;
 }
 async function resolveAvatarIds(huboids) {
     const need = (huboids || []).filter(h => h && !(h in _avatarIdMap));
@@ -1531,6 +1602,107 @@ async function toggleCandidateLike(candidateId, btnEl) {
         localStorage.setItem('candidateLikes', JSON.stringify(candidateLikes));
         _renderLikeBtn(btnEl, !!result.liked, serverCount);
     }
+}
+
+// ============ 시민 의견(citizen-voice) 백엔드 연동 ============
+// 흐름: 작성 → AI 한 줄 요약(preview) → 시민 확인/수정 → 확정 저장(create, confirmed:true)
+// → 마이(mine)에서 내 의견 + 후보자 답변 확인 → 답변 시 인앱 알림(notifications).
+// 백엔드 다운/실패 시 모든 함수가 null 반환 → 호출측이 localStorage 폴백.
+let _cvProvinces = null;     // [{id, nameKo}]
+let _cvSigunguCache = {};    // provinceId → [{id, nameKo}]
+let _cvEmdCache = {};        // sigunguId → [{id, nameKo}]
+
+async function _cvJson(url, opts) {
+    try {
+        const res = await fetch(url, opts || {});
+        if (!res.ok) return null;
+        return await res.json();
+    } catch (_) { return null; }
+}
+function _cvAuth(token, extra) {
+    return Object.assign({ 'Authorization': `Bearer ${token}` }, extra || {});
+}
+
+// selectedRegion {sido, sigungu, dong} 의 이름 → {provinceId, sigunguId, emdId} (uuid)
+async function cvResolveRegionIds(region) {
+    const out = { provinceId: null, sigunguId: null, emdId: null };
+    if (!region || !region.sido) return out;
+    if (!_cvProvinces) _cvProvinces = await _cvJson(`${CITIZEN_API_BASE}/location/provinces`);
+    if (!_cvProvinces) return out;
+    const prov = _cvProvinces.find(p => p.nameKo === region.sido);
+    if (!prov) return out;
+    out.provinceId = prov.id;
+    if (region.sigungu) {
+        if (!_cvSigunguCache[prov.id]) _cvSigunguCache[prov.id] = await _cvJson(`${CITIZEN_API_BASE}/location/sigungus?provinceId=${prov.id}`) || [];
+        const sg = _cvSigunguCache[prov.id].find(s => s.nameKo === region.sigungu);
+        if (sg) {
+            out.sigunguId = sg.id;
+            if (region.dong) {
+                if (!_cvEmdCache[sg.id]) _cvEmdCache[sg.id] = await _cvJson(`${CITIZEN_API_BASE}/location/emds?sigunguId=${sg.id}`) || [];
+                const emd = (_cvEmdCache[sg.id] || []).find(e => e.nameKo === region.dong);
+                if (emd) out.emdId = emd.id;
+            }
+        }
+    }
+    return out;
+}
+
+// AI 한 줄 요약만 받음 (저장 안 함) → { summary } | null
+async function cvPreview(body) {
+    const token = await ensureGuestSession();
+    if (!token) return null;
+    return await _cvJson(`${CITIZEN_API_BASE}/citizen-voices/preview`, {
+        method: 'POST',
+        headers: _cvAuth(token, { 'Content-Type': 'application/json' }),
+        body: JSON.stringify({ body })
+    });
+}
+
+// 확정 저장. summary=시민 확정본, aiSummary=AI 원본(수정 추적), confirmed=true(확인시각 기록)
+async function cvCreate(opts) {
+    const token = await ensureGuestSession();
+    if (!token) return null;
+    const ids = await cvResolveRegionIds(opts.region);
+    if (!ids.provinceId) return null; // provinceId 필수 — 거주지 미설정/매칭 실패 시 폴백
+    const payload = { provinceId: ids.provinceId, body: opts.body, summary: opts.summary, aiSummary: opts.aiSummary, confirmed: true };
+    if (ids.sigunguId) payload.sigunguId = ids.sigunguId;
+    if (ids.emdId) payload.emdId = ids.emdId;
+    return await _cvJson(`${CITIZEN_API_BASE}/citizen-voices`, {
+        method: 'POST',
+        headers: _cvAuth(token, { 'Content-Type': 'application/json' }),
+        body: JSON.stringify(payload)
+    });
+}
+
+// 내 의견 + 후보자 답변 → { data:[{id, body, summary, reply, repliedAt, createdAt, provinceNameKo, ...}], meta } | null
+async function cvMine(limit, offset) {
+    const token = await ensureGuestSession();
+    if (!token) return null;
+    return await _cvJson(`${CITIZEN_API_BASE}/citizen-voices/mine?limit=${limit || 15}&offset=${offset || 0}`, {
+        headers: _cvAuth(token)
+    });
+}
+
+// 알림
+async function cvNotifications() {
+    const token = await ensureGuestSession();
+    if (!token) return null;
+    return await _cvJson(`${CITIZEN_API_BASE}/notifications`, { headers: _cvAuth(token) });
+}
+async function cvUnreadCount() {
+    const token = await ensureGuestSession();
+    if (!token) return null;
+    return await _cvJson(`${CITIZEN_API_BASE}/notifications/unread-count`, { headers: _cvAuth(token) });
+}
+async function cvMarkRead(id) {
+    const token = await ensureGuestSession();
+    if (!token) return null;
+    return await _cvJson(`${CITIZEN_API_BASE}/notifications/${id}/read`, { method: 'PATCH', headers: _cvAuth(token) });
+}
+async function cvMarkAllRead() {
+    const token = await ensureGuestSession();
+    if (!token) return null;
+    return await _cvJson(`${CITIZEN_API_BASE}/notifications/read-all`, { method: 'PATCH', headers: _cvAuth(token) });
 }
 
 // ============ DATA ============
@@ -6138,53 +6310,153 @@ function _citizensRefreshPools() {
     if (_tickers['citizens-home-ticker']) _tickers['citizens-home-ticker'].queue = pool;
 }
 
-function _citizensRenderMine() {
+// 내 의견 렌더 — 백엔드 mine(답변 포함) 우선, 실패 시 localStorage 폴백
+async function _citizensRenderMine() {
     const wrap = document.getElementById('citizens-mine-wrap');
     const list = document.getElementById('citizens-mine-list');
     if (!list || !wrap) return;
-    const mine = _citizensGetMine();
-    if (mine.length === 0) {
-        wrap.classList.add('hidden'); list.innerHTML = ''; return;
+
+    const res = await cvMine(15, 0);
+    if (res && Array.isArray(res.data)) {
+        if (res.data.length === 0) { wrap.classList.add('hidden'); list.innerHTML = ''; return; }
+        wrap.classList.remove('hidden');
+        list.innerHTML = res.data.map(it => _cvMineCardHTML(it)).join('');
+        return;
     }
+    // 폴백: localStorage
+    const mine = _citizensGetMine();
+    if (mine.length === 0) { wrap.classList.add('hidden'); list.innerHTML = ''; return; }
     wrap.classList.remove('hidden');
-    list.innerHTML = mine.map((it, idx) => {
-        return '<div class="bg-white dark:bg-slate-800 rounded-2xl border border-[#e7ebf3] dark:border-gray-700 p-4 shadow-sm">'
-            + '<div class="flex items-center justify-between mb-2">'
-                + '<span class="text-[11px] font-bold text-primary">📍 ' + _citizensRegionLabel(it) + '</span>'
-                + '<div class="flex items-center gap-2">'
-                    + '<span class="text-[10px] text-slate-400">' + _citizensFormatTime(it.t) + '</span>'
-                    + '<button onclick="deleteCitizenMine(' + idx + ')" class="text-slate-300 hover:text-rose-500" title="삭제">'
-                        + '<span class="material-symbols-outlined text-base">delete</span>'
-                    + '</button>'
-                + '</div>'
-            + '</div>'
-            + '<p class="text-sm text-slate-700 dark:text-slate-300 leading-snug whitespace-pre-line">' + it.body + '</p>'
-            + '<div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-700 flex items-center gap-1.5">'
-                + '<span class="material-symbols-outlined text-[14px] text-emerald-500">verified</span>'
-                + '<span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">많은 후보자에게 전달하겠습니다</span>'
-            + '</div>'
-            + '</div>';
-    }).join('');
+    list.innerHTML = mine.map((it, idx) => _citizensLocalCardHTML(it, idx)).join('');
 }
 
-function submitCitizenOpinion() {
+function _cvMineRegionLabel(it) {
+    const s = (it.provinceNameKo || '').replace(/특별자치도$|특별자치시$|특별시$|광역시$|도$/, '');
+    return [s, it.sigunguNameKo, it.emdNameKo].filter(Boolean).join(' ') || '전국';
+}
+function _cvTimeLabel(iso) {
+    if (!iso) return '방금';
+    const t = new Date(iso).getTime();
+    if (isNaN(t)) return '';
+    return _citizensFormatTime(t);
+}
+function _cvMineCardHTML(it) {
+    const replyBlock = it.reply
+        ? '<div class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">'
+            + '<div class="flex items-center gap-1.5 mb-1.5">'
+                + '<span class="material-symbols-outlined text-[15px] text-primary">verified_user</span>'
+                + '<span class="text-[11px] font-bold text-primary">후보자 답변</span>'
+                + (it.repliedAt ? '<span class="text-[10px] text-slate-400 ml-auto">' + _cvTimeLabel(it.repliedAt) + '</span>' : '')
+            + '</div>'
+            + '<p class="text-sm text-slate-700 dark:text-slate-200 leading-relaxed bg-primary/5 dark:bg-primary/10 rounded-xl p-3 whitespace-pre-line">' + escapeHtml(it.reply) + '</p>'
+          + '</div>'
+        : '<div class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700 flex items-center gap-1.5">'
+            + '<span class="material-symbols-outlined text-[14px] text-slate-400">hourglass_empty</span>'
+            + '<span class="text-[11px] text-slate-400">후보자 답변 대기 중</span>'
+          + '</div>';
+    return '<div class="bg-white dark:bg-slate-800 rounded-2xl border border-[#e7ebf3] dark:border-gray-700 p-4 shadow-sm">'
+        + '<div class="flex items-center justify-between mb-2">'
+            + '<span class="text-[11px] font-bold text-primary">📍 ' + escapeHtml(_cvMineRegionLabel(it)) + '</span>'
+            + '<span class="text-[10px] text-slate-400">' + _cvTimeLabel(it.createdAt) + '</span>'
+        + '</div>'
+        + (it.summary ? '<p class="text-sm font-semibold text-slate-800 dark:text-white leading-snug mb-1">' + escapeHtml(it.summary) + '</p>' : '')
+        + (it.body ? '<p class="text-[13px] text-slate-500 dark:text-slate-400 leading-snug whitespace-pre-line">' + escapeHtml(it.body) + '</p>' : '')
+        + replyBlock
+        + '</div>';
+}
+function _citizensLocalCardHTML(it, idx) {
+    return '<div class="bg-white dark:bg-slate-800 rounded-2xl border border-[#e7ebf3] dark:border-gray-700 p-4 shadow-sm">'
+        + '<div class="flex items-center justify-between mb-2">'
+            + '<span class="text-[11px] font-bold text-primary">📍 ' + _citizensRegionLabel(it) + '</span>'
+            + '<div class="flex items-center gap-2">'
+                + '<span class="text-[10px] text-slate-400">' + _citizensFormatTime(it.t) + '</span>'
+                + '<button onclick="deleteCitizenMine(' + idx + ')" class="text-slate-300 hover:text-rose-500" title="삭제">'
+                    + '<span class="material-symbols-outlined text-base">delete</span>'
+                + '</button>'
+            + '</div>'
+        + '</div>'
+        + '<p class="text-sm text-slate-700 dark:text-slate-300 leading-snug whitespace-pre-line">' + escapeHtml(it.body) + '</p>'
+        + '<div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-700 flex items-center gap-1.5">'
+            + '<span class="material-symbols-outlined text-[14px] text-emerald-500">verified</span>'
+            + '<span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">많은 후보자에게 전달하겠습니다</span>'
+        + '</div>'
+        + '</div>';
+}
+
+// 의견 올리기 → AI 한 줄 요약(preview) → 성공 시 확인 모달, 백엔드 다운 시 localStorage 즉시 등록
+let _cvPending = null; // { body, aiSummary }
+async function submitCitizenOpinion(btn) {
     const bodyEl = document.getElementById('citizens-body');
     const body = (bodyEl && bodyEl.value || '').trim();
     if (!body) { showToast('의견을 입력해주세요'); return; }
 
-    // 메인 거주지가 있으면 자동 부여, 없으면 '전국'으로 등록
-    const region = _citizensGetMyRegion() || { sido: '전국', sgg: '' };
+    let orig = null;
+    if (btn) { orig = btn.innerHTML; btn.disabled = true; btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">progress_activity</span> 내용을 정리하는 중...'; }
+    const preview = await cvPreview(body);
+    if (btn) { btn.disabled = false; btn.innerHTML = orig; }
 
+    if (preview && preview.summary) {
+        // 백엔드 동작 → 책임소지 확인 단계
+        _cvPending = { body, aiSummary: preview.summary };
+        document.getElementById('cv-original').textContent = body;
+        document.getElementById('cv-summary').value = preview.summary;
+        const chk = document.getElementById('cv-confirm-check'); if (chk) chk.checked = false;
+        openCvConfirm();
+        return;
+    }
+    // 폴백 — 백엔드 다운: 기존 localStorage 즉시 등록
+    _citizensSubmitLocal(body);
+}
+
+// localStorage 폴백 등록 (백엔드 불가 시)
+function _citizensSubmitLocal(body) {
+    const region = _citizensGetMyRegion() || { sido: '전국', sgg: '' };
     const mine = _citizensGetMine();
     mine.unshift({ sido: region.sido, sgg: region.sgg, body, t: Date.now() });
     _citizensSaveMine(mine);
     CITIZENS_LIVE_COUNT += 1;
     _citizensUpdateCount();
-    bodyEl.value = '';
+    const bodyEl = document.getElementById('citizens-body');
+    if (bodyEl) bodyEl.value = '';
     const c = document.getElementById('citizens-body-count'); if (c) c.textContent = '0';
     showToast('의견을 많은 후보자에게 전달하겠습니다');
     _citizensRenderMine();
     _citizensRefreshPools();
+}
+
+function openCvConfirm() { const m = document.getElementById('cv-confirm-modal'); if (m) m.classList.remove('hidden'); }
+function closeCvConfirm() { const m = document.getElementById('cv-confirm-modal'); if (m) m.classList.add('hidden'); }
+
+// 확인 모달 [후보자에게 전달] → 확정 저장(confirmed:true). 실패 시 localStorage 폴백.
+async function confirmCitizenVoice() {
+    const chk = document.getElementById('cv-confirm-check');
+    if (!chk || !chk.checked) { showToast('위 내용이 맞는지 확인란에 체크해주세요'); return; }
+    if (!_cvPending) { closeCvConfirm(); return; }
+    const summary = (document.getElementById('cv-summary').value || '').trim() || _cvPending.aiSummary;
+
+    const btn = document.getElementById('cv-submit-btn');
+    const orig = btn ? btn.innerHTML : null;
+    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">progress_activity</span> 전달 중...'; }
+    const region = (typeof selectedRegion !== 'undefined' && selectedRegion) ? selectedRegion : null;
+    const result = await cvCreate({ body: _cvPending.body, summary, aiSummary: _cvPending.aiSummary, region });
+    if (btn) { btn.disabled = false; btn.innerHTML = orig; }
+
+    closeCvConfirm();
+    const bodyEl = document.getElementById('citizens-body');
+    if (bodyEl) bodyEl.value = '';
+    const c = document.getElementById('citizens-body-count'); if (c) c.textContent = '0';
+
+    if (result && result.id) {
+        _cvPending = null;
+        CITIZENS_LIVE_COUNT += 1; _citizensUpdateCount();
+        showToast('의견을 후보자에게 전달했습니다');
+        _citizensRenderMine();
+        refreshNotifBadge();
+        return;
+    }
+    // 거주지 미설정/매칭 실패 등 → localStorage 폴백
+    _citizensSubmitLocal(_cvPending.body);
+    _cvPending = null;
 }
 
 function deleteCitizenMine(idx) {
@@ -6196,10 +6468,70 @@ function deleteCitizenMine(idx) {
     showToast('의견이 삭제되었습니다');
 }
 
+// ====== 알림 ======
+async function refreshNotifBadge() {
+    const badge = document.getElementById('notif-badge');
+    if (!badge) return;
+    const res = await cvUnreadCount();
+    const n = res && typeof res.unreadCount === 'number' ? res.unreadCount : 0;
+    if (n > 0) { badge.textContent = n > 99 ? '99+' : String(n); badge.classList.remove('hidden'); }
+    else { badge.classList.add('hidden'); }
+}
+function openNotifModal() { renderNotifList(); const m = document.getElementById('notif-modal'); if (m) m.classList.remove('hidden'); }
+function closeNotifModal() { const m = document.getElementById('notif-modal'); if (m) m.classList.add('hidden'); }
+
+async function renderNotifList() {
+    const list = document.getElementById('notif-list');
+    if (!list) return;
+    list.innerHTML = '<div class="py-10 text-center text-sm text-slate-400">불러오는 중...</div>';
+    const res = await cvNotifications();
+    if (!res || !Array.isArray(res.data)) {
+        list.innerHTML = '<div class="py-12 flex flex-col items-center text-slate-400"><span class="material-symbols-outlined text-4xl mb-2">cloud_off</span><p class="text-sm">알림을 불러올 수 없습니다</p></div>';
+        return;
+    }
+    if (res.data.length === 0) {
+        list.innerHTML = '<div class="py-12 flex flex-col items-center text-slate-400"><span class="material-symbols-outlined text-4xl mb-2">notifications_off</span><p class="text-sm">받은 알림이 없습니다</p></div>';
+        return;
+    }
+    list.innerHTML = res.data.map(n => _notifCardHTML(n)).join('');
+}
+function _notifCardHTML(n) {
+    const unread = !n.isRead;
+    const icon = n.type === 'citizen_voice_reply' ? 'mark_chat_read' : 'notifications';
+    return '<button onclick="onNotifClick(\'' + n.id + '\')" class="w-full text-left rounded-xl border p-3.5 transition-colors '
+        + (unread ? 'bg-primary/5 dark:bg-primary/10 border-primary/30' : 'bg-white dark:bg-slate-800 border-[#e7ebf3] dark:border-gray-700') + '">'
+        + '<div class="flex items-start gap-2.5">'
+            + '<span class="material-symbols-outlined text-[20px] ' + (unread ? 'text-primary' : 'text-slate-400') + ' mt-0.5">' + icon + '</span>'
+            + '<div class="flex-1 min-w-0">'
+                + '<div class="flex items-center gap-2">'
+                    + '<p class="text-sm font-bold text-slate-800 dark:text-white">' + escapeHtml(n.title || '알림') + '</p>'
+                    + (unread ? '<span class="w-1.5 h-1.5 rounded-full bg-rose-500 flex-shrink-0"></span>' : '')
+                + '</div>'
+                + (n.body ? '<p class="text-[13px] text-slate-600 dark:text-slate-300 leading-snug mt-0.5 whitespace-pre-line">' + escapeHtml(n.body) + '</p>' : '')
+                + '<p class="text-[10px] text-slate-400 mt-1">' + _cvTimeLabel(n.createdAt) + '</p>'
+            + '</div>'
+        + '</div>'
+        + '</button>';
+}
+async function onNotifClick(id) {
+    await cvMarkRead(id);
+    refreshNotifBadge();
+    closeNotifModal();
+    // 답변 알림 → 내 의견 목록으로 이동해 답변 확인
+    const tab = document.querySelector('[data-tab=page-citizens]');
+    if (tab) switchBottomTab(tab, 'page-citizens');
+}
+async function markAllNotifRead() {
+    await cvMarkAllRead();
+    refreshNotifBadge();
+    renderNotifList();
+}
+
 // 시민 페이지 진입 시
 function renderCitizensPage() {
     _citizensEnsureSeed();
     _citizensRenderMine();
+    refreshNotifBadge();
     // body count input 리스너 (idempotent)
     const body = document.getElementById('citizens-body');
     if (body && !body.dataset.bound) {
