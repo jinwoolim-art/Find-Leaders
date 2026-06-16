@@ -1439,6 +1439,11 @@
         </div>
     </div>
 
+    <!-- ==================== PAGE: DISTRICT AVATAR (선거구 안내봇 — 앱 내 임베드, 새 탭 X) ==================== -->
+    <div id="page-district-avatar" class="page">
+        <iframe id="district-avatar-frame" src="about:blank" data-src="district-avatar.html" title="선거구 안내봇" style="width:100%;height:calc(100vh - 58px);border:0;display:block"></iframe>
+    </div>
+
     <!-- ==================== GLOBAL COMPARE FAB (모든 후보자 페이지 공통) ==================== -->
     <div id="compare-fab" class="compare-fab hidden">
         <button onclick="showCompare()" class="w-full py-4 rounded-xl bg-gradient-to-r from-primary to-blue-400 text-white font-black text-base flex items-center justify-center gap-3 shadow-[0_8px_25px_-5px_rgba(19,91,236,0.4)] hover:brightness-110 active:scale-[0.98] transition-all">
@@ -1467,7 +1472,7 @@
             <span class="material-symbols-outlined text-[22px]">person_outline</span>
             <span class="text-[11px] font-semibold">마이</span>
         </a>
-        <a href="district-avatar.html" target="_blank" rel="noopener" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500" data-external="district-avatar" aria-label="선거구 안내봇 열기 (새 탭)">
+        <a href="#" onclick="openDistrictAvatar(this); return false;" class="flex flex-col items-center gap-0.5 text-[#4c669a] dark:text-gray-500" data-tab="page-district-avatar" aria-label="선거구 안내봇">
             <span class="material-symbols-outlined text-[22px]">smart_toy</span>
             <span class="text-[11px] font-semibold">안내봇</span>
         </a>
@@ -5425,6 +5430,13 @@ function switchBottomTab(el, pageId) {
     if (pageId === 'page-interests') renderInterestsPage();
     if (pageId === 'page-my') renderMyPage();
     if (pageId === 'page-citizens') renderCitizensPage();
+}
+
+// 선거구 안내봇 — 새 탭 대신 앱 내 페이지(iframe)로 표시. iframe은 최초 진입 시 1회 로드(lazy).
+function openDistrictAvatar(el) {
+    const f = document.getElementById('district-avatar-frame');
+    if (f && !f.dataset.loaded) { f.src = f.dataset.src; f.dataset.loaded = '1'; }
+    switchBottomTab(el, 'page-district-avatar');
 }
 
 // ============ LOGIN STATE ============
