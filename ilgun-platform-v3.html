@@ -4099,6 +4099,7 @@ function setChatAvatarVideo(candidateId) {
     const img   = document.getElementById('chat-avatar-img');
     const bg    = document.getElementById('chat-avatar-bg');
     if (!video || !img) return;
+    video.dataset.candidateId = String(candidateId); // 백엔드 영상 async 적용 race 방지 태그
     if (CANDIDATE_VIDEO_OVERRIDE[candidateId]) {
         // 메인 2명: 영상 재생, 블러 배경 숨김
         img.hidden = true;
@@ -4128,6 +4129,36 @@ function setChatAvatarVideo(candidateId) {
         // figure가 하단인 경우 transform-origin도 bottom 기준으로
         img.style.transformOrigin = objectPos.includes('bottom') ? 'center bottom' : 'center top';
     }
+    // 백엔드 자동생성 아바타 영상 연동 — 있으면 폴백 위에 덮어씀(없거나 API 미연결 시 위 하드코딩/이미지 유지)
+    _applyBackendAvatarVideo(candidateId, video, img, bg);
+}
+
+// ⚙️ 영상 자동화 연결 스위치 — 보관 상태는 false(폴백만, 백엔드 호출 안 함).
+// variation/실서비스에서 영상 자동생성 API를 연결할 때 true 로 켜면 즉시 동작.
+// (남은 작업: 백엔드 공개 영상 조회 경로 정비 — avatar.service.ts:200 필터에 AVATAR_VIDEO 추가 +
+//  GET /avatars/:id 의 거주지 쿼리 없이 영상만 받는 endpoint + 게스트 권한. [[project_avatar_html_video_link]])
+const AVATAR_VIDEO_BACKEND_ENABLED = false;
+
+// 후보 huboid → 백엔드 아바타 영상(AVATAR_VIDEO) URL. 미발행/백엔드 다운/스위치 off 시 null → 폴백.
+async function cvAvatarVideoUrl(candidateId) {
+    if (!AVATAR_VIDEO_BACKEND_ENABLED) return null;
+    const huboid = huboidOf(candidateId);
+    if (!huboid) return null;
+    if (!_avatarIdMap[huboid]) await resolveAvatarIds([huboid]);
+    const avatarId = _avatarIdMap[huboid];
+    if (!avatarId) return null;
+    const d = await _cvJson(`${CITIZEN_API_BASE}/avatars/${avatarId}`);
+    if (!d || !Array.isArray(d.assets)) return null;
+    const v = d.assets.find(a => a.kind === 'AVATAR_VIDEO' && a.status === 'READY' && a.downloadUrl);
+    return v ? v.downloadUrl : null;
+}
+async function _applyBackendAvatarVideo(candidateId, video, img, bg) {
+    const url = await cvAvatarVideoUrl(candidateId);
+    if (!url) return; // 폴백(하드코딩/이미지) 유지
+    if (video.dataset.candidateId !== String(candidateId)) return; // 그새 다른 후보로 전환됨
+    img.hidden = true; if (bg) bg.hidden = true;
+    video.hidden = false; video.src = url;
+    try { video.currentTime = 0; video.play(); } catch (e) {}
 }
 
 let msgIdCounter = 0;
