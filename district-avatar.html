@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>선거구 안내봇 — 일꾼을 묻다</title>
+<meta name="description" content="우리 동네 선거구의 모든 후보와 NEC 등록 공약을 한 화면에서 비교하고 질문하세요. 중립 안내봇이 도와드립니다." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #7c3aed;
+    --primary-soft: #ede9fe;
+    --primary-border: #ddd6fe;
+    --primary-text: #5b21b6;
+    --bg-grad: linear-gradient(to top, #f5f3ff 0%, #faf7ff 60%, #ffffff 100%);
+    --card-bg: #ffffff;
+    --card-border: #e7ebf3;
+    --muted: #64748b;
+    --text: #0f172a;
+    --warn-bg: #fef3c7;
+    --warn-border: #fde68a;
+    --warn-text: #92400e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Noto Sans KR', 'Public Sans', 'Inter', sans-serif;
+    background: var(--bg-grad);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  /* ── Layout ───────────────────────────────────────── */
+  .wrap { max-width: 960px; margin: 0 auto; padding: 16px; }
+  header.topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; background: #fff; border: 1px solid var(--card-border);
+    border-radius: 14px; box-shadow: 0 1px 2px rgba(15,23,42,0.04);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+  .brand img { width: 28px; height: 28px; }
+  .area-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; background: var(--primary-soft); color: var(--primary-text);
+    border: 1px solid var(--primary-border); border-radius: 999px;
+    font-size: 13px; font-weight: 700;
+  }
+  .ghost-btn {
+    background: transparent; color: var(--primary); border: 1px solid var(--primary-border);
+    padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 700;
+    cursor: pointer;
+  }
+  .primary-btn {
+    background: var(--primary); color: #fff; border: 0;
+    padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 700;
+    cursor: pointer;
+  }
+  .primary-btn:hover { background: #6d28d9; }
+  /* ── Avatar block ─────────────────────────────────── */
+  .avatar-block {
+    margin-top: 16px; padding: 24px; text-align: center;
+    background: #fff; border: 1px solid var(--card-border); border-radius: 16px;
+  }
+  .avatar-img {
+    width: 120px; height: 120px; border-radius: 50%; background: var(--primary-soft);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 48px; color: var(--primary);
+    border: 4px solid var(--primary-border);
+  }
+  .avatar-name { margin-top: 12px; font-size: 18px; font-weight: 700; }
+  .avatar-tagline { margin-top: 4px; color: var(--muted); font-size: 13px; }
+  /* ── Guardrail banner ─────────────────────────────── */
+  .guardrail {
+    margin-top: 12px; padding: 10px 14px;
+    background: var(--warn-bg); border: 1px solid var(--warn-border);
+    color: var(--warn-text); border-radius: 10px; font-size: 13px; line-height: 1.5;
+  }
+  .guardrail b { color: #78350f; }
+  /* ── Candidates grid ──────────────────────────────── */
+  .cands-block {
+    margin-top: 16px; background: #fff; border: 1px solid var(--card-border);
+    border-radius: 16px; padding: 16px;
+  }
+  .cands-block h3 { margin: 0 0 12px; font-size: 16px; }
+  .election-section { margin-top: 12px; }
+  .election-section:first-of-type { margin-top: 0; }
+  .election-title {
+    font-size: 13px; font-weight: 700; color: var(--primary-text);
+    margin: 0 0 8px;
+  }
+  .cand-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px;
+  }
+  .cand-card {
+    background: var(--primary-soft); border: 1px solid var(--primary-border);
+    border-radius: 12px; padding: 10px; text-align: center;
+  }
+  .cand-symbol {
+    display: inline-block; min-width: 22px; padding: 1px 8px;
+    background: var(--primary); color: #fff; font-size: 11px; font-weight: 700;
+    border-radius: 6px;
+  }
+  .cand-name { margin-top: 6px; font-size: 13px; font-weight: 700; }
+  .cand-party { margin-top: 2px; font-size: 11px; color: var(--muted); }
+  /* ── Chat block ───────────────────────────────────── */
+  .chat-block {
+    margin-top: 16px; background: #fff; border: 1px solid var(--card-border);
+    border-radius: 16px; padding: 16px;
+    display: flex; flex-direction: column;
+  }
+  .chat-context {
+    display: flex; align-items: center; gap: 8px;
+    padding-bottom: 10px; border-bottom: 1px dashed var(--card-border);
+    margin-bottom: 12px; font-size: 13px; color: var(--muted);
+  }
+  .chat-context label { font-weight: 700; color: var(--text); }
+  .chat-context select {
+    padding: 4px 8px; border: 1px solid var(--primary-border); border-radius: 6px;
+    font-family: inherit; font-size: 13px; color: var(--primary-text); background: #fff;
+  }
+  .chat-log {
+    flex: 1; min-height: 280px; max-height: 480px; overflow-y: auto;
+    padding: 4px 2px;
+  }
+  .msg { margin-bottom: 12px; line-height: 1.6; font-size: 14px; }
+  .msg.user { text-align: right; }
+  .msg.user .bubble {
+    display: inline-block; background: var(--primary); color: #fff;
+    padding: 8px 12px; border-radius: 14px 14px 4px 14px; max-width: 80%;
+  }
+  .msg.bot .bubble {
+    display: inline-block; background: #f8fafc; border: 1px solid #e2e8f0;
+    padding: 10px 14px; border-radius: 14px 14px 14px 4px; max-width: 90%;
+  }
+  .msg.bot .citations {
+    margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .citation-chip {
+    background: var(--primary-soft); border: 1px solid var(--primary-border);
+    color: var(--primary-text); font-size: 12px; padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .msg.bot .footer-note {
+    margin-top: 8px; font-size: 12px; color: var(--muted); font-style: italic;
+  }
+  .chat-input {
+    display: flex; gap: 8px; padding-top: 12px;
+    border-top: 1px solid var(--card-border);
+  }
+  .chat-input input {
+    flex: 1; padding: 10px 14px; font-size: 14px; font-family: inherit;
+    border: 1px solid var(--card-border); border-radius: 10px;
+  }
+  /* ── Modal ─────────────────────────────────────────── */
+  .modal-back {
+    position: fixed; inset: 0; background: rgba(15,23,42,0.5);
+    display: none; align-items: center; justify-content: center; z-index: 100;
+    padding: 16px;
+  }
+  .modal-back.show { display: flex; }
+  .modal {
+    background: #fff; border-radius: 16px; padding: 24px;
+    max-width: 420px; width: 100%;
+  }
+  .modal h2 { margin: 0 0 16px; font-size: 18px; }
+  .modal label { display: block; font-size: 13px; font-weight: 700; margin-top: 12px; margin-bottom: 4px; }
+  .modal select {
+    width: 100%; padding: 10px; font-family: inherit; font-size: 14px;
+    border: 1px solid var(--card-border); border-radius: 8px;
+  }
+  .modal .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+  /* ── Mobile ───────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .wrap { padding: 10px; }
+    header.topbar { flex-wrap: wrap; gap: 8px; }
+    .avatar-img { width: 96px; height: 96px; font-size: 40px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Header -->
+  <header class="topbar">
+    <div class="brand">
+      <img src="assets/logo_ask03.png" alt="일꾼을 묻다" onerror="this.style.display='none'" />
+      <span>일꾼을 묻다</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span class="area-pill" id="area-pill">📍 내 동네: <span id="area-label">미설정</span></span>
+      <button class="ghost-btn" id="btn-set-area">설정</button>
+    </div>
+  </header>
+
+  <!-- Unified avatar -->
+  <section class="avatar-block">
+    <div class="avatar-img" id="avatar-img">🏛️</div>
+    <div class="avatar-name" id="avatar-name">선거구 안내봇</div>
+    <div class="avatar-tagline" id="avatar-tagline">동네를 설정하시면 우리 동네 후보와 공약을 안내해드려요.</div>
+  </section>
+
+  <!-- Guardrail banner -->
+  <div class="guardrail">
+    <b>⚖ 안내:</b> 본 답변은 <b>NEC 등록 공약</b> 기반 안내입니다. 특정 후보를 추천하거나, 당락을 예측하거나, 정당을 평가하지 않습니다. 최종 판단은 시민님께 맡깁니다.
+  </div>
+
+  <!-- Candidates grid (hidden until area set) -->
+  <section class="cands-block" id="cands-block" style="display:none;">
+    <h3>▶ 우리 동네 모든 선거 후보</h3>
+    <div id="cands-sections"></div>
+  </section>
+
+  <!-- Chat -->
+  <section class="chat-block">
+    <div class="chat-context">
+      <label>지금 대화 중:</label>
+      <select id="chat-scope">
+        <option value="faq">절차 / 일정 안내 (전체 모드)</option>
+      </select>
+    </div>
+    <div class="chat-log" id="chat-log">
+      <div class="msg bot">
+        <div class="bubble">
+          안녕하세요. 선거구 안내봇입니다.<br />
+          무엇이 궁금하세요? 동네를 설정하시면 우리 동네 후보의 공약도 비교해드려요.
+        </div>
+      </div>
+    </div>
+    <div class="chat-input">
+      <input id="chat-input" type="text" placeholder="질문을 입력하세요. 예) 우리 동네 교육 공약 비교해줘" />
+      <button class="primary-btn" id="chat-send">전송</button>
+    </div>
+  </section>
+
+</div>
+
+<!-- Modal: set area -->
+<div class="modal-back" id="modal-area">
+  <div class="modal">
+    <h2>내 동네 설정</h2>
+    <label for="sel-sd">시 / 도</label>
+    <select id="sel-sd"><option value="">선택</option></select>
+    <label for="sel-sigungu">시 / 군 / 구</label>
+    <select id="sel-sigungu" disabled><option value="">먼저 시·도를 선택</option></select>
+    <label for="sel-emd">읍 / 면 / 동 (선택)</label>
+    <select id="sel-emd" disabled><option value="">먼저 시·군·구를 선택</option></select>
+    <div class="actions">
+      <button class="ghost-btn" id="modal-cancel">취소</button>
+      <button class="primary-btn" id="modal-confirm">확정</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/**
+ * district-avatar.html — Phase 1 mock scaffold.
+ * Backend endpoints not yet live; uses keyword-based mock responses + candidates-real.json.
+ * Will be swapped to POST /api/v1/avatars/district-chat when sahab ships endpoint.
+ */
+const STATE = {
+  candidates: [],     // raw candidates-real.json
+  area: null,         // { sdName, sigunguName }
+  filtered: [],       // candidates in area
+  groupedByType: {},  // { sgTypecode: [candidate, ...] }
+  currentScope: 'faq',
+  sessionId: 'sess-' + Date.now(),
+};
+
+const TYPE_LABEL = {
+  '1': '대통령',
+  '2': '국회의원',
+  '3': '시·도지사',
+  '4': '구청장 / 시장',
+  '5': '시·도의원',
+  '6': '구·시·군의원',
+  '11': '교육감',
+};
+
+// ── Boot ──────────────────────────────────────────────
+fetch('assets/candidates-real.json')
+  .then(r => r.json())
+  .then(data => {
+    STATE.candidates = Array.isArray(data) ? data : (data.candidates || []);
+    buildAreaDropdowns();
+  })
+  .catch(err => console.warn('candidates load failed', err));
+
+// ── Area modal ────────────────────────────────────────
+const $ = (id) => document.getElementById(id);
+
+$('btn-set-area').onclick = () => $('modal-area').classList.add('show');
+$('modal-cancel').onclick = () => $('modal-area').classList.remove('show');
+$('modal-confirm').onclick = () => confirmArea();
+
+function buildAreaDropdowns() {
+  const sds = unique(STATE.candidates.map(c => c.sdName || c.sido).filter(Boolean)).sort();
+  const selSd = $('sel-sd');
+  selSd.innerHTML = '<option value="">선택</option>' +
+    sds.map(s => `<option value="${escapeAttr(s)}">${escapeHtml(s)}</option>`).join('');
+  selSd.onchange = () => {
+    const sd = selSd.value;
+    const sgs = unique(STATE.candidates
+      .filter(c => (c.sdName || c.sido) === sd)
+      .map(c => c.sigunguName || c.sigungu)
+      .filter(Boolean)).sort();
+    const selSg = $('sel-sigungu');
+    selSg.disabled = !sd;
+    selSg.innerHTML = '<option value="">전체 (시·도 단위)</option>' +
+      sgs.map(s => `<option value="${escapeAttr(s)}">${escapeHtml(s)}</option>`).join('');
+    $('sel-emd').disabled = true;
+    $('sel-emd').innerHTML = '<option value="">먼저 시·군·구를 선택</option>';
+  };
+}
+
+function confirmArea() {
+  const sdName = $('sel-sd').value;
+  const sigunguName = $('sel-sigungu').value;
+  if (!sdName) { alert('시·도를 선택해주세요.'); return; }
+  STATE.area = { sdName, sigunguName };
+  $('area-label').textContent = sigunguName ? `${sdName} ${sigunguName}` : sdName;
+  $('avatar-tagline').textContent = `${sigunguName || sdName} 안내봇입니다. 무엇이든 물어보세요.`;
+  $('avatar-name').textContent = `${sigunguName || sdName} 선거구 안내봇`;
+  $('modal-area').classList.remove('show');
+  applyArea();
+}
+
+function applyArea() {
+  STATE.filtered = STATE.candidates.filter(c => {
+    const sd = c.sdName || c.sido;
+    const sg = c.sigunguName || c.sigungu;
+    if (sd !== STATE.area.sdName) return false;
+    if (STATE.area.sigunguName && sg !== STATE.area.sigunguName) return false;
+    return true;
+  });
+  STATE.groupedByType = {};
+  STATE.filtered.forEach(c => {
+    const t = String(c.sgTypecode || c.sgTypeCode || '?');
+    (STATE.groupedByType[t] = STATE.groupedByType[t] || []).push(c);
+  });
+  renderCandidates();
+  renderScopeDropdown();
+  appendBot(`${STATE.area.sigunguName || STATE.area.sdName} 후보 ${STATE.filtered.length}명을 불러왔습니다. 위에서 선거 종류를 선택하고 질문해주세요.`);
+}
+
+function renderCandidates() {
+  const block = $('cands-block');
+  const target = $('cands-sections');
+  const types = Object.keys(STATE.groupedByType).sort();
+  if (!types.length) {
+    target.innerHTML = '<p style="color:var(--muted); font-size:13px;">해당 지역의 후보자 정보를 찾을 수 없습니다.</p>';
+    block.style.display = '';
+    return;
+  }
+  target.innerHTML = types.map(t => {
+    const label = TYPE_LABEL[t] || `선거 ${t}`;
+    const list = STATE.groupedByType[t];
+    return `
+      <div class="election-section">
+        <div class="election-title">${escapeHtml(label)} (${list.length}명)</div>
+        <div class="cand-grid">
+          ${list.map(c => `
+            <div class="cand-card">
+              <span class="cand-symbol">${escapeHtml(String(c.symbolNumber || c.giho || '?'))}</span>
+              <div class="cand-name">${escapeHtml(c.displayName || c.candidateName || c.name || '이름미상')}</div>
+              <div class="cand-party">${escapeHtml(c.party || c.jdName || '무소속')}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+  block.style.display = '';
+}
+
+function renderScopeDropdown() {
+  const sel = $('chat-scope');
+  const types = Object.keys(STATE.groupedByType).sort();
+  sel.innerHTML = '<option value="faq">절차 / 일정 안내</option>' +
+    types.map(t => `<option value="${t}">${escapeAttr(TYPE_LABEL[t] || '선거 ' + t)} 선거</option>`).join('');
+  sel.value = types[0] || 'faq';
+  STATE.currentScope = sel.value;
+  sel.onchange = () => { STATE.currentScope = sel.value; };
+}
+
+// ── Chat ──────────────────────────────────────────────
+$('chat-send').onclick = sendMessage;
+$('chat-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
+
+function sendMessage() {
+  const inp = $('chat-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  appendUser(text);
+  inp.value = '';
+  setTimeout(() => respond(text), 400);
+}
+
+function appendUser(text) {
+  const log = $('chat-log');
+  log.innerHTML += `<div class="msg user"><div class="bubble">${escapeHtml(text)}</div></div>`;
+  log.scrollTop = log.scrollHeight;
+}
+
+function appendBot(text, citations) {
+  const log = $('chat-log');
+  const cites = (citations || []).map(c =>
+    `<span class="citation-chip">${escapeHtml(c.candidateName)} · ${escapeHtml(c.snippet || '')}</span>`
+  ).join('');
+  log.innerHTML += `
+    <div class="msg bot">
+      <div class="bubble">
+        ${text}
+        ${cites ? `<div class="citations">${cites}</div>` : ''}
+        <div class="footer-note">⚖ 최종 판단은 시민님께</div>
+      </div>
+    </div>`;
+  log.scrollTop = log.scrollHeight;
+}
+
+/**
+ * Mock response. To be replaced by:
+ *   const res = await fetch('/api/v1/avatars/district-chat', { method: 'POST', body: JSON.stringify({...}) });
+ *   appendBot(res.answer, res.citations);
+ */
+function respond(question) {
+  const q = question.toLowerCase();
+  // Guardrail: endorsement intent
+  if (/(추천|뽑[을아]|지지|최고|최선|누가\s*더\s*나)/.test(q)) {
+    appendBot('특정 후보를 추천하지 않습니다. 대신 등록된 공약을 비교해드릴게요. 어떤 분야가 궁금하세요? (예: 교육, 일자리, 주거, 환경)');
+    return;
+  }
+  // Global mode (no area)
+  if (!STATE.area) {
+    if (/(절차|일정|날짜|언제|어디|투표|사전투표)/.test(q)) {
+      appendBot('2026년 제8회 전국동시지방선거 본투표는 <b>6월 3일(수)</b>입니다. 사전투표는 <b>5월 29일(목)~30일(금)</b>이며, 신분증을 지참하시면 전국 어디서나 가능합니다.');
+    } else {
+      appendBot('해당 질문은 우리 동네 후보 정보가 필요합니다. <b>"설정"</b> 버튼을 눌러 시·도와 시·군·구를 선택해주세요.');
+    }
+    return;
+  }
+  // Address-based mode
+  const list = STATE.groupedByType[STATE.currentScope] || STATE.filtered;
+  if (!list.length) {
+    appendBot('해당 선거에 등록된 후보 정보가 없습니다.');
+    return;
+  }
+  if (/(목록|누구|있어|있나|후보\s*명단)/.test(q)) {
+    const names = list.map(c => `${c.symbolNumber || c.giho || '?'}번 ${c.displayName || c.candidateName || c.name}`).join(', ');
+    appendBot(`${TYPE_LABEL[STATE.currentScope] || ''} 선거에는 ${list.length}명의 후보가 등록되어 있습니다: ${escapeHtml(names)}.`,
+      list.slice(0, 3).map(c => ({ candidateName: c.displayName || c.candidateName || c.name, snippet: c.party || '' })));
+    return;
+  }
+  if (/(비교|차이|다른|어떻게\s*다)/.test(q)) {
+    const sample = list.slice(0, 3);
+    const body = sample.map(c => `<b>${escapeHtml(c.displayName || c.candidateName || c.name)}</b> 후보: ${escapeHtml((c.policies && (c.policies.summary || c.policies.vision)) || '등록된 공약 요약이 아직 없습니다.')}`).join('<br /><br />');
+    appendBot(body, sample.map(c => ({ candidateName: c.displayName || c.candidateName || c.name, snippet: '공약 요약' })));
+    return;
+  }
+  // Default: per-candidate summary
+  const first = list[0];
+  appendBot(`<b>${escapeHtml(first.displayName || first.candidateName || first.name)}</b> 후보의 공약 요약: ${escapeHtml((first.policies && first.policies.summary) || '등록된 공약 요약이 아직 없습니다. 사합 백엔드 endpoint 연결 후 NEC 등록 공약이 표시됩니다.')}`,
+    [{ candidateName: first.displayName || first.candidateName || first.name, snippet: '공약 요약' }]);
+}
+
+// ── Util ──────────────────────────────────────────────
+function unique(arr) { return [...new Set(arr)]; }
+function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function escapeAttr(s) { return escapeHtml(s); }
+</script>
+</body>
+</html>
