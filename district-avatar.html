@@ -32,7 +32,8 @@
     min-height: 100vh;
   }
   /* ── Layout ───────────────────────────────────────── */
-  .wrap { max-width: 960px; margin: 0 auto; padding: 16px; }
+  /* v3 시민앱과 동일한 모바일 프레임 (2026-06-16: 데스크톱에서 너무 넓던 960px → 480px) */
+  .wrap { max-width: 480px; margin: 0 auto; padding: 16px; }
   header.topbar {
     display: flex; align-items: center; justify-content: space-between;
     padding: 14px 16px; background: #fff; border: 1px solid var(--card-border);
