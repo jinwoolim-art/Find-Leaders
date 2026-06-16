@@ -1766,13 +1766,21 @@ let currentPartyFilter = 'all';
 let selectedCandidates = new Set();
 let currentChatCandidate = null;
 
+// 광주·전남은 2026 행정통합으로 광역직(시·도지사·교육감)이 '전남광주통합특별시'로 통합 선출됨.
+// 거주 시도가 광주/전남이면 통합명 후보와 상호 매칭 (기초직은 분리이므로 이 헬퍼 미적용).
+const GWANGJU_JEONNAM_SIDOS = ['광주광역시', '전라남도', '전남광주통합특별시'];
+function sidoMatchesWide(candidateSido, userSido) {
+    if (candidateSido === userSido) return true;
+    return GWANGJU_JEONNAM_SIDOS.includes(userSido) && GWANGJU_JEONNAM_SIDOS.includes(candidateSido);
+}
+
 function getCurrentCandidates() {
     const all = candidateData[currentSegment] || [];
     const sido = (selectedRegion && selectedRegion.sido) || '';
     if (!sido) return all;
-    // 광역단체장(governor): sido 매칭만
+    // 광역단체장(governor): sido 매칭만 (광주/전남 통합 alias 적용)
     if (currentSegment === 'governor') {
-        return all.filter(c => c.sido === sido);
+        return all.filter(c => sidoMatchesWide(c.sido, sido));
     }
     // 기초단체장(mayor/district_head/county_head): sido + sigungu 매칭
     const sigungu = (selectedRegion && selectedRegion.sigungu) || '';
@@ -1922,15 +1930,18 @@ const REGIONS = {
         ]
     },
     '인천광역시': {
+        // 2026 행정구역 개편: 중구·동구 폐지 → 영종구·제물포구 신설, 서구에서 검단구 분리
+        // (NEC 제9회 지방선거 선거구 기준, 2026-06-16 검증)
         sigungu: [
-            { name: '중구', type: '자치구' },
-            { name: '동구', type: '자치구' },
+            { name: '영종구', type: '자치구' },
+            { name: '제물포구', type: '자치구' },
             { name: '미추홀구', type: '자치구' },
             { name: '연수구', type: '자치구' },
             { name: '남동구', type: '자치구' },
             { name: '부평구', type: '자치구' },
             { name: '계양구', type: '자치구' },
             { name: '서구', type: '자치구' },
+            { name: '검단구', type: '자치구' },
             { name: '강화군', type: '자치군' },
             { name: '옹진군', type: '자치군' }
         ]
@@ -2447,7 +2458,7 @@ function renderEducationList() {
     if (sub) sub.textContent = sido ? (sido + ' 교육감') : '거주 지역 미선택';
 
     let pool = (candidateData.superintendent || []).slice();
-    if (sido) pool = pool.filter(c => c.sido === sido);
+    if (sido) pool = pool.filter(c => sidoMatchesWide(c.sido, sido));
     // 가나다순 정렬
     pool.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ko'));
 
