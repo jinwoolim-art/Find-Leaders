@@ -2866,12 +2866,22 @@ function showCompare() {
     const selected = allCandidates.filter(c => selectedCandidates.has(c.id));
     const content = document.getElementById('compare-content');
 
-    const categories = [
-        { key: 'summary', label: '주요 정책', icon: 'description' },
-        { key: 'jobs', label: '일자리 공약', icon: 'work' },
-        { key: 'vision', label: '비전', icon: 'visibility' },
-        { key: 'education', label: '교육 대책', icon: 'school' }
-    ];
+    // NEC 등록 공약(pledges)이 선택 후보 전원에 있으면 '공약별' 비교, 아니면 정책 4종 비교.
+    const pledgesOf = c => Array.isArray(c.pledges) ? c.pledges.filter(p => p && (p.title || p.content)) : [];
+    const usePledges = selected.length > 0 && selected.every(c => pledgesOf(c).length > 0);
+    let categories;
+    if (usePledges) {
+        const maxN = Math.max(...selected.map(c => pledgesOf(c).length));
+        categories = Array.from({ length: maxN }, (_, i) => ({ pledgeIdx: i, label: `공약 ${i + 1}`, icon: 'campaign' }));
+    } else {
+        categories = [
+            { key: 'summary', label: '주요 정책', icon: 'description' },
+            { key: 'jobs', label: '일자리 공약', icon: 'work' },
+            { key: 'vision', label: '비전', icon: 'visibility' },
+            { key: 'education', label: '교육 대책', icon: 'school' }
+        ];
+    }
+    const _clampStyle = 'display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line';
 
     let html = `
         <div class="grid grid-cols-${selected.length} gap-3 mb-6">
@@ -2898,11 +2908,19 @@ function showCompare() {
                     <h3 class="font-bold text-sm">${cat.label}</h3>
                 </div>
                 <div class="grid grid-cols-${selected.length} gap-3">
-                    ${selected.map(c => `
-                        <div class="bg-white dark:bg-gray-900 rounded-xl p-3 border border-[#e7ebf3] dark:border-gray-800">
-                            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">${c.policies[cat.key]}</p>
-                        </div>
-                    `).join('')}
+                    ${selected.map(c => {
+                        let body;
+                        if (cat.pledgeIdx != null) {
+                            const p = pledgesOf(c)[cat.pledgeIdx];
+                            body = p
+                                ? `${p.title ? `<span class="block font-bold text-slate-700 dark:text-slate-200 mb-1">${escapeHtml(p.title)}</span>` : ''}<span style="${_clampStyle}">${escapeHtml(p.content || '')}</span>`
+                                : '<span class="text-slate-400">-</span>';
+                        } else {
+                            const v = (c.policies && c.policies[cat.key]) || '';
+                            body = v ? `<span style="${_clampStyle}">${escapeHtml(v)}</span>` : '<span class="text-slate-400">-</span>';
+                        }
+                        return `<div class="bg-white dark:bg-gray-900 rounded-xl p-3 border border-[#e7ebf3] dark:border-gray-800"><div class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">${body}</div></div>`;
+                    }).join('')}
                 </div>
             </div>
         `;
