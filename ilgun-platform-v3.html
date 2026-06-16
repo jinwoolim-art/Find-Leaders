@@ -7118,11 +7118,8 @@ async function renderNotifList() {
     if (!list) return;
     list.innerHTML = '<div class="py-10 text-center text-sm text-slate-400">불러오는 중...</div>';
     const res = await cvNotifications();
-    if (!res || !Array.isArray(res.data)) {
-        list.innerHTML = '<div class="py-12 flex flex-col items-center text-slate-400"><span class="material-symbols-outlined text-4xl mb-2">cloud_off</span><p class="text-sm">알림을 불러올 수 없습니다</p></div>';
-        return;
-    }
-    if (res.data.length === 0) {
+    // 백엔드 미연결(배포 환경 등) 시에도 에러 대신 빈 상태로 부드럽게 표시
+    if (!res || !Array.isArray(res.data) || res.data.length === 0) {
         list.innerHTML = '<div class="py-12 flex flex-col items-center text-slate-400"><span class="material-symbols-outlined text-4xl mb-2">notifications_off</span><p class="text-sm">받은 알림이 없습니다</p></div>';
         return;
     }
