@@ -77,9 +77,6 @@
         /* Compare FAB */
         .compare-fab { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 448px; z-index: 40; transition: all 0.3s; }
         .compare-fab.hidden { transform: translateX(-50%) translateY(100px); opacity: 0; pointer-events: none; }
-        /* 후보자 비교 기능 비활성화(2026-06-16) — FAB + 카드 선택 버튼 숨김. 로직은 보존(복구 시 이 블록만 제거). */
-        #compare-fab { display: none !important; }
-        label[for^="check-"] { display: none !important; }
 
         /* Chat */
         .avatar-glow { box-shadow: 0 0 50px rgba(19,91,236,0.15); }
@@ -883,11 +880,14 @@
             <!-- 내 활동 요약 -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-[#e7ebf3] dark:border-gray-700">
                 <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-4">내 활동</h3>
-                <!-- 공감 공약(관심정책) 카드는 비활성화(2026-06-16) — 안정화 후 재노출 -->
-                <div class="grid grid-cols-2 gap-3 text-center">
+                <div class="grid grid-cols-3 gap-3 text-center">
                     <button onclick="openMyInterestsCard()" class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl active:bg-slate-100 dark:active:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer">
                         <p class="text-xl font-bold text-primary" id="my-likes-count">0</p>
                         <p class="text-[11px] text-slate-400 mt-1">관심 후보</p>
+                    </button>
+                    <button onclick="openMyPolicyInterestsCard()" class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl active:bg-slate-100 dark:active:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer">
+                        <p class="text-xl font-bold text-primary" id="my-policy-interests-count">0</p>
+                        <p class="text-[11px] text-slate-400 mt-1">공감 공약</p>
                     </button>
                     <button onclick="openMyReportsCard()" class="py-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl active:bg-slate-100 dark:active:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer">
                         <p class="text-xl font-bold text-primary" id="my-report-count">0</p>
@@ -3026,7 +3026,10 @@ function openDetail(id) {
     const interestedSet = new Set((policyInterests[`candidate_${c.id}`] || []));
     let policyCards;
     if (pledges.length) {
-        policyCards = pledges.map((p, i) => `
+        policyCards = pledges.map((p, i) => {
+            const pkey = 'pledge_' + i;           // NEC 공약 공감 키 (policies 4종과 별도 네임스페이스)
+            const active = interestedSet.has(pkey);
+            return `
             <div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-[#e7ebf3] dark:border-gray-700">
                 <div class="flex items-center gap-1.5 mb-2 flex-wrap">
                     <span class="text-[10px] font-bold px-1.5 py-0.5 rounded text-white" style="background:${pc}">공약 ${i + 1}</span>
@@ -3034,8 +3037,15 @@ function openDetail(id) {
                 </div>
                 <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1.5">${escapeHtml(p.title || '')}</h4>
                 ${p.content ? `<p class="text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line line-clamp-5">${escapeHtml(p.content)}</p>` : ''}
-                ${p.content ? `<button onclick="openPledgeDetail('${c.id}', ${i})" class="mt-2.5 inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold border border-[#e7ebf3] dark:border-gray-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-95 transition-all"><span class="material-symbols-outlined text-[14px]">unfold_more</span>자세히 보기</button>` : ''}
-            </div>`).join('');
+                <div class="flex items-center gap-2 mt-2.5">
+                    <button onclick="togglePolicyInterest('${c.id}', '${pkey}', this)" data-policy-key="${pkey}" class="policy-interest-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 ${active ? 'bg-primary text-white border border-primary' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-gray-600'}">
+                        <span class="material-symbols-outlined text-[14px]" ${active ? `style="font-variation-settings:'FILL' 1"` : ''}>thumb_up</span>
+                        <span class="policy-interest-label">${active ? '공감함' : '공감하기'}</span>
+                    </button>
+                    ${p.content ? `<button onclick="openPledgeDetail('${c.id}', ${i})" class="ml-auto inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold border border-[#e7ebf3] dark:border-gray-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-95 transition-all"><span class="material-symbols-outlined text-[14px]">unfold_more</span>자세히 보기</button>` : ''}
+                </div>
+            </div>`;
+        }).join('');
     } else {
         const policyKeys = c.policies ? ['summary','jobs','vision','education'].filter(k => c.policies[k]) : [];
         policyCards = policyKeys.map(k => {
@@ -3240,6 +3250,31 @@ const CANDIDATE_VIDEO_OVERRIDE = {
 const PHOTO_DIR = 'assets/아바타_리얼증명사진/';
 // NEC 후보자 사진 — 자동 매핑 (match_to_v3.py, 광역단체장+교육감)
 const CANDIDATE_PHOTO = {
+    // --- 충청북도 단체장 추가 (2026-06-16) ---
+    'nec_100153952': 'assets/nec-photos/nec_100153952.webp',
+    'nec_100154335': 'assets/nec-photos/nec_100154335.webp',
+    'nec_100154752': 'assets/nec-photos/nec_100154752.webp',
+    'nec_100158298': 'assets/nec-photos/nec_100158298.webp',
+    'nec_100158573': 'assets/nec-photos/nec_100158573.webp',
+    'nec_100158594': 'assets/nec-photos/nec_100158594.webp',
+    'nec_100158717': 'assets/nec-photos/nec_100158717.webp',
+    'nec_100158725': 'assets/nec-photos/nec_100158725.webp',
+    'nec_100158742': 'assets/nec-photos/nec_100158742.webp',
+    'nec_100158946': 'assets/nec-photos/nec_100158946.webp',
+    'nec_100158951': 'assets/nec-photos/nec_100158951.webp',
+    'nec_100159212': 'assets/nec-photos/nec_100159212.webp',
+    'nec_100159343': 'assets/nec-photos/nec_100159343.webp',
+    'nec_100159438': 'assets/nec-photos/nec_100159438.webp',
+    'nec_100159899': 'assets/nec-photos/nec_100159899.webp',
+    'nec_100161025': 'assets/nec-photos/nec_100161025.webp',
+    'nec_100161763': 'assets/nec-photos/nec_100161763.webp',
+    'nec_100162033': 'assets/nec-photos/nec_100162033.webp',
+    'nec_100162213': 'assets/nec-photos/nec_100162213.webp',
+    'nec_100162677': 'assets/nec-photos/nec_100162677.webp',
+    'nec_100162973': 'assets/nec-photos/nec_100162973.webp',
+    'nec_100163201': 'assets/nec-photos/nec_100163201.webp',
+    'nec_100163217': 'assets/nec-photos/nec_100163217.webp',
+    'nec_100163653': 'assets/nec-photos/nec_100163653.webp',
     // --- NEC 구·시·군의 장(구청장·시장·군수) 자동매칭 546명 (2026-06-16) ---
     'nec_100153831': 'assets/nec-photos/nec_100153831.webp',
     'nec_100153835': 'assets/nec-photos/nec_100153835.webp',
@@ -5588,7 +5623,10 @@ function renderMyPage() {
 
 // ============ MY PAGE 카드 클릭 핸들러 (6-C) ============
 function openMyInterestsCard() {
-    switchBottomTab(document.querySelector('[data-tab=page-interests]'), 'page-interests');
+    // '관심' 하단탭 제거(마이 통합) 후 data-tab 엘리먼트가 없어 switchBottomTab(null)이 에러났음.
+    // navigateTo로 직접 전환 + 렌더 (2026-06-16 수정).
+    navigateTo('page-interests');
+    renderInterestsPage();
 }
 
 function openMyPolicyInterestsCard() {
@@ -5622,9 +5660,11 @@ function renderPolicyInterestsPage() {
     // 후보자 데이터 순서로 안정 정렬 (기호 번호 오름차순)
     const rows = entries
         .map(([key, policyKeys]) => {
-            const id = parseInt(key.replace('candidate_', ''), 10);
+            // id 복원: 가상후보=정수, NEC후보='nec_xxx' 문자열 (findCandidateById가 === 비교라 타입 일치 필요)
+            const idRaw = key.replace('candidate_', '');
+            const id = /^\d+$/.test(idRaw) ? parseInt(idRaw, 10) : idRaw;
             const c = findCandidateById(id);
-            if (!c || !c.policies) return null;
+            if (!c) return null;
             return { id, c, policyKeys };
         })
         .filter(Boolean)
@@ -5632,32 +5672,38 @@ function renderPolicyInterestsPage() {
 
     list.innerHTML = rows.map(({ id, c, policyKeys }) => {
         const pc = partyColors[c.partyColor] || '#6b7280';
-        // 실제 공약 데이터가 존재하는 키만
-        const validKeys = policyKeys.filter(k => c.policies[k]);
-        if (validKeys.length === 0) return '';
+        const pledges = Array.isArray(c.pledges) ? c.pledges.filter(p => p && (p.title || p.content)) : [];
+        // 키 해석: 'pledge_N'=NEC 공약(c.pledges[N]), 그 외=policies 4종(c.policies[k])
+        const items = policyKeys.map(k => {
+            if (k.indexOf('pledge_') === 0) {
+                const idx = parseInt(k.slice(7), 10);
+                const p = pledges[idx];
+                if (!p) return null;
+                return { key: k, label: p.title || ('공약 ' + (idx + 1)), icon: 'thumb_up', content: p.content || '', detail: `openPledgeDetail('${c.id}', ${idx})` };
+            }
+            if (c.policies && c.policies[k]) {
+                return { key: k, label: POLICY_LABELS_KO[k] || k, icon: POLICY_ICONS[k] || 'description', content: c.policies[k], detail: `openCandidatePolicyDetail('${c.id}', '${k}')` };
+            }
+            return null;
+        }).filter(Boolean);
+        if (items.length === 0) return '';
 
-        const subCards = validKeys.map(k => {
-            const label = POLICY_LABELS_KO[k] || k;
-            const icon = POLICY_ICONS[k] || 'description';
-            const content = c.policies[k];
-            // 핵심공약 탭과 동일 디자인: 공감함(활성) 상태로 노출 → 클릭 시 토글되어 목록에서 제거
-            return `
+        const subCards = items.map(it => `
                 <div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-[#e7ebf3] dark:border-gray-700">
-                    <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1.5"><span class="material-symbols-outlined text-sm align-middle mr-1" style="color:${pc}">${icon}</span>${escapeHtml(label)}</h4>
-                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-3">${escapeHtml(content)}</p>
+                    <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1.5"><span class="material-symbols-outlined text-sm align-middle mr-1" style="color:${pc}">${it.icon}</span>${escapeHtml(it.label)}</h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-3">${escapeHtml(it.content)}</p>
                     <div class="flex items-center gap-2">
-                        <button onclick="togglePolicyInterest(${id}, '${k}', this); renderPolicyInterestsPage();" data-policy-key="${k}" class="policy-interest-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 bg-primary text-white border border-primary">
+                        <button onclick="togglePolicyInterest('${c.id}', '${it.key}', this); renderPolicyInterestsPage();" data-policy-key="${it.key}" class="policy-interest-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 bg-primary text-white border border-primary">
                             <span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1">thumb_up</span>
                             <span class="policy-interest-label">공감함</span>
                         </button>
-                        <button onclick="openCandidatePolicyDetail(${id}, '${k}')" class="ml-auto inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold border border-[#e7ebf3] dark:border-gray-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-95 transition-all">
+                        <button onclick="${it.detail}" class="ml-auto inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold border border-[#e7ebf3] dark:border-gray-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-95 transition-all">
                             <span class="material-symbols-outlined text-[14px]">unfold_more</span>
                             상세보기
                         </button>
                     </div>
                 </div>
-            `;
-        }).join('');
+            `).join('');
 
         const typeLabel = getElectionTypeLabel(id);
         const typeBadge = typeLabel ? `<span class="inline-flex items-center px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-medium flex-shrink-0">${escapeHtml(typeLabel)} 후보</span>` : '';
