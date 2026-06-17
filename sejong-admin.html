@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>시민청 관리자 · 세종시 (시범)</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script>tailwind.config={theme:{extend:{colors:{primary:"#2563eb","primary-dark":"#1d4ed8"}}}};</script>
+<style>
+  body{font-family:'Noto Sans KR',sans-serif;margin:0}
+  .ms{font-family:'Material Symbols Outlined';font-variation-settings:'FILL' 0,'wght' 400}
+  .msf{font-variation-settings:'FILL' 1}
+  .side{position:fixed;left:0;top:0;bottom:0;width:230px;background:#0f172a;display:flex;flex-direction:column;z-index:40}
+  .main{margin-left:230px;min-height:100vh;display:flex;flex-direction:column;background:#f6f8fc}
+  .sn{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;color:#94a3b8;font-size:13px;font-weight:500;cursor:pointer;transition:.15s}
+  .sn:hover{background:#1e293b;color:#e2e8f0}
+  .sn.on{background:#2563eb;color:#fff;font-weight:700}
+  .sn .ms{font-size:20px}
+  .bdg{margin-left:auto;background:#475569;color:#fff;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 5px}
+  .card{background:#fff;border:1px solid #e7ebf3;border-radius:16px}
+  .content{display:none;padding:20px;flex:1}
+  .content.on{display:block}
+  .inp{width:100%;border:1px solid #e7ebf3;border-radius:10px;padding:9px 12px;font-size:13px;outline:none}
+  .inp:focus{border-color:#2563eb}
+  .scrollbar-hide::-webkit-scrollbar{display:none}
+  @media(max-width:860px){.side{transform:translateX(-100%);transition:.2s}.side.open{transform:translateX(0)}.main{margin-left:0}}
+  .ov{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:60}
+</style>
+</head>
+<body>
+
+<!-- 로그인(데모) -->
+<div class="ov" id="login" style="background:rgba(15,23,42,.96)">
+  <div style="background:#fff;border-radius:24px;padding:40px;width:360px;text-align:center">
+    <div style="width:56px;height:56px;border-radius:16px;background:#eff6ff;display:flex;align-items:center;justify-content:center;margin:0 auto 16px"><span class="ms" style="color:#2563eb;font-size:30px">verified_user</span></div>
+    <h2 style="font-size:20px;font-weight:900;margin:0 0 4px">시민청 관리자</h2>
+    <p style="font-size:12px;color:#9ca3af;margin:0 0 24px">세종특별자치시 · 담당 부서용 (시범)</p>
+    <p style="font-size:11px;color:#94a3b8;margin:0 0 14px">역할을 선택해 입장하세요 (데모)</p>
+    <button onclick="doLogin('manager')" class="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2"><span class="ms" style="font-size:18px">admin_panel_settings</span>총괄 관리자로 입장</button>
+    <button onclick="doLogin('officer')" class="w-full mt-2 bg-white border border-primary text-primary font-bold py-3 rounded-xl flex items-center justify-center gap-2"><span class="ms" style="font-size:18px">badge</span>부서 담당자로 입장</button>
+    <p style="font-size:10px;color:#94a3b8;margin:8px 0 0">담당자: 교통정책과 이소영 주무관 (데모)</p>
+    <p style="font-size:10px;color:#cbd5e1;margin:16px 0 0">시민 의견을 AI가 취합·요약해 담당자가 효율적으로 답변하는 화면입니다.</p>
+  </div>
+</div>
+
+<!-- 사이드바 -->
+<div class="side" id="side">
+  <div style="padding:20px 16px 12px;display:flex;align-items:center;gap:10px">
+    <div style="width:34px;height:34px;border-radius:10px;background:#2563eb;display:flex;align-items:center;justify-content:center"><span class="ms msf" style="color:#fff;font-size:20px">forum</span></div>
+    <div><p style="color:#fff;font-weight:900;font-size:14px;margin:0">시민청 관리자</p><p style="color:#475569;font-size:10px;margin:0">Sejong Admin</p></div>
+  </div>
+  <nav style="flex:1;padding:8px 10px;display:flex;flex-direction:column;gap:3px;overflow-y:auto">
+    <div class="sn on" id="nav-home" onclick="sw('home')"><span class="ms">dashboard</span>현황 요약</div>
+    <p id="grp-mypage" style="display:none;color:#475569;font-size:9px;font-weight:700;padding:14px 12px 4px;text-transform:uppercase;letter-spacing:.05em">내 페이지</p>
+    <div class="sn" id="nav-studio" onclick="sw('studio')" style="display:none"><span class="ms">badge</span>내 페이지 관리</div>
+    <p style="color:#475569;font-size:9px;font-weight:700;padding:14px 12px 4px;text-transform:uppercase;letter-spacing:.05em">의견 처리</p>
+    <div class="sn" id="nav-issues" onclick="sw('issues')"><span class="ms">hub</span>의견 취합<span class="bdg" id="bdg-issues" style="background:#2563eb">0</span></div>
+    <div class="sn" id="nav-inbox" onclick="sw('inbox')"><span class="ms">inbox</span>개별 접수<span class="bdg" id="bdg-inbox" style="background:#0ea5e9">0</span></div>
+    <div class="sn" id="nav-done" onclick="sw('done')"><span class="ms">task_alt</span>답변 완료<span class="bdg" id="bdg-done" style="background:#22c55e">0</span></div>
+    <p id="grp-data" style="color:#475569;font-size:9px;font-weight:700;padding:14px 12px 4px;text-transform:uppercase;letter-spacing:.05em">기준 데이터</p>
+    <div class="sn" id="nav-cats" onclick="sw('cats')"><span class="ms">category</span>AI 업무분류표 200</div>
+    <div class="sn" id="nav-stats" onclick="sw('stats')"><span class="ms">monitoring</span>통계</div>
+  </nav>
+  <div style="padding:12px;border-top:1px solid #1e293b">
+    <div class="sn" onclick="location.href='sejong-sicheong.html'"><span class="ms">smartphone</span>시민 앱 열기</div>
+    <p style="color:#334155;font-size:9px;padding:6px 14px 0">시민청 admin v0.1 · 시범</p>
+  </div>
+</div>
+
+<!-- 메인 -->
+<div class="main">
+  <div style="background:#fff;border-bottom:1px solid #e7ebf3;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:30">
+    <div style="display:flex;align-items:center;gap:8px">
+      <button onclick="document.getElementById('side').classList.toggle('open')" style="background:none;border:none;cursor:pointer" class="md:hidden"><span class="ms" style="font-size:22px">menu</span></button>
+      <span class="ms msf" id="ti" style="color:#2563eb;font-size:20px">dashboard</span>
+      <h1 id="tt" style="font-size:15px;font-weight:900;margin:0">현황 요약</h1>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span id="tb-role" style="font-size:11px;color:#9ca3af">총괄 관리자</span>
+      <div style="width:32px;height:32px;border-radius:50%;background:#2563eb;display:flex;align-items:center;justify-content:center"><span id="tb-avatar" style="color:#fff;font-size:12px;font-weight:900">관</span></div>
+    </div>
+  </div>
+
+  <!-- 현황 요약 -->
+  <div id="tab-home" class="content on">
+    <div id="home-kpis" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px"></div>
+    <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:16px" class="home-grid">
+      <div class="card" style="padding:18px">
+        <h3 style="font-size:14px;font-weight:900;margin:0 0 14px">분야별 접수 현황</h3>
+        <div id="home-by-cat"></div>
+      </div>
+      <div class="card" style="padding:18px">
+        <h3 style="font-size:14px;font-weight:900;margin:0 0 14px">최근 접수</h3>
+        <div id="home-recent" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 의견 취합 (이슈) -->
+  <div id="tab-issues" class="content">
+    <div class="card" style="padding:14px 16px;margin-bottom:14px;background:#eff6ff;border-color:#bfdbfe">
+      <p style="font-size:12px;color:#1e40af;margin:0;line-height:1.6"><b>AI가 유사한 시민 의견을 묶어 방향성으로 요약합니다.</b> 묶음마다 한 번만 답변하면 동참한 모든 시민에게 전달됩니다. 개별 의견은 상세에서 모두 확인할 수 있습니다.</p>
+    </div>
+    <div id="issues-list" style="display:flex;flex-direction:column;gap:10px"></div>
+  </div>
+
+  <!-- 개별 접수 -->
+  <div id="tab-inbox" class="content">
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap" id="inbox-filters"></div>
+    <div id="inbox-list" style="display:flex;flex-direction:column;gap:10px"></div>
+  </div>
+
+  <!-- 답변 완료 -->
+  <div id="tab-done" class="content">
+    <div id="done-list" style="display:flex;flex-direction:column;gap:10px"></div>
+  </div>
+
+  <!-- 분류표 200 -->
+  <div id="tab-cats" class="content">
+    <div style="display:flex;gap:16px" class="cats-grid">
+      <div style="width:230px;flex-shrink:0">
+        <input id="cats-search" class="inp" placeholder="🔍 업무·키워드 검색" oninput="renderCats()" style="margin-bottom:10px"/>
+        <div id="cats-groups" class="card scrollbar-hide" style="padding:6px;max-height:70vh;overflow-y:auto"></div>
+      </div>
+      <div style="flex:1;min-width:0">
+        <p id="cats-count" style="font-size:12px;color:#6b7280;margin:0 0 10px"></p>
+        <div id="cats-list" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 통계 -->
+  <div id="tab-stats" class="content">
+    <div id="stats-body"></div>
+  </div>
+
+  <!-- 내 페이지 관리 (담당자 스튜디오) -->
+  <div id="tab-studio" class="content">
+    <div style="max-width:760px"><div id="studio-body"></div></div>
+  </div>
+</div>
+
+<!-- 제안 상세/답변 드로어 -->
+<div id="drawer" class="ov" style="background:rgba(15,23,42,.5);display:none;justify-content:flex-end">
+  <div style="background:#fff;width:520px;max-width:100%;height:100%;overflow-y:auto" onclick="event.stopPropagation()">
+    <div id="drawer-body"></div>
+  </div>
+</div>
+
+<!-- 분류 항목 상세 모달 -->
+<div id="cat-modal" class="ov" style="background:rgba(15,23,42,.5);display:none">
+  <div style="background:#fff;border-radius:20px;width:480px;max-width:92%;max-height:88vh;overflow-y:auto" onclick="event.stopPropagation()">
+    <div id="cat-modal-body" style="padding:24px"></div>
+  </div>
+</div>
+
+<!-- 개별 시민 대화 상세 모달 -->
+<div id="sample-modal" class="ov" style="background:rgba(15,23,42,.55);display:none;z-index:70">
+  <div style="background:#fff;border-radius:20px;width:480px;max-width:92%;max-height:86vh;overflow-y:auto" onclick="event.stopPropagation()">
+    <div id="sample-modal-body"></div>
+  </div>
+</div>
+
+<div id="toast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;font-size:13px;padding:10px 18px;border-radius:999px;display:none;z-index:80"></div>
+
+<script src="assets/sejong-categories-200.js"></script>
+<script>
+/* ===== 처리 상태 ===== */
+const PSTATUS = {
+  received:{label:'접수 완료',color:'#64748b',group:'active'},
+  classifying:{label:'분류 중',color:'#f59e0b',group:'active'},
+  assigned:{label:'담당 배정',color:'#2563eb',group:'active'},
+  review:{label:'검토 중',color:'#f59e0b',group:'active'},
+  waiting:{label:'답변 대기',color:'#2563eb',group:'active'},
+  answered:{label:'답변 완료',color:'#22c55e',group:'done'},
+  transferred:{label:'타부서 이관',color:'#a855f7',group:'active'},
+  hold:{label:'보류',color:'#f97316',group:'active'},
+};
+function badge(s){const t=PSTATUS[s]||PSTATUS.received;return `<span style="font-size:10px;font-weight:700;color:${t.color};background:${t.color}1a;padding:2px 8px;border-radius:999px">${t.label}</span>`;}
+
+/* ===== 분야 체계 통일: 분류표 20분류 → 시민청 10분야 매핑 (시민앱 CATEGORIES와 일치) ===== */
+const CITY_CATS=['교통·도로','주택·건축','복지·보건','환경·청소','경제·일자리','문화·체육','교육·보육','안전·재난','행정·민원','기타'];
+const GROUP_TO_CAT={
+  '시정기획·예산·법무·데이터':'행정·민원','시민참여·민원·행정·세정':'행정·민원',
+  '안전·재난·민방위':'안전·재난','소방·구조·구급·화재예방':'안전·재난',
+  '복지·기초생활·보훈·자활':'복지·보건','아동·보육·청소년·여성·가족':'복지·보건','노인·장애인·보건·의료':'복지·보건',
+  '문화·예술·관광·체육·도서관':'문화·체육',
+  '경제·일자리·소상공인·기업':'경제·일자리','투자유치·산업·과학·디지털':'경제·일자리','농업·농촌·로컬푸드':'경제·일자리',
+  '축산·동물·산림':'환경·청소','환경·폐기물·대기·소음':'환경·청소','공원·녹지·하천·상하수도':'환경·청소',
+  '도시계획·개발·토지':'주택·건축','건축·주택·공동주택':'주택·건축',
+  '교통·버스·택시':'교통·도로','도로·주차·자전거·차량등록':'교통·도로',
+  '교육·학교·평생교육':'교육·보육',
+  '외부기관·경계업무·기타':'기타',
+};
+function groupToCat(group){ return GROUP_TO_CAT[group]||'기타'; }
+
+/* ===== 대시보드 자체 더미 접수 (시민앱 접수와 병합 표시) ===== */
+let ADMIN_DUMMY = [
+  {id:'a1',title:'퇴근 시간대 버스 배차 간격 개선 요청',catName:'교통·도로',sub:'버스',dept:'교통정책과',officerName:'이소영 주무관',catId:'SJ-131',level:'일반',
+   original:'퇴근 시간에 버스가 너무 안 와요. 30분씩 기다릴 때도 있어요. 출퇴근 시간만이라도 배차를 늘려주세요.',
+   aiSummary:'퇴근 시간대 버스 배차 간격이 길어 시민 불편이 큽니다. 해당 시간대 배차 간격 조정을 요청합니다.',
+   summary:'퇴근 시간대(18~20시) 버스 배차 간격이 길어 불편합니다. 출퇴근 시간 배차 확대를 요청합니다.',summaryEdited:true,
+   confirmedAt:'2026.06.15 09:12',status:'review',region:'한솔동',created:'2026.06.15',
+   history:[['2026.06.15','접수 완료'],['2026.06.15','담당 배정 (교통정책과)'],['2026.06.16','검토 중']]},
+  {id:'a2',title:'상가 밀집지역 주차 공간 부족',catName:'교통·도로',sub:'주차',dept:'교통정책과',officerName:'배정 예정',catId:'SJ-145',level:'일반',
+   original:'상가 앞에 주차할 데가 없어서 불법주차가 너무 많아요.',
+   aiSummary:'상가 밀집지역 주차 공간 부족으로 불법주차가 발생합니다. 공영주차장 확충을 요청합니다.',
+   summary:'상가 밀집지역 주차 공간 부족으로 불법주차가 발생합니다. 공영주차장 확충을 요청합니다.',summaryEdited:false,
+   confirmedAt:'2026.06.16 14:03',status:'received',region:'도담동',created:'2026.06.16',
+   history:[['2026.06.16','접수 완료'],['2026.06.16','분류 중']]},
+  {id:'a3',title:'학교 앞 횡단보도 신호 시간 연장',catName:'안전·재난',sub:'스쿨존',dept:'시민안전실',officerName:'배정 예정',catId:'SJ-024',level:'검토',
+   original:'초등학교 앞 횡단보도 신호가 너무 짧아서 아이들이 뛰어가요. 위험해요.',
+   aiSummary:'초등학교 앞 횡단보도 보행 신호 시간이 짧아 안전 우려가 있습니다. 신호 시간 연장을 요청합니다.',
+   summary:'초등학교 앞 횡단보도 보행 신호 시간이 짧아 안전 우려가 있습니다. 신호 시간 연장을 요청합니다.',summaryEdited:false,
+   confirmedAt:'2026.06.16 08:40',status:'received',region:'아름동',created:'2026.06.16',
+   history:[['2026.06.16','접수 완료'],['2026.06.16','분류 중']]},
+  {id:'a4',title:'야간·휴일 아이 돌봄 확대',catName:'복지·보건',sub:'돌봄',dept:'복지정책과',officerName:'한지민 팀장',catId:'SJ-045',level:'일반',
+   original:'맞벌이라 저녁이랑 주말에 아이 맡길 곳이 없어요. 야간 돌봄 좀 늘려주세요.',
+   aiSummary:'맞벌이 가정의 야간·휴일 돌봄 공백 해소가 필요합니다. 돌봄 시간 확대를 요청합니다.',
+   summary:'맞벌이 가정의 야간·휴일 돌봄 공백 해소가 필요합니다. 돌봄 시간 확대를 요청합니다.',summaryEdited:false,
+   confirmedAt:'2026.06.14 21:30',status:'assigned',region:'새롬동',created:'2026.06.14',
+   history:[['2026.06.14','접수 완료'],['2026.06.15','담당 배정 (복지정책과)']]},
+  {id:'a5',title:'분리배출 거점(클린하우스) 부족',catName:'환경·청소',sub:'폐기물',dept:'자원순환과',officerName:'윤하늘 팀장',catId:'SJ-156',level:'일반',
+   original:'우리 동네 분리수거 할 데가 멀어서 다들 그냥 버려요. 거점 좀 늘려주세요.',
+   aiSummary:'분리배출 거점 부족으로 무단투기가 발생합니다. 클린하우스 확대 설치를 요청합니다.',
+   summary:'분리배출 거점 부족으로 무단투기가 발생합니다. 클린하우스 확대 설치를 요청합니다.',summaryEdited:false,
+   confirmedAt:'2026.06.13 11:20',status:'review',region:'종촌동',created:'2026.06.13',
+   history:[['2026.06.13','접수 완료'],['2026.06.13','담당 배정 (자원순환과)'],['2026.06.14','검토 중']]},
+  {id:'a6',title:'무인민원발급기 추가 설치 건의',catName:'행정·민원',sub:'민원',dept:'민원과',officerName:'문가영 주무관',catId:'SJ-013',level:'일반',
+   original:'주민센터가 멀어요. 무인발급기 좀 가까운 데 놔주세요.',
+   aiSummary:'민원 발급 접근성 향상을 위해 무인민원발급기 추가 설치를 요청합니다.',
+   summary:'민원 발급 접근성 향상을 위해 무인민원발급기 추가 설치를 요청합니다.',summaryEdited:false,
+   confirmedAt:'2026.06.10 16:00',status:'answered',region:'보람동',created:'2026.06.10',updated:'2026.06.13',
+   answer:'안녕하세요, 민원과입니다. 생활권 접근성 분석 결과를 토대로 2026년 하반기 보람동 행정복지센터 인근에 무인민원발급기 1대를 추가 설치할 예정입니다. 소중한 제안 감사합니다.',
+   history:[['2026.06.10','접수 완료'],['2026.06.10','담당 배정 (민원과)'],['2026.06.12','검토 중'],['2026.06.13','답변 완료']]},
+];
+
+/* ===== 역할 ===== */
+let ROLE='manager';                 // 'manager' | 'officer'
+const OFFICER_DEPT='교통정책과';     // 실무자 데모 부서
+const OFFICER_NAME='이소영 주무관';
+
+/* ===== 의견 취합(이슈) — 유사 시민 의견을 묶은 단위 ===== */
+let ISSUES=[
+  {id:'I1',title:'퇴근 시간대 버스 배차 확대 요구',catName:'교통·도로',sub:'버스',dept:'교통정책과',officerName:'이소영 주무관',catId:'SJ-131',level:'일반',count:342,status:'review',created:'2026.06.10',
+   aiDigest:'퇴근 시간대(18~20시) 주요 노선의 버스 배차 간격이 길어 시민 불편이 집중되고 있습니다. 출퇴근 시간대 배차 확대와 혼잡 노선 증차 요구가 다수입니다.',
+   samples:[
+     {region:'한솔동',text:'퇴근하면 버스가 30분씩 안 와요. 시간대만이라도 늘려주세요.',date:'06.15',conv:[
+       {role:'ai',text:'안녕하세요, 교통정책과 이소영 주무관 AI입니다. 버스 관련해 어떤 점이 불편하셨나요?'},
+       {role:'citizen',text:'퇴근하면 버스가 30분씩 안 와요.'},
+       {role:'ai',text:'불편하셨겠어요. 어느 시간대, 어느 노선에서 그러셨는지 알려주시겠어요?'},
+       {role:'citizen',text:'저녁 7시쯤 한솔동 정류장이요. 990번인데 사람도 많은데 한참 기다려요.'},
+       {role:'ai',text:'말씀 감사합니다. ‘퇴근 시간대(저녁 7시) 한솔동 990번 배차 간격이 길어 불편하다, 배차 확대를 요청한다’로 정리해 전달드릴게요. 맞을까요?'},
+       {role:'citizen',text:'네, 맞아요.'}]},
+     {region:'도담동',text:'990번 배차가 너무 길어요. 사람도 많은데.',date:'06.14',conv:[
+       {role:'ai',text:'안녕하세요, 교통정책과 AI입니다. 어떤 노선이 불편하셨나요?'},
+       {role:'citizen',text:'990번이요. 배차가 너무 길어서 출근할 때마다 만원이에요.'},
+       {role:'ai',text:'출근 시간대 990번 혼잡·배차 문제로 정리해 전달드릴게요. 맞을까요?'},
+       {role:'citizen',text:'네.'}]},
+     {region:'새롬동',text:'저녁 버스 간격 좀 줄여주세요.',date:'06.13'},
+     {region:'아름동',text:'퇴근길 버스 기다리다 지쳐요.',date:'06.12'}],
+   history:[['2026.06.10','의견 취합 시작'],['2026.06.12','담당 배정 (교통정책과)'],['2026.06.16','검토 중']]},
+  {id:'I2',title:'자전거도로 단절 구간 연결 요청',catName:'교통·도로',sub:'자전거',dept:'교통정책과',officerName:'박준형 주무관',catId:'SJ-143',level:'일반',count:128,status:'received',created:'2026.06.11',
+   aiDigest:'자전거도로가 중간에 끊겨 차도로 진입해야 하는 위험 구간에 대한 개선 요구가 모이고 있습니다. 단절 구간 연결과 안전시설 보강 요청이 다수입니다.',
+   samples:[{region:'종촌동',text:'자전거길이 갑자기 끊겨서 위험해요.',date:'06.13'},{region:'고운동',text:'학교 가는 길 자전거도로 연결해주세요.',date:'06.12'}],
+   history:[['2026.06.11','의견 취합 시작'],['2026.06.11','분류 중']]},
+  {id:'I3',title:'야간·휴일 아이 돌봄 확대 요구',catName:'복지·보건',sub:'돌봄',dept:'복지정책과',officerName:'한지민 팀장',catId:'SJ-045',level:'일반',count:298,status:'assigned',created:'2026.06.09',
+   aiDigest:'맞벌이 가정을 중심으로 야간·휴일 돌봄 공백 해소 요구가 큽니다. 돌봄 운영시간 확대와 안심 등하원 지원 요청이 다수입니다.',
+   samples:[{region:'새롬동',text:'야근하면 아이 맡길 데가 없어요.',date:'06.14'},{region:'다정동',text:'주말 돌봄도 열어주세요.',date:'06.13'}],
+   history:[['2026.06.09','의견 취합 시작'],['2026.06.15','담당 배정 (복지정책과)']]},
+  {id:'I4',title:'주택가 분리배출 거점 확대 요구',catName:'환경·청소',sub:'폐기물',dept:'자원순환과',officerName:'윤하늘 팀장',catId:'SJ-156',level:'일반',count:241,status:'review',created:'2026.06.08',
+   aiDigest:'분리배출 거점 부족으로 인한 무단투기·악취 민원이 모이고 있습니다. 주택가 클린하우스 확대 설치 요구가 다수입니다.',
+   samples:[{region:'종촌동',text:'분리수거 할 데가 멀어요.',date:'06.12'},{region:'보람동',text:'골목에 쓰레기가 쌓여요.',date:'06.11'}],
+   history:[['2026.06.08','의견 취합 시작'],['2026.06.09','담당 배정 (자원순환과)'],['2026.06.14','검토 중']]},
+  {id:'I5',title:'학교 앞 횡단보도 신호 시간 연장 요구',catName:'안전·재난',sub:'스쿨존',dept:'시민안전실',officerName:'백승현 팀장',catId:'SJ-024',level:'검토',count:213,status:'received',created:'2026.06.13',
+   aiDigest:'초등학교 앞 횡단보도 보행 신호가 짧아 어린이 안전 우려가 집중되고 있습니다. 신호 시간 연장과 보행안전 시설 보강 요구가 다수입니다.',
+   samples:[{region:'아름동',text:'아이가 뛰어서 건너요. 신호가 너무 짧아요.',date:'06.14'},{region:'고운동',text:'학교 앞 신호 좀 늘려주세요.',date:'06.14'}],
+   history:[['2026.06.13','의견 취합 시작'],['2026.06.13','분류 중']]},
+  {id:'I6',title:'무인민원발급기 추가 설치 요구',catName:'행정·민원',sub:'민원',dept:'민원과',officerName:'문가영 주무관',catId:'SJ-013',level:'일반',count:63,status:'answered',created:'2026.06.05',updated:'2026.06.13',
+   aiDigest:'주민센터 접근성이 낮은 지역을 중심으로 무인민원발급기 추가 설치 요구가 모였습니다.',
+   samples:[{region:'보람동',text:'주민센터가 멀어요.',date:'06.08'},{region:'대평동',text:'발급기 가까운 데 놔주세요.',date:'06.07'}],
+   answer:'안녕하세요, 민원과입니다. 접근성 분석 결과를 토대로 2026년 하반기 보람동·대평동 생활권에 무인민원발급기를 추가 설치할 예정입니다. 의견 주신 시민 여러분께 감사드립니다.',
+   history:[['2026.06.05','의견 취합 시작'],['2026.06.06','담당 배정 (민원과)'],['2026.06.12','검토 중'],['2026.06.13','답변 완료 · 동참 63명에게 전달']]},
+];
+const OFFICER_CATNAME='교통·도로'; // 실무자(교통정책과) 담당 시민 분야
+// 시민 신규 접수(sc-proposals, 진행중)를 의견 취합 이슈로 변환
+function citizenIssues(){
+  let cz=[]; try{ cz=JSON.parse(localStorage.getItem('sc-proposals')||'[]'); }catch(e){}
+  return cz.filter(p=>(PSTATUS[p.status]||PSTATUS.received).group!=='hold').map(p=>({
+    id:'CZ-'+p.id, _citizen:true, _propId:p.id,
+    title:p.title, catName:p.catName, sub:p.sub, dept:p.dept||'배정 예정', officerName:p.officerName||'배정 예정',
+    catId:p.catId||'', level:p.level||'일반', count:1, status:p.status||'received', created:p.created,
+    aiDigest:p.summary||p.original, answer:p.answer||'', learned:!!p.learned,
+    samples:[{region:p.region,text:p.original,date:p.created}],
+    history:p.history||[[p.created,'시민 접수']],
+  }));
+}
+function loadIssues(){
+  const base = ROLE==='officer' ? ISSUES.filter(i=>i.dept===OFFICER_DEPT) : ISSUES.slice();
+  const cz = ROLE==='officer' ? citizenIssues().filter(i=>i.catName===OFFICER_CATNAME) : citizenIssues();
+  return [...cz, ...base];
+}
+function findIssue(id){ return loadIssues().find(i=>i.id===id); }
+function updateIssue(id,patch){
+  if(String(id).startsWith('CZ-')){
+    const propId=id.slice(3);
+    let arr=[]; try{ arr=JSON.parse(localStorage.getItem('sc-proposals')||'[]'); }catch(e){}
+    const idx=arr.findIndex(p=>p.id===propId);
+    if(idx>=0){ ['status','answer','history','learned'].forEach(k=>{ if(patch[k]!==undefined) arr[idx][k]=patch[k]; }); arr[idx].updated=todayStr(); localStorage.setItem('sc-proposals',JSON.stringify(arr)); }
+    return;
+  }
+  const i=ISSUES.findIndex(x=>x.id===id); if(i>=0) ISSUES[i]={...ISSUES[i],...patch};
+}
+
+/* ===== 접수 데이터 병합 (시민앱 localStorage + 더미) ===== */
+function roleFilter(arr){ return ROLE==='officer' ? arr.filter(p=>p.dept===OFFICER_DEPT) : arr; }
+function loadInbox(){
+  let citizen=[];
+  try{ citizen=JSON.parse(localStorage.getItem('sc-proposals')||'[]'); }catch(e){}
+  const cz = citizen.map(p=>({...p, _src:'citizen', catId:p.catId||'', level:p.level||'일반'}));
+  const dm = ADMIN_DUMMY.map(p=>({...p, _src:'dummy'}));
+  return [...cz, ...dm];
+}
+function findInbox(id){ return loadInbox().find(p=>p.id===id); }
+function updateProposal(id, patch){
+  const item = findInbox(id);
+  if(!item) return;
+  if(item._src==='citizen'){
+    let arr=[]; try{ arr=JSON.parse(localStorage.getItem('sc-proposals')||'[]'); }catch(e){}
+    const idx=arr.findIndex(p=>p.id===id);
+    if(idx>=0){ arr[idx]={...arr[idx],...patch}; localStorage.setItem('sc-proposals',JSON.stringify(arr)); }
+  } else {
+    const idx=ADMIN_DUMMY.findIndex(p=>p.id===id);
+    if(idx>=0) ADMIN_DUMMY[idx]={...ADMIN_DUMMY[idx],...patch};
+  }
+}
+
+/* ===== 탭 전환 ===== */
+const TAB_META={home:['dashboard','현황 요약'],studio:['badge','내 페이지 관리'],issues:['hub','의견 취합'],inbox:['inbox','개별 접수'],done:['task_alt','답변 완료'],cats:['category','AI 업무분류표 200'],stats:['monitoring','통계']};
+function sw(tab){
+  document.querySelectorAll('.content').forEach(c=>c.classList.remove('on'));
+  document.getElementById('tab-'+tab).classList.add('on');
+  document.querySelectorAll('.sn').forEach(n=>n.classList.remove('on'));
+  const nav=document.getElementById('nav-'+tab); if(nav) nav.classList.add('on');
+  document.getElementById('ti').textContent=TAB_META[tab][0];
+  document.getElementById('tt').textContent=TAB_META[tab][1];
+  document.getElementById('side').classList.remove('open');
+  if(tab==='home') renderHome();
+  if(tab==='issues') renderIssues();
+  if(tab==='inbox') renderInbox();
+  if(tab==='done') renderDone();
+  if(tab==='cats') renderCats();
+  if(tab==='stats') renderStats();
+  if(tab==='studio') renderStudio();
+}
+function applyRole(){
+  const officer = ROLE==='officer';
+  document.getElementById('tb-role').textContent = officer ? `${OFFICER_DEPT} · ${OFFICER_NAME}` : '총괄 관리자';
+  document.getElementById('tb-avatar').textContent = officer ? '이' : '관';
+  // 실무자는 기준데이터(분류표/통계) 숨김 + 내 페이지 관리 표시
+  ['grp-data','nav-cats','nav-stats'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display = officer ? 'none' : ''; });
+  ['grp-mypage','nav-studio'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display = officer ? '' : 'none'; });
+  refreshBadges();
+}
+
+/* ===== 현황 요약 (의견 취합 기준) ===== */
+function renderHome(){
+  const issues=loadIssues();
+  const active=issues.filter(i=>(PSTATUS[i.status]||PSTATUS.received).group==='active');
+  const done=issues.filter(i=>i.status==='answered');
+  const unassigned=issues.filter(i=>['received','classifying'].includes(i.status));
+  const citizens=issues.reduce((a,i)=>a+i.count,0);
+  const kpi=(icon,color,n,label)=>`<div class="card" style="padding:16px"><span class="ms msf" style="color:${color};font-size:22px">${icon}</span><p style="font-size:26px;font-weight:900;margin:4px 0 0">${n}</p><p style="font-size:11px;color:#6b7280;font-weight:700">${label}</p></div>`;
+  document.getElementById('home-kpis').innerHTML=
+    kpi('hub','#2563eb',issues.length,'의견 묶음')+
+    kpi('inbox','#f59e0b',unassigned.length,'미배정')+
+    kpi('pending_actions','#0ea5e9',active.length,'처리 중')+
+    kpi('groups','#a855f7',citizens.toLocaleString(),'동참 시민')+
+    kpi('task_alt','#22c55e',done.length,'답변 완료');
+  // 분야별 (동참 시민 수 기준)
+  const byCat={};
+  issues.forEach(i=>{byCat[i.catName]=(byCat[i.catName]||0)+i.count;});
+  const max=Math.max(1,...Object.values(byCat));
+  document.getElementById('home-by-cat').innerHTML=Object.entries(byCat).sort((a,b)=>b[1]-a[1]).map(([n,v])=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <span style="font-size:12px;font-weight:500;width:130px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${n}</span>
+      <div style="flex:1;height:8px;background:#eef2f9;border-radius:99px;overflow:hidden"><div style="width:${Math.round(v/max*100)}%;height:100%;background:linear-gradient(90deg,#2563eb,#3b82f6)"></div></div>
+      <span style="font-size:11px;color:#6b7280;width:42px;text-align:right">${v.toLocaleString()}</span>
+    </div>`).join('');
+  // 동참 많은 의견 묶음
+  const top=[...issues].sort((a,b)=>b.count-a.count).slice(0,6);
+  document.getElementById('home-recent').innerHTML=top.map(i=>`
+    <div onclick="openIssue('${i.id}')" style="cursor:pointer;padding:10px;border:1px solid #eef2f9;border-radius:12px">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">${badge(i.status)}<span style="font-size:10px;color:#2563eb;font-weight:700">동참 ${i.count.toLocaleString()}명</span></div>
+      <p style="font-size:13px;font-weight:700;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.title}</p>
+    </div>`).join('');
+}
+
+/* ===== 의견 취합(이슈) ===== */
+function renderIssues(){
+  const list=loadIssues().filter(i=>(PSTATUS[i.status]||PSTATUS.received).group==='active');
+  document.getElementById('issues-list').innerHTML=list.length?list.map(issueCard).join(''):'<p style="text-align:center;color:#9ca3af;padding:50px;font-size:13px">진행 중인 의견 묶음이 없습니다.</p>';
+  refreshBadges();
+}
+function issueCard(i){
+  return `<div class="card" style="padding:16px;cursor:pointer" onclick="openIssue('${i.id}')">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">${badge(i.status)}
+      <span style="font-size:10px;color:#9ca3af">${i.catName} · ${i.sub||''}</span>
+      ${i.level==='검토'?'<span style="font-size:10px;font-weight:700;color:#f97316;background:#fff7ed;padding:1px 7px;border-radius:99px">검토등급</span>':''}
+      ${i._citizen?'<span style="font-size:10px;font-weight:700;color:#2563eb;background:#eff6ff;padding:1px 7px;border-radius:99px">시민앱 신규</span>':''}
+      <span style="font-size:11px;font-weight:900;color:#2563eb;background:#eff6ff;padding:2px 9px;border-radius:99px;margin-left:auto"><span class="ms" style="font-size:13px;vertical-align:-2px">groups</span> 동참 ${i.count.toLocaleString()}명</span>
+    </div>
+    <p style="font-size:15px;font-weight:700;margin:0 0 5px">${i.title}</p>
+    <p style="font-size:12px;color:#64748b;margin:0;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${i.aiDigest}</p>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:11px;font-size:11px;color:#94a3b8">
+      <span class="ms" style="font-size:14px">apartment</span>${i.dept} · ${i.officerName}
+      ${i.catId?`<span style="margin-left:auto;background:#f1f5f9;color:#64748b;padding:1px 7px;border-radius:6px;font-weight:700">${i.catId}</span>`:''}
+    </div>
+  </div>`;
+}
+function openIssue(id){
+  const i=findIssue(id); if(!i) return;
+  const cat=(window.SEJONG_CATS200?.items||[]).find(c=>c.id===i.catId);
+  const sec=(t,h)=>`<div style="margin-top:18px"><p style="font-size:11px;font-weight:700;color:#94a3b8;margin:0 0 6px">${t}</p>${h}</div>`;
+  const answered=i.status==='answered';
+  document.getElementById('drawer-body').innerHTML=`
+    <div style="position:sticky;top:0;background:#fff;border-bottom:1px solid #e7ebf3;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;z-index:5">
+      <div style="display:flex;align-items:center;gap:8px">${badge(i.status)}<span style="font-size:11px;font-weight:900;color:#2563eb">동참 ${i.count.toLocaleString()}명</span></div>
+      <button onclick="closeDrawer()" style="background:none;border:none;cursor:pointer"><span class="ms" style="color:#94a3b8">close</span></button>
+    </div>
+    <div style="padding:22px">
+      <h2 style="font-size:18px;font-weight:900;margin:0 0 6px">${i.title}</h2>
+      <p style="font-size:11px;color:#9ca3af;margin:0">${i.catName} · ${i.dept} · ${i.officerName} · 취합 시작 ${i.created}</p>
+
+      ${sec('AI 취합 요약 (의견 방향성)',`<div style="background:#eff6ff;border-radius:14px;padding:16px"><p style="font-size:14px;color:#1e3a8a;line-height:1.7;margin:0">${i.aiDigest}</p><p style="font-size:11px;color:#3b82f6;margin:10px 0 0">유사한 ${i.count.toLocaleString()}명의 의견을 AI가 묶어 요약했습니다.</p></div>`)}
+
+      ${sec(`개별 의견 ${i.count.toLocaleString()}건 중 일부`,`<details><summary style="cursor:pointer;font-size:12px;color:#2563eb;font-weight:700;margin-bottom:8px">개별 시민 의견 펼쳐보기</summary>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">${i.samples.map((s,idx)=>`<div onclick="openSampleDetail('${i.id}',${idx})" style="background:#f8fafc;border-radius:10px;padding:10px;cursor:pointer;transition:background .15s" onmouseover="this.style.background='#eef4ff'" onmouseout="this.style.background='#f8fafc'"><div style="display:flex;align-items:flex-start;gap:6px"><p style="font-size:12px;color:#334155;margin:0;line-height:1.5;flex:1">"${s.text}"</p><span class="ms" style="font-size:16px;color:#94a3b8;flex-shrink:0">chat</span></div><p style="font-size:10px;color:#94a3b8;margin:5px 0 0">${s.region} · ${s.date} · <span style="color:#2563eb;font-weight:700">대화 보기</span></p></div>`).join('')}
+        <p style="font-size:11px;color:#cbd5e1;text-align:center;margin:4px 0 0">…외 ${(i.count-i.samples.length).toLocaleString()}건</p></div></details>`)}
+
+      ${cat?sec('AI 업무분류 매칭',`<div style="background:#f8fafc;border-radius:12px;padding:12px;font-size:12px;color:#475569"><p style="margin:0;font-weight:700">${cat.id} · ${cat.task}</p><p style="margin:4px 0 0">${cat.bureau} ${cat.dept} · 처리등급 ${cat.level}</p></div>`):''}
+
+      ${sec('처리 이력',`<div style="display:flex;flex-direction:column;gap:8px">${(i.history||[]).map((h,k)=>`<div style="display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:${k===i.history.length-1?'#2563eb':'#cbd5e1'}"></div><span style="font-size:12px;${k===i.history.length-1?'font-weight:700':'color:#64748b'}">${h[1]}</span><span style="font-size:10px;color:#cbd5e1;margin-left:auto">${h[0]}</span></div>`).join('')}</div>`)}
+
+      ${answered?
+        sec('등록한 공식답변 (동참 시민 전원에게 전달됨)',`<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:14px"><p style="font-size:11px;font-weight:700;color:#16a34a;margin:0 0 6px">${i.dept}에서 답변함 · ${i.count.toLocaleString()}명에게 전달</p><p style="font-size:13px;color:#166534;line-height:1.6;margin:0;white-space:pre-line">${i.answer}</p></div>`)
+        + sec('AI 페르소나 학습', i.learned
+            ? `<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:12px;display:flex;align-items:center;gap:8px"><span class="ms" style="color:#2563eb">school</span><span style="font-size:12px;color:#1e40af;flex:1;line-height:1.5">이 답변이 AI 페르소나에 학습되어, 유사 질문에 자동 응대됩니다.</span><button onclick="toggleIssueLearn('${i.id}')" style="font-size:11px;font-weight:700;color:#ef4444;background:none;border:none;cursor:pointer;flex-shrink:0">학습 제외</button></div>`
+            : `<button onclick="toggleIssueLearn('${i.id}')" style="width:100%;background:#eff6ff;color:#2563eb;font-weight:700;padding:11px;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><span class="ms" style="font-size:18px">school</span>이 답변을 AI 페르소나에 학습시키기</button>`)
+      :`
+        <div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap">
+          ${i.status!=='assigned'?`<button onclick="issueAssign('${i.id}')" style="font-size:12px;font-weight:700;padding:9px 14px;border-radius:10px;border:1px solid #2563eb;color:#2563eb;background:#fff;cursor:pointer">담당 배정</button>`:''}
+          <button onclick="issueTransfer('${i.id}')" style="font-size:12px;font-weight:700;padding:9px 14px;border-radius:10px;border:1px solid #e7ebf3;color:#64748b;background:#fff;cursor:pointer">타부서 이관</button>
+          <button onclick="issueAct('${i.id}','hold','보류')" style="font-size:12px;font-weight:700;padding:9px 14px;border-radius:10px;border:1px solid #e7ebf3;color:#64748b;background:#fff;cursor:pointer">보류</button>
+        </div>
+        ${sec('타 부서 이관 메모 (선택)',`<input id="issue-transfer-memo" class="inp" placeholder="예) 도로 시설 건은 도로관리사업소 소관 — 이관 사유 기록"/><p style="font-size:10px;color:#94a3b8;margin:6px 0 0">‘타부서 이관’ 시 이 메모가 처리 이력에 함께 기록됩니다.</p>`)}
+        ${sec('공식답변 작성',`<textarea id="issue-answer" class="inp" rows="5" placeholder="동참하신 ${i.count.toLocaleString()}명의 시민에게 한 번에 전달될 공식답변을 작성하세요." style="resize:vertical"></textarea>
+          <label style="display:flex;align-items:flex-start;gap:8px;margin:12px 0;cursor:pointer;background:#eff6ff;border-radius:10px;padding:11px"><input type="checkbox" id="issue-learn" checked style="margin-top:1px;width:16px;height:16px;accent-color:#2563eb;flex-shrink:0"/><span style="font-size:12px;color:#1e40af;line-height:1.5">이 답변을 <b>내 AI 페르소나에 학습</b>시킵니다. 앞으로 유사한 질문이 들어오면 AI가 이 답변을 바탕으로 바로 응대합니다.</span></label>
+          <button onclick="issueAnswer('${i.id}')" style="width:100%;background:#2563eb;color:#fff;font-weight:700;padding:12px;border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><span class="ms" style="font-size:18px">send</span>동참 시민 ${i.count.toLocaleString()}명에게 답변 전송</button>
+          <p style="font-size:10px;color:#94a3b8;text-align:center;margin:8px 0 0">한 번의 답변이 동참한 모든 시민의 ‘내 제안’에 전달됩니다.</p>`)}
+      `}
+    </div>`;
+  document.getElementById('drawer').style.display='flex';
+  document.getElementById('drawer').onclick=closeDrawer;
+}
+function openSampleDetail(issueId, idx){
+  const i=findIssue(issueId); const s=i.samples[idx]; if(!s) return;
+  const conv = s.conv || [
+    {role:'ai',text:`안녕하세요, ${i.dept} AI입니다. 어떤 점이 불편하셨나요?`},
+    {role:'citizen',text:s.text},
+    {role:'ai',text:'말씀 감사합니다. 내용을 정리해 담당 부서에 전달드렸어요.'}
+  ];
+  const bubbles = conv.map(m=> m.role==='citizen'
+    ? `<div style="display:flex;justify-content:flex-end;margin-bottom:9px"><div style="background:#2563eb;color:#fff;font-size:13px;padding:9px 13px;border-radius:14px 14px 4px 14px;max-width:82%;line-height:1.5">${m.text}</div></div>`
+    : `<div style="display:flex;gap:8px;margin-bottom:9px"><div style="width:26px;height:26px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;flex-shrink:0"><span class="ms" style="font-size:15px;color:#2563eb">smart_toy</span></div><div style="background:#f1f5f9;font-size:13px;padding:9px 13px;border-radius:14px 14px 14px 4px;max-width:82%;line-height:1.5">${m.text}</div></div>`).join('');
+  document.getElementById('sample-modal-body').innerHTML=`
+    <div style="position:sticky;top:0;background:#fff;border-bottom:1px solid #e7ebf3;padding:18px 22px;display:flex;align-items:center;justify-content:space-between">
+      <div><p style="font-size:14px;font-weight:900;margin:0">개별 시민 의견</p><p style="font-size:11px;color:#94a3b8;margin:2px 0 0">${s.region} · ${s.date} · 의견 묶음 「${i.title}」</p></div>
+      <button onclick="document.getElementById('sample-modal').style.display='none'" style="background:none;border:none;cursor:pointer"><span class="ms" style="color:#94a3b8">close</span></button>
+    </div>
+    <div style="padding:18px 22px">
+      <p style="font-size:11px;font-weight:700;color:#94a3b8;margin:0 0 6px">접수된 요지</p>
+      <p style="font-size:13px;color:#1e293b;background:#f8fafc;border-radius:10px;padding:11px;margin:0 0 16px;line-height:1.5">"${s.text}"</p>
+      <p style="font-size:11px;font-weight:700;color:#94a3b8;margin:0 0 10px">시민 ↔ AI 담당자 대화 전문</p>
+      <div style="background:#fafbfc;border-radius:12px;padding:14px">${bubbles}</div>
+      <p style="font-size:10px;color:#cbd5e1;text-align:center;margin:12px 0 0">시민이 직접 대화하고 확인(동의)한 내용입니다. 원문·대화·확정본이 함께 보관됩니다.</p>
+    </div>`;
+  document.getElementById('sample-modal').style.display='flex';
+  document.getElementById('sample-modal').onclick=()=>document.getElementById('sample-modal').style.display='none';
+}
+function issueAssign(id){ const i=findIssue(id); updateIssue(id,{status:'assigned',history:[...(i.history||[]),[todayStr(),'담당 배정']]}); toast('담당자에게 배정했습니다'); openIssue(id); refreshBadges(); }
+function issueAct(id,status,label){ const i=findIssue(id); updateIssue(id,{status,history:[...(i.history||[]),[todayStr(),label]]}); toast(label+' 처리했습니다'); openIssue(id); refreshBadges(); }
+function issueTransfer(id){
+  const memoEl=document.getElementById('issue-transfer-memo'); const memo=memoEl?memoEl.value.trim():'';
+  const i=findIssue(id);
+  const label = memo ? `타부서로 이관 — ${memo}` : '타부서로 이관';
+  updateIssue(id,{status:'transferred',history:[...(i.history||[]),[todayStr(),label]]});
+  toast('타부서로 이관했습니다'); openIssue(id); refreshBadges();
+}
+function issueAnswer(id){
+  const txt=document.getElementById('issue-answer').value.trim();
+  if(!txt){ toast('답변 내용을 입력하세요'); return; }
+  const learnEl=document.getElementById('issue-learn'); const doLearn=learnEl?learnEl.checked:false;
+  const i=findIssue(id);
+  updateIssue(id,{status:'answered',answer:txt,learned:doLearn,updated:todayStr(),history:[...(i.history||[]),[todayStr(),`답변 완료 · 동참 ${i.count.toLocaleString()}명에게 전달`]]});
+  if(doLearn) addAnswerToPersona(findIssue(id));
+  if(i._citizen) pushCitizenNoti('답변이 등록되었습니다', `‘${i.title}’에 ${i.dept}가 답변했어요. 확인해 주세요.`);
+  toast(doLearn?`답변 전송 + AI 학습 반영 ✓`:`동참 시민 ${i.count.toLocaleString()}명에게 답변을 전송했습니다 ✓`);
+  closeDrawer(); refreshBadges(); renderIssues();
+}
+function persistStudio(){ try{ localStorage.setItem('sc-studio',JSON.stringify(STUDIO)); }catch(e){} }
+function addAnswerToPersona(i){
+  if(!i) return;
+  if(!STUDIO.docs.some(d=>d.issueId===i.id)){
+    STUDIO.docs.push({name:`[답변학습] ${i.title}`,status:'learned',kind:'answer',issueId:i.id});
+    persistStudio();
+  }
+}
+function removeAnswerFromPersona(id){
+  const idx=STUDIO.docs.findIndex(d=>d.issueId===id);
+  if(idx>=0){ STUDIO.docs.splice(idx,1); persistStudio(); }
+}
+function toggleIssueLearn(id){
+  const i=findIssue(id); const now=!i.learned;
+  updateIssue(id,{learned:now});
+  if(now) addAnswerToPersona(findIssue(id)); else removeAnswerFromPersona(id);
+  toast(now?'AI 페르소나 학습에 반영했습니다':'AI 학습에서 제외했습니다');
+  openIssue(id);
+}
+
+/* ===== 접수함 ===== */
+let _inboxFilter='all';
+function renderInbox(){
+  const all=roleFilter(loadInbox()).filter(p=>(PSTATUS[p.status]||PSTATUS.received).group==='active');
+  refreshBadges();
+  // 필터칩(상태)
+  const states=['all','received','classifying','assigned','review','hold'];
+  const labels={all:'전체',received:'접수 완료',classifying:'분류 중',assigned:'담당 배정',review:'검토 중',hold:'보류'};
+  document.getElementById('inbox-filters').innerHTML=states.map(s=>`<button onclick="_inboxFilter='${s}';renderInbox()" style="font-size:12px;font-weight:700;padding:7px 14px;border-radius:999px;border:none;cursor:pointer;${_inboxFilter===s?'background:#2563eb;color:#fff':'background:#fff;color:#64748b;border:1px solid #e7ebf3'}">${labels[s]}</button>`).join('');
+  const list=_inboxFilter==='all'?all:all.filter(p=>p.status===_inboxFilter);
+  document.getElementById('inbox-list').innerHTML=list.length?list.map(inboxCard).join(''):'<p style="text-align:center;color:#9ca3af;padding:50px;font-size:13px">해당 상태의 접수가 없습니다.</p>';
+}
+function inboxCard(p){
+  return `<div class="card" style="padding:16px;cursor:pointer" onclick="openDrawer('${p.id}')">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">${badge(p.status)}
+      <span style="font-size:10px;color:#9ca3af">${p.catName} · ${p.sub||''}</span>
+      ${p.level==='검토'?'<span style="font-size:10px;font-weight:700;color:#f97316;background:#fff7ed;padding:1px 7px;border-radius:99px">검토등급</span>':''}
+      ${p._src==='citizen'?'<span style="font-size:10px;font-weight:700;color:#2563eb;background:#eff6ff;padding:1px 7px;border-radius:99px">시민앱 접수</span>':''}
+      <span style="font-size:10px;color:#cbd5e1;margin-left:auto">${p.created}</span>
+    </div>
+    <p style="font-size:14px;font-weight:700;margin:0 0 4px">${p.title}</p>
+    <p style="font-size:12px;color:#6b7280;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${(p.summary||'').split('\n')[0]}</p>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:11px;color:#94a3b8">
+      <span class="ms" style="font-size:14px">apartment</span>${p.dept} · ${p.officerName||'배정 예정'}
+      ${p.catId?`<span style="margin-left:auto;background:#f1f5f9;color:#64748b;padding:1px 7px;border-radius:6px;font-weight:700">${p.catId}</span>`:''}
+    </div>
+  </div>`;
+}
+function renderDone(){
+  const issues=loadIssues().filter(i=>i.status==='answered');
+  const indiv=roleFilter(loadInbox()).filter(p=>p.status==='answered');
+  const html=issues.map(issueCard).join('')+indiv.map(inboxCard).join('');
+  document.getElementById('done-list').innerHTML=html||'<p style="text-align:center;color:#9ca3af;padding:50px;font-size:13px">답변 완료된 건이 없습니다.</p>';
+}
+
+/* ===== 제안 상세 / 답변 드로어 ===== */
+function openDrawer(id){
+  const p=findInbox(id); if(!p) return;
+  const cat=(window.SEJONG_CATS200?.items||[]).find(c=>c.id===p.catId);
+  const sec=(t,h)=>`<div style="margin-top:18px"><p style="font-size:11px;font-weight:700;color:#94a3b8;margin:0 0 6px">${t}</p>${h}</div>`;
+  const answered=p.status==='answered';
+  document.getElementById('drawer-body').innerHTML=`
+    <div style="position:sticky;top:0;background:#fff;border-bottom:1px solid #e7ebf3;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;z-index:5">
+      <div style="display:flex;align-items:center;gap:8px">${badge(p.status)}<span style="font-size:11px;color:#9ca3af">${p.catName} · ${p.sub||''}</span></div>
+      <button onclick="closeDrawer()" style="background:none;border:none;cursor:pointer"><span class="ms" style="color:#94a3b8">close</span></button>
+    </div>
+    <div style="padding:22px">
+      <h2 style="font-size:18px;font-weight:900;margin:0 0 6px">${p.title}</h2>
+      <p style="font-size:11px;color:#9ca3af;margin:0">${p.dept} · ${p.officerName||'배정 예정'} · 접수 ${p.created} · ${p.region||''}</p>
+
+      ${sec('① 시민이 말한 내용 (원문 · 불변)',`<p style="font-size:13px;color:#64748b;line-height:1.6;background:#f8fafc;border-radius:12px;padding:12px;white-space:pre-line;margin:0">${p.original||''}</p>`)}
+      ${sec('② AI가 정리한 원본',`<p style="font-size:13px;color:#475569;line-height:1.6;border:1px dashed #cbd5e1;border-radius:12px;padding:12px;white-space:pre-line;margin:0">${p.aiSummary||p.summary||''}</p>`)}
+      ${sec('③ 시민이 확인·전달한 확정본',`<p style="font-size:13px;color:#1e293b;line-height:1.6;border:1px solid #2563eb33;border-radius:12px;padding:12px;white-space:pre-line;margin:0">${p.summary||''}</p>
+        ${p.summaryEdited?'<p style="font-size:10px;color:#f59e0b;margin:6px 0 0">⚠ 시민이 AI 정리본을 직접 수정했습니다 (원본 ②와 대조 가능)</p>':'<p style="font-size:10px;color:#94a3b8;margin:6px 0 0">AI 정리본 그대로 확인함</p>'}
+        ${p.confirmedAt?`<p style="font-size:10px;color:#94a3b8;margin:2px 0 0">시민 확인 시각 · ${p.confirmedAt}</p>`:''}`)}
+
+      ${cat?sec('AI 업무분류 매칭',`<div style="background:#eff6ff;border-radius:12px;padding:12px;font-size:12px;color:#1e40af">
+        <p style="margin:0;font-weight:700">${cat.id} · ${cat.task}</p>
+        <p style="margin:4px 0 0;color:#3b82f6">표준업무: ${cat.stdWork}</p>
+        <p style="margin:2px 0 0;color:#3b82f6">담당(안): ${cat.bureau} ${cat.dept} · 처리등급 ${cat.level}</p></div>`):''}
+
+      ${sec('처리 이력',`<div style="display:flex;flex-direction:column;gap:8px">${(p.history||[]).map((h,i)=>`<div style="display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:${i===p.history.length-1?'#2563eb':'#cbd5e1'}"></div><span style="font-size:12px;${i===p.history.length-1?'font-weight:700':'color:#64748b'}">${h[1]}</span><span style="font-size:10px;color:#cbd5e1;margin-left:auto">${h[0]}</span></div>`).join('')}</div>`)}
+
+      ${answered?`
+        ${sec('등록한 공식답변',`<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:14px"><p style="font-size:11px;font-weight:700;color:#16a34a;margin:0 0 6px">${p.dept}에서 답변함</p><p style="font-size:13px;color:#166534;line-height:1.6;margin:0;white-space:pre-line">${p.answer}</p></div>`)}
+      `:`
+        <div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap">
+          ${p.status!=='assigned'?`<button onclick="actAssign('${p.id}')" style="font-size:12px;font-weight:700;padding:9px 14px;border-radius:10px;border:1px solid #2563eb;color:#2563eb;background:#fff;cursor:pointer">담당 배정</button>`:''}
+          <button onclick="actTransfer('${p.id}')" style="font-size:12px;font-weight:700;padding:9px 14px;border-radius:10px;border:1px solid #e7ebf3;color:#64748b;background:#fff;cursor:pointer">타부서 이관</button>
+          <button onclick="actHold('${p.id}')" style="font-size:12px;font-weight:700;padding:9px 14px;border-radius:10px;border:1px solid #e7ebf3;color:#64748b;background:#fff;cursor:pointer">보류</button>
+        </div>
+        ${sec('공식답변 작성',`<textarea id="answer-input" class="inp" rows="5" placeholder="시민에게 전달할 공식답변을 작성하세요. (부서 명의로 전달됩니다)" style="resize:vertical"></textarea>
+          <button onclick="actAnswer('${p.id}')" style="margin-top:10px;width:100%;background:#2563eb;color:#fff;font-weight:700;padding:12px;border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><span class="ms" style="font-size:18px">send</span>시민에게 답변 전송</button>
+          <p style="font-size:10px;color:#94a3b8;text-align:center;margin:8px 0 0">전송하면 시민의 ‘내 제안’에 답변이 표시되고 알림이 발송됩니다.</p>`)}
+      `}
+    </div>`;
+  document.getElementById('drawer').style.display='flex';
+  document.getElementById('drawer').onclick=closeDrawer;
+}
+function closeDrawer(){ document.getElementById('drawer').style.display='none'; }
+
+function actAssign(id){ const p=findInbox(id); updateProposal(id,{status:'assigned',officerName:p.officerName==='배정 예정'?'김민수 팀장':p.officerName,history:[...(p.history||[]),[todayStr(),'담당 배정']]}); toast('담당자에게 배정했습니다'); openDrawer(id); refreshBadges(); }
+function actTransfer(id){ const p=findInbox(id); updateProposal(id,{status:'transferred',history:[...(p.history||[]),[todayStr(),'타부서로 이관']]}); toast('타부서로 이관했습니다'); openDrawer(id); refreshBadges(); }
+function actHold(id){ const p=findInbox(id); updateProposal(id,{status:'hold',history:[...(p.history||[]),[todayStr(),'보류']]}); toast('보류 처리했습니다'); openDrawer(id); refreshBadges(); }
+function actAnswer(id){
+  const txt=document.getElementById('answer-input').value.trim();
+  if(!txt){ toast('답변 내용을 입력하세요'); return; }
+  const p=findInbox(id);
+  updateProposal(id,{status:'answered',answer:txt,updated:todayStr(),history:[...(p.history||[]),[todayStr(),'답변 완료']]});
+  if(p._src==='citizen') pushCitizenNoti('답변이 등록되었습니다', `‘${p.title}’에 ${p.dept}가 답변했어요. 확인해 주세요.`);
+  toast('시민에게 답변을 전송했습니다 ✓');
+  closeDrawer(); refreshBadges(); renderInbox();
+}
+function pushCitizenNoti(title, body){
+  let arr=[]; try{ arr=JSON.parse(localStorage.getItem('sc-notifications')||'[]'); }catch(e){}
+  arr.unshift({title, body, unread:true});
+  localStorage.setItem('sc-notifications', JSON.stringify(arr));
+}
+function refreshBadges(){
+  const inbox=roleFilter(loadInbox());
+  document.getElementById('bdg-issues').textContent=loadIssues().filter(i=>(PSTATUS[i.status]||PSTATUS.received).group==='active').length;
+  document.getElementById('bdg-inbox').textContent=inbox.filter(p=>(PSTATUS[p.status]||PSTATUS.received).group==='active').length;
+  document.getElementById('bdg-done').textContent=loadIssues().filter(i=>i.status==='answered').length + inbox.filter(p=>p.status==='answered').length;
+}
+
+/* ===== 분류표 200 ===== */
+let _catGroup='all';
+function renderCats(){
+  const data=window.SEJONG_CATS200; if(!data){ document.getElementById('cats-list').innerHTML='<p style="color:#dc2626">분류표 로드 실패</p>'; return; }
+  // 그룹 사이드
+  document.getElementById('cats-groups').innerHTML=
+    [`<div onclick="_catGroup='all';renderCats()" style="padding:8px 10px;border-radius:8px;cursor:pointer;font-size:12px;${_catGroup==='all'?'background:#eff6ff;color:#2563eb;font-weight:700':''}">전체 <span style="color:#94a3b8">(${data.items.length})</span></div>`]
+    .concat(data.groups.map(g=>`<div onclick="_catGroup='${g.name.replace(/'/g,"\\'")}';renderCats()" style="padding:8px 10px;border-radius:8px;cursor:pointer;font-size:12px;${_catGroup===g.name?'background:#eff6ff;color:#2563eb;font-weight:700':''}">${g.name} <span style="color:#94a3b8">(${g.count})</span></div>`)).join('');
+  const q=(document.getElementById('cats-search').value||'').toLowerCase().trim();
+  let items=data.items.filter(it=>_catGroup==='all'||it.group===_catGroup);
+  if(q) items=items.filter(it=>(it.task+it.keywords.join(' ')+it.stdWork+it.dept).toLowerCase().includes(q));
+  document.getElementById('cats-count').textContent=`${items.length}개 세부업무`;
+  document.getElementById('cats-list').innerHTML=items.map(it=>`
+    <div class="card" style="padding:14px;cursor:pointer" onclick="openCatModal('${it.id}')">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap">
+        <span style="font-size:10px;font-weight:700;background:#f1f5f9;color:#64748b;padding:1px 7px;border-radius:6px">${it.id}</span>
+        <span style="font-size:10px;font-weight:700;background:#eff6ff;color:#2563eb;padding:1px 7px;border-radius:6px">${groupToCat(it.group)}</span>
+        ${it.level==='검토'?'<span style="font-size:10px;font-weight:700;color:#f97316;background:#fff7ed;padding:1px 7px;border-radius:99px">검토</span>':''}
+        <span style="font-size:10px;color:#cbd5e1;margin-left:auto">미검수</span>
+      </div>
+      <p style="font-size:14px;font-weight:700;margin:0">${it.task}</p>
+      <p style="font-size:11px;color:#94a3b8;margin:4px 0 0">${it.bureau} · ${it.dept}</p>
+      <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px">${it.keywords.slice(0,4).map(k=>`<span style="font-size:10px;background:#eff6ff;color:#3b82f6;padding:2px 7px;border-radius:6px">${k}</span>`).join('')}</div>
+    </div>`).join('');
+}
+function openCatModal(id){
+  const it=window.SEJONG_CATS200.items.find(c=>c.id===id); if(!it) return;
+  const row=(l,v)=>v?`<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid #f1f5f9"><span style="font-size:11px;color:#94a3b8;width:90px;flex-shrink:0">${l}</span><span style="font-size:13px;color:#1e293b">${v}</span></div>`:'';
+  document.getElementById('cat-modal-body').innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <span style="font-size:11px;font-weight:700;background:#f1f5f9;color:#64748b;padding:2px 8px;border-radius:6px">${it.id}</span>
+      <button onclick="document.getElementById('cat-modal').style.display='none'" style="background:none;border:none;cursor:pointer"><span class="ms" style="color:#94a3b8">close</span></button>
+    </div>
+    <p style="font-size:11px;color:#2563eb;font-weight:700;margin:0">${it.group}</p>
+    <h2 style="font-size:20px;font-weight:900;margin:4px 0 14px">${it.task}</h2>
+    ${row('시민청 분야',groupToCat(it.group))}
+    ${row('행정 분류(20)',it.group)}
+    ${row('표준업무',it.stdWork)}
+    ${row('담당기관',it.agency)}
+    ${row('담당 실국',it.bureau)}
+    ${row('예상 과',it.dept)}
+    ${row('협업기관',it.partner)}
+    ${row('처리등급',it.level)}
+    <div style="margin-top:14px"><p style="font-size:11px;color:#94a3b8;margin:0 0 6px">시민 표현 키워드</p><div style="display:flex;flex-wrap:wrap;gap:5px">${it.keywords.map(k=>`<span style="font-size:11px;background:#eff6ff;color:#3b82f6;padding:3px 9px;border-radius:7px">${k}</span>`).join('')}</div></div>
+    <div style="margin-top:14px;background:#f8fafc;border-radius:12px;padding:12px"><p style="font-size:11px;color:#94a3b8;margin:0 0 4px">시민 확인질문 (AI가 접수 전 묻는 문장)</p><p style="font-size:13px;color:#1e293b;margin:0">"${it.confirmQ}"</p></div>`;
+  document.getElementById('cat-modal').style.display='flex';
+  document.getElementById('cat-modal').onclick=()=>document.getElementById('cat-modal').style.display='none';
+}
+
+/* ===== 통계 ===== */
+function renderStats(){
+  const data=window.SEJONG_CATS200;
+  const issues=loadIssues();
+  const total=issues.length, done=issues.filter(i=>i.status==='answered').length;
+  const rate=total?Math.round(done/total*100):0;
+  const citizens=issues.reduce((a,i)=>a+i.count,0);
+  // 처리등급 분포(분류표 기준)
+  const lv={}; (data?.items||[]).forEach(it=>{lv[it.level]=(lv[it.level]||0)+1;});
+  const byCat={}; issues.forEach(i=>{byCat[i.catName]=(byCat[i.catName]||0)+i.count;});
+  const max=Math.max(1,...Object.values(byCat));
+  document.getElementById('stats-body').innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+      <div class="card" style="padding:16px"><p style="font-size:26px;font-weight:900;margin:0">${total}</p><p style="font-size:11px;color:#6b7280;font-weight:700">의견 묶음</p></div>
+      <div class="card" style="padding:16px"><p style="font-size:26px;font-weight:900;margin:0;color:#a855f7">${citizens.toLocaleString()}</p><p style="font-size:11px;color:#6b7280;font-weight:700">동참 시민</p></div>
+      <div class="card" style="padding:16px"><p style="font-size:26px;font-weight:900;margin:0;color:#2563eb">${rate}%</p><p style="font-size:11px;color:#6b7280;font-weight:700">묶음 처리율</p></div>
+      <div class="card" style="padding:16px"><p style="font-size:26px;font-weight:900;margin:0">${data?.items.length||0}</p><p style="font-size:11px;color:#6b7280;font-weight:700">분류 기준(업무)</p></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" class="home-grid">
+      <div class="card" style="padding:18px"><h3 style="font-size:14px;font-weight:900;margin:0 0 14px">분야별 동참 시민</h3>
+        ${Object.entries(byCat).sort((a,b)=>b[1]-a[1]).map(([n,v])=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:9px"><span style="font-size:12px;width:120px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${n}</span><div style="flex:1;height:8px;background:#eef2f9;border-radius:99px"><div style="width:${Math.round(v/max*100)}%;height:100%;background:#2563eb;border-radius:99px"></div></div><span style="font-size:11px;color:#6b7280;width:40px;text-align:right">${v.toLocaleString()}</span></div>`).join('')}</div>
+      <div class="card" style="padding:18px"><h3 style="font-size:14px;font-weight:900;margin:0 0 14px">분류표 처리등급 분포</h3>
+        ${Object.entries(lv).map(([n,v])=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:9px"><span style="font-size:12px;width:60px;flex-shrink:0">${n}</span><div style="flex:1;height:8px;background:#eef2f9;border-radius:99px"><div style="width:${Math.round(v/(data.items.length)*100)}%;height:100%;background:${n==='검토'?'#f97316':'#22c55e'};border-radius:99px"></div></div><span style="font-size:11px;color:#6b7280;width:36px;text-align:right">${v}개</span></div>`).join('')}
+        <p style="font-size:10px;color:#94a3b8;margin:12px 0 0">처리등급은 분류표 기준값입니다 (AI가 임의 판정하지 않음).</p></div>
+    </div>`;
+}
+
+/* =========================================================================
+   내 페이지 관리 (담당자 스튜디오) — 일꾼 후보자 대시보드 응용
+   ========================================================================= */
+const TONES={official:'공식적·정책 중심',friendly:'친근하고 따뜻하게',concise:'간결하고 핵심만'};
+const ISTATUS={plan:'계획',review:'검토 중',ongoing:'진행 중',done:'완료',hold:'보류'};
+const DOC_STATUS={learned:{label:'학습 완료',color:'#22c55e'},pending:{label:'학습 대기',color:'#f59e0b'}};
+const STUDIO_DEFAULT={
+  name:'이소영',title:'주무관',bureau:'교통국',dept:'교통정책과',team:'대중교통팀',field:'버스·대중교통',
+  phone:'044-300-XXXX',email:'lsy@sejong.go.kr',career:'버스정책 담당 6년 · 대중교통 운영 관리',
+  photo:'',  // 프로필 사진 dataURL (업로드)
+  personaTone:'official',personaStyle:'시민 눈높이에서 쉽게 설명하고, 다음 절차를 명확히 안내합니다.',
+  guardrail:'정치적 발언, 확정되지 않은 약속, 개인정보 요구는 하지 않습니다.',
+  greeting:'안녕하세요, 교통정책과 이소영 주무관 AI입니다. 버스·대중교통 관련해 불편하신 점을 편하게 말씀해 주세요.',
+  intro:'세종시 버스·대중교통 정책을 담당하고 있습니다. 노선·배차·정류장에 대한 의견을 기다립니다.',
+  workItems:[{name:'버스 운영 관리',desc:'시내버스 노선·배차·정류장 및 대중교통 이용 관리'},{name:'대중교통 이용환경 개선',desc:'정류장 시설·스마트쉘터 관리 및 이용 편의 개선'}],
+  improvements:[{name:'주차 환경 개선 사업',status:'ongoing',progress:48},{name:'정류장 스마트쉘터 설치',status:'ongoing',progress:60}],
+  docs:[{name:'2026 교통정책 기본계획.pdf',status:'learned'},{name:'버스 노선·배차 안내 FAQ.docx',status:'learned'},{name:'세종시 대중교통 조례.hwp',status:'pending'}],
+  notice:{active:false,text:''},answerTone:'official',
+};
+let STUDIO=loadStudio();
+let STUDIO_TEST=[];
+function loadStudio(){ try{ return Object.assign({},JSON.parse(JSON.stringify(STUDIO_DEFAULT)),JSON.parse(localStorage.getItem('sc-studio')||'{}')); }catch(e){ return JSON.parse(JSON.stringify(STUDIO_DEFAULT)); } }
+function saveStudio(){ try{ localStorage.setItem('sc-studio',JSON.stringify(STUDIO)); toast('내 페이지가 저장되었습니다 — 시민 앱에 반영됩니다 ✓'); }catch(e){ toast('저장 용량 초과 — 사진 크기를 줄여주세요'); } }
+function photoBox(size){ return STUDIO.photo
+  ? `<img src="${STUDIO.photo}" style="width:${size}px;height:${size}px;border-radius:14px;object-fit:cover;object-position:top;background:#f1f5f9"/>`
+  : `<div style="width:${size}px;height:${size}px;border-radius:14px;background:#2563eb;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:${Math.round(size/2.5)}px">${(STUDIO.name||'?').charAt(0)}</div>`; }
+function handlePhoto(input){ const f=input.files&&input.files[0]; if(!f)return; const r=new FileReader(); r.onload=e=>{ STUDIO.photo=e.target.result; renderStudio(); }; r.readAsDataURL(f); }
+function clearPhoto(){ STUDIO.photo=''; renderStudio(); }
+function handleDocs(input){ Array.from(input.files||[]).forEach(f=>STUDIO.docs.push({name:f.name,status:'pending'})); renderStudio(); }
+function delDoc(i){ STUDIO.docs.splice(i,1); renderStudio(); }
+function studioTestSend(){
+  const inp=document.getElementById('st-test-inp'); if(!inp) return; const q=inp.value.trim(); if(!q) return;
+  STUDIO_TEST.push({role:'user',text:q});
+  const tone={official:'정책 기준에 따라 정확히',friendly:'편하게 말씀드리면',concise:'핵심만 말씀드리면'}[STUDIO.personaTone]||'';
+  STUDIO_TEST.push({role:'ai',text:`${tone} ‘${q}’ 관련해서는 ${STUDIO.dept}에서 확인 후 안내드리겠습니다. (업로드한 자료 ${STUDIO.docs.filter(d=>d.status==='learned').length}건을 근거로 응답합니다)`});
+  inp.value=''; renderTestChat();
+}
+function renderTestChat(){
+  const el=document.getElementById('st-test-msgs'); if(!el) return;
+  el.innerHTML=STUDIO_TEST.map(m=>m.role==='user'
+    ? `<div style="display:flex;justify-content:flex-end;margin-bottom:8px"><div style="background:#2563eb;color:#fff;font-size:13px;padding:8px 12px;border-radius:14px 14px 4px 14px;max-width:80%">${m.text}</div></div>`
+    : `<div style="display:flex;gap:8px;margin-bottom:8px"><div style="width:26px;height:26px;border-radius:8px;flex-shrink:0;overflow:hidden">${photoBox(26)}</div><div style="background:#fff;border:1px solid #e7ebf3;font-size:13px;padding:8px 12px;border-radius:14px 14px 14px 4px;max-width:80%">${m.text}</div></div>`).join('');
+  el.scrollTop=el.scrollHeight;
+}
+
+function renderStudio(){
+  const s=STUDIO;
+  const sec=(title,desc,inner)=>`<div class="card" style="padding:20px;margin-bottom:14px"><h3 style="font-size:15px;font-weight:900;margin:0 0 2px">${title}</h3>${desc?`<p style="font-size:11px;color:#94a3b8;margin:0 0 14px">${desc}</p>`:'<div style="height:12px"></div>'}${inner}</div>`;
+  const fld=(label,key,ph)=>`<div style="margin-bottom:10px"><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">${label}</label><input class="inp" value="${(s[key]||'').replace(/"/g,'&quot;')}" oninput="STUDIO.${key}=this.value" placeholder="${ph||''}"/></div>`;
+  const ta=(label,key,rows)=>`<div style="margin-bottom:10px"><label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">${label}</label><textarea class="inp" rows="${rows||3}" oninput="STUDIO.${key}=this.value" style="resize:vertical">${s[key]||''}</textarea></div>`;
+
+  // 담당업무
+  const workRows=s.workItems.map((w,i)=>`
+    <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:8px">
+      <div style="flex:1">
+        <input class="inp" value="${(w.name||'').replace(/"/g,'&quot;')}" oninput="STUDIO.workItems[${i}].name=this.value" placeholder="담당업무명" style="margin-bottom:4px;font-weight:700"/>
+        <input class="inp" value="${(w.desc||'').replace(/"/g,'&quot;')}" oninput="STUDIO.workItems[${i}].desc=this.value" placeholder="간단한 업무 설명"/>
+      </div>
+      <button onclick="STUDIO.workItems.splice(${i},1);renderStudio()" style="background:none;border:none;cursor:pointer;color:#ef4444;padding:8px"><span class="ms">delete</span></button>
+    </div>`).join('');
+
+  // 개선현황
+  const impRows=s.improvements.map((im,i)=>`
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+      <input class="inp" value="${(im.name||'').replace(/"/g,'&quot;')}" oninput="STUDIO.improvements[${i}].name=this.value" placeholder="개선사업명" style="flex:1"/>
+      <select class="inp" onchange="STUDIO.improvements[${i}].status=this.value" style="width:100px;flex-shrink:0">${Object.entries(ISTATUS).map(([k,v])=>`<option value="${k}" ${im.status===k?'selected':''}>${v}</option>`).join('')}</select>
+      <input type="number" class="inp" value="${im.progress||0}" min="0" max="100" oninput="STUDIO.improvements[${i}].progress=+this.value" style="width:64px;flex-shrink:0"/>
+      <span style="font-size:11px;color:#94a3b8">%</span>
+      <button onclick="STUDIO.improvements.splice(${i},1);renderStudio()" style="background:none;border:none;cursor:pointer;color:#ef4444;padding:6px"><span class="ms">delete</span></button>
+    </div>`).join('');
+
+  document.getElementById('studio-body').innerHTML=`
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+      <div style="width:56px;height:56px;border-radius:14px;overflow:hidden">${photoBox(56)}</div>
+      <div><p style="font-size:18px;font-weight:900;margin:0">${s.name} ${s.title}</p><p style="font-size:12px;color:#94a3b8;margin:0">${s.dept} · ${s.team} · ${s.field}</p></div>
+      <button onclick="saveStudio()" style="margin-left:auto;background:#2563eb;color:#fff;font-weight:700;padding:10px 20px;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:6px"><span class="ms" style="font-size:18px">save</span>전체 저장</button>
+    </div>
+
+    ${sec('① 기본정보','시민에게 보이는 담당자 기본 정보입니다.',
+      `<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 12px">${fld('이름','name')}${fld('직급','title')}${fld('소속 실국','bureau')}${fld('소속 과','dept')}${fld('소속 팀','team')}${fld('담당 분야','field')}${fld('전화번호','phone')}${fld('이메일','email')}</div>${ta('주요 경력','career',2)}`)}
+
+    ${sec('② 프로필 사진','시민에게 보이는 담당자 사진입니다. (AI 생성 이미지가 아니라 실제 프로필 사진을 올려 신뢰감을 줍니다)',
+      `<div style="display:flex;align-items:center;gap:16px">
+        <div style="width:96px;height:96px;border-radius:16px;overflow:hidden">${photoBox(96)}</div>
+        <div>
+          <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="handlePhoto(this)"/>
+          <button onclick="document.getElementById('photo-input').click()" style="background:#2563eb;color:#fff;font-weight:700;padding:9px 16px;border:none;border-radius:10px;cursor:pointer;font-size:13px">사진 업로드</button>
+          ${s.photo?`<button onclick="clearPhoto()" style="margin-left:8px;background:#fff;color:#ef4444;border:1px solid #fecaca;font-weight:700;padding:9px 14px;border-radius:10px;cursor:pointer;font-size:13px">삭제</button>`:''}
+          <p style="font-size:11px;color:#94a3b8;margin:8px 0 0">JPG·PNG · 정면 얼굴 권장</p>
+        </div>
+      </div>`)}
+
+    ${sec('③ 페르소나','AI가 시민에게 답할 때의 말투와 지켜야 할 선(가드레일)입니다.',
+      `<label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:6px">응대 톤</label>
+      <div style="display:flex;gap:8px;margin-bottom:12px">${Object.entries(TONES).map(([k,v])=>`<button onclick="STUDIO.personaTone='${k}';renderStudio()" style="flex:1;padding:9px;border-radius:10px;border:2px solid ${s.personaTone===k?'#2563eb':'#e7ebf3'};background:${s.personaTone===k?'#eff6ff':'#fff'};color:${s.personaTone===k?'#2563eb':'#64748b'};font-size:12px;font-weight:700;cursor:pointer">${v}</button>`).join('')}</div>
+      ${ta('화법 가이드','personaStyle',2)}${ta('가드레일 (하지 말 것)','guardrail',2)}`)}
+
+    ${sec('④ 자료 업로드 (AI 학습)','담당 분야 정책자료·FAQ·조례를 올리면 AI가 이 자료를 근거로 시민에게 답합니다.',
+      `<input type="file" id="docs-input" accept=".pdf,.txt,.docx,.hwp" multiple style="display:none" onchange="handleDocs(this)"/>
+       <div onclick="document.getElementById('docs-input').click()" style="border:2px dashed #cbd5e1;border-radius:12px;padding:18px;text-align:center;cursor:pointer;margin-bottom:12px"><span class="ms" style="color:#2563eb;font-size:26px">upload_file</span><p style="font-size:13px;font-weight:700;color:#64748b;margin:4px 0 0">문서 드래그 또는 클릭 · PDF·DOCX·TXT·HWP</p></div>
+       <div style="display:flex;flex-direction:column;gap:6px">${s.docs.map((d,i)=>`<div style="display:flex;align-items:center;gap:8px;background:${d.kind==='answer'?'#eff6ff':'#f8fafc'};border-radius:10px;padding:9px 12px"><span class="ms" style="color:#2563eb;font-size:18px">${d.kind==='answer'?'school':'description'}</span><span style="font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.name}</span><span style="font-size:10px;font-weight:700;color:${(DOC_STATUS[d.status]||DOC_STATUS.pending).color}">${(DOC_STATUS[d.status]||DOC_STATUS.pending).label}</span><button onclick="delDoc(${i})" style="background:none;border:none;cursor:pointer;color:#ef4444"><span class="ms" style="font-size:16px">close</span></button></div>`).join('')||'<p style="font-size:12px;color:#cbd5e1;text-align:center;padding:8px">업로드된 자료가 없습니다</p>'}</div>`)}
+
+    ${sec('⑤ 페르소나 테스트','시민에게 내 AI가 어떻게 답할지 미리 확인해 보세요.',
+      `<div id="st-test-msgs" style="max-height:220px;overflow-y:auto;background:#fafbfc;border-radius:12px;padding:12px;margin-bottom:10px;min-height:54px"></div>
+       <div style="display:flex;gap:8px"><input id="st-test-inp" class="inp" placeholder="예) 퇴근 시간 버스 배차 언제 늘어나나요?" onkeydown="if(event.key==='Enter')studioTestSend()"/><button onclick="studioTestSend()" style="background:#2563eb;color:#fff;font-weight:700;padding:0 16px;border:none;border-radius:10px;cursor:pointer">전송</button></div>`)}
+
+    ${sec('⑥ 인사말 · 자기소개','시민이 대화를 시작할 때 보이는 첫 인사와 소개입니다.',
+      `${ta('대화 첫 인사말','greeting',3)}${ta('자기소개','intro',2)}`)}
+
+    ${sec('⑦ 담당업무 관리','시민 앱의 담당자 상세 ‘담당업무’ 탭에 그대로 표시됩니다.',
+      `${workRows}<button onclick="STUDIO.workItems.push({name:'',desc:''});renderStudio()" style="margin-top:4px;background:#eff6ff;color:#2563eb;font-weight:700;padding:9px 14px;border:none;border-radius:10px;cursor:pointer;font-size:12px">+ 담당업무 추가</button>`)}
+
+    ${sec('⑧ 개선현황 관리','추진 중·완료된 개선사업을 등록·갱신합니다. (상태·진행률)',
+      `${impRows}<button onclick="STUDIO.improvements.push({name:'',status:'plan',progress:0});renderStudio()" style="margin-top:4px;background:#eff6ff;color:#2563eb;font-weight:700;padding:9px 14px;border:none;border-radius:10px;cursor:pointer;font-size:12px">+ 개선사업 추가</button>`)}
+
+    ${sec('⑨ 긴급 · 이벤트 공지','정책 이벤트나 긴급 사항을 시민 앱 담당자 페이지 상단에 즉시 띄웁니다.',
+      `<label style="display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer"><input type="checkbox" ${s.notice.active?'checked':''} onchange="STUDIO.notice.active=this.checked;renderStudio()" style="width:18px;height:18px;accent-color:#2563eb"/><span style="font-size:13px;font-weight:700">공지 게시 중</span></label>
+      <textarea class="inp" rows="2" oninput="STUDIO.notice.text=this.value" placeholder="예) 6/20부터 이음버스 3개 노선 신설 운행 안내" ${s.notice.active?'':'disabled'} style="resize:vertical;${s.notice.active?'':'background:#f8fafc;color:#cbd5e1'}">${s.notice.text||''}</textarea>`)}
+
+    ${sec('⑩ 답변 기본 톤','의견 답변 작성 시 기본으로 적용할 톤입니다.',
+      `<div style="display:flex;gap:8px">${Object.entries(TONES).map(([k,v])=>`<button onclick="STUDIO.answerTone='${k}';renderStudio()" style="flex:1;padding:9px;border-radius:10px;border:2px solid ${s.answerTone===k?'#2563eb':'#e7ebf3'};background:${s.answerTone===k?'#eff6ff':'#fff'};color:${s.answerTone===k?'#2563eb':'#64748b'};font-size:12px;font-weight:700;cursor:pointer">${v}</button>`).join('')}</div>`)}
+
+    <button onclick="saveStudio()" style="width:100%;background:#2563eb;color:#fff;font-weight:700;padding:14px;border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:30px"><span class="ms">save</span>전체 저장 — 시민 앱에 반영</button>`;
+  renderTestChat();
+}
+
+/* ===== 공통 ===== */
+function todayStr(){const d=new Date();return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;}
+let _tt=null;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(_tt);_tt=setTimeout(()=>t.style.display='none',2200);}
+function doLogin(role){ ROLE=role||'manager'; document.getElementById('login').style.display='none'; applyRole(); sw('home'); }
+
+/* 반응형 그리드 */
+const mq=window.matchMedia('(max-width:860px)');
+function applyMq(){document.querySelectorAll('.home-grid,.cats-grid').forEach(el=>{el.style.gridTemplateColumns=mq.matches?'1fr':'';el.style.flexDirection=mq.matches&&el.classList.contains('cats-grid')?'column':'';});document.getElementById('home-kpis').style.gridTemplateColumns=mq.matches?'repeat(2,1fr)':'repeat(5,1fr)';}
+mq.addEventListener('change',applyMq); applyMq();
+// 초기 화면은 로그인 후 doLogin()에서 렌더
+</script>
+</body>
+</html>

@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html class="light" lang="ko">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <title>세종시민청 | 세종시 시민 소통 플랫폼 (시범)</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <script src="assets/sejong-categories-200.js"></script><!-- 세종 AI 업무분류표 200 (window.SEJONG_CATS200) -->
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#2563eb",          /* 시민청 블루 (행정 신뢰 톤) */
+                        "primary-dark": "#1d4ed8",
+                        "background-light": "#f6f8fc",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        display: ["Public Sans", "Noto Sans KR", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem",
+                        "2xl": "1rem", "3xl": "1.5rem", full: "9999px",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        body { font-family: 'Noto Sans KR', 'Public Sans', 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Page transition */
+        .page { display: none; flex-direction: column; min-height: 100vh; }
+        .page.active { display: flex; }
+        .page-enter { animation: slideIn 0.28s ease-out; }
+        .page-enter-back { animation: slideInBack 0.28s ease-out; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideInBack { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* Segmented control */
+        .segmented-control { background-color: #eef2f9; padding: 4px; border-radius: 12px; display: flex; width: 100%; }
+        .dark .segmented-control { background-color: #1e2636; }
+        .segmented-item { flex: 1; text-align: center; padding: 8px 0; font-size: 0.875rem; font-weight: 600; border-radius: 8px; transition: all 0.2s; cursor: pointer; white-space: nowrap; color: #6b7280; }
+        .segmented-item.active { background-color: white; color: #2563eb; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .dark .segmented-item.active { background-color: #2d3748; color: white; }
+
+        /* Bottom nav */
+        .bottom-nav {
+            background: linear-gradient(to top, #eef4ff 0%, #f6f9ff 60%, #ffffff 100%) !important;
+            box-shadow: 0 -4px 16px -8px rgba(37, 99, 235, 0.14);
+        }
+        .dark .bottom-nav { background: linear-gradient(to top, #131c33 0%, #0f172a 100%) !important; box-shadow: 0 -4px 16px -8px rgba(0,0,0,0.4); }
+        .bottom-nav a { padding: 6px 4px; border-radius: 14px; transition: background-color 0.2s, color 0.2s; }
+        .bottom-nav a.active { color: #2563eb; background-color: rgba(37, 99, 235, 0.10); }
+        .dark .bottom-nav a.active { background-color: rgba(96, 165, 250, 0.18); color: #93c5fd; }
+        .bottom-nav a.active .material-symbols-outlined { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+        /* Modal slide-up */
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .animate-slideUp { animation: slideUp 0.3s ease-out; }
+
+        /* Chat */
+        .chat-typing span { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #94a3b8; animation: typing 1.4s infinite; }
+        .chat-typing span:nth-child(2) { animation-delay: 0.2s; }
+        .chat-typing span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-5px); } }
+
+        /* Progress bar */
+        .prog-track { background: #e8eefb; border-radius: 9999px; overflow: hidden; }
+        .dark .prog-track { background: #1e293b; }
+        .prog-fill { background: linear-gradient(90deg,#2563eb,#3b82f6); height: 100%; border-radius: 9999px; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+
+<div id="app" class="relative mx-auto w-full max-w-[480px] min-h-screen bg-background-light dark:bg-background-dark overflow-hidden">
+
+    <!-- ==================== P1: 홈 ==================== -->
+    <div id="page-home" class="page active">
+        <header class="sticky top-0 z-40 bg-white/90 dark:bg-background-dark/90 glass backdrop-blur border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary">forum</span>
+                </div>
+                <div>
+                    <h1 class="text-base font-bold leading-tight">세종시민청</h1>
+                    <p class="text-[10px] text-slate-400 leading-tight">세종특별자치시 · 시범 서비스</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-1.5">
+                <div class="segmented-control !w-auto !p-0.5 text-xs">
+                    <button onclick="setLang('ko')" id="lang-ko" class="px-2.5 py-1 rounded-md font-bold text-primary bg-white dark:bg-slate-700 shadow-sm">KO</button>
+                    <button onclick="setLang('en')" id="lang-en" class="px-2.5 py-1 rounded-md font-bold text-slate-400">EN</button>
+                </div>
+                <button onclick="toggleDark()" class="h-8 w-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                    <span class="material-symbols-outlined text-[20px] block dark:hidden">dark_mode</span>
+                    <span class="material-symbols-outlined text-[20px] hidden dark:block">light_mode</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="flex-1 px-4 pt-4 pb-28 space-y-5">
+            <!-- 히어로 -->
+            <section class="rounded-3xl bg-gradient-to-br from-primary to-blue-500 text-white p-6 shadow-xl shadow-primary/20">
+                <h2 class="text-2xl font-bold leading-snug">세종시민의 목소리,<br>시정이 답합니다</h2>
+                <p class="text-sm text-blue-100 mt-2">전화하듯 질문하면, AI가 담당자에게 바로 연결해드립니다.</p>
+                <button onclick="startChat(null)" class="mt-5 w-full bg-white text-primary font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+                    <span class="material-symbols-outlined">support_agent</span> 질문하고 담당자 연결받기
+                </button>
+                <button onclick="navigateTo('page-category')" class="mt-2.5 w-full bg-white/15 hover:bg-white/25 text-white font-bold py-3 rounded-2xl flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+                    <span class="material-symbols-outlined">grid_view</span> 분야별 담당자 찾아보기
+                </button>
+            </section>
+
+            <!-- 통계 4종 -->
+            <section class="grid grid-cols-2 gap-3">
+                <div class="rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 p-4">
+                    <div class="flex items-center gap-1.5 text-slate-400 text-xs"><span class="material-symbols-outlined text-[18px] text-primary">campaign</span>오늘 접수된 제안</div>
+                    <p class="text-2xl font-bold mt-1.5">37<span class="text-sm font-medium text-slate-400">건</span></p>
+                </div>
+                <div class="rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 p-4">
+                    <div class="flex items-center gap-1.5 text-slate-400 text-xs"><span class="material-symbols-outlined text-[18px] text-emerald-500">task_alt</span>답변 완료</div>
+                    <p class="text-2xl font-bold mt-1.5">5,678<span class="text-sm font-medium text-slate-400">건</span></p>
+                </div>
+                <div class="rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 p-4">
+                    <div class="flex items-center gap-1.5 text-slate-400 text-xs"><span class="material-symbols-outlined text-[18px] text-rose-500">favorite</span>시민 공감 수</div>
+                    <p id="home-likes-total" class="text-2xl font-bold mt-1.5">0</p>
+                </div>
+                <div class="rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 p-4">
+                    <div class="flex items-center gap-1.5 text-slate-400 text-xs"><span class="material-symbols-outlined text-[18px] text-amber-500">donut_large</span>전체 처리율</div>
+                    <p class="text-2xl font-bold mt-1.5">89<span class="text-sm font-medium text-slate-400">%</span></p>
+                </div>
+            </section>
+
+            <!-- 자주 찾는 분야 (담당자 컨펌 후 노출 — 현재 히든) -->
+            <section style="display:none">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-bold text-slate-800 dark:text-slate-100">자주 찾는 분야</h3>
+                    <button onclick="navigateTo('page-category')" class="text-xs text-primary font-bold">전체 보기 →</button>
+                </div>
+                <div id="home-popular-cats" class="grid grid-cols-4 gap-2"></div>
+            </section>
+
+            <!-- 최근 개선현황 (담당자 컨펌 후 노출 — 현재 히든) -->
+            <section style="display:none">
+                <h3 class="font-bold text-slate-800 dark:text-slate-100 mb-3">최근 개선현황</h3>
+                <div id="home-recent-improvements" class="space-y-2.5"></div>
+            </section>
+
+            <!-- 공감 많은 시민 제안 (담당자 컨펌 후 노출 — 현재 히든) -->
+            <section style="display:none">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-bold text-slate-800 dark:text-slate-100">공감 많은 시민 제안</h3>
+                    <button onclick="openCommunity()" class="text-xs text-primary font-bold">전체 보기 →</button>
+                </div>
+                <p class="text-[11px] text-slate-400 mb-2.5 -mt-1">공감이 많은 제안을 담당 부서가 우선 검토합니다. 같은 생각이면 공감을 눌러주세요.</p>
+                <div id="home-top-proposals" class="space-y-2.5"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ==================== P2: 행정 분야 선택 ==================== -->
+    <div id="page-category" class="page">
+        <header class="sticky top-0 z-40 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3 flex items-center gap-3">
+            <button onclick="goBack()" class="p-1 -ml-1"><span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span></button>
+            <div><h1 class="text-base font-bold">분야 선택</h1><p class="text-[11px] text-slate-400">어떤 분야에 대해 문의하시나요?</p></div>
+        </header>
+        <main class="flex-1 px-4 pt-4 pb-28">
+            <div class="rounded-2xl bg-primary/5 dark:bg-primary/10 border border-primary/15 p-3.5 mb-4 flex items-start gap-2">
+                <span class="material-symbols-outlined text-primary text-[20px]">lightbulb</span>
+                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">분야를 모르셔도 괜찮아요. 홈의 <b class="text-primary">질문·제안하기</b>에서 바로 입력하면 AI가 분야를 찾아드립니다.</p>
+            </div>
+            <div id="category-grid" class="grid grid-cols-2 gap-3"></div>
+        </main>
+    </div>
+
+    <!-- ==================== P3: 담당 부서·담당자 목록 ==================== -->
+    <div id="page-officers" class="page">
+        <header class="sticky top-0 z-40 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3 flex items-center gap-3">
+            <button onclick="goBack()" class="p-1 -ml-1"><span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span></button>
+            <div><h1 id="officers-title" class="text-base font-bold">담당 부서</h1><p id="officers-sub" class="text-[11px] text-slate-400">담당 부서와 담당자</p></div>
+        </header>
+        <main class="flex-1 px-4 pt-4 pb-28 space-y-4">
+            <div id="officers-dept-banner"></div>
+            <div id="officers-list" class="space-y-3"></div>
+        </main>
+    </div>
+
+    <!-- ==================== P4: 담당자 상세 ==================== -->
+    <div id="page-officer" class="page">
+        <header class="sticky top-0 z-40 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3 flex items-center gap-3">
+            <button onclick="goBack()" class="p-1 -ml-1"><span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span></button>
+            <h1 class="text-base font-bold">담당자 상세</h1>
+        </header>
+        <main class="flex-1 pb-28">
+            <div id="officer-detail"></div>
+        </main>
+    </div>
+
+    <!-- ==================== 담당업무 상세 ==================== -->
+    <div id="page-workitem" class="page">
+        <header class="sticky top-0 z-40 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3 flex items-center gap-3">
+            <button onclick="goBack()" class="p-1 -ml-1"><span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span></button>
+            <h1 class="text-base font-bold">담당업무 상세</h1>
+        </header>
+        <main class="flex-1 pb-28"><div id="workitem-detail"></div></main>
+    </div>
+
+    <!-- ==================== 개선현황 상세 ==================== -->
+    <div id="page-improvement" class="page">
+        <header class="sticky top-0 z-40 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3 flex items-center gap-3">
+            <button onclick="goBack()" class="p-1 -ml-1"><span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span></button>
+            <h1 class="text-base font-bold">개선현황 상세</h1>
+        </header>
+        <main class="flex-1 pb-28"><div id="improvement-detail"></div></main>
+    </div>
+
+    <!-- ==================== 질문하기 (담당자 아바타 대화) ==================== -->
+    <div id="page-chat" class="page bg-slate-50 dark:bg-background-dark" style="height:100dvh;overflow:hidden">
+        <header class="sticky top-0 z-40 bg-white dark:bg-slate-900 border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3 flex items-center gap-3">
+            <button onclick="goBack()" class="p-1 -ml-1"><span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span></button>
+            <div class="w-9 h-9 rounded-xl overflow-hidden shrink-0" id="chat-avatar"></div>
+            <div class="flex-1 min-w-0">
+                <h1 id="chat-title" class="text-sm font-bold leading-tight truncate">담당자 AI</h1>
+                <p id="chat-subtitle" class="text-[11px] text-slate-400 leading-tight truncate">담당 부서 연결</p>
+            </div>
+        </header>
+        <!-- 채팅 / 음성 대화 탭 -->
+        <div class="px-4 pt-3">
+            <div class="segmented-control">
+                <button id="cm-text" onclick="switchChatMode('text')" class="segmented-item active"><span class="material-symbols-outlined text-[16px] align-middle">chat</span> 채팅 대화</button>
+                <button id="cm-voice" onclick="switchChatMode('voice')" class="segmented-item"><span class="material-symbols-outlined text-[16px] align-middle">mic</span> 음성 대화</button>
+            </div>
+        </div>
+        <!-- 컨텍스트 칩 -->
+        <div id="chat-context" class="hidden px-4 pt-3"></div>
+        <!-- 안내 배너 -->
+        <div id="chat-banner" class="px-4 pt-3">
+            <div class="rounded-xl bg-primary/5 dark:bg-primary/10 border border-primary/15 p-2.5 flex items-start gap-2">
+                <span class="material-symbols-outlined text-primary text-[18px]">smart_toy</span>
+                <p class="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">AI가 편하게 들어드립니다. 충분히 말씀하신 뒤 아래 <b class="text-primary">대화 마치고 전달하기</b>를 누르면, 내용을 정리해 확인받고 담당 부서로 전달합니다.</p>
+            </div>
+        </div>
+        <main id="chat-messages" class="flex-1 min-h-0 overflow-y-auto px-4 py-4 space-y-3"></main>
+        <!-- 입력 영역 -->
+        <div id="chat-input-area" class="sticky bottom-0 bg-white dark:bg-slate-900 border-t border-[#e7ebf3] dark:border-gray-800 px-3 pt-2.5 pb-3 space-y-2">
+            <div id="chat-cats" class="flex gap-1.5 overflow-x-auto scrollbar-hide pb-0.5 items-center"></div>
+            <button onclick="finishChatAndSummarize()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold py-2.5 rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.98] transition-transform">
+                <span class="material-symbols-outlined text-[18px]">task_alt</span>대화 마치고 전달하기
+            </button>
+            <div class="flex items-end gap-2">
+                <button id="voice-btn" onclick="toggleVoiceInput(this)" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0" aria-label="음성 입력"><span class="material-symbols-outlined text-slate-500 text-[20px]">mic</span></button>
+                <textarea id="chat-input" rows="1" maxlength="500" placeholder="궁금한 내용을 입력하세요…" class="flex-1 px-3.5 py-2.5 text-sm rounded-2xl border border-[#e7ebf3] dark:border-gray-700 bg-slate-50 dark:bg-slate-800 focus:outline-none focus:border-primary resize-none max-h-28"></textarea>
+                <button onclick="sendChatMessage()" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shrink-0 active:scale-95 transition-transform"><span class="material-symbols-outlined text-[20px]">send</span></button>
+            </div>
+        </div>
+        <!-- 음성 대화 뷰 -->
+        <div id="chat-voice-view" class="flex-1 flex-col items-center justify-center px-6 pb-8 overflow-y-auto" style="display:none">
+            <div class="rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-3 mb-8 flex items-start gap-2 max-w-sm">
+                <span class="material-symbols-outlined text-amber-600 text-[18px]">accessibility_new</span>
+                <p class="text-[11px] text-amber-800 dark:text-amber-200 leading-snug">정보 취약계층(어르신·장애인 등)을 위한 음성 대화입니다. 말씀하시면 글로 정리해 담당 부서에 전달합니다. 답변은 <b>채팅 대화</b> 탭에서 확인하실 수 있어요.</p>
+            </div>
+            <p id="voice-status" class="text-base font-bold text-slate-700 dark:text-slate-200 mb-7 text-center">마이크 버튼을 눌러 말씀해주세요</p>
+            <button id="voice-mic-btn" onclick="voiceConverse(this)" class="w-20 h-20 rounded-full bg-primary text-white flex items-center justify-center shadow-xl shadow-primary/30 active:scale-95 transition-transform"><span class="material-symbols-outlined text-[36px]">mic</span></button>
+            <p class="text-xs text-slate-400 mt-3">탭하여 말하기</p>
+            <div id="voice-cats" class="flex flex-wrap gap-1.5 justify-center mt-8 max-w-sm"></div>
+            <button onclick="finishChatAndSummarize()" class="mt-7 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold py-2.5 px-6 rounded-xl flex items-center gap-1.5 active:scale-[0.98] transition-transform"><span class="material-symbols-outlined text-[18px]">task_alt</span>대화 마치고 전달하기</button>
+        </div>
+    </div>
+
+    <!-- ==================== 내 제안 ==================== -->
+    <div id="page-proposals" class="page">
+        <header class="sticky top-0 z-40 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3">
+            <h1 class="text-base font-bold">내 제안</h1>
+            <p class="text-[11px] text-slate-400">접수한 질문·제안의 진행상황</p>
+        </header>
+        <div class="px-4 pt-3 sticky top-[57px] bg-background-light dark:bg-background-dark z-30">
+            <div class="segmented-control">
+                <button onclick="renderProposals('active')" id="prop-tab-active" class="segmented-item active">진행중</button>
+                <button onclick="renderProposals('done')" id="prop-tab-done" class="segmented-item">답변완료</button>
+                <button onclick="renderProposals('hold')" id="prop-tab-hold" class="segmented-item">보류</button>
+            </div>
+        </div>
+        <main class="flex-1 px-4 pt-4 pb-28"><div id="proposals-list" class="space-y-3"></div></main>
+    </div>
+
+    <!-- ==================== 답변 상세 ==================== -->
+    <div id="page-proposal-detail" class="page">
+        <header class="sticky top-0 z-40 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3 flex items-center gap-3">
+            <button onclick="goBack()" class="p-1 -ml-1"><span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span></button>
+            <h1 class="text-base font-bold">답변 상세</h1>
+        </header>
+        <main class="flex-1 pb-28"><div id="proposal-detail"></div></main>
+    </div>
+
+    <!-- ==================== 시민 제안 모아보기 (커뮤니티) ==================== -->
+    <div id="page-community" class="page">
+        <header class="sticky top-0 z-40 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3 flex items-center gap-3">
+            <button onclick="goBack()" class="p-1 -ml-1"><span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span></button>
+            <div><h1 class="text-base font-bold">시민 제안 모아보기</h1><p class="text-[11px] text-slate-400">공감 많은 제안을 담당 부서가 우선 검토합니다</p></div>
+        </header>
+        <div class="sticky top-[57px] z-30 bg-background-light dark:bg-background-dark px-4 pt-3 pb-2 space-y-2.5">
+            <div id="comm-cats" class="flex gap-1.5 overflow-x-auto scrollbar-hide -mx-4 px-4"></div>
+            <div class="flex items-center gap-2">
+                <button onclick="setCommSort('likes')" id="comm-sort-likes" class="text-xs font-bold px-3 py-1.5 rounded-full bg-primary text-white">공감순</button>
+                <button onclick="setCommSort('recent')" id="comm-sort-recent" class="text-xs font-bold px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">최신순</button>
+            </div>
+        </div>
+        <main class="flex-1 px-4 pt-2 pb-28"><div id="comm-list" class="space-y-3"></div></main>
+    </div>
+
+    <!-- ==================== AI 요약 확인 모달 (핵심: 확인사살) ==================== -->
+    <div id="cv-confirm-modal" class="fixed inset-0 z-[75] hidden">
+        <div class="absolute inset-0 bg-black/55" onclick="closeCvConfirm()"></div>
+        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white dark:bg-slate-900 rounded-t-3xl max-h-[90vh] overflow-y-auto shadow-2xl animate-slideUp">
+            <div class="sticky top-0 bg-white dark:bg-slate-900 px-5 pt-4 pb-3 border-b border-slate-200 dark:border-slate-700 z-10">
+                <div class="w-10 h-1 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto mb-3"></div>
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-bold flex items-center gap-2"><span class="material-symbols-outlined text-primary">smart_toy</span>내용 확인</h3>
+                    <button onclick="closeCvConfirm()" class="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><span class="material-symbols-outlined text-slate-500">close</span></button>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">AI가 대화를 아래와 같이 정리했어요. 맞는지 확인하고, 필요하면 직접 수정한 뒤 전달하세요.</p>
+            </div>
+            <div class="p-5 space-y-4">
+                <!-- 원문 (불변, 항상 함께 전달) -->
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <p class="text-[11px] font-bold text-slate-400">내가 말한 내용 (원문)</p>
+                        <span class="text-[10px] text-slate-400 flex items-center gap-0.5"><span class="material-symbols-outlined text-[13px]">lock</span>그대로 함께 전달돼요</span>
+                    </div>
+                    <p id="cv-original" class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed bg-slate-50 dark:bg-slate-800 rounded-xl p-3 whitespace-pre-line max-h-28 overflow-y-auto"></p>
+                </div>
+                <!-- 분류 정보 (긴급도 제거) -->
+                <div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-2.5 text-xs"><p class="text-[10px] text-slate-400">분야 · 세부업무</p><p id="cv-cat" class="font-bold mt-0.5"></p></div>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-2.5"><p class="text-[10px] text-slate-400">예상 담당 부서</p><p id="cv-dept" class="font-bold mt-0.5"></p></div>
+                    <div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-2.5"><p class="text-[10px] text-slate-400">관련 지역</p><p id="cv-region" class="font-bold mt-0.5"></p></div>
+                </div>
+                <div>
+                    <p class="text-[11px] font-bold text-slate-400 mb-1.5">제목</p>
+                    <input id="cv-title" maxlength="60" class="w-full px-3 py-2.5 text-sm rounded-xl border border-[#e7ebf3] dark:border-gray-700 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary"/>
+                </div>
+                <!-- AI 정리본 (수정 가능) -->
+                <div>
+                    <div class="flex items-center gap-1.5 mb-1.5"><span class="material-symbols-outlined text-primary text-base">smart_toy</span><p class="text-[11px] font-bold text-primary">AI가 정리한 내용 (수정 가능)</p></div>
+                    <textarea id="cv-summary" maxlength="400" rows="4" class="w-full px-3 py-3 text-sm rounded-xl border border-primary/40 bg-white dark:bg-slate-800 focus:outline-none focus:border-primary resize-none"></textarea>
+                    <p class="text-[10px] text-slate-400 mt-1">AI가 정리한 내용이에요. 사실과 다르면 직접 고쳐주세요. 수정해도 위 <b>원문</b>은 항상 함께 전달됩니다.</p>
+                </div>
+                <div id="cv-related" class="hidden rounded-xl bg-blue-50 dark:bg-blue-900/20 p-3 text-xs"></div>
+                <label class="flex items-start gap-2.5 cursor-pointer select-none">
+                    <input id="cv-check" type="checkbox" class="mt-0.5 w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary accent-[#2563eb]" onchange="document.getElementById('cv-submit').disabled=!this.checked">
+                    <span class="text-sm text-slate-700 dark:text-slate-200 leading-snug">위 내용이 맞습니다. 이 내용으로 담당 부서에 전달하는 데 동의합니다.</span>
+                </label>
+                <button id="cv-submit" onclick="submitProposal()" disabled class="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 active:scale-[0.98] transition-transform disabled:opacity-40 disabled:active:scale-100">
+                    <span class="material-symbols-outlined">send</span>네, 맞습니다 — 담당 부서에 전달
+                </button>
+                <p class="text-[10px] text-slate-400 text-center">원문 · AI 정리본 · 내가 확인한 확정본 · 확인 시각이 함께 안전하게 기록됩니다.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 긴급신고 안내 모달 ==================== -->
+    <div id="urgent-modal" class="fixed inset-0 z-[80] hidden">
+        <div class="absolute inset-0 bg-black/60"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[400px] bg-white dark:bg-slate-900 rounded-3xl shadow-2xl overflow-hidden">
+            <div class="bg-rose-600 text-white px-5 py-4 flex items-center gap-2">
+                <span class="material-symbols-outlined">emergency</span>
+                <h3 class="text-base font-bold">긴급 상황일 수 있어요</h3>
+            </div>
+            <div class="p-5 space-y-4">
+                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">생명·안전과 직결된 긴급 상황은 시민청 접수보다 <b class="text-rose-600">아래 긴급기관</b>에 먼저 신고해 주세요.</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <a href="tel:119" class="rounded-2xl bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 p-4 text-center"><p class="text-2xl font-bold text-rose-600">119</p><p class="text-[11px] text-slate-500 mt-1">화재·구조·구급</p></a>
+                    <a href="tel:112" class="rounded-2xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-4 text-center"><p class="text-2xl font-bold text-primary">112</p><p class="text-[11px] text-slate-500 mt-1">범죄·폭력</p></a>
+                </div>
+                <p class="text-[11px] text-slate-400 text-center leading-snug">아동학대 112 · 가정폭력 1366 · 자살예방 109<br>위급하면 즉시 전화하세요.</p>
+                <button onclick="closeUrgent()" class="w-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold py-3 rounded-xl">긴급 상황이 아니에요. 계속 작성할게요</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 알림 모달 ==================== -->
+    <div id="noti-modal" class="fixed inset-0 z-[75] hidden">
+        <div class="absolute inset-0 bg-black/55" onclick="closeNoti()"></div>
+        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white dark:bg-slate-900 rounded-t-3xl max-h-[80vh] overflow-y-auto shadow-2xl animate-slideUp">
+            <div class="sticky top-0 bg-white dark:bg-slate-900 px-5 pt-4 pb-3 border-b border-slate-200 dark:border-slate-700">
+                <div class="w-10 h-1 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto mb-3"></div>
+                <div class="flex items-center justify-between"><h3 class="text-lg font-bold flex items-center gap-2"><span class="material-symbols-outlined text-primary">notifications</span>알림</h3><button onclick="closeNoti()" class="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><span class="material-symbols-outlined text-slate-500">close</span></button></div>
+            </div>
+            <div id="noti-list" class="p-4 space-y-2"></div>
+        </div>
+    </div>
+
+    <!-- ==================== 마이페이지 ==================== -->
+    <div id="page-mypage" class="page">
+        <header class="sticky top-0 z-40 bg-white dark:bg-background-dark border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3 flex items-center justify-between">
+            <h1 class="text-base font-bold">마이페이지</h1>
+            <button onclick="openNoti()" class="relative p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><span class="material-symbols-outlined text-gray-600 dark:text-gray-400">notifications</span></button>
+        </header>
+        <main class="flex-1 px-4 pt-4 pb-28 space-y-5"><div id="mypage-body"></div></main>
+    </div>
+
+    <!-- ==================== 토스트 ==================== -->
+    <div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-[90] hidden bg-slate-900 dark:bg-slate-700 text-white text-sm font-medium px-4 py-2.5 rounded-full shadow-xl"></div>
+
+    <!-- ==================== 하단 네비게이션 ==================== -->
+    <nav id="main-bottom-nav" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white dark:bg-background-dark border-t border-[#e7ebf3] dark:border-gray-800 px-3 py-2 flex items-center justify-around z-50 bottom-nav">
+        <a onclick="navigateTo('page-home')" data-nav="page-home" class="flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-400 cursor-pointer active">
+            <span class="material-symbols-outlined">home</span>홈
+        </a>
+        <a onclick="navigateTo('page-category')" data-nav="page-category" class="flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-400 cursor-pointer">
+            <span class="material-symbols-outlined">grid_view</span>분야
+        </a>
+        <a onclick="openProposals()" data-nav="page-proposals" class="flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-400 cursor-pointer">
+            <span class="material-symbols-outlined">forum</span>내 제안
+        </a>
+        <a onclick="openNoti()" data-nav="page-noti" class="flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-400 cursor-pointer">
+            <span class="material-symbols-outlined">notifications</span>알림
+        </a>
+        <a onclick="openMypage()" data-nav="page-mypage" class="flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-400 cursor-pointer">
+            <span class="material-symbols-outlined">person</span>마이페이지
+        </a>
+    </nav>
+</div>
+
+<script>
+/* =========================================================================
+   시민청 (세종시 시범) — 프론트 전용 껍데기. 백엔드 연결 없음. 더미데이터 기반.
+   빌드1: 라우터/다크/i18n뼈대 + 홈 + 분야선택 + 담당자목록 + 담당자상세(탭)
+   ========================================================================= */
+
+/* ---------- 라우터 ---------- */
+let _navStack = [];
+function navigateTo(pageId, isBack = false) {
+    const cur = document.querySelector('.page.active');
+    const next = document.getElementById(pageId);
+    if (!next) return;
+    if (cur && cur.id === pageId) return;
+    if (cur && !isBack) _navStack.push(cur.id);
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active', 'page-enter', 'page-enter-back'));
+    next.classList.add('active', isBack ? 'page-enter-back' : 'page-enter');
+    next.scrollTop = 0;
+    window.scrollTo(0, 0);
+    // 하단 네비 활성 표시
+    document.querySelectorAll('#main-bottom-nav a').forEach(a => a.classList.toggle('active', a.dataset.nav === pageId));
+    // 메인 탭에서만 하단 네비 표시 — 상세/대화 화면에선 숨김(입력창 가림 방지)
+    const MAIN_TABS = ['page-home', 'page-category', 'page-proposals', 'page-mypage'];
+    document.getElementById('main-bottom-nav').style.display = MAIN_TABS.includes(pageId) ? 'flex' : 'none';
+    if (pageId === 'page-home') _navStack = [];
+}
+function goBack() {
+    const prev = _navStack.pop();
+    navigateTo(prev || 'page-home', true);
+}
+
+/* ---------- 다크모드 ---------- */
+function toggleDark() {
+    const html = document.documentElement;
+    const dark = html.classList.toggle('dark');
+    html.classList.toggle('light', !dark);
+    localStorage.setItem('sc-dark', dark ? '1' : '0');
+}
+if (localStorage.getItem('sc-dark') === '1') { document.documentElement.classList.add('dark'); document.documentElement.classList.remove('light'); }
+
+/* ---------- i18n 뼈대 (한글 메인, EN은 추후) ---------- */
+let currentLang = localStorage.getItem('sc-lang') || 'ko';
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('sc-lang', lang);
+    document.getElementById('lang-ko').classList.toggle('text-primary', lang === 'ko');
+    document.getElementById('lang-ko').classList.toggle('bg-white', lang === 'ko');
+    document.getElementById('lang-ko').classList.toggle('text-slate-400', lang !== 'ko');
+    document.getElementById('lang-en').classList.toggle('text-primary', lang === 'en');
+    document.getElementById('lang-en').classList.toggle('bg-white', lang === 'en');
+    document.getElementById('lang-en').classList.toggle('text-slate-400', lang !== 'en');
+    if (lang === 'en') alert('영문 번역은 시범 단계 이후 적용됩니다. (한글 우선)');
+}
+
+/* =========================================================================
+   더미 데이터 — 10개 분야 / 교통국 깊게, 나머지도 충분히
+   ========================================================================= */
+
+const STATUS = {
+    plan:    { label: '계획',    cls: 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300' },
+    review:  { label: '검토 중', cls: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300' },
+    ongoing: { label: '진행 중', cls: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' },
+    done:    { label: '완료',    cls: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' },
+    hold:    { label: '보류',    cls: 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300' },
+    stop:    { label: '중단',    cls: 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300' },
+};
+
+const CATEGORIES = [
+    { id:'traffic',  name:'교통·도로',   icon:'directions_bus', color:'#2563eb', sub:'버스 · 도로 · 주차 · 자전거 · 교통안전' },
+    { id:'housing',  name:'주택·건축',   icon:'home_work',      color:'#7c3aed', sub:'주택 · 건축 · 토지 · 도시계획' },
+    { id:'welfare',  name:'복지·보건',   icon:'volunteer_activism', color:'#db2777', sub:'복지 · 보건 · 의료 · 돌봄' },
+    { id:'env',      name:'환경·청소',   icon:'recycling',      color:'#16a34a', sub:'쓰레기 · 공원 · 하천 · 대기' },
+    { id:'economy',  name:'경제·일자리', icon:'payments',       color:'#ca8a04', sub:'기업 · 소상공인 · 일자리' },
+    { id:'culture',  name:'문화·체육',   icon:'sports_soccer',  color:'#0891b2', sub:'문화 · 체육시설 · 관광' },
+    { id:'edu',      name:'교육·보육',   icon:'school',         color:'#4f46e5', sub:'학교 · 보육 · 평생교육' },
+    { id:'safety',   name:'안전·재난',   icon:'emergency',      color:'#dc2626', sub:'안전 · 재난 · 소방' },
+    { id:'admin',    name:'행정·민원',   icon:'description',    color:'#0d9488', sub:'여권 · 제증명 · 민원' },
+    { id:'etc',      name:'기타',        icon:'more_horiz',     color:'#64748b', sub:'기타 문의사항' },
+];
+
+// 분야별 부서 배너 정보
+const DEPT_INFO = {
+    traffic: { bureau:'교통국', org:'교통국 → 교통정책과 → 교통정책팀' },
+    housing: { bureau:'도시성장본부', org:'도시성장본부 → 주택과 / 건축과' },
+    welfare: { bureau:'복지국', org:'복지국 → 복지정책과 / 보건정책과' },
+    env:     { bureau:'환경녹지국', org:'환경녹지국 → 자원순환과 / 공원녹지과' },
+    economy: { bureau:'경제산업국', org:'경제산업국 → 일자리정책과 / 소상공인과' },
+    culture: { bureau:'문화체육관광국', org:'문화체육관광국 → 문화예술과 / 체육진흥과' },
+    edu:     { bureau:'교육지원과', org:'시민안전실 → 교육지원과 (교육청 협력)' },
+    safety:  { bureau:'시민안전실', org:'시민안전실 → 안전정책과 / 재난관리과' },
+    admin:   { bureau:'자치행정국', org:'자치행정국 → 민원과 / 시민협력과' },
+    etc:     { bureau:'시민소통담당관', org:'기획조정실 → 시민소통담당관' },
+};
+
+// 담당자 데이터. 각 officer: workItems[], improvements[]
+const OFFICERS = [
+    /* ===== 교통·도로 (깊게) ===== */
+    {
+        id:'tr-kim', cat:'traffic', name:'김민수', title:'팀장', team:'교통정책팀', dept:'교통정책과', bureau:'교통국',
+        lead:true, field:'교통정책 총괄', phone:'044-300-XXXX', email:'kms@sejong.go.kr',
+        career:['교통정책 총괄 10년','전 대중교통팀장','교통공학 박사'],
+        answers:245, satisfaction:4.6,
+        workItems:[
+            { id:'tr-w1', name:'교통정책 수립', desc:'세종시 교통정책 기본계획 수립 및 관련 정책 연구·조정',
+              overview:'세종시 교통정책 기본계획 수립과 교통 관련 정책 연구 및 조정을 담당합니다.',
+              details:['교통정책 기본계획 수립 및 수정','교통 관련 법규 및 상위계획 검토','교통정책 연구 및 신규 정책 발굴','유관기관 협의 및 정책 조정','교통 관련 통계 관리 및 분석'],
+              laws:['국가통합교통체계효율화법','대중교통 육성 및 이용촉진에 관한 법률','세종특별자치시 교통정책 조례'],
+              projects:[{name:'세종시 교통정책 기본계획 수립', period:'2024.01~2026.12', budget:'2.3억원', status:'ongoing'}],
+              policies:['대중교통 중심 도시 구현','보행친화 도시 조성'],
+              achievements:[{k:'정책 보고',v:'12건'},{k:'연구 용역',v:'18건'},{k:'협의·조정',v:'36건'}],
+              updated:'2026.06.10' },
+            { id:'tr-w2', name:'대중교통 정책 수립', desc:'버스·BRT·수요응답형 교통 정책 수립',
+              overview:'버스, BRT, 수요응답형(DRT) 등 대중교통 수단의 정책을 수립하고 운영 기준을 마련합니다.',
+              details:['대중교통 노선 정책 수립','요금 정책 및 환승 체계 관리','BRT 운영 기준 마련','수요응답형 교통(DRT) 도입 검토'],
+              laws:['대중교통 육성 및 이용촉진에 관한 법률','여객자동차 운수사업법'],
+              projects:[{name:'이음버스 노선체계 개편', period:'2025.03~2026.12', budget:'8.4억원', status:'ongoing'}],
+              policies:['대중교통 분담률 30% 목표'],
+              achievements:[{k:'노선 개편',v:'7건'},{k:'정류장 개선',v:'42개소'}],
+              updated:'2026.06.08' },
+            { id:'tr-w3', name:'교통수요 분석', desc:'교통량·수요 예측 및 교통영향평가',
+              overview:'교통량 조사와 수요 예측을 통해 정책 수립의 기초자료를 제공합니다.',
+              details:['교통량 상시 조사','장래 교통수요 예측','교통영향평가 검토'],
+              laws:['도시교통정비 촉진법'],
+              projects:[{name:'2026 교통량 상시조사', period:'2026.01~2026.12', budget:'1.1억원', status:'ongoing'}],
+              policies:[],
+              achievements:[{k:'조사 지점',v:'58개소'},{k:'분석 보고',v:'9건'}],
+              updated:'2026.05.30' },
+        ],
+        improvements:[
+            { id:'tr-i1', name:'이음버스 노선 확대', desc:'시민 이동 편의 향상을 위한 이음버스 노선 지속 확대',
+              status:'ongoing', progress:70, period:'2024.01~2026.12', budget:'15.6억원',
+              background:'외곽지역 대중교통 접근성 향상을 위한 시민 요구가 지속적으로 제기되었습니다.',
+              stages:[{n:'계획 수립',done:true},{n:'관련 부서 검토',done:true},{n:'예산·사업 확정',done:true},{n:'시범운영',done:false},{n:'정식운영',done:false},{n:'완료',done:false}],
+              citizenInput:'외곽지역 배차 간격이 길고 노선이 부족하다는 의견 다수 반영',
+              effect:['시민 이동 편의 향상','대중교통 이용률 증가','교통 취약지역 접근성 개선'],
+              answer:'시민 여러분의 의견을 반영하여 2026년 상반기 3개 노선을 신설하고 운영 시간을 확대합니다.',
+              materials:['이음버스 노선 확대 계획.pdf','이음버스 이용 수요 분석 보고서.pdf'],
+              updated:'2026.05.12' },
+            { id:'tr-i2', name:'버스 배차 간격 개선', desc:'출퇴근 시간 혼잡도 높은 노선 배차 간격 단축',
+              status:'ongoing', progress:55, period:'2025.06~2026.06', budget:'4.2억원',
+              background:'퇴근 시간대 버스 배차 간격이 길어 시민 불편이 컸습니다.',
+              stages:[{n:'계획 수립',done:true},{n:'혼잡도 분석',done:true},{n:'배차 조정',done:false},{n:'정식운영',done:false}],
+              citizenInput:'퇴근 시간대 배차 간격이 너무 길다는 의견 반영',
+              effect:['혼잡 노선 대기시간 감소','출퇴근 만족도 향상'],
+              answer:'퇴근 시간대 혼잡도가 높은 노선에 대해 6월부터 배차 간격을 10~15% 단축할 계획입니다.',
+              materials:['노선별 배차 개선 계획(2025).pdf'],
+              updated:'2026.06.12' },
+            { id:'tr-i3', name:'교통약자 이동 편의 증진', desc:'저상버스 도입 확대 및 교통약자 편의시설 개선',
+              status:'review', progress:30, period:'2025.09~2027.08', budget:'12.0억원',
+              background:'고령자·장애인 등 교통약자의 이동권 보장 요구',
+              stages:[{n:'계획 수립',done:true},{n:'관련 부서 검토',done:false},{n:'예산 확정',done:false}],
+              citizenInput:'저상버스가 부족하고 정류장 턱이 높다는 의견 반영',
+              effect:['교통약자 이동권 보장','저상버스 도입률 상승'],
+              answer:'저상버스 단계적 확대와 정류장 무장애 개선을 검토 중입니다.',
+              materials:['교통약자 이동편의 증진계획.pdf'],
+              updated:'2026.06.01' },
+        ],
+    },
+    {
+        id:'tr-lee', cat:'traffic', name:'이소영', title:'주무관', team:'대중교통팀', dept:'교통정책과', bureau:'교통국',
+        lead:false, field:'버스·대중교통', phone:'044-300-XXXX', email:'lsy@sejong.go.kr',
+        career:['버스정책 담당 6년','대중교통 운영 관리'],
+        answers:131, satisfaction:4.5,
+        workItems:[
+            { id:'tr-w4', name:'버스 운영 관리', desc:'시내버스 노선·배차·정류장 및 대중교통 이용 관리',
+              overview:'시내버스의 노선, 배차, 정류장 관리 및 대중교통 이용 환경을 관리합니다.',
+              details:['버스 노선 배차 관리','정류장 시설 관리','버스 운행 모니터링','시민 불편 민원 대응'],
+              laws:['여객자동차 운수사업법','대중교통 육성 및 이용촉진에 관한 법률'],
+              projects:[{name:'정류장 스마트쉘터 설치', period:'2025.04~2026.10', budget:'6.0억원', status:'ongoing'}],
+              policies:['대중교통 이용 활성화'],
+              achievements:[{k:'정류장 관리',v:'320개소'},{k:'민원 처리',v:'168건'}],
+              updated:'2026.06.05' },
+        ],
+        improvements:[
+            { id:'tr-i4', name:'주차 환경 개선 사업', desc:'상가 밀집지역 공영주차장 확충 및 스마트 주차 시스템 구축',
+              status:'ongoing', progress:48, period:'2025.01~2026.12', budget:'22.0억원',
+              background:'상가 밀집 지역 주차 공간 부족 민원 다수',
+              stages:[{n:'계획 수립',done:true},{n:'부지 선정',done:true},{n:'예산 확정',done:true},{n:'공사',done:false},{n:'운영',done:false}],
+              citizenInput:'상가 밀집 지역 주차 공간이 부족하다는 의견 반영',
+              effect:['주차난 완화','상권 활성화'],
+              answer:'공영주차장 2개소 확충과 스마트 주차 안내 시스템을 도입합니다.',
+              materials:['공영주차장 확충 계획.pdf'],
+              updated:'2026.05.28' },
+        ],
+    },
+    {
+        id:'tr-park', cat:'traffic', name:'박준형', title:'주무관', team:'도로시설팀', dept:'교통정책과', bureau:'교통국',
+        lead:false, field:'도로·교통시설', phone:'044-300-XXXX', email:'pjh@sejong.go.kr',
+        career:['도로관리 담당 8년','교통안전시설 설계'],
+        answers:98, satisfaction:4.4,
+        workItems:[
+            { id:'tr-w5', name:'교통시설 개선', desc:'도로·교차로·보행 및 교통안전 시설 개선',
+              overview:'도로, 교차로, 보행로 등 교통시설의 안전과 편의를 개선합니다.',
+              details:['신호체계 개선','횡단보도·보행로 정비','교통안전시설 설치','도로 유지보수'],
+              laws:['도로법','도로교통법'],
+              projects:[{name:'어린이 보호구역 안전 개선', period:'2025.03~2026.12', budget:'9.0억원', status:'ongoing'}],
+              policies:['보행자 우선 도로 정책'],
+              achievements:[{k:'신호 개선',v:'24개소'},{k:'안전시설',v:'56건'}],
+              updated:'2026.06.03' },
+        ],
+        improvements:[
+            { id:'tr-i5', name:'자전거도로 안전 강화', desc:'자전거도로 단절 구간 연결 및 안전시설 보강',
+              status:'plan', progress:15, period:'2026.03~2027.12', budget:'7.5억원',
+              background:'자전거도로 단절·안전 미흡 의견 반영',
+              stages:[{n:'계획 수립',done:true},{n:'현황 조사',done:false},{n:'예산 확정',done:false}],
+              citizenInput:'자전거도로가 중간에 끊기고 위험하다는 의견 반영',
+              effect:['자전거 이용 안전성 향상','단절 구간 해소'],
+              answer:'자전거도로 단절 구간 연결과 안전시설 보강을 계획 중입니다.',
+              materials:['자전거도로 정비 기본계획.pdf'],
+              updated:'2026.05.20' },
+            { id:'tr-i6', name:'BRT 정류장 환경 개선', desc:'BRT 정류장 냉난방·정보안내 시설 개선',
+              status:'done', progress:100, period:'2024.03~2025.12', budget:'5.4억원',
+              background:'BRT 정류장 폭염·혹한 대기 환경 개선 요구',
+              stages:[{n:'계획 수립',done:true},{n:'설계',done:true},{n:'공사',done:true},{n:'완료',done:true}],
+              citizenInput:'BRT 정류장이 더위·추위에 취약하다는 의견 반영',
+              effect:['대기 환경 개선','이용 만족도 상승'],
+              answer:'전 BRT 정류장에 냉난방 쉘터와 실시간 도착정보 시스템 설치를 완료했습니다.',
+              materials:['BRT 정류장 개선 결과보고.pdf'],
+              updated:'2025.12.18' },
+        ],
+    },
+
+    /* ===== 주택·건축 ===== */
+    {
+        id:'ho-jang', cat:'housing', name:'장은비', title:'팀장', team:'주택정책팀', dept:'주택과', bureau:'도시성장본부',
+        lead:true, field:'주택정책 총괄', phone:'044-301-XXXX', email:'jeb@sejong.go.kr',
+        career:['주택정책 9년','공공주택 기획'], answers:142, satisfaction:4.3,
+        workItems:[
+            { id:'ho-w1', name:'주택정책 수립', desc:'주택 공급·관리 정책 및 공공주택 기획',
+              overview:'시민 주거안정을 위한 주택 공급 및 관리 정책을 수립합니다.',
+              details:['공공주택 공급 계획','주거복지 정책','주택 관리 기준 마련'],
+              laws:['주택법','공공주택 특별법'], projects:[{name:'청년·신혼 주택 공급', period:'2025~2027', budget:'120억원', status:'ongoing'}],
+              policies:['주거안정 지원'], achievements:[{k:'공급 계획',v:'1,200호'}], updated:'2026.06.02' },
+        ],
+        improvements:[
+            { id:'ho-i1', name:'노후주택 정비 지원', desc:'노후 단독주택 집수리 및 안전 점검 지원', status:'ongoing', progress:40,
+              period:'2025.05~2026.12', budget:'8.0억원', background:'노후주택 안전·주거환경 개선 요구',
+              stages:[{n:'계획 수립',done:true},{n:'대상 선정',done:true},{n:'지원 시행',done:false}],
+              citizenInput:'오래된 주택 수리 비용 부담이 크다는 의견 반영', effect:['주거환경 개선','안전사고 예방'],
+              answer:'저소득층 노후주택 집수리 비용을 단계적으로 지원합니다.', materials:['집수리 지원사업 안내.pdf'], updated:'2026.05.15' },
+        ],
+    },
+    {
+        id:'ho-seo', cat:'housing', name:'서동현', title:'주무관', team:'건축행정팀', dept:'건축과', bureau:'도시성장본부',
+        lead:false, field:'건축 인허가', phone:'044-301-XXXX', email:'sdh@sejong.go.kr',
+        career:['건축 인허가 7년'], answers:87, satisfaction:4.2,
+        workItems:[
+            { id:'ho-w2', name:'건축 인허가', desc:'건축 허가·신고 및 위반건축물 관리',
+              overview:'건축물의 허가·신고 처리와 위반건축물을 관리합니다.',
+              details:['건축 허가·신고 검토','준공 검사','위반건축물 정비'], laws:['건축법'],
+              projects:[], policies:[], achievements:[{k:'허가 처리',v:'430건'}], updated:'2026.05.28' },
+        ],
+        improvements:[
+            { id:'ho-i2', name:'건축 인허가 처리기간 단축', desc:'민원 처리 절차 간소화로 인허가 기간 단축', status:'review', progress:25,
+              period:'2026.01~2026.12', budget:'0.5억원', background:'인허가 처리가 오래 걸린다는 민원',
+              stages:[{n:'계획 수립',done:true},{n:'절차 검토',done:false}], citizenInput:'인허가가 너무 오래 걸린다는 의견 반영',
+              effect:['처리기간 단축','민원 만족도 향상'], answer:'온라인 사전검토 도입으로 처리기간 단축을 검토 중입니다.', materials:[], updated:'2026.05.10' },
+        ],
+    },
+
+    /* ===== 복지·보건 ===== */
+    {
+        id:'we-han', cat:'welfare', name:'한지민', title:'팀장', team:'복지정책팀', dept:'복지정책과', bureau:'복지국',
+        lead:true, field:'복지정책 총괄', phone:'044-302-XXXX', email:'hjm@sejong.go.kr',
+        career:['사회복지 12년','복지전달체계 기획'], answers:203, satisfaction:4.7,
+        workItems:[
+            { id:'we-w1', name:'복지정책 수립', desc:'취약계층 지원 및 복지 전달체계 운영',
+              overview:'취약계층 지원과 복지 전달체계를 총괄합니다.',
+              details:['기초생활보장','긴급복지 지원','복지 사각지대 발굴'], laws:['국민기초생활보장법','사회보장급여법'],
+              projects:[{name:'복지 사각지대 발굴', period:'상시', budget:'-', status:'ongoing'}],
+              policies:['촘촘한 복지망 구축'], achievements:[{k:'지원 가구',v:'3,400'}], updated:'2026.06.09' },
+        ],
+        improvements:[
+            { id:'we-i1', name:'아동 돌봄 공백 해소', desc:'야간·휴일 돌봄 확대 및 안심 등하원 시스템', status:'ongoing', progress:60,
+              period:'2025.03~2026.12', budget:'18.0억원', background:'맞벌이 가정 돌봄 공백 해소 요구 다수',
+              stages:[{n:'계획 수립',done:true},{n:'시설 확충',done:true},{n:'운영 확대',done:false}],
+              citizenInput:'야간·휴일 돌봄이 부족하다는 의견 반영', effect:['돌봄 공백 해소','양육 부담 경감'],
+              answer:'야간·휴일 돌봄 확대와 안심 등하원 시스템을 단계적으로 도입합니다.', materials:['돌봄 확대 계획.pdf'], updated:'2026.06.04' },
+        ],
+    },
+    {
+        id:'we-oh', cat:'welfare', name:'오세진', title:'주무관', team:'보건정책팀', dept:'보건정책과', bureau:'복지국',
+        lead:false, field:'보건·의료', phone:'044-302-XXXX', email:'osj@sejong.go.kr',
+        career:['보건행정 6년'], answers:76, satisfaction:4.4,
+        workItems:[
+            { id:'we-w2', name:'보건·의료 정책', desc:'공공보건 및 감염병 대응',
+              overview:'시민 건강 증진과 공공의료 서비스를 담당합니다.',
+              details:['공공보건 사업','감염병 예방','건강검진 지원'], laws:['지역보건법','감염병예방법'],
+              projects:[], policies:[], achievements:[{k:'검진 지원',v:'2,100명'}], updated:'2026.05.27' },
+        ],
+        improvements:[
+            { id:'we-i2', name:'야간·휴일 진료 확대', desc:'공공야간약국 및 달빛어린이병원 확대', status:'plan', progress:10,
+              period:'2026.06~2027.12', budget:'5.0억원', background:'야간·휴일 의료 접근성 부족 의견',
+              stages:[{n:'계획 수립',done:true}], citizenInput:'밤에 문 여는 병원·약국이 부족하다는 의견 반영',
+              effect:['의료 접근성 향상'], answer:'공공야간약국과 달빛어린이병원 확대를 계획 중입니다.', materials:[], updated:'2026.05.18' },
+        ],
+    },
+
+    /* ===== 환경·청소 ===== */
+    {
+        id:'en-yoon', cat:'env', name:'윤하늘', title:'팀장', team:'자원순환팀', dept:'자원순환과', bureau:'환경녹지국',
+        lead:true, field:'자원순환 총괄', phone:'044-303-XXXX', email:'yhn@sejong.go.kr',
+        career:['환경행정 10년'], answers:158, satisfaction:4.3,
+        workItems:[
+            { id:'en-w1', name:'생활폐기물 관리', desc:'쓰레기 수거·재활용 및 분리배출 정책',
+              overview:'생활폐기물 수거·처리와 재활용 정책을 담당합니다.',
+              details:['쓰레기 수거 체계 관리','재활용 정책','분리배출 홍보'], laws:['폐기물관리법','자원재활용법'],
+              projects:[{name:'음식물쓰레기 감량', period:'상시', budget:'3억원', status:'ongoing'}],
+              policies:['자원순환 도시'], achievements:[{k:'재활용률',v:'62%'}], updated:'2026.06.01' },
+        ],
+        improvements:[
+            { id:'en-i1', name:'클린하우스 확대 설치', desc:'주택가 분리배출 거점 클린하우스 확대', status:'ongoing', progress:50,
+              period:'2025.04~2026.12', budget:'6.5억원', background:'무단투기·악취 민원 다수',
+              stages:[{n:'계획 수립',done:true},{n:'위치 선정',done:true},{n:'설치',done:false}],
+              citizenInput:'분리배출 거점이 부족하고 무단투기가 많다는 의견 반영', effect:['무단투기 감소','거리 환경 개선'],
+              answer:'주택가 클린하우스를 단계적으로 확대 설치합니다.', materials:['클린하우스 확대 계획.pdf'], updated:'2026.05.22' },
+        ],
+    },
+
+    /* ===== 경제·일자리 ===== */
+    {
+        id:'ec-kang', cat:'economy', name:'강민호', title:'팀장', team:'일자리정책팀', dept:'일자리정책과', bureau:'경제산업국',
+        lead:true, field:'일자리정책 총괄', phone:'044-304-XXXX', email:'kmh@sejong.go.kr',
+        career:['일자리정책 8년'], answers:121, satisfaction:4.2,
+        workItems:[
+            { id:'ec-w1', name:'일자리 정책 수립', desc:'청년·중장년 일자리 및 고용 지원',
+              overview:'시민 고용 안정을 위한 일자리 정책을 수립합니다.',
+              details:['청년 일자리 지원','직업훈련 연계','고용 박람회 운영'], laws:['고용정책기본법'],
+              projects:[{name:'청년 채용 지원금', period:'2026', budget:'10억원', status:'ongoing'}],
+              policies:['좋은 일자리 창출'], achievements:[{k:'취업 연계',v:'860명'}], updated:'2026.06.06' },
+        ],
+        improvements:[
+            { id:'ec-i1', name:'소상공인 경영 지원 확대', desc:'소상공인 금융·컨설팅 지원 강화', status:'ongoing', progress:45,
+              period:'2025.02~2026.12', budget:'25억원', background:'경기 침체로 소상공인 경영난 호소',
+              stages:[{n:'계획 수립',done:true},{n:'예산 확정',done:true},{n:'지원 시행',done:false}],
+              citizenInput:'소상공인 지원이 부족하다는 의견 반영', effect:['경영 안정','폐업률 감소'],
+              answer:'저금리 융자와 경영 컨설팅 지원을 확대합니다.', materials:['소상공인 지원사업 안내.pdf'], updated:'2026.05.25' },
+        ],
+    },
+
+    /* ===== 문화·체육 ===== */
+    {
+        id:'cu-im', cat:'culture', name:'임수정', title:'주무관', team:'문화예술팀', dept:'문화예술과', bureau:'문화체육관광국',
+        lead:true, field:'문화·체육 총괄', phone:'044-305-XXXX', email:'isj@sejong.go.kr',
+        career:['문화행정 7년'], answers:64, satisfaction:4.5,
+        workItems:[
+            { id:'cu-w1', name:'문화·체육시설 운영', desc:'생활문화센터·체육시설 운영 및 프로그램',
+              overview:'시민 문화·체육 활동을 위한 시설 운영과 프로그램을 담당합니다.',
+              details:['생활체육 프로그램','문화행사 기획','시설 예약 관리'], laws:['생활체육진흥법'],
+              projects:[], policies:['생활문화 활성화'], achievements:[{k:'프로그램',v:'120개'}], updated:'2026.05.29' },
+        ],
+        improvements:[
+            { id:'cu-i1', name:'생활체육시설 확충', desc:'근린 체육시설 및 실내체육관 확충', status:'review', progress:20,
+              period:'2026.01~2027.12', budget:'40억원', background:'생활체육시설 부족 의견',
+              stages:[{n:'계획 수립',done:true},{n:'부지 검토',done:false}], citizenInput:'운동할 공간이 부족하다는 의견 반영',
+              effect:['생활체육 참여 확대'], answer:'근린 체육시설 확충을 검토 중입니다.', materials:[], updated:'2026.05.12' },
+        ],
+    },
+
+    /* ===== 교육·보육 ===== */
+    {
+        id:'ed-noh', cat:'edu', name:'노현우', title:'주무관', team:'교육협력팀', dept:'교육지원과', bureau:'시민안전실',
+        lead:true, field:'교육·보육 총괄', phone:'044-306-XXXX', email:'nhw@sejong.go.kr',
+        career:['교육행정 6년'], answers:88, satisfaction:4.4,
+        workItems:[
+            { id:'ed-w1', name:'교육 지원 사업', desc:'평생교육·방과후 및 교육청 협력',
+              overview:'시민 평생교육과 학교 협력 사업을 담당합니다.',
+              details:['평생교육 프로그램','방과후 돌봄 연계','교육청 협력'], laws:['평생교육법'],
+              projects:[], policies:['평생학습 도시'], achievements:[{k:'수강생',v:'1,500명'}], updated:'2026.05.26' },
+        ],
+        improvements:[
+            { id:'ed-i1', name:'평생학습관 야간 운영 확대', desc:'직장인 대상 야간 평생교육 강좌 확대', status:'plan', progress:12,
+              period:'2026.07~2027.06', budget:'2.0억원', background:'직장인 학습 기회 부족 의견',
+              stages:[{n:'계획 수립',done:true}], citizenInput:'직장인이 들을 수 있는 저녁 강좌가 부족하다는 의견 반영',
+              effect:['평생학습 참여 확대'], answer:'야간 강좌 확대를 계획 중입니다.', materials:[], updated:'2026.05.14' },
+        ],
+    },
+
+    /* ===== 안전·재난 ===== */
+    {
+        id:'sa-baek', cat:'safety', name:'백승현', title:'팀장', team:'안전정책팀', dept:'안전정책과', bureau:'시민안전실',
+        lead:true, field:'안전·재난 총괄', phone:'044-307-XXXX', email:'bsh@sejong.go.kr',
+        career:['재난안전 11년'], answers:176, satisfaction:4.6,
+        workItems:[
+            { id:'sa-w1', name:'안전·재난 관리', desc:'재난 예방·대응 및 시민 안전 정책',
+              overview:'재난 예방과 대응, 시민 안전 정책을 담당합니다.',
+              details:['재난 예방 점검','재난 대응 체계 관리','안전취약시설 점검'], laws:['재난 및 안전관리 기본법'],
+              projects:[{name:'침수 취약지역 정비', period:'2025~2026', budget:'30억원', status:'ongoing'}],
+              policies:['안전한 도시'], achievements:[{k:'안전 점검',v:'540건'}], updated:'2026.06.07' },
+        ],
+        improvements:[
+            { id:'sa-i1', name:'어린이 보호구역 안전 강화', desc:'스쿨존 과속카메라·신호 개선', status:'ongoing', progress:65,
+              period:'2025.03~2026.12', budget:'14억원', background:'스쿨존 교통사고 우려 다수',
+              stages:[{n:'계획 수립',done:true},{n:'시설 설치',done:true},{n:'운영',done:false}],
+              citizenInput:'학교 앞이 위험하다는 의견 반영', effect:['어린이 교통안전 향상'],
+              answer:'스쿨존 과속단속 카메라와 보행신호를 확대 설치합니다.', materials:['스쿨존 안전강화 계획.pdf'], updated:'2026.06.02' },
+        ],
+    },
+
+    /* ===== 행정·민원 ===== */
+    {
+        id:'ad-moon', cat:'admin', name:'문가영', title:'주무관', team:'민원지원팀', dept:'민원과', bureau:'자치행정국',
+        lead:true, field:'민원·행정 총괄', phone:'044-308-XXXX', email:'mgy@sejong.go.kr',
+        career:['민원행정 5년'], answers:210, satisfaction:4.5,
+        workItems:[
+            { id:'ad-w1', name:'민원 서비스 운영', desc:'제증명 발급 및 민원 처리',
+              overview:'각종 제증명 발급과 민원 처리 서비스를 운영합니다.',
+              details:['제증명 발급','민원 상담','무인민원발급기 운영'], laws:['민원처리에 관한 법률'],
+              projects:[], policies:['친절 민원행정'], achievements:[{k:'민원 처리',v:'12,400건'}], updated:'2026.06.08' },
+        ],
+        improvements:[
+            { id:'ad-i1', name:'무인민원발급기 확대', desc:'생활권 곳곳에 무인발급기 추가 설치', status:'done', progress:100,
+              period:'2024.06~2025.12', budget:'4억원', background:'민원 발급 접근성 향상 요구',
+              stages:[{n:'계획 수립',done:true},{n:'설치',done:true},{n:'완료',done:true}],
+              citizenInput:'주민센터가 멀어 불편하다는 의견 반영', effect:['민원 접근성 향상'],
+              answer:'생활권 12개소에 무인민원발급기 설치를 완료했습니다.', materials:['무인발급기 설치 결과.pdf'], updated:'2025.12.20' },
+        ],
+    },
+
+    /* ===== 기타 ===== */
+    {
+        id:'et-cho', cat:'etc', name:'조은하', title:'주무관', team:'시민소통팀', dept:'시민소통담당관', bureau:'기획조정실',
+        lead:true, field:'시민 소통·기타', phone:'044-309-XXXX', email:'ceh@sejong.go.kr',
+        career:['시민소통 4년'], answers:54, satisfaction:4.3,
+        workItems:[
+            { id:'et-w1', name:'시민 소통 운영', desc:'분야가 명확하지 않은 시민 의견 접수·연계',
+              overview:'어느 부서인지 명확하지 않은 시민 의견을 접수하여 담당 부서로 연계합니다.',
+              details:['시민 제안 접수','담당 부서 연계','복합 민원 조정'], laws:['민원처리에 관한 법률'],
+              projects:[], policies:['열린 시정'], achievements:[{k:'연계 처리',v:'320건'}], updated:'2026.06.05' },
+        ],
+        improvements:[],
+    },
+];
+
+/* ---------- 공개 시민 제안 (커뮤니티 — 다른 시민의 제안에 공감) ---------- */
+const PUBLIC_PROPOSALS = [
+    { id:'pub1', cat:'traffic', title:'퇴근 시간대 버스 배차 간격을 줄여주세요', summary:'출퇴근 시간 버스 배차 간격이 길어 정류장에서 오래 기다립니다. 혼잡 노선 배차 확대를 요청합니다.', dept:'교통정책과', status:'review', likes:342, created:'2026.06.13' },
+    { id:'pub2', cat:'welfare', title:'야간·휴일 아이 돌봄을 확대해주세요', summary:'맞벌이 가정을 위한 야간·휴일 돌봄과 안심 등하원 시스템이 필요합니다.', dept:'복지정책과', status:'review', likes:298, created:'2026.06.11' },
+    { id:'pub3', cat:'env', title:'주택가 분리배출 거점을 늘려주세요', summary:'분리배출 거점이 부족해 무단투기와 악취가 심합니다. 클린하우스 확대를 요청합니다.', dept:'자원순환과', status:'review', likes:241, created:'2026.06.09' },
+    { id:'pub4', cat:'safety', title:'학교 앞 횡단보도 신호 시간을 늘려주세요', summary:'초등학교 앞 보행 신호가 짧아 아이들이 위험합니다. 신호 시간 연장이 필요합니다.', dept:'시민안전실', status:'received', likes:213, created:'2026.06.14' },
+    { id:'pub5', cat:'traffic', title:'자전거도로 단절 구간을 연결해주세요', summary:'자전거도로가 중간에 끊겨 차도로 나가야 해 위험합니다. 단절 구간 연결을 요청합니다.', dept:'교통정책과', status:'received', likes:176, created:'2026.06.08' },
+    { id:'pub6', cat:'housing', title:'노후주택 집수리 지원을 확대해주세요', summary:'오래된 단독주택 수리 비용 부담이 큽니다. 저소득층 집수리 지원 확대를 요청합니다.', dept:'주택과', status:'review', likes:154, created:'2026.06.07' },
+    { id:'pub7', cat:'economy', title:'소상공인 경영 지원을 강화해주세요', summary:'경기 침체로 소상공인 경영난이 심합니다. 저금리 융자와 컨설팅 지원 확대를 요청합니다.', dept:'일자리정책과', status:'review', likes:132, created:'2026.06.06' },
+    { id:'pub8', cat:'culture', title:'생활체육시설을 늘려주세요', summary:'운동할 수 있는 근린 체육시설이 부족합니다. 실내체육관 확충을 요청합니다.', dept:'문화예술과', status:'review', likes:118, created:'2026.06.05' },
+    { id:'pub9', cat:'env', title:'도심 공원을 더 만들어주세요', summary:'산책하고 쉴 수 있는 공원이 부족합니다. 생활권 내 소규모 공원 조성을 요청합니다.', dept:'공원녹지과', status:'received', likes:97, created:'2026.06.04' },
+    { id:'pub10', cat:'edu', title:'직장인 대상 야간 평생교육을 늘려주세요', summary:'퇴근 후 들을 수 있는 저녁 강좌가 부족합니다. 야간 평생교육 확대를 요청합니다.', dept:'교육지원과', status:'received', likes:74, created:'2026.06.03' },
+    { id:'pub11', cat:'admin', title:'무인민원발급기를 더 설치해주세요', summary:'주민센터가 멀어 불편합니다. 생활권 곳곳에 무인민원발급기 설치를 요청합니다.', dept:'민원과', status:'answered', likes:63, created:'2026.05.30' },
+    { id:'pub12', cat:'welfare', title:'야간·휴일 진료 병원을 확대해주세요', summary:'밤에 문 여는 병원과 약국이 부족합니다. 공공야간약국과 달빛어린이병원 확대를 요청합니다.', dept:'보건정책과', status:'received', likes:51, created:'2026.05.28' },
+];
+function getPropLikes() { try { return JSON.parse(localStorage.getItem('sc-prop-likes')||'{}'); } catch(e){ return {}; } }
+function isPropLiked(id) { return !!getPropLikes()[id]; }
+function propLikeCount(p) { return p.likes + (isPropLiked(p.id) ? 1 : 0); }
+function totalPropLikes() { return PUBLIC_PROPOSALS.reduce((a,p)=> a + propLikeCount(p), 0); }
+function togglePropLike(id, ev) {
+    if (ev) ev.stopPropagation();
+    const m = getPropLikes(); const now = !m[id];
+    if (now) m[id] = true; else delete m[id];
+    localStorage.setItem('sc-prop-likes', JSON.stringify(m));
+    const p = PUBLIC_PROPOSALS.find(x=>x.id===id);
+    document.querySelectorAll(`[data-plike='${id}']`).forEach(el => {
+        el.querySelector('.plike-count').textContent = propLikeCount(p).toLocaleString();
+        el.classList.toggle('text-rose-500', now); el.classList.toggle('text-slate-400', !now);
+        const ic = el.querySelector('.material-symbols-outlined'); if (ic) ic.style.fontVariationSettings = `'FILL' ${now?1:0}`;
+    });
+    const ht = document.getElementById('home-likes-total'); if (ht) ht.textContent = totalPropLikes().toLocaleString();
+    showToast(now ? '이 제안에 공감했어요 ♥' : '공감을 취소했어요');
+}
+function propLikeBtn(p) {
+    const liked = isPropLiked(p.id);
+    return `<button data-plike="${p.id}" onclick="togglePropLike('${p.id}',event)" class="flex items-center gap-1 ${liked?'text-rose-500':'text-slate-400'} active:scale-90 transition-transform shrink-0">
+        <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' ${liked?1:0}">favorite</span>
+        <span class="plike-count text-xs font-bold">${propLikeCount(p).toLocaleString()}</span>
+    </button>`;
+}
+function publicProposalCard(p) {
+    const c = catById(p.cat);
+    return `<div class="rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 p-4">
+        <div class="flex items-center gap-1.5 mb-1.5">${propBadge(p.status)}<span class="text-[10px] text-slate-400">${c.name} · ${p.dept}</span></div>
+        <p class="font-bold text-sm">${p.title}</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">${p.summary}</p>
+        <div class="flex items-center gap-2 mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
+            ${propLikeBtn(p)}
+            <span class="text-[11px] text-slate-400">명이 공감</span>
+            <span class="text-[11px] text-slate-400 ml-auto">${p.created}</span>
+        </div>
+    </div>`;
+}
+
+/* ---------- 헬퍼 ---------- */
+function officersOfCat(catId) { return OFFICERS.filter(o => o.cat === catId); }
+function findOfficer(id) { return OFFICERS.find(o => o.id === id); }
+function catById(id) { return CATEGORIES.find(c => c.id === id); }
+function initialAvatar(name, color) {
+    const ch = name ? name.charAt(0) : '?';
+    return `<div class="w-full h-full flex items-center justify-center text-white font-bold" style="background:${color}">${ch}</div>`;
+}
+function statusBadge(s) { const st = STATUS[s] || STATUS.plan; return `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${st.cls}">${st.label}</span>`; }
+
+/* ---------- 담당자 사진(전신 아바타) + 기본 좋아요 수 주입 ---------- */
+const PHOTO_DIR = 'assets/아바타_리얼증명사진/';
+const PHOTO = {
+    'tr-kim':'a11전신_32.png', 'tr-park':'a15전신_15.png', 'ho-seo':'a23전신_25.png', 'we-oh':'a24전신_26.png',
+    'en-yoon':'a26전신_38.png', 'ec-kang':'a27전신_29.png', 'ed-noh':'a28전신_37.png', 'sa-baek':'a29전신_31.png',
+    'tr-lee':'wa3전신_03.png', 'ho-jang':'wa5전신_05.png', 'we-han':'wa6전신_06.png', 'cu-im':'wa7전신_07.png',
+    'ad-moon':'wa9전신_10.png', 'et-cho':'wa12전신_12.png',
+};
+const LIKES = {
+    'tr-kim':1284,'tr-lee':642,'tr-park':410,'ho-jang':388,'ho-seo':270,'we-han':902,'we-oh':354,
+    'en-yoon':521,'ec-kang':333,'cu-im':240,'ed-noh':198,'sa-baek':760,'ad-moon':430,'et-cho':150,
+};
+OFFICERS.forEach(o => { o.photo = PHOTO[o.id] ? (PHOTO_DIR + PHOTO[o.id]) : null; o.likes = LIKES[o.id] || 100; });
+
+// 담당자 아바타: 사진 있으면 전신 이미지(얼굴 위주 상단 크롭), 없으면 이니셜
+const STUDIO_OFFICER_ID = 'tr-lee'; // 데모: 담당자 스튜디오는 이소영 주무관 계정
+function getStudio(){ try{ return JSON.parse(localStorage.getItem('sc-studio')||'null'); }catch(e){ return null; } }
+function officerAvatar(o, color) {
+    // 업로드 사진(얼굴)은 그대로, 전신 더미 이미지는 확대해 상반신 위주로 크롭
+    if (o && o.id===STUDIO_OFFICER_ID) { const s=getStudio(); if(s&&s.photo) return `<img src="${s.photo}" alt="${o.name}" class="w-full h-full object-cover object-top">`; }
+    if (o && o.photo) return `<img src="${encodeURI(o.photo)}" alt="${o.name}" class="w-full h-full object-cover" style="object-position:top center;transform:scale(1.4);transform-origin:top center">`;
+    return initialAvatar(o ? o.name : '?', color);
+}
+
+/* ---------- 좋아요(공감) ---------- */
+function getLikes() { try { return JSON.parse(localStorage.getItem('sc-likes')||'{}'); } catch(e){ return {}; } }
+function isLiked(id) { return !!getLikes()[id]; }
+function likeCount(o) { return o.likes + (isLiked(o.id) ? 1 : 0); }
+function totalLikes() { return OFFICERS.reduce((a,o)=> a + likeCount(o), 0); }
+function likeBtn(o, big) {
+    const liked = isLiked(o.id);
+    return `<button data-like="${o.id}" onclick="toggleLike('${o.id}',event)" class="flex flex-col items-center gap-0.5 shrink-0 ${liked?'text-rose-500':'text-slate-400'} active:scale-90 transition-transform">
+        <span class="material-symbols-outlined ${big?'text-[26px]':'text-[22px]'}" style="font-variation-settings:'FILL' ${liked?1:0}">favorite</span>
+        <span class="like-count text-[11px] font-bold">${likeCount(o).toLocaleString()}</span>
+    </button>`;
+}
+function toggleLike(id, ev) {
+    if (ev) ev.stopPropagation();
+    const m = getLikes(); const now = !m[id];
+    if (now) m[id] = true; else delete m[id];
+    localStorage.setItem('sc-likes', JSON.stringify(m));
+    const o = findOfficer(id);
+    document.querySelectorAll(`[data-like='${id}']`).forEach(el => {
+        el.querySelector('.like-count').textContent = likeCount(o).toLocaleString();
+        el.classList.toggle('text-rose-500', now);
+        el.classList.toggle('text-slate-400', !now);
+        const ic = el.querySelector('.material-symbols-outlined');
+        if (ic) ic.style.fontVariationSettings = `'FILL' ${now?1:0}`;
+    });
+    const ht = document.getElementById('home-likes-total'); if (ht) ht.textContent = totalLikes().toLocaleString();
+    showToast(now ? '공감했어요 ♥' : '공감을 취소했어요');
+}
+
+/* =========================================================================
+   렌더링
+   ========================================================================= */
+
+/* ----- 홈 ----- */
+function renderHome() {
+    // 시민 공감 수 = 공개 시민 제안에 모인 공감 총합
+    const ht = document.getElementById('home-likes-total'); if (ht) ht.textContent = totalPropLikes().toLocaleString();
+    // 자주 찾는 분야 (앞 4개)
+    document.getElementById('home-popular-cats').innerHTML = CATEGORIES.slice(0,4).map(c => `
+        <button onclick="openCategory('${c.id}')" class="flex flex-col items-center gap-1.5 p-2 rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 active:scale-95 transition-transform">
+            <span class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:${c.color}1a">
+                <span class="material-symbols-outlined" style="color:${c.color}">${c.icon}</span>
+            </span>
+            <span class="text-[11px] font-bold text-slate-700 dark:text-slate-200 text-center leading-tight">${c.name}</span>
+        </button>`).join('');
+
+    // 최근 개선현황 (각 분야 1개씩 모아 진행 중/완료 위주 4개)
+    const allImp = OFFICERS.flatMap(o => o.improvements.map(i => ({...i, officer:o})));
+    const recent = allImp.filter(i => ['ongoing','done'].includes(i.status)).slice(0,4);
+    document.getElementById('home-recent-improvements').innerHTML = recent.map(i => `
+        <button onclick="openCategory('${i.officer.cat}')" class="w-full text-left rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 p-3.5 flex items-center gap-3 active:scale-[0.99] transition-transform">
+            <span class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:${catById(i.officer.cat).color}1a">
+                <span class="material-symbols-outlined" style="color:${catById(i.officer.cat).color}">${catById(i.officer.cat).icon}</span>
+            </span>
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-1.5"><p class="text-sm font-bold truncate">${i.name}</p>${statusBadge(i.status)}</div>
+                <div class="prog-track h-1.5 mt-1.5"><div class="prog-fill" style="width:${i.progress}%"></div></div>
+            </div>
+        </button>`).join('');
+
+    // 공감 많은 시민 제안 (상위 3)
+    const top = [...PUBLIC_PROPOSALS].sort((a,b)=> propLikeCount(b) - propLikeCount(a)).slice(0,3);
+    document.getElementById('home-top-proposals').innerHTML = top.map(publicProposalCard).join('');
+}
+
+/* ----- 분야 선택 ----- */
+function renderCategory() {
+    document.getElementById('category-grid').innerHTML = CATEGORIES.map(c => {
+        const cnt = officersOfCat(c.id).length;
+        return `
+        <button onclick="openCategory('${c.id}')" class="text-left rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 p-4 active:scale-[0.97] transition-transform">
+            <span class="w-11 h-11 rounded-xl flex items-center justify-center mb-2.5" style="background:${c.color}1a">
+                <span class="material-symbols-outlined" style="color:${c.color}">${c.icon}</span>
+            </span>
+            <p class="font-bold text-sm text-slate-800 dark:text-slate-100">${c.name}</p>
+            <p class="text-[11px] text-slate-400 mt-0.5 leading-snug">${c.sub}</p>
+            <p class="text-[10px] text-primary font-bold mt-2">담당자 ${cnt}명 →</p>
+        </button>`;
+    }).join('');
+}
+
+function openCategory(catId) {
+    renderOfficers(catId);
+    navigateTo('page-officers');
+}
+
+/* ----- 담당자 목록 ----- */
+function renderOfficers(catId) {
+    const c = catById(catId);
+    const info = DEPT_INFO[catId];
+    document.getElementById('officers-title').textContent = c.name;
+    document.getElementById('officers-sub').textContent = info.bureau + ' 관할';
+    document.getElementById('officers-dept-banner').innerHTML = `
+        <div class="rounded-2xl bg-primary/5 dark:bg-primary/10 border border-primary/15 p-4">
+            <div class="flex items-center gap-2 mb-1">
+                <span class="material-symbols-outlined text-primary text-[20px]">${c.icon}</span>
+                <p class="font-bold text-slate-800 dark:text-slate-100">${info.bureau}</p>
+            </div>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">${info.org}</p>
+            <p class="text-[11px] text-slate-400 mt-2 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">info</span>질문은 담당 부서에 접수되며 담당자가 배정됩니다.</p>
+        </div>`;
+
+    const list = officersOfCat(catId);
+    document.getElementById('officers-list').innerHTML = list.map(o => `
+        <div class="rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 p-4">
+            <div class="flex items-start gap-3">
+                <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 bg-slate-100 dark:bg-slate-700">${officerAvatar(o, c.color)}</div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <p class="font-bold text-slate-800 dark:text-slate-100">${o.name} ${o.title}</p>
+                        ${o.lead ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-primary/10 text-primary">총괄담당</span>' : `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300">${o.field}</span>`}
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${o.dept} ${o.team}</p>
+                    <p class="text-[11px] text-slate-400 mt-1.5 leading-snug"><b class="text-slate-500 dark:text-slate-300">담당업무</b> ${o.workItems.map(w=>w.name).join(', ')}</p>
+                </div>
+                ${likeBtn(o)}
+            </div>
+            <div class="flex gap-2 mt-3">
+                <button onclick="openOfficer('${o.id}')" class="flex-1 py-2.5 rounded-xl bg-primary text-white text-sm font-bold active:scale-[0.98] transition-transform">담당자 보기</button>
+                <button onclick="startChat('${o.id}')" class="px-4 py-2.5 rounded-xl border border-primary/30 text-primary text-sm font-bold active:scale-[0.98] transition-transform flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">chat</span>질문</button>
+            </div>
+        </div>`).join('');
+}
+
+/* ----- 담당자 상세 ----- */
+let _officerTab = 'work';
+function openOfficer(id) {
+    renderOfficer(id, 'work');
+    navigateTo('page-officer');
+}
+function switchOfficerTab(id, tab) { renderOfficer(id, tab); }
+
+function renderOfficer(id, tab) {
+    _officerTab = tab;
+    const o = findOfficer(id);
+    const c = catById(o.cat);
+    const tabBtn = (key, label, n) => `
+        <button onclick="switchOfficerTab('${id}','${key}')" class="flex-1 py-2 rounded-lg text-xs font-bold transition-all ${tab===key?'bg-white dark:bg-slate-700 text-primary shadow-sm':'text-slate-500 dark:text-slate-400'}">${label} ${n}</button>`;
+
+    let body = '';
+    if (tab === 'work') {
+        body = o.workItems.map(w => `
+            <button onclick="openWorkItem('${o.id}','${w.id}')" class="w-full text-left rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 p-4 active:scale-[0.99] transition-transform">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-[20px]">assignment</span>
+                    <p class="font-bold text-sm flex-1">${w.name}</p>
+                    <span class="material-symbols-outlined text-slate-300 text-[20px]">chevron_right</span>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-snug">${w.desc}</p>
+                <p class="text-[11px] text-slate-400 mt-2">${o.dept} · ${o.team}</p>
+            </button>`).join('');
+    } else {
+        body = (o.improvements.length ? o.improvements : []).map(i => `
+            <button onclick="openImprovement('${o.id}','${i.id}')" class="w-full text-left rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 p-4 active:scale-[0.99] transition-transform">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-[20px]">trending_up</span>
+                    <p class="font-bold text-sm flex-1">${i.name}</p>
+                    ${statusBadge(i.status)}
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-snug">${i.desc}</p>
+                <div class="flex items-center gap-2 mt-2.5">
+                    <div class="flex-1 prog-track h-2"><div class="prog-fill" style="width:${i.progress}%"></div></div>
+                    <span class="text-[11px] font-bold text-primary">${i.progress}%</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-2">${i.period} · ${o.dept}</p>
+            </button>`).join('') || '<p class="text-center text-sm text-slate-400 py-10">등록된 개선현황이 없습니다.</p>';
+    }
+
+    const _st = (o.id===STUDIO_OFFICER_ID) ? getStudio() : null;
+    const noticeBanner = (_st && _st.notice && _st.notice.active && _st.notice.text)
+        ? `<div class="mx-4 mt-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-3 flex items-start gap-2"><span class="material-symbols-outlined text-amber-600 text-[18px]">campaign</span><p class="text-xs text-amber-800 dark:text-amber-200 leading-snug font-medium">${_st.notice.text}</p></div>`
+        : '';
+    document.getElementById('officer-detail').innerHTML = `
+        ${noticeBanner}
+        <!-- 기본정보 -->
+        <div class="bg-white dark:bg-slate-800 px-4 pt-5 pb-4 border-b border-[#e7ebf3] dark:border-gray-700">
+            <div class="flex items-start gap-4">
+                <div class="w-20 h-20 rounded-3xl overflow-hidden shrink-0 bg-slate-100 dark:bg-slate-700">${officerAvatar(o, c.color)}</div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <h2 class="text-lg font-bold">${o.name} ${o.title}</h2>
+                        ${o.lead ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-primary/10 text-primary">총괄담당</span>' : ''}
+                    </div>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">${o.bureau} · ${o.dept}</p>
+                    <p class="text-xs text-slate-400">${o.team} · ${o.field}</p>
+                </div>
+                ${likeBtn(o, true)}
+            </div>
+            <div class="grid grid-cols-2 gap-2 mt-4 text-xs">
+                <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400"><span class="material-symbols-outlined text-[16px]">call</span>${o.phone}</div>
+                <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 truncate"><span class="material-symbols-outlined text-[16px]">mail</span>${o.email}</div>
+            </div>
+            <div class="grid grid-cols-3 gap-2 mt-4">
+                <div class="rounded-xl bg-slate-50 dark:bg-slate-700/50 p-2.5 text-center"><p class="text-[10px] text-slate-400">답변 건수</p><p class="font-bold text-sm mt-0.5">${o.answers}건</p></div>
+                <div class="rounded-xl bg-slate-50 dark:bg-slate-700/50 p-2.5 text-center"><p class="text-[10px] text-slate-400">시민 만족도</p><p class="font-bold text-sm mt-0.5 text-primary">${o.satisfaction}/5</p></div>
+                <div class="rounded-xl bg-slate-50 dark:bg-slate-700/50 p-2.5 text-center"><p class="text-[10px] text-slate-400">담당 분야</p><p class="font-bold text-sm mt-0.5">${c.name}</p></div>
+            </div>
+            <div class="mt-3 rounded-xl bg-slate-50 dark:bg-slate-700/50 p-3">
+                <p class="text-[10px] text-slate-400 mb-1">주요 경력</p>
+                <p class="text-xs text-slate-600 dark:text-slate-300">${o.career.join(' · ')}</p>
+            </div>
+        </div>
+
+        <!-- 탭 -->
+        <div class="px-4 pt-4 sticky top-[57px] bg-background-light dark:bg-background-dark z-30">
+            <div class="segmented-control">
+                ${tabBtn('work','담당업무',o.workItems.length)}
+                ${tabBtn('improve','개선현황',o.improvements.length)}
+            </div>
+        </div>
+
+        <div class="px-4 pt-4 space-y-3">${body}</div>
+
+        <!-- 하단 질문 CTA -->
+        <div class="px-4 pt-5">
+            <button onclick="startChat('${o.id}')" class="w-full bg-primary text-white font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+                <span class="material-symbols-outlined">chat</span>${o.name} ${o.title}에게 질문하기
+            </button>
+        </div>`;
+}
+
+/* =========================================================================
+   담당업무 상세
+   ========================================================================= */
+function findWorkItem(officerId, wid) { const o = findOfficer(officerId); return { o, w: o.workItems.find(x=>x.id===wid) }; }
+function openWorkItem(officerId, wid) { renderWorkItem(officerId, wid); navigateTo('page-workitem'); }
+function renderWorkItem(officerId, wid) {
+    const { o, w } = findWorkItem(officerId, wid);
+    const c = catById(o.cat);
+    const sec = (title, html) => `<div class="mt-5"><p class="text-xs font-bold text-slate-400 mb-2">${title}</p>${html}</div>`;
+    document.getElementById('workitem-detail').innerHTML = `
+        <div class="bg-white dark:bg-slate-800 px-4 pt-5 pb-4 border-b border-[#e7ebf3] dark:border-gray-700">
+            <span class="inline-flex items-center gap-1 text-[11px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">${c.name}</span>
+            <h2 class="text-xl font-bold mt-2">${w.name}</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5">${o.bureau} · ${o.dept} · ${o.team}</p>
+            <p class="text-xs text-slate-400 mt-0.5">담당자 ${o.name} ${o.title} · 갱신 ${w.updated}</p>
+        </div>
+        <div class="px-4">
+            ${sec('업무 개요', `<p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${w.overview}</p>`)}
+            ${sec('주요 세부업무', `<ul class="space-y-1.5">${w.details.map(d=>`<li class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300"><span class="material-symbols-outlined text-primary text-[18px] mt-0.5">check_circle</span>${d}</li>`).join('')}</ul>`)}
+            ${w.laws.length ? sec('관련 법령 및 규정', `<div class="flex flex-wrap gap-1.5">${w.laws.map(l=>`<span class="text-[11px] bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-lg">${l}</span>`).join('')}</div>`) : ''}
+            ${w.projects.length ? sec('현재 담당 사업', w.projects.map(p=>`<div class="rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 p-3.5 mb-2"><div class="flex items-center justify-between"><p class="text-sm font-bold">${p.name}</p>${statusBadge(p.status)}</div><p class="text-[11px] text-slate-400 mt-1.5">기간 ${p.period} · 예산 ${p.budget}</p></div>`).join('')) : ''}
+            ${w.policies.length ? sec('관련 정책', `<div class="flex flex-wrap gap-1.5">${w.policies.map(p=>`<span class="text-[11px] bg-primary/5 text-primary px-2 py-1 rounded-lg">${p}</span>`).join('')}</div>`) : ''}
+            ${w.achievements.length ? sec('주요 성과', `<div class="grid grid-cols-3 gap-2">${w.achievements.map(a=>`<div class="rounded-xl bg-slate-50 dark:bg-slate-700/50 p-3 text-center"><p class="font-bold text-base text-primary">${a.v}</p><p class="text-[10px] text-slate-400 mt-0.5">${a.k}</p></div>`).join('')}</div>`) : ''}
+        </div>
+        <div class="px-4 pt-6">
+            <button onclick="startChatWithContext('${o.id}',{type:'work',id:'${w.id}'})" class="w-full bg-primary text-white font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+                <span class="material-symbols-outlined">chat</span>이 업무에 대해 질문하기
+            </button>
+        </div>`;
+}
+
+/* =========================================================================
+   개선현황 상세
+   ========================================================================= */
+function findImprovement(officerId, iid) { const o = findOfficer(officerId); return { o, i: o.improvements.find(x=>x.id===iid) }; }
+function openImprovement(officerId, iid) { renderImprovement(officerId, iid); navigateTo('page-improvement'); }
+function renderImprovement(officerId, iid) {
+    const { o, i } = findImprovement(officerId, iid);
+    const c = catById(o.cat);
+    const sec = (title, html) => `<div class="mt-5"><p class="text-xs font-bold text-slate-400 mb-2">${title}</p>${html}</div>`;
+    const stages = i.stages.map((s,idx) => `
+        <div class="flex items-center gap-2.5">
+            <div class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${s.done?'bg-primary text-white':'bg-slate-200 dark:bg-slate-700 text-slate-400'}">
+                ${s.done?'<span class="material-symbols-outlined text-[16px]">check</span>':`<span class="text-[11px] font-bold">${idx+1}</span>`}
+            </div>
+            <span class="text-sm ${s.done?'font-bold text-slate-700 dark:text-slate-200':'text-slate-400'}">${s.n}</span>
+        </div>`).join('<div class="ml-3 h-3 border-l-2 border-slate-200 dark:border-slate-700"></div>');
+    document.getElementById('improvement-detail').innerHTML = `
+        <div class="bg-white dark:bg-slate-800 px-4 pt-5 pb-4 border-b border-[#e7ebf3] dark:border-gray-700">
+            <div class="flex items-center gap-2"><span class="inline-flex items-center gap-1 text-[11px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">${c.name}</span>${statusBadge(i.status)}</div>
+            <h2 class="text-xl font-bold mt-2">${i.name}</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5">${o.bureau} · ${o.dept} · 담당 ${o.name} ${o.title}</p>
+            <div class="flex items-center gap-2 mt-3">
+                <div class="flex-1 prog-track h-2.5"><div class="prog-fill" style="width:${i.progress}%"></div></div>
+                <span class="text-sm font-bold text-primary">${i.progress}%</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-2">사업기간 ${i.period} · 예산 ${i.budget} · 갱신 ${i.updated}</p>
+        </div>
+        <div class="px-4">
+            ${sec('사업 개요', `<p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${i.desc}</p>`)}
+            ${sec('추진 배경', `<p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${i.background}</p>`)}
+            ${sec('추진 단계', `<div>${stages}</div>`)}
+            ${i.citizenInput ? sec('시민 의견 반영 내용', `<div class="rounded-2xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 p-3.5"><p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed flex items-start gap-2"><span class="material-symbols-outlined text-primary text-[18px]">campaign</span>${i.citizenInput}</p></div>`) : ''}
+            ${sec('기대 효과', `<ul class="space-y-1.5">${i.effect.map(e=>`<li class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300"><span class="material-symbols-outlined text-emerald-500 text-[18px] mt-0.5">trending_up</span>${e}</li>`).join('')}</ul>`)}
+            ${i.answer ? sec('담당자 공식답변', `<div class="rounded-2xl bg-white dark:bg-slate-800 border border-primary/20 p-4"><div class="flex items-center gap-2 mb-2"><div class="w-8 h-8 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700">${officerAvatar(o,c.color)}</div><div><p class="text-xs font-bold">${o.dept}</p><p class="text-[10px] text-slate-400">담당 ${o.name} ${o.title}</p></div></div><p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${i.answer}</p></div>`) : ''}
+            ${i.materials.length ? sec('관련 자료', i.materials.map(m=>`<a class="flex items-center gap-2 rounded-xl bg-slate-50 dark:bg-slate-700/50 p-3 mb-2 text-sm text-slate-600 dark:text-slate-300"><span class="material-symbols-outlined text-primary text-[20px]">description</span>${m}<span class="material-symbols-outlined text-slate-300 ml-auto text-[20px]">download</span></a>`).join('')) : ''}
+        </div>
+        <div class="px-4 pt-6">
+            <button onclick="startChatWithContext('${o.id}',{type:'improve',id:'${i.id}'})" class="w-full bg-primary text-white font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+                <span class="material-symbols-outlined">chat</span>이 개선사업에 대해 질문하기
+            </button>
+        </div>`;
+}
+
+/* =========================================================================
+   긴급신고 감지
+   ========================================================================= */
+const URGENT_WORDS = ['불났','화재','불이 났','범죄','강도','칼','흉기','폭행','때리','아동학대','가정폭력','자살','죽고 싶','죽고싶','목숨','붕괴','무너','가스 누출','가스누출','가스 냄새','폭발'];
+function detectUrgent(text) { return URGENT_WORDS.some(w => text.includes(w)); }
+function closeUrgent() { document.getElementById('urgent-modal').classList.add('hidden'); }
+function showUrgent() { document.getElementById('urgent-modal').classList.remove('hidden'); }
+
+/* =========================================================================
+   자동 분류 (stub — 키워드 기반)
+   ========================================================================= */
+const CLASSIFY = {
+    traffic:['버스','도로','주차','자전거','교통','신호','횡단보도','정류장','brt','이음버스','배차','노선'],
+    housing:['주택','건축','집','아파트','임대','재건축','인허가','토지','도시계획'],
+    welfare:['복지','돌봄','어르신','노인','장애','보건','의료','병원','아동','보육','기초생활'],
+    env:['쓰레기','재활용','분리수거','분리배출','환경','공원','하천','악취','청소','미세먼지','클린하우스'],
+    economy:['일자리','취업','소상공인','상가','창업','경제','기업','자영업'],
+    culture:['문화','체육','운동','공연','도서관','관광','축제','체육관'],
+    edu:['교육','학교','보육','학원','평생교육','방과후','강좌'],
+    safety:['안전','재난','화재','침수','스쿨존','위험','소방','범죄'],
+    admin:['민원','여권','증명','서류','발급','행정','등본'],
+};
+function classifyText(text) {
+    const t = (text||'').toLowerCase();
+    let best = 'etc', score = 0;
+    for (const [cat, words] of Object.entries(CLASSIFY)) {
+        const s = words.reduce((a,w)=> a + (t.includes(w)?1:0), 0);
+        if (s > score) { score = s; best = cat; }
+    }
+    return best;
+}
+
+/* 분류표 200 기반 정밀 분류 (자유질문) — 세부업무·처리등급·SJ코드까지 매칭 */
+const SC_GROUP_TO_CAT={
+  '시정기획·예산·법무·데이터':'행정·민원','시민참여·민원·행정·세정':'행정·민원',
+  '안전·재난·민방위':'안전·재난','소방·구조·구급·화재예방':'안전·재난',
+  '복지·기초생활·보훈·자활':'복지·보건','아동·보육·청소년·여성·가족':'복지·보건','노인·장애인·보건·의료':'복지·보건',
+  '문화·예술·관광·체육·도서관':'문화·체육',
+  '경제·일자리·소상공인·기업':'경제·일자리','투자유치·산업·과학·디지털':'경제·일자리','농업·농촌·로컬푸드':'경제·일자리',
+  '축산·동물·산림':'환경·청소','환경·폐기물·대기·소음':'환경·청소','공원·녹지·하천·상하수도':'환경·청소',
+  '도시계획·개발·토지':'주택·건축','건축·주택·공동주택':'주택·건축',
+  '교통·버스·택시':'교통·도로','도로·주차·자전거·차량등록':'교통·도로',
+  '교육·학교·평생교육':'교육·보육','외부기관·경계업무·기타':'기타',
+};
+const CATNAME_TO_ID={'교통·도로':'traffic','주택·건축':'housing','복지·보건':'welfare','환경·청소':'env','경제·일자리':'economy','문화·체육':'culture','교육·보육':'edu','안전·재난':'safety','행정·민원':'admin','기타':'etc'};
+function catFromGroup(g){ return SC_GROUP_TO_CAT[g]||'기타'; }
+function classifyItem(text){
+  const data=window.SEJONG_CATS200; if(!data||!data.items) return null;
+  const t=(text||'').toLowerCase(); let best=null,score=0;
+  for(const it of data.items){
+    const s=(it.keywords||[]).reduce((a,k)=>a+(k&&t.includes(String(k).toLowerCase())?1:0),0);
+    if(s>score){score=s;best=it;}
+  }
+  return score>0?best:null;
+}
+
+/* =========================================================================
+   자주 묻는 질문 (분야별) — 칩 버튼
+   ========================================================================= */
+const FAQ_BY_CAT = {
+    traffic:['퇴근 시간대 버스 배차 간격이 너무 길어요','우리 동네 버스 노선을 늘려주세요','상가 앞 주차 공간이 부족해요','횡단보도 신호 시간이 짧아요'],
+    housing:['노후주택 집수리 지원을 받고 싶어요','건축 인허가 처리가 너무 오래 걸려요','임대주택 신청 방법이 궁금해요'],
+    welfare:['야간·휴일 아이 돌봄이 부족해요','어르신 돌봄 서비스가 궁금해요','복지 지원 대상인지 알고 싶어요'],
+    env:['우리 동네 분리배출 거점이 부족해요','쓰레기 무단투기가 심해요','공원이 더 있으면 좋겠어요'],
+    economy:['소상공인 지원 사업이 궁금해요','청년 일자리 정보를 알고 싶어요','창업 지원을 받고 싶어요'],
+    culture:['생활체육시설을 늘려주세요','문화 프로그램이 궁금해요','도서관 운영시간을 늘려주세요'],
+    edu:['저녁 평생교육 강좌를 늘려주세요','방과후 돌봄이 궁금해요','학교 통학로가 위험해요'],
+    safety:['학교 앞이 위험해요','우리 동네 침수가 걱정돼요','가로등이 어두워 무서워요'],
+    admin:['무인민원발급기 위치가 궁금해요','증명서 발급 방법을 알고 싶어요','민원 처리가 지연되고 있어요'],
+    etc:['어느 부서에 물어야 할지 모르겠어요','여러 부서가 얽힌 민원이에요'],
+};
+function escAttr(s){ return (s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+
+/* =========================================================================
+   질문하기 — 담당자 아바타 대화 (A안: 시민이 '마치고 전달' 누름)
+   ========================================================================= */
+let _chat = null; // { officer, context, messages:[{role,text}] }
+
+function startChat(officerId) { _startChat(officerId, null); }
+function startChatWithContext(officerId, ctx) { _startChat(officerId, ctx); }
+
+function _startChat(officerId, ctx) {
+    const officer = officerId ? findOfficer(officerId) : null;
+    _chat = { officer, context: ctx, messages: [] };
+    const av = document.getElementById('chat-avatar');
+    if (officer) {
+        const c = catById(officer.cat);
+        av.innerHTML = officerAvatar(officer, c.color);
+        document.getElementById('chat-title').textContent = `${officer.name} ${officer.title} · AI`;
+        document.getElementById('chat-subtitle').textContent = `${officer.dept} ${officer.team}`;
+    } else {
+        av.innerHTML = `<div class="w-full h-full flex items-center justify-center text-white" style="background:#2563eb"><span class="material-symbols-outlined text-[20px]">smart_toy</span></div>`;
+        document.getElementById('chat-title').textContent = '시민청 AI 안내';
+        document.getElementById('chat-subtitle').textContent = '내용을 듣고 담당자에게 바로 연결해드려요';
+    }
+    // 컨텍스트 칩
+    const chip = document.getElementById('chat-context');
+    if (ctx && officer) {
+        const c = catById(officer.cat);
+        let ctxName = '', icon = 'assignment';
+        if (ctx.type === 'work') { ctxName = officer.workItems.find(w=>w.id===ctx.id)?.name; icon='assignment'; }
+        else { ctxName = officer.improvements.find(i=>i.id===ctx.id)?.name; icon='trending_up'; }
+        chip.classList.remove('hidden');
+        chip.innerHTML = `<div class="rounded-xl bg-white dark:bg-slate-800 border border-primary/20 p-2.5 flex items-center gap-2 text-xs">
+            <span class="material-symbols-outlined text-primary text-[18px]">${icon}</span>
+            <div class="min-w-0"><p class="text-[10px] text-slate-400">이 내용과 연결됨</p><p class="font-bold truncate">${c.name} · ${ctxName}</p></div></div>`;
+    } else { chip.classList.add('hidden'); chip.innerHTML=''; }
+
+    // 첫 인사
+    document.getElementById('chat-messages').innerHTML = '';
+    let greet;
+    if (officer) {
+        const st = officer.id===STUDIO_OFFICER_ID ? getStudio() : null;
+        greet = (st && st.greeting) ? st.greeting : `안녕하세요, ${officer.dept} ${officer.name} ${officer.title}의 AI 담당입니다. 어떤 점이 불편하셨는지 편하게 말씀해 주세요.`;
+        if (ctx) { const nm = ctx.type==='work' ? officer.workItems.find(w=>w.id===ctx.id)?.name : officer.improvements.find(i=>i.id===ctx.id)?.name; greet = `안녕하세요, ${officer.dept} AI 담당입니다. '${nm}'에 대해 궁금하신 점이나 의견을 들려주세요.`; }
+    } else {
+        greet = '안녕하세요, 시민청 AI입니다. 어떤 점이 궁금하시거나 불편하신지 편하게 말씀해 주세요. 내용을 듣고 알맞은 담당자를 찾아 바로 연결해 드릴게요. 마치 전화로 문의하시듯 편하게요.';
+    }
+    pushMsg('ai', greet);
+    renderChatCats();
+    document.getElementById('chat-input').value = '';
+    navigateTo('page-chat');
+    switchChatMode('text');
+}
+
+/* 채팅 / 음성 대화 모드 전환 */
+function switchChatMode(mode) {
+    const isVoice = mode==='voice';
+    const show=(id,on,disp)=>{ const e=document.getElementById(id); if(e) e.style.display = on?(disp||''):'none'; };
+    show('chat-messages', !isVoice);
+    show('chat-input-area', !isVoice);
+    show('chat-banner', !isVoice);
+    show('chat-context', !isVoice && !!(_chat && _chat.context));
+    show('chat-voice-view', isVoice, 'flex');
+    document.getElementById('cm-text').classList.toggle('active', !isVoice);
+    document.getElementById('cm-voice').classList.toggle('active', isVoice);
+    if (isVoice) renderVoiceCats();
+}
+function renderVoiceCats() {
+    const el = document.getElementById('voice-cats'); if (!el) return;
+    const chips = _chat.officer ? catById(_chat.officer.cat).sub.split(' · ') : CATEGORIES.filter(c=>c.id!=='etc').map(c=>c.name);
+    el.innerHTML = chips.map(ch=>`<button onclick="catAsk('${escAttr(ch)}')" class="text-xs font-bold px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 active:scale-95 transition-transform">${ch}</button>`).join('');
+}
+function voiceConverse(btn) {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const status = document.getElementById('voice-status');
+    const icon = btn.querySelector('.material-symbols-outlined');
+    if (!SR) { if(status) status.textContent='이 브라우저는 음성 입력을 지원하지 않아요'; return; }
+    if (_recOn) { try { _recog && _recog.stop(); } catch(e){} return; }
+    _recog = new SR(); _recog.lang='ko-KR'; _recog.interimResults=false; _recog.maxAlternatives=1;
+    _recog.onresult = e => { const t = e.results[0][0].transcript; const inp=document.getElementById('chat-input'); inp.value=t; if(status) status.textContent=`"${t}" — 전달 준비됐어요`; sendChatMessage(); };
+    _recog.onend = () => { _recOn=false; if(icon) icon.textContent='mic'; btn.classList.remove('!bg-rose-500'); };
+    _recog.onerror = () => { _recOn=false; if(status) status.textContent='음성 인식을 사용할 수 없어요 (마이크 권한 확인)'; if(icon) icon.textContent='mic'; btn.classList.remove('!bg-rose-500'); };
+    try { _recog.start(); _recOn=true; if(icon) icon.textContent='graphic_eq'; btn.classList.add('!bg-rose-500'); if(status) status.textContent='듣고 있어요…'; }
+    catch(e){ if(status) status.textContent='음성 인식을 시작할 수 없어요'; }
+}
+
+/* 카테고리 칩 (입력창 위 고정) — 담당자면 분야 세부 카테고리, 자유질문이면 분야 */
+function renderChatCats() {
+    const el = document.getElementById('chat-cats'); if (!el) return;
+    let chips;
+    if (_chat.officer) { chips = catById(_chat.officer.cat).sub.split(' · '); }
+    else { chips = CATEGORIES.filter(c=>c.id!=='etc').map(c=>c.name); }
+    el.innerHTML = `<span class="shrink-0 text-[11px] text-slate-400 pr-0.5">카테고리</span>` +
+        chips.map(ch=>`<button onclick="catAsk('${escAttr(ch)}')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 active:scale-95 transition-transform whitespace-nowrap">${ch}</button>`).join('');
+}
+function catAsk(cat) {
+    const inp = document.getElementById('chat-input');
+    inp.value = `${cat} 관련해서 문의하고 싶어요.`;
+    sendChatMessage();
+}
+
+function pushMsg(role, text) {
+    _chat.messages.push({ role, text });
+    const wrap = document.getElementById('chat-messages');
+    if (role === 'user') {
+        wrap.insertAdjacentHTML('beforeend', `<div class="flex justify-end"><div class="max-w-[78%] bg-primary text-white text-sm px-3.5 py-2.5 rounded-2xl rounded-br-md leading-relaxed whitespace-pre-line">${escapeHtml(text)}</div></div>`);
+    } else {
+        const c = _chat.officer ? catById(_chat.officer.cat).color : '#2563eb';
+        const av = _chat.officer ? officerAvatar(_chat.officer, c) : `<div class="w-full h-full flex items-center justify-center text-white" style="background:#2563eb"><span class="material-symbols-outlined text-[16px]">smart_toy</span></div>`;
+        wrap.insertAdjacentHTML('beforeend', `<div class="flex items-end gap-2"><div class="w-7 h-7 rounded-lg overflow-hidden shrink-0">${av}</div><div class="max-w-[78%] bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 text-sm px-3.5 py-2.5 rounded-2xl rounded-bl-md leading-relaxed whitespace-pre-line">${escapeHtml(text)}</div></div>`);
+    }
+    wrap.scrollTop = wrap.scrollHeight;
+}
+function escapeHtml(s){ return (s||'').replace(/[&<>]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+
+/* 음성 입력 — 정보취약계층용 (Web Speech API, ko-KR) */
+let _recog = null, _recOn = false;
+function toggleVoiceInput(btn) {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { showToast('이 브라우저는 음성 입력을 지원하지 않아요'); return; }
+    if (_recOn) { try { _recog && _recog.stop(); } catch(e){} return; }
+    _recog = new SR(); _recog.lang = 'ko-KR'; _recog.interimResults = false; _recog.maxAlternatives = 1;
+    const icon = btn.querySelector('.material-symbols-outlined');
+    _recog.onresult = e => {
+        const t = e.results[0][0].transcript;
+        const inp = document.getElementById('chat-input');
+        inp.value = (inp.value ? inp.value + ' ' : '') + t;
+        inp.dispatchEvent(new Event('input'));
+    };
+    _recog.onend = () => { _recOn = false; btn.classList.remove('!bg-rose-100','dark:!bg-rose-900/40'); if(icon){ icon.textContent='mic'; icon.classList.remove('text-rose-500'); icon.classList.add('text-slate-500'); } };
+    _recog.onerror = () => { _recOn = false; showToast('음성 인식을 사용할 수 없어요 (마이크 권한 확인)'); };
+    try { _recog.start(); _recOn = true; btn.classList.add('!bg-rose-100','dark:!bg-rose-900/40'); if(icon){ icon.textContent='graphic_eq'; icon.classList.remove('text-slate-500'); icon.classList.add('text-rose-500'); } showToast('말씀해 주세요… 끝나면 자동으로 입력됩니다'); }
+    catch(e){ showToast('음성 인식을 시작할 수 없어요'); }
+}
+
+function sendChatMessage() {
+    const inp = document.getElementById('chat-input');
+    const text = inp.value.trim();
+    if (!text) return;
+    const quick = document.getElementById('chat-quick'); if (quick) quick.remove();
+    // 긴급 감지 우선
+    if (detectUrgent(text)) { showUrgent(); }
+    pushMsg('user', text);
+    inp.value = '';
+    // AI stub 응답
+    const userTurns = _chat.messages.filter(m=>m.role==='user').length;
+    showTyping();
+    setTimeout(() => {
+        removeTyping();
+        // 시민청 AI(담당자 미지정) = 교환원: 첫 질문 듣고 담당자 찾아 연결 제안
+        if (!_chat.officer && userTurns === 1) {
+            const cat = classifyText(text);
+            const rec = recommendOfficer(text, cat);
+            const c = catById(cat);
+            pushMsg('ai', `말씀 감사합니다. 말씀하신 내용은 ‘${c.name}’ 분야로, ${rec.dept}의 ${rec.name} ${rec.title}(${rec.field})이 담당하고 있어요. 바로 연결해 이어서 도와드릴게요.`);
+            renderOfficerConnectCard(rec);
+            return;
+        }
+        let reply;
+        if (userTurns === 1) reply = '말씀 감사합니다. 어떤 상황에서 가장 불편하셨는지(시간대·위치 등) 조금만 더 들려주시면 더 정확히 전달드릴 수 있어요.';
+        else if (userTurns === 2) reply = '네, 잘 이해했습니다. 더 덧붙일 내용이 없으시면 아래 초록색 ‘대화 마치고 전달하기’를 눌러주세요. 제가 내용을 정리해 확인받고 담당 부서로 전달하겠습니다.';
+        else reply = '추가로 말씀해 주셔서 감사합니다. 준비되시면 ‘대화 마치고 전달하기’를 눌러주세요.';
+        pushMsg('ai', reply);
+    }, 700);
+}
+
+// 교환원: 텍스트·분야로 담당자 추천 (세부담당 키워드 매칭 → 없으면 총괄)
+function recommendOfficer(text, cat) {
+    const list = officersOfCat(cat);
+    if (!list.length) return OFFICERS.find(o=>o.cat==='etc') || OFFICERS[0];
+    const t = (text||'').toLowerCase();
+    const found = list.find(o => (o.field + ' ' + o.team).toLowerCase().split(/[ ·]/).some(w => w && w.length>1 && t.includes(w)));
+    return found || list.find(o=>o.lead) || list[0];
+}
+
+// 담당자 연결 카드 (대화 중 표시)
+function renderOfficerConnectCard(o) {
+    const c = catById(o.cat);
+    const wrap = document.getElementById('chat-messages');
+    wrap.insertAdjacentHTML('beforeend', `
+        <div class="ml-9 rounded-2xl bg-white dark:bg-slate-800 border border-primary/30 p-3 flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-slate-100 dark:bg-slate-700">${officerAvatar(o, c.color)}</div>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-bold">${o.name} ${o.title}</p>
+                <p class="text-[11px] text-slate-400 truncate">${o.dept} · ${o.field}</p>
+            </div>
+            <button onclick="connectToOfficer('${o.id}')" class="px-3.5 py-2 rounded-xl bg-primary text-white text-xs font-bold shrink-0 active:scale-95 transition-transform flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">arrow_forward</span>연결</button>
+        </div>`);
+    wrap.scrollTop = wrap.scrollHeight;
+}
+
+// 담당자에게 연결 — 직전 발화를 이어서 담당자 대화 시작
+function connectToOfficer(id) {
+    const lastUser = _chat.messages.filter(m=>m.role==='user').slice(-1)[0];
+    _startChat(id, null);
+    if (lastUser) {
+        document.getElementById('chat-input').value = lastUser.text;
+        sendChatMessage();
+    }
+}
+function showTyping(){ document.getElementById('chat-messages').insertAdjacentHTML('beforeend', `<div id="typing" class="flex items-end gap-2"><div class="w-7 h-7"></div><div class="chat-typing bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 px-4 py-3 rounded-2xl rounded-bl-md"><span></span><span></span><span></span></div></div>`); const w=document.getElementById('chat-messages'); w.scrollTop=w.scrollHeight; }
+function removeTyping(){ const t=document.getElementById('typing'); if(t) t.remove(); }
+
+// 입력창 Enter 전송 / 자동 높이
+document.addEventListener('input', e => { if (e.target.id==='chat-input'){ e.target.style.height='auto'; e.target.style.height=Math.min(e.target.scrollHeight,112)+'px'; }});
+document.addEventListener('keydown', e => { if (e.target.id==='chat-input' && e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendChatMessage(); }});
+
+/* =========================================================================
+   대화 마치고 전달 → AI 요약 (stub) → 확인 모달
+   ========================================================================= */
+let _pendingProposal = null;
+
+function finishChatAndSummarize() {
+    const userMsgs = _chat.messages.filter(m=>m.role==='user').map(m=>m.text);
+    if (!userMsgs.length) { showToast('먼저 내용을 입력해 주세요'); return; }
+    const joined = userMsgs.join(' ');
+    // 분류: 담당자 경로는 그 분야 / 자유질문은 분류표 200으로 정밀 분류(세부업무·처리등급·SJ코드)
+    const matched = _chat.officer ? null : classifyItem(joined);
+    const catId = _chat.officer ? _chat.officer.cat : (matched ? (CATNAME_TO_ID[catFromGroup(matched.group)] || classifyText(joined)) : classifyText(joined));
+    const c = catById(catId);
+    const info = DEPT_INFO[catId];
+    const sub = matched ? matched.task : c.sub.split(' · ')[0];
+    const sjId = matched ? matched.id : '';
+    const level = matched ? matched.level : '일반';
+    // 제목/요약 stub — aiSummary는 AI 원본(불변 보관), summary는 시민이 수정할 편집본
+    const title = makeTitle(joined, c);
+    const aiSummary = makeSummary(userMsgs);
+    // 관련 담당업무/개선사업
+    let relatedHtml = '';
+    if (_chat.context && _chat.officer) {
+        const nm = _chat.context.type==='work' ? _chat.officer.workItems.find(w=>w.id===_chat.context.id)?.name : _chat.officer.improvements.find(i=>i.id===_chat.context.id)?.name;
+        relatedHtml = `<p class="flex items-center gap-1.5"><span class="material-symbols-outlined text-primary text-[16px]">link</span>관련: <b>${nm}</b></p>`;
+    }
+    _pendingProposal = { catId, catName:c.name, sub, dept: matched ? `${matched.bureau} ${matched.dept}` : info.bureau, officer:_chat.officer, original:joined, title, aiSummary, context:_chat.context, sjId, level };
+
+    document.getElementById('cv-original').textContent = joined;
+    document.getElementById('cv-cat').textContent = `${c.name} > ${sub}` + (sjId ? `  ·  ${sjId}` : '');
+    document.getElementById('cv-dept').textContent = _chat.officer ? `${_chat.officer.dept}` : (matched ? `${matched.bureau} (예상)` : `${info.bureau} (예상)`);
+    document.getElementById('cv-region').textContent = extractRegion(joined);
+    document.getElementById('cv-title').value = title;
+    document.getElementById('cv-summary').value = aiSummary;
+    const rel = document.getElementById('cv-related');
+    if (relatedHtml) { rel.classList.remove('hidden'); rel.innerHTML = relatedHtml; } else { rel.classList.add('hidden'); }
+    document.getElementById('cv-check').checked = false;
+    document.getElementById('cv-submit').disabled = true;
+    document.getElementById('cv-confirm-modal').classList.remove('hidden');
+}
+function makeTitle(text, c) {
+    const first = text.split(/[.!?\n]/)[0].slice(0, 24).trim();
+    return first ? `${first}${first.length>=24?'…':''} 관련 ${c.name} 요청` : `${c.name} 민원`;
+}
+function makeSummary(msgs) {
+    const body = msgs.join(' ').replace(/\s+/g,' ').trim();
+    return `${body}\n\n위 내용에 대한 검토와 개선을 요청합니다.`;
+}
+function extractRegion(text) {
+    const m = text.match(/([가-힣]+(동|읍|면|리))/);
+    return m ? m[1] : '세종시 (자동 감지)';
+}
+function closeCvConfirm() { document.getElementById('cv-confirm-modal').classList.add('hidden'); }
+
+/* =========================================================================
+   접수 — localStorage 저장
+   ========================================================================= */
+function loadProposals() {
+    try { return JSON.parse(localStorage.getItem('sc-proposals')||'null') || seedProposals(); }
+    catch(e){ return seedProposals(); }
+}
+function saveProposals(arr) { localStorage.setItem('sc-proposals', JSON.stringify(arr)); }
+function seedProposals() {
+    const seed = [
+        { id:'p-seed1', title:'버스 배차 간격 개선 요청', catName:'교통·도로', sub:'버스', dept:'교통정책과', officerName:'김민수 팀장',
+          original:'퇴근 시간대 버스 배차 간격이 길어 불편합니다.', summary:'퇴근 시간대 버스 배차 간격이 길어 시민 불편이 큽니다. 해당 시간대 배차 간격 조정을 요청합니다.',
+          status:'answered', urgency:'보통', region:'○○동', created:'2026.06.10', updated:'2026.06.12',
+          answer:'안녕하세요. 교통정책과 김민수 팀장입니다. 제안 주신 내용을 바탕으로 노선별 배차 간격을 분석한 결과, 퇴근 시간대 혼잡도가 높은 노선에 대해 6월부터 배차 간격을 10~15% 단축할 계획입니다. 앞으로도 시민 이동 편의 향상을 위해 노력하겠습니다. 감사합니다.',
+          materials:['노선별 배차 개선 계획(2025).pdf'], satisfaction:0,
+          history:[['2026.06.10','접수 완료'],['2026.06.10','담당 부서 배정 (교통정책과)'],['2026.06.11','검토 중'],['2026.06.12','답변 완료']] },
+        { id:'p-seed2', title:'상가 앞 주차 공간 부족 건의', catName:'교통·도로', sub:'주차', dept:'교통정책과', officerName:'이소영 주무관',
+          original:'상가 밀집 지역 주차 공간이 부족합니다.', summary:'상가 밀집 지역 주차 공간 부족으로 시민 불편이 있습니다. 공영주차장 확충을 요청합니다.',
+          status:'review', urgency:'보통', region:'○○동', created:'2026.05.28', updated:'2026.06.05',
+          answer:'', materials:[], satisfaction:0,
+          history:[['2026.05.28','접수 완료'],['2026.05.29','담당 부서 배정 (교통정책과)'],['2026.06.05','검토 중']] },
+        { id:'p-seed3', title:'학교 앞 횡단보도 신호 시간 건의', catName:'안전·재난', sub:'스쿨존', dept:'시민안전실', officerName:'백승현 팀장',
+          original:'초등학교 앞 횡단보도 신호 시간이 짧습니다.', summary:'초등학교 앞 횡단보도 보행 신호 시간이 짧아 아이들이 위험합니다. 신호 시간 연장을 요청합니다.',
+          status:'received', urgency:'높음', region:'○○동', created:'2026.06.14', updated:'2026.06.14',
+          answer:'', materials:[], satisfaction:0,
+          history:[['2026.06.14','접수 완료'],['2026.06.14','분류 중']] },
+    ];
+    saveProposals(seed);
+    return seed;
+}
+
+const PROP_STATUS = {
+    received:{ label:'접수 완료', group:'active', cls:STATUS.plan.cls },
+    classifying:{ label:'분류 중', group:'active', cls:STATUS.review.cls },
+    assigned:{ label:'담당 부서 배정', group:'active', cls:STATUS.ongoing.cls },
+    review:{ label:'검토 중', group:'active', cls:STATUS.review.cls },
+    waiting:{ label:'답변 대기', group:'active', cls:STATUS.ongoing.cls },
+    answered:{ label:'답변 완료', group:'done', cls:STATUS.done.cls },
+    transferred:{ label:'다른 부서로 이관', group:'active', cls:STATUS.review.cls },
+    hold:{ label:'보류', group:'hold', cls:STATUS.hold.cls },
+};
+function propBadge(s){ const st=PROP_STATUS[s]||PROP_STATUS.received; return `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${st.cls}">${st.label}</span>`; }
+
+function submitProposal() {
+    const arr = loadProposals();
+    const p = _pendingProposal;
+    const now = todayStr();
+    const finalSummary = document.getElementById('cv-summary').value.trim();
+    const newProp = {
+        id:'p-'+Date.now(), title:document.getElementById('cv-title').value.trim()||p.title,
+        catName:p.catName, sub:p.sub, dept:p.officer?p.officer.dept:p.dept,
+        officerName:p.officer?`${p.officer.name} ${p.officer.title}`:'배정 예정',
+        catId:p.sjId||'', level:p.level||'일반',   // 분류표 200 매칭 (대시보드 분류ID·처리등급)
+        original:p.original,                      // 원문 (불변)
+        aiSummary:p.aiSummary,                    // AI 원본 정리본 (감사 보관)
+        summary:finalSummary,                     // 시민 확정본 (전달용)
+        summaryEdited:(finalSummary !== p.aiSummary), // 시민이 AI 정리본을 수정했는지
+        confirmedAt:nowStamp(),                   // 확인 시각 (책임소지 기록)
+        status:'received', region:document.getElementById('cv-region').textContent,
+        created:now, updated:now, answer:'', materials:[], satisfaction:0,
+        history:[[now,'접수 완료'],[now,'분류 중']],
+    };
+    arr.unshift(newProp);
+    saveProposals(arr);
+    closeCvConfirm();
+    showToast('담당 부서에 전달되었습니다 ✓');
+    setTimeout(()=>{ openProposals(); renderProposals('active'); }, 600);
+}
+function todayStr(){ const d=new Date(); return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`; }
+function nowStamp(){ const d=new Date(); return `${todayStr()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
+
+/* =========================================================================
+   내 제안 목록 / 답변 상세
+   ========================================================================= */
+function openProposals(){ renderProposals('active'); navigateTo('page-proposals'); }
+function renderProposals(group) {
+    ['active','done','hold'].forEach(g => document.getElementById('prop-tab-'+g).classList.toggle('active', g===group));
+    const arr = loadProposals().filter(p => (PROP_STATUS[p.status]||PROP_STATUS.received).group === group);
+    const el = document.getElementById('proposals-list');
+    if (!arr.length) { el.innerHTML = '<p class="text-center text-sm text-slate-400 py-16">해당 상태의 제안이 없습니다.</p>'; return; }
+    el.innerHTML = arr.map(p => `
+        <button onclick="openProposalDetail('${p.id}')" class="w-full text-left rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 p-4 active:scale-[0.99] transition-transform">
+            <div class="flex items-center gap-1.5 mb-1.5">${propBadge(p.status)}<span class="text-[10px] text-slate-400">${p.catName} · ${p.sub}</span></div>
+            <p class="font-bold text-sm">${p.title}</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">${p.summary.split('\n')[0]}</p>
+            <div class="flex items-center gap-1.5 mt-2.5 text-[11px] text-slate-400"><span class="material-symbols-outlined text-[14px]">apartment</span>${p.dept} · ${p.officerName}<span class="ml-auto">${p.created}</span></div>
+        </button>`).join('');
+}
+function openProposalDetail(id){ renderProposalDetail(id); navigateTo('page-proposal-detail'); }
+function renderProposalDetail(id) {
+    const p = loadProposals().find(x=>x.id===id);
+    const sec = (title, html) => `<div class="mt-4"><p class="text-xs font-bold text-slate-400 mb-1.5">${title}</p>${html}</div>`;
+    const answered = p.status==='answered';
+    document.getElementById('proposal-detail').innerHTML = `
+        <div class="bg-white dark:bg-slate-800 px-4 pt-5 pb-4 border-b border-[#e7ebf3] dark:border-gray-700">
+            <div class="flex items-center gap-1.5 mb-2">${propBadge(p.status)}<span class="text-[10px] text-slate-400">${p.catName} · ${p.sub}</span></div>
+            <h2 class="text-lg font-bold">${p.title}</h2>
+            <p class="text-[11px] text-slate-400 mt-1.5">${p.dept} · ${p.officerName} · 접수 ${p.created}</p>
+        </div>
+        <div class="px-4 pb-6">
+            ${sec('내가 말한 내용 (원문)', `<p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed bg-slate-50 dark:bg-slate-800 rounded-xl p-3 whitespace-pre-line">${p.original}</p>`)}
+            ${sec('내가 확인해 전달한 내용', `<p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed rounded-xl border border-primary/20 p-3 whitespace-pre-line">${p.summary}</p>${p.summaryEdited?'<p class="text-[10px] text-slate-400 mt-1 flex items-center gap-1"><span class="material-symbols-outlined text-[13px]">edit</span>AI 정리본을 직접 수정한 내용입니다</p>':''}${p.confirmedAt?`<p class="text-[10px] text-slate-400 mt-0.5">확인 시각 · ${p.confirmedAt}</p>`:''}`)}
+            ${sec('처리 이력', `<div class="space-y-2.5 pl-1">${p.history.map((h,idx)=>`<div class="flex items-center gap-2.5"><div class="w-2.5 h-2.5 rounded-full ${idx===p.history.length-1?'bg-primary':'bg-slate-300 dark:bg-slate-600'}"></div><span class="text-sm ${idx===p.history.length-1?'font-bold':'text-slate-500'}">${h[1]}</span><span class="text-[11px] text-slate-400 ml-auto">${h[0]}</span></div>`).join('')}</div>`)}
+            ${answered ? `<div class="mt-5 rounded-2xl bg-primary/5 dark:bg-primary/10 border border-primary/20 p-4">
+                <div class="flex items-center gap-2 mb-2"><span class="material-symbols-outlined text-primary">verified</span><p class="text-sm font-bold">${p.dept}에서 답변드립니다</p></div>
+                <p class="text-[11px] text-slate-400 mb-2.5">담당 작성자 ${p.officerName}</p>
+                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">${p.answer}</p>
+                ${p.materials.length?`<div class="mt-3 space-y-1.5">${p.materials.map(m=>`<a class="flex items-center gap-2 rounded-xl bg-white dark:bg-slate-800 p-2.5 text-xs text-slate-600 dark:text-slate-300"><span class="material-symbols-outlined text-primary text-[18px]">description</span>${m}<span class="material-symbols-outlined text-slate-300 ml-auto text-[18px]">download</span></a>`).join('')}</div>`:''}
+              </div>
+              <div class="mt-4 rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 p-4 text-center">
+                <p class="text-sm font-bold mb-2">답변에 만족하셨나요?</p>
+                <div class="flex justify-center gap-1" id="rate-${p.id}">${[1,2,3,4,5].map(n=>`<button onclick="rateProposal('${p.id}',${n})" class="material-symbols-outlined text-3xl ${n<=p.satisfaction?'text-amber-400':'text-slate-300'}" style="font-variation-settings:'FILL' ${n<=p.satisfaction?1:0}">star</button>`).join('')}</div>
+              </div>` : `<div class="mt-5 rounded-2xl bg-slate-50 dark:bg-slate-800 p-4 text-center">
+                <span class="material-symbols-outlined text-slate-300 text-3xl">hourglass_top</span>
+                <p class="text-sm text-slate-500 mt-1">담당 부서에서 검토 중입니다. 답변이 등록되면 알림으로 알려드립니다.</p>
+              </div>`}
+        </div>`;
+}
+function rateProposal(id, n) {
+    const arr = loadProposals(); const p = arr.find(x=>x.id===id); if(!p) return;
+    p.satisfaction = n; saveProposals(arr); renderProposalDetail(id); showToast('평가해 주셔서 감사합니다');
+}
+
+/* =========================================================================
+   시민 제안 모아보기 (커뮤니티) — 공감 모으기
+   ========================================================================= */
+let _commCat = 'all';
+let _commSort = 'likes';
+function openCommunity(){ _commCat='all'; _commSort='likes'; renderCommunity(); navigateTo('page-community'); }
+function setCommCat(cat){ _commCat = cat; renderCommunity(); }
+function setCommSort(s){ _commSort = s; renderCommunity(); }
+function renderCommunity() {
+    // 분야 필터칩
+    const chips = [{id:'all',name:'전체'}].concat(CATEGORIES.map(c=>({id:c.id,name:c.name})));
+    document.getElementById('comm-cats').innerHTML = chips.map(ch=>`
+        <button onclick="setCommCat('${ch.id}')" class="text-xs font-bold px-3 py-1.5 rounded-full whitespace-nowrap shrink-0 ${_commCat===ch.id?'bg-primary text-white':'bg-slate-100 dark:bg-slate-800 text-slate-500'}">${ch.name}</button>`).join('');
+    // 정렬 버튼 상태
+    document.getElementById('comm-sort-likes').className = 'text-xs font-bold px-3 py-1.5 rounded-full ' + (_commSort==='likes'?'bg-primary text-white':'bg-slate-100 dark:bg-slate-800 text-slate-500');
+    document.getElementById('comm-sort-recent').className = 'text-xs font-bold px-3 py-1.5 rounded-full ' + (_commSort==='recent'?'bg-primary text-white':'bg-slate-100 dark:bg-slate-800 text-slate-500');
+    // 리스트
+    let list = PUBLIC_PROPOSALS.filter(p => _commCat==='all' || p.cat===_commCat);
+    list = _commSort==='likes'
+        ? [...list].sort((a,b)=> propLikeCount(b)-propLikeCount(a))
+        : [...list].sort((a,b)=> b.created.localeCompare(a.created));
+    const el = document.getElementById('comm-list');
+    el.innerHTML = list.length ? list.map(publicProposalCard).join('') : '<p class="text-center text-sm text-slate-400 py-16">해당 분야의 제안이 없습니다.</p>';
+}
+
+/* =========================================================================
+   마이페이지
+   ========================================================================= */
+function openMypage(){ renderMypage(); navigateTo('page-mypage'); }
+function renderMypage() {
+    const props = loadProposals();
+    const myCount = props.length;
+    const answered = props.filter(p=>p.status==='answered').length;
+    const likedProps = Object.keys(getPropLikes()).length;
+    const likedOfficers = Object.keys(getLikes()).length;
+    const dark = document.documentElement.classList.contains('dark');
+
+    const stat = (icon, color, n, label) => `
+        <div class="rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 p-3.5 text-center">
+            <span class="material-symbols-outlined ${color} text-[22px]">${icon}</span>
+            <p class="text-xl font-bold mt-0.5">${n}</p>
+            <p class="text-[10px] text-slate-400">${label}</p>
+        </div>`;
+    const menu = (icon, label, onclick, extra) => `
+        <button onclick="${onclick}" class="w-full flex items-center gap-3 px-4 py-3.5 active:bg-slate-50 dark:active:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-slate-500 dark:text-slate-400 text-[22px]">${icon}</span>
+            <span class="text-sm font-medium flex-1 text-left">${label}</span>
+            ${extra || '<span class="material-symbols-outlined text-slate-300 text-[20px]">chevron_right</span>'}
+        </button>`;
+
+    document.getElementById('mypage-body').innerHTML = `
+        <!-- 프로필 -->
+        <div class="rounded-3xl bg-gradient-to-br from-primary to-blue-500 text-white p-5 flex items-center gap-4">
+            <div class="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center"><span class="material-symbols-outlined text-[32px]">account_circle</span></div>
+            <div class="flex-1 min-w-0">
+                <p class="text-lg font-bold">세종시민님</p>
+                <p class="text-xs text-blue-100 flex items-center gap-1 mt-0.5"><span class="material-symbols-outlined text-[14px]">location_on</span>세종특별자치시 한솔동</p>
+                <span class="inline-block mt-1.5 text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-full">게스트 이용 중</span>
+            </div>
+        </div>
+
+        <!-- 내 활동 -->
+        <div>
+            <h3 class="font-bold text-sm text-slate-700 dark:text-slate-200 mb-3 px-1">내 활동</h3>
+            <div class="grid grid-cols-4 gap-2">
+                ${stat('campaign','text-primary',myCount,'내 제안')}
+                ${stat('task_alt','text-emerald-500',answered,'답변 완료')}
+                ${stat('favorite','text-rose-500',likedProps,'공감한 제안')}
+                ${stat('thumb_up','text-amber-500',likedOfficers,'응원한 담당자')}
+            </div>
+        </div>
+
+        <!-- 바로가기 -->
+        <div class="rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 overflow-hidden divide-y divide-slate-100 dark:divide-slate-700">
+            ${menu('forum','내 제안 보기','openProposals()')}
+            ${menu('groups','시민 제안 모아보기','openCommunity()')}
+            ${menu('notifications','알림','openNoti()')}
+            ${menu('location_on','거주지역 설정',"showToast('거주지역 설정은 시범 이후 연결됩니다')")}
+        </div>
+
+        <!-- 설정 -->
+        <div>
+            <h3 class="font-bold text-sm text-slate-700 dark:text-slate-200 mb-3 px-1">설정</h3>
+            <div class="rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 overflow-hidden divide-y divide-slate-100 dark:divide-slate-700">
+                ${menu('dark_mode','다크 모드','toggleDark();renderMypage()', `<span class="text-xs font-bold ${dark?'text-primary':'text-slate-400'}">${dark?'켜짐':'꺼짐'}</span>`)}
+                ${menu('translate','언어',"setLang('en')", '<span class="text-xs font-bold text-slate-400">한국어</span>')}
+                ${menu('description','이용약관',"showToast('이용약관은 시범 이후 연결됩니다')")}
+                ${menu('shield','개인정보 처리방침',"showToast('개인정보 처리방침은 시범 이후 연결됩니다')")}
+            </div>
+        </div>
+
+        <button onclick="showToast('로그인/로그아웃은 시범 이후 연결됩니다')" class="w-full text-center text-sm text-slate-400 font-medium py-3">로그아웃</button>
+        <p class="text-center text-[10px] text-slate-300 dark:text-slate-600">시민청 시범 서비스 · 세종특별자치시</p>`;
+}
+
+/* =========================================================================
+   알림
+   ========================================================================= */
+function getCitizenNotis(){ try{ return JSON.parse(localStorage.getItem('sc-notifications')||'[]'); }catch(e){ return []; } }
+function openNoti(){ markNotisRead(); renderNoti(); updateNotifBadge(); document.getElementById('noti-modal').classList.remove('hidden'); }
+function closeNoti(){ document.getElementById('noti-modal').classList.add('hidden'); }
+function markNotisRead(){ const arr=getCitizenNotis().map(n=>({...n,unread:false})); localStorage.setItem('sc-notifications',JSON.stringify(arr)); }
+function updateNotifBadge(){
+    const n = getCitizenNotis().filter(x=>x.unread!==false).length;
+    document.querySelectorAll('#notif-badge').forEach(b=>{ b.textContent=n; b.classList.toggle('hidden', n===0); });
+}
+function renderNoti() {
+    // 담당 부서가 보낸 실제 알림(localStorage) + 데모 알림
+    const dyn = getCitizenNotis().map(n=>({icon:'verified', color:'text-primary', title:n.title, body:n.body, time:'방금', unread:n.unread!==false}));
+    const items = [
+        ...dyn,
+        {icon:'verified', color:'text-primary', title:'답변이 등록되었습니다', body:'‘버스 배차 간격 개선 요청’에 교통정책과가 답변했어요.', time:'2일 전', unread:false},
+        {icon:'how_to_reg', color:'text-emerald-500', title:'담당 부서가 배정되었습니다', body:'‘상가 앞 주차 공간 부족 건의’가 교통정책과로 배정되었어요.', time:'3일 전', unread:false},
+        {icon:'campaign', color:'text-blue-500', title:'접수가 완료되었습니다', body:'‘학교 앞 횡단보도 신호 시간 건의’가 정상 접수되었어요.', time:'5일 전', unread:false},
+    ];
+    document.getElementById('noti-list').innerHTML = items.map(n=>`
+        <div class="rounded-2xl ${n.unread?'bg-primary/5 dark:bg-primary/10':'bg-slate-50 dark:bg-slate-800'} p-3.5 flex items-start gap-3">
+            <span class="material-symbols-outlined ${n.color} mt-0.5">${n.icon}</span>
+            <div class="flex-1 min-w-0"><div class="flex items-center gap-1.5"><p class="text-sm font-bold">${n.title}</p>${n.unread?'<span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>':''}</div><p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">${n.body}</p><p class="text-[10px] text-slate-400 mt-1">${n.time}</p></div>
+        </div>`).join('');
+}
+
+/* =========================================================================
+   토스트
+   ========================================================================= */
+let _toastTimer = null;
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.remove('hidden');
+    clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(()=>t.classList.add('hidden'), 2200);
+}
+
+/* =========================================================================
+   초기화
+   ========================================================================= */
+renderHome();
+renderCategory();
+setLang(currentLang);
+updateNotifBadge();
+</script>
+</body>
+</html>
