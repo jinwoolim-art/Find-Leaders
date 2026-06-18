@@ -1434,9 +1434,16 @@ function pushMsg(role, text) {
     }
 }
 function escapeHtml(s){ return (s||'').replace(/[&<>]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
-// 브라우저 음성 합성(TTS) — 정보취약계층 음성 답변 (무료)
+// 음성 답변(TTS) — ElevenLabs 고품질 우선, 실패 시 브라우저 음성 폴백
+let _ttsAudio = null;
 function speakKo(text){
-    try { if(!window.speechSynthesis) return; const u = new SpeechSynthesisUtterance(text); u.lang='ko-KR'; u.rate=1.02; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u); } catch(e){}
+    try { if(_ttsAudio){ _ttsAudio.pause(); _ttsAudio = null; } } catch(e){}
+    try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch(e){}
+    const ttsUrl = LIVE_LLM_API.replace('/api/chat', '/api/tts');
+    fetch(ttsUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ text }) })
+        .then(r => { if(!r.ok) throw new Error('el'); return r.blob(); })
+        .then(b => { _ttsAudio = new Audio(URL.createObjectURL(b)); _ttsAudio.play().catch(()=>{}); })
+        .catch(() => { try { const u = new SpeechSynthesisUtterance(text); u.lang='ko-KR'; u.rate=1.02; window.speechSynthesis.speak(u); } catch(e){} });
 }
 // AI 답변 공감 — 시민이 좋은 답변/방향에 공감 표시 (의견 수렴)
 function likeAiMsg(idx, btn){
