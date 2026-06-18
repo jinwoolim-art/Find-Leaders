@@ -96,19 +96,13 @@
     <div id="page-home" class="page active">
         <header class="sticky top-0 z-40 bg-white/90 dark:bg-background-dark/90 glass backdrop-blur border-b border-[#e7ebf3] dark:border-gray-800 px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-2">
-                <div class="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-primary">forum</span>
-                </div>
-                <div>
+                <img src="assets/세종시청로고.png" alt="세종특별자치시" class="h-10 w-auto object-contain"/>
+                <div class="pl-1 border-l border-slate-200 dark:border-slate-700 ml-1">
                     <h1 class="text-base font-bold leading-tight">세종시민청</h1>
-                    <p class="text-[10px] text-slate-400 leading-tight">세종특별자치시 · 시범 서비스</p>
+                    <p class="text-[10px] text-slate-400 leading-tight">시민 소통 플랫폼 · 시범</p>
                 </div>
             </div>
             <div class="flex items-center gap-1.5">
-                <div class="segmented-control !w-auto !p-0.5 text-xs">
-                    <button onclick="setLang('ko')" id="lang-ko" class="px-2.5 py-1 rounded-md font-bold text-primary bg-white dark:bg-slate-700 shadow-sm">KO</button>
-                    <button onclick="setLang('en')" id="lang-en" class="px-2.5 py-1 rounded-md font-bold text-slate-400">EN</button>
-                </div>
                 <button onclick="toggleDark()" class="h-8 w-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                     <span class="material-symbols-outlined text-[20px] block dark:hidden">dark_mode</span>
                     <span class="material-symbols-outlined text-[20px] hidden dark:block">light_mode</span>
@@ -119,13 +113,19 @@
         <main class="flex-1 px-4 pt-4 pb-28 space-y-5">
             <!-- 히어로 -->
             <section class="rounded-3xl bg-gradient-to-br from-primary to-blue-500 text-white p-6 shadow-xl shadow-primary/20">
+                <div class="inline-flex items-center gap-1.5 bg-white/15 rounded-full pl-2.5 pr-3 py-1 mb-3">
+                    <span class="text-sm font-bold tracking-wide">視民如傷</span>
+                    <span class="text-[11px] text-blue-100">시민여상 · 시민의 삶을 내 몸같이</span>
+                </div>
                 <h2 class="text-2xl font-bold leading-snug">세종시민의 목소리,<br>시정이 답합니다</h2>
-                <p class="text-sm text-blue-100 mt-2">전화하듯 질문하면, AI가 담당자에게 바로 연결해드립니다.</p>
-                <button onclick="startChat(null)" class="mt-5 w-full bg-white text-primary font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
-                    <span class="material-symbols-outlined">support_agent</span> 질문하고 담당자 연결받기
+                <p class="text-sm text-blue-100 mt-2">궁금한 점을 입력하면, AI가 담당자에게 바로 연결해드립니다.</p>
+                <button onclick="startChat(null)" class="mt-5 w-full bg-white text-primary font-bold py-3.5 rounded-2xl flex items-center justify-between pl-5 pr-3 active:scale-[0.98] transition-transform">
+                    <span>질문하고 담당자 연결받기</span>
+                    <span class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[20px]">chevron_right</span></span>
                 </button>
-                <button onclick="navigateTo('page-category')" class="mt-2.5 w-full bg-white/15 hover:bg-white/25 text-white font-bold py-3 rounded-2xl flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
-                    <span class="material-symbols-outlined">grid_view</span> 분야별 담당자 찾아보기
+                <button onclick="navigateTo('page-category')" class="mt-2.5 w-full bg-white/15 hover:bg-white/25 text-white font-bold py-3 rounded-2xl flex items-center justify-between pl-5 pr-3 active:scale-[0.98] transition-transform">
+                    <span>분야별 담당자 찾아보기</span>
+                    <span class="w-7 h-7 rounded-full bg-white/25 text-white flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[20px]">chevron_right</span></span>
                 </button>
             </section>
 
@@ -140,7 +140,7 @@
                     <p class="text-2xl font-bold mt-1.5">5,678<span class="text-sm font-medium text-slate-400">건</span></p>
                 </div>
                 <div class="rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 p-4">
-                    <div class="flex items-center gap-1.5 text-slate-400 text-xs"><span class="material-symbols-outlined text-[18px] text-rose-500">favorite</span>시민 공감 수</div>
+                    <div class="flex items-center gap-1.5 text-slate-400 text-xs"><span class="material-symbols-outlined text-[18px] text-rose-500">thumb_up</span>대화 공감 수</div>
                     <p id="home-likes-total" class="text-2xl font-bold mt-1.5">0</p>
                 </div>
                 <div class="rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 p-4">
@@ -479,19 +479,6 @@ function toggleDark() {
 }
 if (localStorage.getItem('sc-dark') === '1') { document.documentElement.classList.add('dark'); document.documentElement.classList.remove('light'); }
 
-/* ---------- i18n 뼈대 (한글 메인, EN은 추후) ---------- */
-let currentLang = localStorage.getItem('sc-lang') || 'ko';
-function setLang(lang) {
-    currentLang = lang;
-    localStorage.setItem('sc-lang', lang);
-    document.getElementById('lang-ko').classList.toggle('text-primary', lang === 'ko');
-    document.getElementById('lang-ko').classList.toggle('bg-white', lang === 'ko');
-    document.getElementById('lang-ko').classList.toggle('text-slate-400', lang !== 'ko');
-    document.getElementById('lang-en').classList.toggle('text-primary', lang === 'en');
-    document.getElementById('lang-en').classList.toggle('bg-white', lang === 'en');
-    document.getElementById('lang-en').classList.toggle('text-slate-400', lang !== 'en');
-    if (lang === 'en') alert('영문 번역은 시범 단계 이후 적용됩니다. (한글 우선)');
-}
 
 /* =========================================================================
    더미 데이터 — 10개 분야 / 교통국 깊게, 나머지도 충분히
@@ -537,7 +524,7 @@ const DEPT_INFO = {
 const OFFICERS = [
     /* ===== 교통·도로 (깊게) ===== */
     {
-        id:'tr-kim', cat:'traffic', name:'김민수', title:'팀장', team:'교통정책팀', dept:'교통정책과', bureau:'교통국',
+        id:'tr-kim', cat:'traffic', name:'교통정책', title:'팀장', team:'교통정책팀', dept:'교통정책과', bureau:'교통국',
         lead:true, field:'교통정책 총괄', phone:'044-300-XXXX', email:'kms@sejong.go.kr',
         career:['교통정책 총괄 10년','전 대중교통팀장','교통공학 박사'],
         answers:245, satisfaction:4.6,
@@ -598,7 +585,7 @@ const OFFICERS = [
         ],
     },
     {
-        id:'tr-lee', cat:'traffic', name:'이소영', title:'주무관', team:'대중교통팀', dept:'교통정책과', bureau:'교통국',
+        id:'tr-lee', cat:'traffic', name:'대중교통', title:'주무관', team:'대중교통팀', dept:'교통정책과', bureau:'교통국',
         lead:false, field:'버스·대중교통', phone:'044-300-XXXX', email:'lsy@sejong.go.kr',
         career:['버스정책 담당 6년','대중교통 운영 관리'],
         answers:131, satisfaction:4.5,
@@ -625,7 +612,7 @@ const OFFICERS = [
         ],
     },
     {
-        id:'tr-park', cat:'traffic', name:'박준형', title:'주무관', team:'도로시설팀', dept:'교통정책과', bureau:'교통국',
+        id:'tr-park', cat:'traffic', name:'도로시설', title:'주무관', team:'도로시설팀', dept:'교통정책과', bureau:'교통국',
         lead:false, field:'도로·교통시설', phone:'044-300-XXXX', email:'pjh@sejong.go.kr',
         career:['도로관리 담당 8년','교통안전시설 설계'],
         answers:98, satisfaction:4.4,
@@ -663,7 +650,7 @@ const OFFICERS = [
 
     /* ===== 주택·건축 ===== */
     {
-        id:'ho-jang', cat:'housing', name:'장은비', title:'팀장', team:'주택정책팀', dept:'주택과', bureau:'도시성장본부',
+        id:'ho-jang', cat:'housing', name:'주택정책', title:'팀장', team:'주택정책팀', dept:'주택과', bureau:'도시성장본부',
         lead:true, field:'주택정책 총괄', phone:'044-301-XXXX', email:'jeb@sejong.go.kr',
         career:['주택정책 9년','공공주택 기획'], answers:142, satisfaction:4.3,
         workItems:[
@@ -682,7 +669,7 @@ const OFFICERS = [
         ],
     },
     {
-        id:'ho-seo', cat:'housing', name:'서동현', title:'주무관', team:'건축행정팀', dept:'건축과', bureau:'도시성장본부',
+        id:'ho-seo', cat:'housing', name:'건축행정', title:'주무관', team:'건축행정팀', dept:'건축과', bureau:'도시성장본부',
         lead:false, field:'건축 인허가', phone:'044-301-XXXX', email:'sdh@sejong.go.kr',
         career:['건축 인허가 7년'], answers:87, satisfaction:4.2,
         workItems:[
@@ -701,7 +688,7 @@ const OFFICERS = [
 
     /* ===== 복지·보건 ===== */
     {
-        id:'we-han', cat:'welfare', name:'한지민', title:'팀장', team:'복지정책팀', dept:'복지정책과', bureau:'복지국',
+        id:'we-han', cat:'welfare', name:'복지정책', title:'팀장', team:'복지정책팀', dept:'복지정책과', bureau:'복지국',
         lead:true, field:'복지정책 총괄', phone:'044-302-XXXX', email:'hjm@sejong.go.kr',
         career:['사회복지 12년','복지전달체계 기획'], answers:203, satisfaction:4.7,
         workItems:[
@@ -720,7 +707,7 @@ const OFFICERS = [
         ],
     },
     {
-        id:'we-oh', cat:'welfare', name:'오세진', title:'주무관', team:'보건정책팀', dept:'보건정책과', bureau:'복지국',
+        id:'we-oh', cat:'welfare', name:'보건정책', title:'주무관', team:'보건정책팀', dept:'보건정책과', bureau:'복지국',
         lead:false, field:'보건·의료', phone:'044-302-XXXX', email:'osj@sejong.go.kr',
         career:['보건행정 6년'], answers:76, satisfaction:4.4,
         workItems:[
@@ -739,7 +726,7 @@ const OFFICERS = [
 
     /* ===== 환경·청소 ===== */
     {
-        id:'en-yoon', cat:'env', name:'윤하늘', title:'팀장', team:'자원순환팀', dept:'자원순환과', bureau:'환경녹지국',
+        id:'en-yoon', cat:'env', name:'자원순환', title:'팀장', team:'자원순환팀', dept:'자원순환과', bureau:'환경녹지국',
         lead:true, field:'자원순환 총괄', phone:'044-303-XXXX', email:'yhn@sejong.go.kr',
         career:['환경행정 10년'], answers:158, satisfaction:4.3,
         workItems:[
@@ -760,7 +747,7 @@ const OFFICERS = [
 
     /* ===== 경제·일자리 ===== */
     {
-        id:'ec-kang', cat:'economy', name:'강민호', title:'팀장', team:'일자리정책팀', dept:'일자리정책과', bureau:'경제산업국',
+        id:'ec-kang', cat:'economy', name:'일자리정책', title:'팀장', team:'일자리정책팀', dept:'일자리정책과', bureau:'경제산업국',
         lead:true, field:'일자리정책 총괄', phone:'044-304-XXXX', email:'kmh@sejong.go.kr',
         career:['일자리정책 8년'], answers:121, satisfaction:4.2,
         workItems:[
@@ -781,7 +768,7 @@ const OFFICERS = [
 
     /* ===== 문화·체육 ===== */
     {
-        id:'cu-im', cat:'culture', name:'임수정', title:'주무관', team:'문화예술팀', dept:'문화예술과', bureau:'문화체육관광국',
+        id:'cu-im', cat:'culture', name:'문화예술', title:'주무관', team:'문화예술팀', dept:'문화예술과', bureau:'문화체육관광국',
         lead:true, field:'문화·체육 총괄', phone:'044-305-XXXX', email:'isj@sejong.go.kr',
         career:['문화행정 7년'], answers:64, satisfaction:4.5,
         workItems:[
@@ -800,7 +787,7 @@ const OFFICERS = [
 
     /* ===== 교육·보육 ===== */
     {
-        id:'ed-noh', cat:'edu', name:'노현우', title:'주무관', team:'교육협력팀', dept:'교육지원과', bureau:'시민안전실',
+        id:'ed-noh', cat:'edu', name:'교육협력', title:'주무관', team:'교육협력팀', dept:'교육지원과', bureau:'시민안전실',
         lead:true, field:'교육·보육 총괄', phone:'044-306-XXXX', email:'nhw@sejong.go.kr',
         career:['교육행정 6년'], answers:88, satisfaction:4.4,
         workItems:[
@@ -819,7 +806,7 @@ const OFFICERS = [
 
     /* ===== 안전·재난 ===== */
     {
-        id:'sa-baek', cat:'safety', name:'백승현', title:'팀장', team:'안전정책팀', dept:'안전정책과', bureau:'시민안전실',
+        id:'sa-baek', cat:'safety', name:'안전정책', title:'팀장', team:'안전정책팀', dept:'안전정책과', bureau:'시민안전실',
         lead:true, field:'안전·재난 총괄', phone:'044-307-XXXX', email:'bsh@sejong.go.kr',
         career:['재난안전 11년'], answers:176, satisfaction:4.6,
         workItems:[
@@ -840,7 +827,7 @@ const OFFICERS = [
 
     /* ===== 행정·민원 ===== */
     {
-        id:'ad-moon', cat:'admin', name:'문가영', title:'주무관', team:'민원지원팀', dept:'민원과', bureau:'자치행정국',
+        id:'ad-moon', cat:'admin', name:'민원지원', title:'주무관', team:'민원지원팀', dept:'민원과', bureau:'자치행정국',
         lead:true, field:'민원·행정 총괄', phone:'044-308-XXXX', email:'mgy@sejong.go.kr',
         career:['민원행정 5년'], answers:210, satisfaction:4.5,
         workItems:[
@@ -860,7 +847,7 @@ const OFFICERS = [
 
     /* ===== 기타 ===== */
     {
-        id:'et-cho', cat:'etc', name:'조은하', title:'주무관', team:'시민소통팀', dept:'시민소통담당관', bureau:'기획조정실',
+        id:'et-cho', cat:'etc', name:'시민소통', title:'주무관', team:'시민소통팀', dept:'시민소통담당관', bureau:'기획조정실',
         lead:true, field:'시민 소통·기타', phone:'044-309-XXXX', email:'ceh@sejong.go.kr',
         career:['시민소통 4년'], answers:54, satisfaction:4.3,
         workItems:[
@@ -903,7 +890,7 @@ function togglePropLike(id, ev) {
         el.classList.toggle('text-rose-500', now); el.classList.toggle('text-slate-400', !now);
         const ic = el.querySelector('.material-symbols-outlined'); if (ic) ic.style.fontVariationSettings = `'FILL' ${now?1:0}`;
     });
-    const ht = document.getElementById('home-likes-total'); if (ht) ht.textContent = totalPropLikes().toLocaleString();
+    const ht = document.getElementById('home-likes-total'); if (ht) ht.textContent = chatLikeTotal().toLocaleString();
     showToast(now ? '이 제안에 공감했어요 ♥' : '공감을 취소했어요');
 }
 function propLikeBtn(p) {
@@ -952,7 +939,7 @@ const LIKES = {
 OFFICERS.forEach(o => { o.photo = PHOTO[o.id] ? (PHOTO_DIR + PHOTO[o.id]) : null; o.likes = LIKES[o.id] || 100; });
 
 // 담당자 아바타: 사진 있으면 전신 이미지(얼굴 위주 상단 크롭), 없으면 이니셜
-const STUDIO_OFFICER_ID = 'tr-lee'; // 데모: 담당자 스튜디오는 이소영 주무관 계정
+const STUDIO_OFFICER_ID = 'tr-lee'; // 데모: 담당자 스튜디오는 대중교통 주무관 계정
 function getStudio(){ try{ return JSON.parse(localStorage.getItem('sc-studio')||'null'); }catch(e){ return null; } }
 function officerAvatar(o, color) {
     // 업로드 사진(얼굴)은 그대로, 전신 더미 이미지는 확대해 상반신 위주로 크롭
@@ -986,7 +973,7 @@ function toggleLike(id, ev) {
         const ic = el.querySelector('.material-symbols-outlined');
         if (ic) ic.style.fontVariationSettings = `'FILL' ${now?1:0}`;
     });
-    const ht = document.getElementById('home-likes-total'); if (ht) ht.textContent = totalLikes().toLocaleString();
+    const ht = document.getElementById('home-likes-total'); if (ht) ht.textContent = chatLikeTotal().toLocaleString();
     showToast(now ? '공감했어요 ♥' : '공감을 취소했어요');
 }
 
@@ -997,7 +984,7 @@ function toggleLike(id, ev) {
 /* ----- 홈 ----- */
 function renderHome() {
     // 시민 공감 수 = 공개 시민 제안에 모인 공감 총합
-    const ht = document.getElementById('home-likes-total'); if (ht) ht.textContent = totalPropLikes().toLocaleString();
+    const ht = document.getElementById('home-likes-total'); if (ht) ht.textContent = chatLikeTotal().toLocaleString();
     // 자주 찾는 분야 (앞 4개)
     document.getElementById('home-popular-cats').innerHTML = CATEGORIES.slice(0,4).map(c => `
         <button onclick="openCategory('${c.id}')" class="flex flex-col items-center gap-1.5 p-2 rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 active:scale-95 transition-transform">
@@ -1148,10 +1135,6 @@ function renderOfficer(id, tab) {
                     <p class="text-xs text-slate-400">${o.team} · ${o.field}</p>
                 </div>
                 ${likeBtn(o, true)}
-            </div>
-            <div class="grid grid-cols-2 gap-2 mt-4 text-xs">
-                <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400"><span class="material-symbols-outlined text-[16px]">call</span>${o.phone}</div>
-                <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 truncate"><span class="material-symbols-outlined text-[16px]">mail</span>${o.email}</div>
             </div>
             <div class="grid grid-cols-3 gap-2 mt-4">
                 <div class="rounded-xl bg-slate-50 dark:bg-slate-700/50 p-2.5 text-center"><p class="text-[10px] text-slate-400">답변 건수</p><p class="font-bold text-sm mt-0.5">${o.answers}건</p></div>
@@ -1372,7 +1355,7 @@ function _startChat(officerId, ctx) {
         greet = (st && st.greeting) ? st.greeting : `안녕하세요, ${officer.dept} ${officer.name} ${officer.title}의 AI 담당입니다. 어떤 점이 불편하셨는지 편하게 말씀해 주세요.`;
         if (ctx) { const nm = ctx.type==='work' ? officer.workItems.find(w=>w.id===ctx.id)?.name : officer.improvements.find(i=>i.id===ctx.id)?.name; greet = `안녕하세요, ${officer.dept} AI 담당입니다. '${nm}'에 대해 궁금하신 점이나 의견을 들려주세요.`; }
     } else {
-        greet = '안녕하세요, 시민청 AI입니다. 어떤 점이 궁금하시거나 불편하신지 편하게 말씀해 주세요. 내용을 듣고 알맞은 담당자를 찾아 바로 연결해 드릴게요. 마치 전화로 문의하시듯 편하게요.';
+        greet = '안녕하세요, 시민청 AI입니다. 어떤 점이 궁금하시거나 불편하신지 편하게 입력해 주세요. 내용을 보고 알맞은 담당자를 찾아 바로 연결해 드릴게요.';
     }
     pushMsg('ai', greet);
     renderChatCats();
@@ -1434,13 +1417,30 @@ function pushMsg(role, text) {
     if (role === 'user') {
         wrap.insertAdjacentHTML('beforeend', `<div class="flex justify-end"><div class="max-w-[78%] bg-primary text-white text-sm px-3.5 py-2.5 rounded-2xl rounded-br-md leading-relaxed whitespace-pre-line">${escapeHtml(text)}</div></div>`);
     } else {
+        const idx = _chat.messages.length - 1;
         const c = _chat.officer ? catById(_chat.officer.cat).color : '#2563eb';
         const av = _chat.officer ? officerAvatar(_chat.officer, c) : `<div class="w-full h-full flex items-center justify-center text-white" style="background:#2563eb"><span class="material-symbols-outlined text-[16px]">smart_toy</span></div>`;
-        wrap.insertAdjacentHTML('beforeend', `<div class="flex items-end gap-2"><div class="w-7 h-7 rounded-lg overflow-hidden shrink-0">${av}</div><div class="max-w-[78%] bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 text-sm px-3.5 py-2.5 rounded-2xl rounded-bl-md leading-relaxed whitespace-pre-line">${escapeHtml(text)}</div></div>`);
+        wrap.insertAdjacentHTML('beforeend', `<div class="flex items-end gap-2"><div class="w-7 h-7 rounded-lg overflow-hidden shrink-0">${av}</div><div class="max-w-[78%]"><div class="bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 text-sm px-3.5 py-2.5 rounded-2xl rounded-bl-md leading-relaxed whitespace-pre-line">${escapeHtml(text)}</div><button onclick="likeAiMsg(${idx},this)" class="mt-1 ml-1 flex items-center gap-1 text-slate-400 active:scale-90 transition-transform"><span class="material-symbols-outlined text-[16px]">thumb_up</span><span class="ai-like-count text-[11px] font-bold">0</span><span class="text-[10px] ml-0.5">공감</span></button></div></div>`);
     }
     wrap.scrollTop = wrap.scrollHeight;
 }
 function escapeHtml(s){ return (s||'').replace(/[&<>]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+// AI 답변 공감 — 시민이 좋은 답변/방향에 공감 표시 (의견 수렴)
+function likeAiMsg(idx, btn){
+    const m = _chat.messages[idx]; if(!m) return;
+    m.liked = !m.liked;
+    const cnt = btn.querySelector('.ai-like-count'); const ic = btn.querySelector('.material-symbols-outlined');
+    cnt.textContent = m.liked ? 1 : 0;
+    btn.classList.toggle('text-primary', m.liked); btn.classList.toggle('text-slate-400', !m.liked);
+    if(ic) ic.style.fontVariationSettings = m.liked ? "'FILL' 1" : "'FILL' 0";
+    bumpChatLike(m.liked ? 1 : -1);
+    if(m.liked) showToast('공감해 주셔서 감사합니다 — 시민 의견 수렴에 반영됩니다');
+}
+/* 대화 공감 합계 (홈 '대화 공감 수') */
+const CHAT_LIKE_BASE = 1959;
+function getChatLikeDelta(){ try{ return parseInt(localStorage.getItem('sc-chat-likes')||'0',10)||0; }catch(e){ return 0; } }
+function chatLikeTotal(){ return CHAT_LIKE_BASE + getChatLikeDelta(); }
+function bumpChatLike(d){ try{ localStorage.setItem('sc-chat-likes', String(getChatLikeDelta()+d)); }catch(e){} const ht=document.getElementById('home-likes-total'); if(ht) ht.textContent=chatLikeTotal().toLocaleString(); }
 
 /* 음성 입력 — 정보취약계층용 (Web Speech API, ko-KR) */
 let _recog = null, _recOn = false;
@@ -1598,18 +1598,18 @@ function loadProposals() {
 function saveProposals(arr) { localStorage.setItem('sc-proposals', JSON.stringify(arr)); }
 function seedProposals() {
     const seed = [
-        { id:'p-seed1', title:'버스 배차 간격 개선 요청', catName:'교통·도로', sub:'버스', dept:'교통정책과', officerName:'김민수 팀장',
+        { id:'p-seed1', title:'버스 배차 간격 개선 요청', catName:'교통·도로', sub:'버스', dept:'교통정책과', officerName:'교통정책 팀장',
           original:'퇴근 시간대 버스 배차 간격이 길어 불편합니다.', summary:'퇴근 시간대 버스 배차 간격이 길어 시민 불편이 큽니다. 해당 시간대 배차 간격 조정을 요청합니다.',
           status:'answered', urgency:'보통', region:'○○동', created:'2026.06.10', updated:'2026.06.12',
-          answer:'안녕하세요. 교통정책과 김민수 팀장입니다. 제안 주신 내용을 바탕으로 노선별 배차 간격을 분석한 결과, 퇴근 시간대 혼잡도가 높은 노선에 대해 6월부터 배차 간격을 10~15% 단축할 계획입니다. 앞으로도 시민 이동 편의 향상을 위해 노력하겠습니다. 감사합니다.',
+          answer:'안녕하세요. 교통정책과 교통정책 팀장입니다. 제안 주신 내용을 바탕으로 노선별 배차 간격을 분석한 결과, 퇴근 시간대 혼잡도가 높은 노선에 대해 6월부터 배차 간격을 10~15% 단축할 계획입니다. 앞으로도 시민 이동 편의 향상을 위해 노력하겠습니다. 감사합니다.',
           materials:['노선별 배차 개선 계획(2025).pdf'], satisfaction:0,
           history:[['2026.06.10','접수 완료'],['2026.06.10','담당 부서 배정 (교통정책과)'],['2026.06.11','검토 중'],['2026.06.12','답변 완료']] },
-        { id:'p-seed2', title:'상가 앞 주차 공간 부족 건의', catName:'교통·도로', sub:'주차', dept:'교통정책과', officerName:'이소영 주무관',
+        { id:'p-seed2', title:'상가 앞 주차 공간 부족 건의', catName:'교통·도로', sub:'주차', dept:'교통정책과', officerName:'대중교통 주무관',
           original:'상가 밀집 지역 주차 공간이 부족합니다.', summary:'상가 밀집 지역 주차 공간 부족으로 시민 불편이 있습니다. 공영주차장 확충을 요청합니다.',
           status:'review', urgency:'보통', region:'○○동', created:'2026.05.28', updated:'2026.06.05',
           answer:'', materials:[], satisfaction:0,
           history:[['2026.05.28','접수 완료'],['2026.05.29','담당 부서 배정 (교통정책과)'],['2026.06.05','검토 중']] },
-        { id:'p-seed3', title:'학교 앞 횡단보도 신호 시간 건의', catName:'안전·재난', sub:'스쿨존', dept:'시민안전실', officerName:'백승현 팀장',
+        { id:'p-seed3', title:'학교 앞 횡단보도 신호 시간 건의', catName:'안전·재난', sub:'스쿨존', dept:'시민안전실', officerName:'안전정책 팀장',
           original:'초등학교 앞 횡단보도 신호 시간이 짧습니다.', summary:'초등학교 앞 횡단보도 보행 신호 시간이 짧아 아이들이 위험합니다. 신호 시간 연장을 요청합니다.',
           status:'received', urgency:'높음', region:'○○동', created:'2026.06.14', updated:'2026.06.14',
           answer:'', materials:[], satisfaction:0,
@@ -1796,7 +1796,6 @@ function renderMypage() {
             <h3 class="font-bold text-sm text-slate-700 dark:text-slate-200 mb-3 px-1">설정</h3>
             <div class="rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 overflow-hidden divide-y divide-slate-100 dark:divide-slate-700">
                 ${menu('dark_mode','다크 모드','toggleDark();renderMypage()', `<span class="text-xs font-bold ${dark?'text-primary':'text-slate-400'}">${dark?'켜짐':'꺼짐'}</span>`)}
-                ${menu('translate','언어',"setLang('en')", '<span class="text-xs font-bold text-slate-400">한국어</span>')}
                 ${menu('description','이용약관',"showToast('이용약관은 시범 이후 연결됩니다')")}
                 ${menu('shield','개인정보 처리방침',"showToast('개인정보 처리방침은 시범 이후 연결됩니다')")}
             </div>
@@ -1849,7 +1848,6 @@ function showToast(msg) {
    ========================================================================= */
 renderHome();
 renderCategory();
-setLang(currentLang);
 updateNotifBadge();
 </script>
 </body>
