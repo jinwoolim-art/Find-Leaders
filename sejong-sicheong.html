@@ -1462,7 +1462,11 @@ function toggleVoiceInput(btn) {
     catch(e){ showToast('음성 인식을 시작할 수 없어요'); }
 }
 
-function sendChatMessage() {
+// 실제 LLM 연결 대상 (현재 PoC: 대중교통 주무관 1명만). 그 외는 stub.
+const LIVE_LLM_OFFICER = 'tr-lee';
+const LIVE_LLM_API = 'https://poc.illkkun.cloud/api/chat';
+
+async function sendChatMessage() {
     const inp = document.getElementById('chat-input');
     const text = inp.value.trim();
     if (!text) return;
@@ -1471,7 +1475,26 @@ function sendChatMessage() {
     if (detectUrgent(text)) { showUrgent(); }
     pushMsg('user', text);
     inp.value = '';
-    // AI stub 응답
+
+    // ── 대중교통 주무관: 실제 LLM 응답 ──
+    if (_chat.officer && _chat.officer.id === LIVE_LLM_OFFICER) {
+        showTyping();
+        const history = _chat.messages
+            .filter(m => m.role === 'user' || m.role === 'ai')
+            .map(m => ({ role: m.role === 'ai' ? 'assistant' : 'user', content: m.text }));
+        try {
+            const r = await fetch(LIVE_LLM_API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ messages: history }) });
+            const j = await r.json();
+            removeTyping();
+            pushMsg('ai', j.reply || '(응답을 불러오지 못했어요)');
+        } catch (e) {
+            removeTyping();
+            pushMsg('ai', '지금은 AI 응답 서버에 연결할 수 없어요. 잠시 후 다시 시도하시거나, 아래 ‘대화 마치고 전달하기’로 의견을 남겨주세요.');
+        }
+        return;
+    }
+
+    // ── 그 외 담당자/자유질문: 기존 stub ──
     const userTurns = _chat.messages.filter(m=>m.role==='user').length;
     showTyping();
     setTimeout(() => {
