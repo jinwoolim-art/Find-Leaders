@@ -258,13 +258,10 @@
         <div id="chat-banner" class="hidden"></div>
         <main id="chat-messages" class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-4 py-4 space-y-3" style="overscroll-behavior:contain;touch-action:pan-y"></main>
         <!-- 입력 영역 -->
-        <div id="chat-input-area" class="sticky bottom-0 bg-white dark:bg-slate-900 border-t border-[#e7ebf3] dark:border-gray-800 px-3 pt-2.5 pb-3 space-y-2">
-            <div id="chat-cats" class="flex gap-1.5 overflow-x-auto scrollbar-hide pb-0.5 items-center"></div>
-            <button onclick="finishChatAndSummarize()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold py-2.5 rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.98] transition-transform">
-                <span class="material-symbols-outlined text-[18px]">task_alt</span>대화 마치고 전달하기
-            </button>
+        <div id="chat-input-area" class="sticky bottom-0 bg-white dark:bg-slate-900 border-t border-[#e7ebf3] dark:border-gray-800 px-3 pt-2 pb-3 space-y-1.5">
+            <div id="chat-cats" class="flex gap-1.5 overflow-x-auto scrollbar-hide items-center"></div>
             <div class="flex items-end gap-2">
-                <button id="voice-btn" onclick="toggleVoiceInput(this)" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0" aria-label="음성 입력"><span class="material-symbols-outlined text-slate-500 text-[20px]">mic</span></button>
+                <button onclick="finishChatAndSummarize()" class="h-10 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1 shrink-0 active:scale-95 transition-transform" title="대화 마치고 담당 부서에 전달"><span class="material-symbols-outlined text-[18px]">task_alt</span>전달</button>
                 <textarea id="chat-input" rows="1" maxlength="500" placeholder="궁금한 내용을 입력하세요…" class="flex-1 px-3.5 py-2.5 text-sm rounded-2xl border border-[#e7ebf3] dark:border-gray-700 bg-slate-50 dark:bg-slate-800 focus:outline-none focus:border-primary resize-none max-h-28"></textarea>
                 <button onclick="sendChatMessage()" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shrink-0 active:scale-95 transition-transform"><span class="material-symbols-outlined text-[20px]">send</span></button>
             </div>
@@ -1447,7 +1444,7 @@ function renderChatCats() {
     if (_chat.officer) { chips = catById(_chat.officer.cat).sub.split(' · '); }
     else { chips = CATEGORIES.filter(c=>c.id!=='etc').map(c=>c.name); }
     el.innerHTML = `<span class="shrink-0 text-[11px] text-slate-400 pr-0.5">카테고리</span>` +
-        chips.map(ch=>`<button onclick="catAsk('${escAttr(ch)}')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 active:scale-95 transition-transform whitespace-nowrap">${ch}</button>`).join('');
+        chips.map(ch=>`<button onclick="catAsk('${escAttr(ch)}')" class="shrink-0 text-[11px] font-bold px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 active:scale-95 transition-transform whitespace-nowrap">${ch}</button>`).join('');
 }
 function catAsk(cat) {
     const inp = document.getElementById('chat-input');
