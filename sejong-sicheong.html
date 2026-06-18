@@ -280,7 +280,6 @@
                     <span class="material-symbols-outlined text-[36px]">mic</span>
                 </button>
                 <p class="text-[11px] text-slate-400">꾹 누른 채 말하고, 손을 떼면 전송됩니다</p>
-                <div id="voice-cats" class="flex flex-wrap gap-1.5 justify-center"></div>
                 <button onclick="finishChatAndSummarize()" class="mt-1 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold py-2.5 px-6 rounded-xl flex items-center gap-1.5 active:scale-[0.98] transition-transform"><span class="material-symbols-outlined text-[18px]">task_alt</span>대화 마치고 전달하기</button>
             </div>
         </div>
@@ -330,7 +329,7 @@
     <!-- ==================== AI 요약 확인 모달 (핵심: 확인사살) ==================== -->
     <div id="cv-confirm-modal" class="fixed inset-0 z-[75] hidden">
         <div class="absolute inset-0 bg-black/55" onclick="closeCvConfirm()"></div>
-        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white dark:bg-slate-900 rounded-t-3xl max-h-[90vh] overflow-y-auto shadow-2xl animate-slideUp">
+        <div class="absolute bottom-0 left-0 right-0 mx-auto w-full max-w-[480px] bg-white dark:bg-slate-900 rounded-t-3xl max-h-[90vh] overflow-y-auto shadow-2xl animate-slideUp">
             <div class="sticky top-0 bg-white dark:bg-slate-900 px-5 pt-4 pb-3 border-b border-slate-200 dark:border-slate-700 z-10">
                 <div class="w-10 h-1 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto mb-3"></div>
                 <div class="flex items-center justify-between">
@@ -400,7 +399,7 @@
     <!-- ==================== 알림 모달 ==================== -->
     <div id="noti-modal" class="fixed inset-0 z-[75] hidden">
         <div class="absolute inset-0 bg-black/55" onclick="closeNoti()"></div>
-        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white dark:bg-slate-900 rounded-t-3xl max-h-[80vh] overflow-y-auto shadow-2xl animate-slideUp">
+        <div class="absolute bottom-0 left-0 right-0 mx-auto w-full max-w-[480px] bg-white dark:bg-slate-900 rounded-t-3xl max-h-[80vh] overflow-y-auto shadow-2xl animate-slideUp">
             <div class="sticky top-0 bg-white dark:bg-slate-900 px-5 pt-4 pb-3 border-b border-slate-200 dark:border-slate-700">
                 <div class="w-10 h-1 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto mb-3"></div>
                 <div class="flex items-center justify-between"><h3 class="text-lg font-bold flex items-center gap-2"><span class="material-symbols-outlined text-primary">notifications</span>알림</h3><button onclick="closeNoti()" class="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><span class="material-symbols-outlined text-slate-500">close</span></button></div>
@@ -1379,7 +1378,6 @@ function switchChatMode(mode) {
     document.getElementById('cm-text').classList.toggle('active', !isVoice);
     document.getElementById('cm-voice').classList.toggle('active', isVoice);
     if (isVoice) {
-        renderVoiceCats();
         const vm = document.getElementById('voice-msgs');
         if (vm && !vm.children.length) {
             const g = _chat.officer
