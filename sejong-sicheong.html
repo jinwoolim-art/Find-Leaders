@@ -256,7 +256,7 @@
         <div id="chat-context" class="hidden px-4 pt-3"></div>
         <!-- 안내 배너 -->
         <div id="chat-banner" class="hidden"></div>
-        <main id="chat-messages" class="flex-1 min-h-0 overflow-y-auto px-4 py-4 space-y-3"></main>
+        <main id="chat-messages" class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-4 py-4 space-y-3" style="overscroll-behavior:contain;touch-action:pan-y"></main>
         <!-- 입력 영역 -->
         <div id="chat-input-area" class="sticky bottom-0 bg-white dark:bg-slate-900 border-t border-[#e7ebf3] dark:border-gray-800 px-3 pt-2.5 pb-3 space-y-2">
             <div id="chat-cats" class="flex gap-1.5 overflow-x-auto scrollbar-hide pb-0.5 items-center"></div>
@@ -271,7 +271,7 @@
         </div>
         <!-- 음성 대화 뷰: 위=대화 텍스트, 아래=마이크 -->
         <div id="chat-voice-view" class="flex-1 min-h-0 flex-col" style="display:none">
-            <div id="voice-msgs" class="flex-1 min-h-0 overflow-y-auto px-4 py-4 space-y-3"></div>
+            <div id="voice-msgs" class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-4 py-4 space-y-3" style="overscroll-behavior:contain;touch-action:pan-y"></div>
             <div class="border-t border-[#e7ebf3] dark:border-gray-800 bg-white dark:bg-slate-900 px-4 pt-3 pb-4 flex flex-col items-center gap-2">
                 <p id="voice-status" class="text-sm font-bold text-slate-600 dark:text-slate-300 text-center min-h-[18px] whitespace-pre-line">누르고 말씀하세요</p>
                 <button id="voice-mic-btn"
@@ -1469,16 +1469,28 @@ function pushMsg(role, text) {
     wrap.scrollTop = wrap.scrollHeight;
 }
 function escapeHtml(s){ return (s||'').replace(/[&<>]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
-// 음성 답변(TTS) — ElevenLabs 고품질 우선, 실패 시 브라우저 음성 폴백
+// 음성 답변(TTS) — OS 내장 한국어 여성 음성 (자연스러운 한국어 발음)
+// ※ ElevenLabs 프리셋은 영어권이라 한국어를 영어식으로 읽어, 한국어 보이스 확보 전까지 브라우저 음성 사용
 let _ttsAudio = null;
+function pickKoVoice(){
+    const vs = (window.speechSynthesis && window.speechSynthesis.getVoices()) || [];
+    const ko = vs.filter(v => /ko(-|_)?/i.test(v.lang));
+    return ko.find(v => /yuna|유나|female|여|sora|소라|heami|google 한국/i.test(v.name)) || ko[0] || null;
+}
 function speakKo(text){
     try { if(_ttsAudio){ _ttsAudio.pause(); _ttsAudio = null; } } catch(e){}
-    try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch(e){}
-    const ttsUrl = LIVE_LLM_API.replace('/api/chat', '/api/tts');
-    fetch(ttsUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ text }) })
-        .then(r => { if(!r.ok) throw new Error('el'); return r.blob(); })
-        .then(b => { _ttsAudio = new Audio(URL.createObjectURL(b)); _ttsAudio.play().catch(()=>{}); })
-        .catch(() => { try { const u = new SpeechSynthesisUtterance(text); u.lang='ko-KR'; u.rate=1.02; window.speechSynthesis.speak(u); } catch(e){} });
+    try {
+        if(!window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        const speak = () => {
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'ko-KR'; u.rate = 1.0; u.pitch = 1.05;
+            const v = pickKoVoice(); if(v) u.voice = v;
+            window.speechSynthesis.speak(u);
+        };
+        if (window.speechSynthesis.getVoices().length) speak();
+        else window.speechSynthesis.onvoiceschanged = speak;
+    } catch(e){}
 }
 // AI 답변 공감 — 시민이 좋은 답변/방향에 공감 표시 (의견 수렴)
 function likeAiMsg(idx, btn){
