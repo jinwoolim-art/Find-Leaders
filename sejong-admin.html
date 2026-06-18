@@ -739,7 +739,14 @@ const STUDIO_DEFAULT={
 let STUDIO=loadStudio();
 let STUDIO_TEST=[];
 function loadStudio(){ try{ return Object.assign({},JSON.parse(JSON.stringify(STUDIO_DEFAULT)),JSON.parse(localStorage.getItem('sc-studio')||'{}')); }catch(e){ return JSON.parse(JSON.stringify(STUDIO_DEFAULT)); } }
-function saveStudio(){ try{ localStorage.setItem('sc-studio',JSON.stringify(STUDIO)); toast('내 페이지가 저장되었습니다 — 시민 앱에 반영됩니다 ✓'); }catch(e){ toast('저장 용량 초과 — 사진 크기를 줄여주세요'); } }
+function saveStudio(){
+  try{ localStorage.setItem('sc-studio',JSON.stringify(STUDIO)); }catch(e){ toast('저장 용량 초과 — 사진 크기를 줄여주세요'); return; }
+  // 실제 AI 대화(대중교통 주무관)에 반영 — 서버로 페르소나 전송 (사진 dataURL은 제외)
+  const { photo, ...persona } = STUDIO;
+  fetch('https://poc.illkkun.cloud/api/persona', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(persona) })
+    .then(r => r.ok ? toast('저장됨 — 실시간 AI 대화에 반영되었습니다 ✓') : toast('저장됨 (AI 서버 응답 오류)'))
+    .catch(() => toast('저장됨 (AI 서버 미연결 — 화면만 반영)'));
+}
 function photoBox(size){ return STUDIO.photo
   ? `<img src="${STUDIO.photo}" style="width:${size}px;height:${size}px;border-radius:14px;object-fit:cover;object-position:top;background:#f1f5f9"/>`
   : `<div style="width:${size}px;height:${size}px;border-radius:14px;background:#2563eb;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:${Math.round(size/2.5)}px">${(STUDIO.name||'?').charAt(0)}</div>`; }
