@@ -81,6 +81,9 @@
         .chat-typing span:nth-child(2) { animation-delay: 0.2s; }
         .chat-typing span:nth-child(3) { animation-delay: 0.4s; }
         @keyframes typing { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-5px); } }
+        /* 음성 녹음 중 마이크 펄스 */
+        #voice-mic-btn.voice-rec { background:#ef4444 !important; animation:vpulse 1.1s infinite; }
+        @keyframes vpulse { 0%,100%{ box-shadow:0 0 0 0 rgba(239,68,68,.45);} 50%{ box-shadow:0 0 0 16px rgba(239,68,68,0);} }
 
         /* Progress bar */
         .prog-track { background: #e8eefb; border-radius: 9999px; overflow: hidden; }
@@ -266,13 +269,20 @@
                 <button onclick="sendChatMessage()" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shrink-0 active:scale-95 transition-transform"><span class="material-symbols-outlined text-[20px]">send</span></button>
             </div>
         </div>
-        <!-- 음성 대화 뷰 -->
-        <div id="chat-voice-view" class="flex-1 flex-col items-center justify-center px-6 pb-8 overflow-y-auto" style="display:none">
-            <p id="voice-status" class="text-base font-bold text-slate-700 dark:text-slate-200 mb-7 text-center">마이크 버튼을 눌러 말씀해주세요</p>
-            <button id="voice-mic-btn" onclick="voiceConverse(this)" class="w-20 h-20 rounded-full bg-primary text-white flex items-center justify-center shadow-xl shadow-primary/30 active:scale-95 transition-transform"><span class="material-symbols-outlined text-[36px]">mic</span></button>
-            <p class="text-xs text-slate-400 mt-3">탭하여 말하기</p>
-            <div id="voice-cats" class="flex flex-wrap gap-1.5 justify-center mt-8 max-w-sm"></div>
-            <button onclick="finishChatAndSummarize()" class="mt-7 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold py-2.5 px-6 rounded-xl flex items-center gap-1.5 active:scale-[0.98] transition-transform"><span class="material-symbols-outlined text-[18px]">task_alt</span>대화 마치고 전달하기</button>
+        <!-- 음성 대화 뷰: 위=대화 텍스트, 아래=마이크 -->
+        <div id="chat-voice-view" class="flex-1 min-h-0 flex-col" style="display:none">
+            <div id="voice-msgs" class="flex-1 min-h-0 overflow-y-auto px-4 py-4 space-y-3"></div>
+            <div class="border-t border-[#e7ebf3] dark:border-gray-800 bg-white dark:bg-slate-900 px-4 pt-3 pb-4 flex flex-col items-center gap-2">
+                <p id="voice-status" class="text-sm font-bold text-slate-600 dark:text-slate-300 text-center min-h-[18px] whitespace-pre-line">누르고 말씀하세요</p>
+                <button id="voice-mic-btn"
+                    onpointerdown="voiceStart(this,event)" onpointerup="voiceStop()" onpointerleave="voiceStop()" oncontextmenu="return false"
+                    class="w-[72px] h-[72px] rounded-full bg-primary text-white flex items-center justify-center shadow-xl shadow-primary/30 select-none transition-transform active:scale-95" style="touch-action:none">
+                    <span class="material-symbols-outlined text-[36px]">mic</span>
+                </button>
+                <p class="text-[11px] text-slate-400">꾹 누른 채 말하고, 손을 떼면 전송됩니다</p>
+                <div id="voice-cats" class="flex flex-wrap gap-1.5 justify-center"></div>
+                <button onclick="finishChatAndSummarize()" class="mt-1 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold py-2.5 px-6 rounded-xl flex items-center gap-1.5 active:scale-[0.98] transition-transform"><span class="material-symbols-outlined text-[18px]">task_alt</span>대화 마치고 전달하기</button>
+            </div>
         </div>
     </div>
 
@@ -1341,6 +1351,7 @@ function _startChat(officerId, ctx) {
 
     // 첫 인사
     document.getElementById('chat-messages').innerHTML = '';
+    const _vm = document.getElementById('voice-msgs'); if (_vm) _vm.innerHTML = '';
     let greet;
     if (officer) {
         const st = officer.id===STUDIO_OFFICER_ID ? getStudio() : null;
@@ -1367,25 +1378,68 @@ function switchChatMode(mode) {
     show('chat-voice-view', isVoice, 'flex');
     document.getElementById('cm-text').classList.toggle('active', !isVoice);
     document.getElementById('cm-voice').classList.toggle('active', isVoice);
-    if (isVoice) renderVoiceCats();
+    if (isVoice) {
+        renderVoiceCats();
+        const vm = document.getElementById('voice-msgs');
+        if (vm && !vm.children.length) {
+            const g = _chat.officer
+                ? `안녕하세요, ${_chat.officer.dept} ${_chat.officer.name} ${_chat.officer.title} AI입니다.\n아래 마이크를 누른 채 말씀해 주세요.`
+                : '안녕하세요, 시민청 AI입니다.\n아래 마이크를 누른 채 말씀해 주세요.';
+            voicePush('ai', g);
+        }
+        setVoiceStatus('누르고 말씀하세요');
+    }
 }
 function renderVoiceCats() {
     const el = document.getElementById('voice-cats'); if (!el) return;
     const chips = _chat.officer ? catById(_chat.officer.cat).sub.split(' · ') : CATEGORIES.filter(c=>c.id!=='etc').map(c=>c.name);
     el.innerHTML = chips.map(ch=>`<button onclick="catAsk('${escAttr(ch)}')" class="text-xs font-bold px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 active:scale-95 transition-transform">${ch}</button>`).join('');
 }
-function voiceConverse(btn) {
+/* ── 음성 대화: 꾹 눌러 말하기(가). 음성 화면 안에서만 텍스트+음성으로 주고받음 ── */
+let _voiceRecog = null, _voiceHolding = false, _voiceText = '';
+function setVoiceStatus(t){ const e = document.getElementById('voice-status'); if(e) e.textContent = t; }
+function setMicVisual(on){ const b = document.getElementById('voice-mic-btn'); if(!b) return; b.classList.toggle('voice-rec', on); const ic = b.querySelector('.material-symbols-outlined'); if(ic) ic.textContent = on ? 'graphic_eq' : 'mic'; }
+function voicePush(role, text){
+    const wrap = document.getElementById('voice-msgs'); if(!wrap) return;
+    if (role === 'user') {
+        wrap.insertAdjacentHTML('beforeend', `<div class="flex justify-end"><div class="max-w-[80%] bg-primary text-white text-sm px-3.5 py-2.5 rounded-2xl rounded-br-md leading-relaxed whitespace-pre-line">${escapeHtml(text)}</div></div>`);
+    } else {
+        const c = _chat.officer ? catById(_chat.officer.cat).color : '#2563eb';
+        const av = _chat.officer ? officerAvatar(_chat.officer, c) : `<div class="w-full h-full flex items-center justify-center text-white" style="background:#2563eb"><span class="material-symbols-outlined text-[16px]">smart_toy</span></div>`;
+        wrap.insertAdjacentHTML('beforeend', `<div class="flex items-end gap-2"><div class="w-7 h-7 rounded-lg overflow-hidden shrink-0">${av}</div><div class="max-w-[80%] bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 text-sm px-3.5 py-2.5 rounded-2xl rounded-bl-md leading-relaxed whitespace-pre-line">${escapeHtml(text)}</div></div>`);
+    }
+    wrap.scrollTop = wrap.scrollHeight;
+}
+function voiceStart(btn, ev){
+    if (ev) ev.preventDefault();
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const status = document.getElementById('voice-status');
-    const icon = btn.querySelector('.material-symbols-outlined');
-    if (!SR) { if(status) status.textContent='이 브라우저는 음성 입력을 지원하지 않아요'; return; }
-    if (_recOn) { try { _recog && _recog.stop(); } catch(e){} return; }
-    _recog = new SR(); _recog.lang='ko-KR'; _recog.interimResults=false; _recog.maxAlternatives=1;
-    _recog.onresult = e => { const t = e.results[0][0].transcript; const inp=document.getElementById('chat-input'); inp.value=t; if(status) status.textContent=`“${t}”\n답변을 준비하고 있어요…`; sendChatMessage(); };
-    _recog.onend = () => { _recOn=false; if(icon) icon.textContent='mic'; btn.classList.remove('!bg-rose-500'); };
-    _recog.onerror = () => { _recOn=false; if(status) status.textContent='음성 인식을 사용할 수 없어요 (마이크 권한 확인)'; if(icon) icon.textContent='mic'; btn.classList.remove('!bg-rose-500'); };
-    try { _recog.start(); _recOn=true; if(icon) icon.textContent='graphic_eq'; btn.classList.add('!bg-rose-500'); if(status) status.textContent='듣고 있어요…'; }
-    catch(e){ if(status) status.textContent='음성 인식을 시작할 수 없어요'; }
+    if (!SR) { setVoiceStatus('이 브라우저는 음성을 지원하지 않아요'); return; }
+    if (_voiceHolding) return;
+    _voiceText = '';
+    _voiceRecog = new SR(); _voiceRecog.lang = 'ko-KR'; _voiceRecog.interimResults = true; _voiceRecog.continuous = true;
+    _voiceRecog.onresult = e => { let t = ''; for (const r of e.results) t += r[0].transcript; _voiceText = t; setVoiceStatus('🔴 ' + (t || '말씀하세요…')); };
+    _voiceRecog.onend = () => { _voiceHolding = false; setMicVisual(false); const t = _voiceText.trim(); if (t) voiceSend(t); else setVoiceStatus('누르고 말씀하세요'); };
+    _voiceRecog.onerror = () => { _voiceHolding = false; setMicVisual(false); setVoiceStatus('마이크 권한을 허용해 주세요'); };
+    try { _voiceRecog.start(); _voiceHolding = true; setMicVisual(true); setVoiceStatus('듣고 있어요… 손을 떼면 전송됩니다'); }
+    catch(e){ setVoiceStatus('음성을 시작할 수 없어요'); }
+}
+function voiceStop(){ if (_voiceHolding && _voiceRecog) { try { _voiceRecog.stop(); } catch(e){} } }
+async function voiceSend(text){
+    voicePush('user', text);
+    _chat.messages.push({ role:'user', text });
+    setVoiceStatus('답변을 준비하고 있어요…');
+    let reply;
+    if (_chat.officer && _chat.officer.id === LIVE_LLM_OFFICER) {
+        const history = _chat.messages.filter(m => m.role==='user'||m.role==='ai').map(m => ({ role: m.role==='ai'?'assistant':'user', content: m.text }));
+        try { const r = await fetch(LIVE_LLM_API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ messages: history }) }); const j = await r.json(); reply = j.reply || '(응답을 불러오지 못했어요)'; }
+        catch(e){ reply = '지금은 AI 응답 서버에 연결할 수 없어요. 잠시 후 다시 시도해 주세요.'; }
+    } else {
+        reply = '말씀 감사합니다. (이 담당자는 시범 데모이며, 실제 AI 답변은 ‘대중교통 주무관’에서 제공됩니다.)';
+    }
+    _chat.messages.push({ role:'ai', text: reply });
+    voicePush('ai', reply);
+    setVoiceStatus('누르고 말씀하세요');
+    speakKo(reply);
 }
 
 /* 카테고리 칩 (입력창 위 고정) — 담당자면 분야 세부 카테고리, 자유질문이면 분야 */
@@ -1415,14 +1469,6 @@ function pushMsg(role, text) {
         wrap.insertAdjacentHTML('beforeend', `<div class="flex items-end gap-2"><div class="w-7 h-7 rounded-lg overflow-hidden shrink-0">${av}</div><div class="max-w-[78%]"><div class="bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 text-sm px-3.5 py-2.5 rounded-2xl rounded-bl-md leading-relaxed whitespace-pre-line">${escapeHtml(text)}</div><button onclick="likeAiMsg(${idx},this)" class="mt-1 ml-1 flex items-center gap-1 text-slate-400 active:scale-90 transition-transform"><span class="material-symbols-outlined text-[16px]">thumb_up</span><span class="ai-like-count text-[11px] font-bold">0</span><span class="text-[10px] ml-0.5">공감</span></button></div></div>`);
     }
     wrap.scrollTop = wrap.scrollHeight;
-    // 음성 대화 모드면 AI 답변을 음성 화면에도 표시 + 목소리로 읽어줌
-    if (role === 'ai') {
-        const vv = document.getElementById('chat-voice-view');
-        if (vv && vv.style.display === 'flex') {
-            const st = document.getElementById('voice-status'); if (st) st.textContent = text;
-            speakKo(text);
-        }
-    }
 }
 function escapeHtml(s){ return (s||'').replace(/[&<>]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
 // 음성 답변(TTS) — ElevenLabs 고품질 우선, 실패 시 브라우저 음성 폴백
