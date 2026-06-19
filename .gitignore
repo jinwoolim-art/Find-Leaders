@@ -148,3 +148,5 @@ scripts/.secrets/
 apps-script/.clasp.json
 apps-script/.deployment-id
 세종시민청/
+
+.claude/worktrees/
