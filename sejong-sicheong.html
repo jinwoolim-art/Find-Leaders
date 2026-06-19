@@ -116,9 +116,9 @@
         <main class="flex-1 px-4 pt-4 pb-28 space-y-5">
             <!-- 히어로 -->
             <section class="rounded-3xl bg-gradient-to-br from-primary to-blue-500 text-white p-6 shadow-xl shadow-primary/20">
-                <img src="assets/시민여상한글.png" alt="시민여상" class="h-5 w-auto mb-2"/>
+                <img src="assets/시민여상한글.png" alt="시민여상" class="w-full mb-1"/>
                 <img src="assets/시민여상한문.png" alt="視民如傷 — 시민의 삶을 내 상처를 돌보듯 하라" class="w-full mb-4"/>
-                <h2 class="text-2xl font-bold leading-snug">세종시민의 목소리,<br>시정이 답합니다</h2>
+                <h2 class="text-2xl font-bold leading-snug">시민의 삶을,<br>내 상처처럼 살피겠습니다</h2>
                 <p class="text-xs text-blue-100 mt-1.5">궁금한 점을 입력하면 AI가 바로 연결합니다</p>
                 <button onclick="startChat(null)" class="mt-5 w-full bg-white text-primary font-bold py-3.5 rounded-2xl flex items-center justify-between pl-5 pr-3 active:scale-[0.98] transition-transform">
                     <span>질문하고 담당자 연결받기</span>
@@ -188,10 +188,6 @@
             <div><h1 class="text-base font-bold">분야 선택</h1><p class="text-[11px] text-slate-400">어떤 분야에 대해 문의하시나요?</p></div>
         </header>
         <main class="flex-1 px-4 pt-4 pb-28">
-            <div class="rounded-2xl bg-primary/5 dark:bg-primary/10 border border-primary/15 p-3.5 mb-4 flex items-start gap-2">
-                <span class="material-symbols-outlined text-primary text-[20px]">lightbulb</span>
-                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">분야를 모르셔도 괜찮아요. 홈의 <b class="text-primary">질문·제안하기</b>에서 바로 입력하면 AI가 분야를 찾아드립니다.</p>
-            </div>
             <div id="category-grid" class="grid grid-cols-2 gap-3"></div>
         </main>
     </div>
@@ -203,7 +199,6 @@
             <div><h1 id="officers-title" class="text-base font-bold">담당 부서</h1><p id="officers-sub" class="text-[11px] text-slate-400">담당 부서와 담당자</p></div>
         </header>
         <main class="flex-1 px-4 pt-4 pb-28 space-y-4">
-            <div id="officers-dept-banner"></div>
             <div id="officers-list" class="space-y-3"></div>
         </main>
     </div>
@@ -1039,15 +1034,6 @@ function renderOfficers(catId) {
     const info = DEPT_INFO[catId];
     document.getElementById('officers-title').textContent = c.name;
     document.getElementById('officers-sub').textContent = info.bureau + ' 관할';
-    document.getElementById('officers-dept-banner').innerHTML = `
-        <div class="rounded-2xl bg-primary/5 dark:bg-primary/10 border border-primary/15 p-4">
-            <div class="flex items-center gap-2 mb-1">
-                <span class="material-symbols-outlined text-primary text-[20px]">${c.icon}</span>
-                <p class="font-bold text-slate-800 dark:text-slate-100">${info.bureau}</p>
-            </div>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400">${info.org}</p>
-            <p class="text-[11px] text-slate-400 mt-2 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">info</span>질문은 담당 부서에 접수되며 담당자가 배정됩니다.</p>
-        </div>`;
 
     const list = officersOfCat(catId);
     document.getElementById('officers-list').innerHTML = list.map(o => `
