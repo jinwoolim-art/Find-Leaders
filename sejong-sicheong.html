@@ -106,7 +106,7 @@
                 </div>
             </div>
             <div class="flex items-center gap-1.5">
-                <button onclick="toggleDark()" class="h-8 w-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                <button onclick="toggleDark()" class="hidden h-8 w-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                     <span class="material-symbols-outlined text-[20px] block dark:hidden">dark_mode</span>
                     <span class="material-symbols-outlined text-[20px] hidden dark:block">light_mode</span>
                 </button>
@@ -471,7 +471,9 @@ function toggleDark() {
     html.classList.toggle('light', !dark);
     localStorage.setItem('sc-dark', dark ? '1' : '0');
 }
-if (localStorage.getItem('sc-dark') === '1') { document.documentElement.classList.add('dark'); document.documentElement.classList.remove('light'); }
+/* 야간모드 비활성화 — 라이트 모드 고정 */
+document.documentElement.classList.remove('dark');
+localStorage.setItem('sc-dark', '0');
 
 
 /* =========================================================================
@@ -1871,7 +1873,6 @@ function renderMypage() {
         <div>
             <h3 class="font-bold text-sm text-slate-700 dark:text-slate-200 mb-3 px-1">설정</h3>
             <div class="rounded-2xl bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 overflow-hidden divide-y divide-slate-100 dark:divide-slate-700">
-                ${menu('dark_mode','다크 모드','toggleDark();renderMypage()', `<span class="text-xs font-bold ${dark?'text-primary':'text-slate-400'}">${dark?'켜짐':'꺼짐'}</span>`)}
                 ${menu('description','이용약관',"showToast('이용약관은 시범 이후 연결됩니다')")}
                 ${menu('shield','개인정보 처리방침',"showToast('개인정보 처리방침은 시범 이후 연결됩니다')")}
             </div>
