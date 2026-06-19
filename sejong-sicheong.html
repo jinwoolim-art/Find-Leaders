@@ -1044,7 +1044,7 @@ function renderOfficers(catId) {
                     <div class="flex items-center gap-1.5 flex-wrap">
                         <p class="font-bold text-slate-800 dark:text-slate-100">${o.name} ${o.title}</p>
                         ${o.lead ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-primary/10 text-primary">총괄담당</span>' : `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300">${o.field}</span>`}
-                        ${o.id===LIVE_LLM_OFFICER ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 flex items-center gap-0.5"><span class="material-symbols-outlined text-[12px]">smart_toy</span>실시간 AI</span>' : ''}
+                        ${isLiveLLM(o.id) ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 flex items-center gap-0.5"><span class="material-symbols-outlined text-[12px]">smart_toy</span>실시간 AI</span>' : ''}
                     </div>
                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${o.dept} ${o.team}</p>
                     <p class="text-[11px] text-slate-400 mt-1.5 leading-snug"><b class="text-slate-500 dark:text-slate-300">담당업무</b> ${o.workItems.map(w=>w.name).join(', ')}</p>
@@ -1316,7 +1316,7 @@ function _startChat(officerId, ctx) {
         document.getElementById('chat-title').textContent = `${officer.name} ${officer.title} · AI`;
         document.getElementById('chat-subtitle').textContent = `${officer.dept} ${officer.team}`;
     } else {
-        av.innerHTML = `<div class="w-full h-full flex items-center justify-center text-white" style="background:#2563eb"><span class="material-symbols-outlined text-[20px]">smart_toy</span></div>`;
+        av.innerHTML = `<img src="assets/시민청봇이미지.png" alt="시민청 AI" class="w-full h-full object-cover">`;
         document.getElementById('chat-title').textContent = '시민청 AI 안내';
         document.getElementById('chat-subtitle').textContent = '내용을 듣고 담당자에게 바로 연결해드려요';
     }
@@ -1388,7 +1388,7 @@ function voicePush(role, text){
         wrap.insertAdjacentHTML('beforeend', `<div class="flex justify-end"><div class="max-w-[80%] bg-primary text-white text-sm px-3.5 py-2.5 rounded-2xl rounded-br-md leading-relaxed whitespace-pre-line">${escapeHtml(text)}</div></div>`);
     } else {
         const c = _chat.officer ? catById(_chat.officer.cat).color : '#2563eb';
-        const av = _chat.officer ? officerAvatar(_chat.officer, c) : `<div class="w-full h-full flex items-center justify-center text-white" style="background:#2563eb"><span class="material-symbols-outlined text-[16px]">smart_toy</span></div>`;
+        const av = _chat.officer ? officerAvatar(_chat.officer, c) : `<img src="assets/시민청봇이미지.png" alt="시민청 AI" class="w-full h-full object-cover">`;
         wrap.insertAdjacentHTML('beforeend', `<div class="flex items-end gap-2"><div class="w-7 h-7 rounded-lg overflow-hidden shrink-0">${av}</div><div class="max-w-[80%] bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 text-sm px-3.5 py-2.5 rounded-2xl rounded-bl-md leading-relaxed whitespace-pre-line">${escapeHtml(text)}</div></div>`);
     }
     wrap.scrollTop = wrap.scrollHeight;
@@ -1412,7 +1412,7 @@ async function voiceSend(text){
     _chat.messages.push({ role:'user', text });
     setVoiceStatus('답변을 준비하고 있어요…');
     let reply;
-    if (_chat.officer && _chat.officer.id === LIVE_LLM_OFFICER) {
+    if (_chat.officer && isLiveLLM(_chat.officer.id)) {
         const history = _chat.messages.filter(m => m.role==='user'||m.role==='ai').map(m => ({ role: m.role==='ai'?'assistant':'user', content: m.text }));
         try { const r = await fetch(LIVE_LLM_API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ messages: history }) }); const j = await r.json(); reply = j.reply || '(응답을 불러오지 못했어요)'; }
         catch(e){ reply = '지금은 AI 응답 서버에 연결할 수 없어요. 잠시 후 다시 시도해 주세요.'; }
@@ -1448,7 +1448,7 @@ function pushMsg(role, text) {
     } else {
         const idx = _chat.messages.length - 1;
         const c = _chat.officer ? catById(_chat.officer.cat).color : '#2563eb';
-        const av = _chat.officer ? officerAvatar(_chat.officer, c) : `<div class="w-full h-full flex items-center justify-center text-white" style="background:#2563eb"><span class="material-symbols-outlined text-[16px]">smart_toy</span></div>`;
+        const av = _chat.officer ? officerAvatar(_chat.officer, c) : `<img src="assets/시민청봇이미지.png" alt="시민청 AI" class="w-full h-full object-cover">`;
         wrap.insertAdjacentHTML('beforeend', `<div class="flex items-end gap-2"><div class="w-7 h-7 rounded-lg overflow-hidden shrink-0">${av}</div><div class="max-w-[78%]"><div class="bg-white dark:bg-slate-800 border border-[#e7ebf3] dark:border-gray-700 text-sm px-3.5 py-2.5 rounded-2xl rounded-bl-md leading-relaxed whitespace-pre-line">${escapeHtml(text)}</div><button onclick="likeAiMsg(${idx},this)" class="mt-1 ml-1 flex items-center gap-1 text-slate-400 active:scale-90 transition-transform"><span class="material-symbols-outlined text-[16px]">thumb_up</span><span class="ai-like-count text-[11px] font-bold">0</span><span class="text-[10px] ml-0.5">공감</span></button></div></div>`);
     }
     wrap.scrollTop = wrap.scrollHeight;
@@ -1514,8 +1514,9 @@ function toggleVoiceInput(btn) {
     catch(e){ showToast('음성 인식을 시작할 수 없어요'); }
 }
 
-// 실제 LLM 연결 대상 (현재 PoC: 대중교통 주무관 1명만). 그 외는 stub.
-const LIVE_LLM_OFFICER = 'tr-lee';
+// 실제 LLM 연결 대상 (PoC: 교통·도로 담당자 3명 — 교통정책 팀장·대중교통 주무관·도로시설 주무관, 동일 페르소나). 그 외는 stub.
+const LIVE_LLM_OFFICERS = ['tr-lee','tr-park','tr-kim'];
+const isLiveLLM = (id) => LIVE_LLM_OFFICERS.includes(id);
 const LIVE_LLM_API = 'https://poc.illkkun.cloud/api/chat';
 
 async function sendChatMessage() {
@@ -1529,7 +1530,7 @@ async function sendChatMessage() {
     inp.value = '';
 
     // ── 대중교통 주무관: 실제 LLM 응답 ──
-    if (_chat.officer && _chat.officer.id === LIVE_LLM_OFFICER) {
+    if (_chat.officer && isLiveLLM(_chat.officer.id)) {
         showTyping();
         const history = _chat.messages
             .filter(m => m.role === 'user' || m.role === 'ai')
