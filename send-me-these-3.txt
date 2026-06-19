@@ -1,0 +1,788 @@
+Revised Plan v2 — All open questions resolved (2026-05-12)
+
+This is the consolidated, ready-to-implement design.
+Supersedes send-me-these-2.txt.
+
+═══════════════════════════════════════════════════════════════
+STATUS
+═══════════════════════════════════════════════════════════════
+
+  designLockedAt:               2026-05-12
+  remainingDecisions:           0
+  blockerCount:                 0
+  openQuestions:                0  (all answered)
+  estimatedImplementationDays:  7
+  readyToCode:                  true
+
+Key correction in v2:
+  Typecode 4 integrated cities (e.g. 청주시) require many-to-many
+  ElectoralDistrict ↔ Sigungu. v1 single sigunguId column was wrong.
+
+═══════════════════════════════════════════════════════════════
+1. ROOT CAUSE ANALYSIS
+═══════════════════════════════════════════════════════════════
+
+RC1  Exact-string sigungu match in resolveSigungu().
+     File: nec-importer.service.ts
+     Brittle for typecode 3 (NEC returns sggName=province name) and
+     for integrated cities (NEC sggName=청주시, but no local sigungu
+     named 청주시 — only 청주시상당구/서원구/흥덕구/청원구).
+
+RC2  No electoral-district entity. NEC's sggName like 종로구제1선거구
+     is stored nowhere. After import, emd filter cannot resolve to
+     district.
+
+RC3  emdId hardcoded null in processCandidate(). Avatar list's emd
+     filter falls back to sigungu/province, leaking neighboring
+     districts.
+
+RC4  if (existing) return "skipped" makes prior bad rows permanent.
+     New importer fixes do nothing for them.
+
+RC5  Two list endpoints disagree on null semantics.
+     - /avatars: strict-with-fallback
+     - /candidates: SQL "IS NULL OR =" (fully permissive)
+     Same filter returns different sets.
+
+RC6  Seed/dummy NEC rows never reconciled.
+     Owner observed Gapyeong-gun dummy rows. Survive every reimport
+     because of RC4.
+
+RC7  registDate/status not used for soft-disable.
+     NEC sends 사퇴 / 퇴장 / 등록무효 etc., but avatars stay PUBLIC.
+
+User-visible bug = RC1 + RC2 + RC3 (write-time) + RC5 (read-time).
+RC4 means fixing write path alone is insufficient — must repair existing.
+
+═══════════════════════════════════════════════════════════════
+2. SCHEMA PLAN (REVISED — many-to-many)
+═══════════════════════════════════════════════════════════════
+
+NEW ENTITIES:
+
+  // src/modules/election-district/entities/electoral-district.entity.ts
+  @Entity('electoral_district')
+  @Unique('uq_district_typecode_province_sgg',
+          ['sgTypecode', 'provinceId', 'sggName'])
+  export class ElectoralDistrict {
+    @PrimaryGeneratedColumn('uuid') id: string;
+    @Column() sgTypecode: '3' | '4' | '5' | '7' | '9';
+    @Column() provinceId: string;
+    @Column() sggName: string;
+       // "청주시", "종로구제1선거구", "종로구가선거구"
+    @Column({ type: 'int', default: 1 }) seatCount: number;
+    @Column({ nullable: true }) sgId: string | null;
+    @Column({ nullable: true }) sourceFile: string | null;
+    @ManyToOne(() => Province) province: Province;
+    // NOTE: sigunguId removed from v1 — see ElectoralDistrictSigungu
+  }
+
+  // src/modules/election-district/entities/electoral-district-sigungu.entity.ts
+  @Entity('electoral_district_sigungu')
+  @Unique('uq_district_sigungu', ['electoralDistrictId', 'sigunguId'])
+  @Index(['sigunguId'])
+  export class ElectoralDistrictSigungu {
+    @PrimaryGeneratedColumn('uuid') id: string;
+    @Column() electoralDistrictId: string;
+    @Column() sigunguId: string;
+    @ManyToOne(() => ElectoralDistrict, { onDelete: 'CASCADE' })
+      electoralDistrict: ElectoralDistrict;
+    @ManyToOne(() => Sigungu, { onDelete: 'CASCADE' }) sigungu: Sigungu;
+  }
+
+  // src/modules/election-district/entities/electoral-district-emd.entity.ts
+  @Entity('electoral_district_emd')
+  @Unique('uq_district_emd', ['electoralDistrictId', 'emdId'])
+  @Index(['emdId', 'sgTypecode'])
+  export class ElectoralDistrictEmd {
+    @PrimaryGeneratedColumn('uuid') id: string;
+    @Column() electoralDistrictId: string;
+    @Column() emdId: string;
+    @Column() sgTypecode: '4' | '5' | '7';
+    @ManyToOne(() => ElectoralDistrict, { onDelete: 'CASCADE' })
+      electoralDistrict: ElectoralDistrict;
+    @ManyToOne(() => Emd, { onDelete: 'CASCADE' }) emd: Emd;
+  }
+
+CANDIDATE PROFILE ADDITIONS:
+
+  @Column({ nullable: true }) electoralDistrictId: string | null;
+  @Column({ nullable: true }) sgNameRaw:  string | null;
+  @Column({ nullable: true }) sggNameRaw: string | null;
+  @Column({ nullable: true }) wiwNameRaw: string | null;
+  @ManyToOne(() => ElectoralDistrict, { nullable: true })
+    electoralDistrict: ElectoralDistrict | null;
+
+CARDINALITY:
+
+  sgTypecode 3 (governor)               0 sigungus / 0 emds per district
+  sgTypecode 4 simple (e.g. 종로구)       1 sigungu  / many emds
+  sgTypecode 4 integrated (e.g. 청주시)  N sigungus / many emds  ⭐
+  sgTypecode 5 (provincial council)     1 sigungu  / several emds
+  sgTypecode 7 (municipal council 가/나/다)
+                                         1 sigungu  / several emds
+  sgTypecode 9 (superintendent)         0 sigungus / 0 emds
+
+═══════════════════════════════════════════════════════════════
+3. IMPORTER PLAN — idempotent + repair-on-every-run
+═══════════════════════════════════════════════════════════════
+
+3.1 NEC-OWNED vs USER-AUTHORED — explicit boundary
+
+  // src/modules/nec-importer/nec-owned-fields.ts
+  export const NEC_OWNED_USER_FIELDS =
+    ['displayName', 'electionTypeId', 'necHuboid', 'lang'] as const;
+
+  export const NEC_OWNED_PROFILE_FIELDS = [
+    'provinceId', 'sigunguId', 'emdId',
+    'electoralDistrictId',
+    'sgNameRaw', 'sggNameRaw', 'wiwNameRaw',
+    'party', 'age',
+  ] as const;
+
+  export const USER_AUTHORED_PROFILE_FIELDS = [
+    'symbolNumber', 'slogan', 'greeting', 'privateAccessKey',
+  ] as const;
+
+  export const NEC_OWNED_AVATAR_FIELDS =
+    ['displayName', 'description'] as const;
+  export const NEC_NEVER_TOUCH_AVATAR_FIELDS = [
+    'visibilityStatus', 'verificationStatus',
+    'isActiveVersion', 'chatEnabled',
+    'avatarPrompt', 'avatarContent',
+  ] as const;
+
+Rule: importer upserts ONLY write NEC_OWNED_*. Avatar created if missing.
+
+3.2 NORMALIZER (revised for typecode 4 integrated cities)
+
+  // src/modules/nec-importer/normalize-nec-location.ts
+  export async function normalizeNecCandidateLocation(
+    candidate: NecCandidate,
+    province: Province,
+    deps: {
+      findDistrict: (q: DistrictQuery) =>
+        Promise<ElectoralDistrict | null>;
+      findSigungu: (provinceId: string, nameKo: string) =>
+        Promise<Sigungu | null>;
+    }
+  ): Promise<NormalizedLocation> {
+
+    const typecode = candidate.sgTypecode;
+
+    // 3 (governor) and 9 (superintendent) — province-only
+    if (typecode === '3' || typecode === '9') {
+      return {
+        provinceId: province.id,
+        sigunguId: null,
+        electoralDistrictId: null
+      };
+    }
+
+    // 4 (mayor/governor) — district may span multiple sigungus
+    if (typecode === '4') {
+      const district = candidate.sggName
+        ? await deps.findDistrict({
+            sgTypecode: '4',
+            provinceId: province.id,
+            sggName: candidate.sggName
+          })
+        : null;
+
+      // Sigungu resolution priority:
+      //   1. wiwName exact match (e.g. "청주시상당구") — most specific
+      //   2. sggName exact match (simple case, e.g. "종로구")
+      //   3. null
+      const sigunguName =
+        (candidate.wiwName && candidate.wiwName !== province.nameKo)
+          ? candidate.wiwName
+        : (candidate.sggName && candidate.sggName !== province.nameKo)
+          ? candidate.sggName
+        : null;
+
+      const sigungu = sigunguName
+        ? await deps.findSigungu(province.id, sigunguName)
+        : null;
+
+      return {
+        provinceId: province.id,
+        sigunguId: sigungu?.id ?? null,
+        electoralDistrictId: district?.id ?? null,
+      };
+    }
+
+    // 5, 7 (council) — district-level
+    if (typecode === '5' || typecode === '7') {
+      const district = candidate.sggName
+        ? await deps.findDistrict({
+            sgTypecode: typecode,
+            provinceId: province.id,
+            sggName: candidate.sggName
+          })
+        : null;
+
+      // For council races a district has exactly 1 sigungu, take it via
+      // electoral_district_sigungu (first row). Fallback to wiwName.
+      const sigungu = district
+        ? await deps.findFirstSigunguOfDistrict(district.id)
+            ?? (candidate.wiwName
+                  ? await deps.findSigungu(province.id, candidate.wiwName)
+                  : null)
+        : (candidate.wiwName
+            ? await deps.findSigungu(province.id, candidate.wiwName)
+            : null);
+
+      return {
+        provinceId: province.id,
+        sigunguId: sigungu?.id ?? null,
+        electoralDistrictId: district?.id ?? null,
+      };
+    }
+
+    return {
+      provinceId: province.id,
+      sigunguId: null,
+      electoralDistrictId: null
+    };
+  }
+
+Verified against samples you provided:
+  • 이장섭 (typecode 4, sggName=청주시, wiwName=청주시상당구)
+      → sigunguId = 청주시상당구.id
+      → electoralDistrictId = 청주시.id
+      → electoral_district_sigungu has 4 rows linking 청주시 to
+        [상당구, 서원구, 흥덕구, 청원구]
+
+  • 종로구 mayor (typecode 4, sggName=종로구, wiwName=종로구)
+      → sigunguId = 종로구.id
+      → electoralDistrictId = 종로구.id
+
+  • 윤선희 (typecode 5, sggName=종로구제1선거구, wiwName=종로구)
+      → sigunguId = 종로구.id
+      → electoralDistrictId = 종로구제1선거구.id
+
+  • 김형남 (typecode 3, sggName=서울특별시)
+      → sigunguId = null
+      → electoralDistrictId = null
+
+3.3 PROCESS CANDIDATE (idempotent)
+
+  async function processCandidate(c: NecCandidate, province: Province) {
+    const electionType = await resolveElectionType(c.sgTypecode);
+    const loc = await normalizeNecCandidateLocation(c, province, deps);
+
+    const user = await upsertUserByNecHuboid(c.huboid, {
+      displayName: c.name,
+      electionTypeId: electionType.id,
+      accountType: 'CANDIDATE',
+      electionRole: 'CANDIDATE',
+      necHuboid: c.huboid,
+      lang: 'ko',
+    });
+
+    await upsertCandidateProfileByUserId(user.id, {
+      provinceId:          loc.provinceId,
+      sigunguId:           loc.sigunguId,
+      emdId:               null,
+      electoralDistrictId: loc.electoralDistrictId,
+      sgNameRaw:           c.sgName  ?? null,
+      sggNameRaw:          c.sggName ?? null,
+      wiwNameRaw:          c.wiwName ?? null,
+      party:               c.party,
+      age:                 c.age,
+    });
+
+    await createNecAvatarIfMissing(user.id, {
+      displayName: c.name,
+      description: derivedDescription(c),
+    });
+
+    await syncEducationCareerFromNec(user.id, c);
+
+    // Status allowlist — only "등록" is active
+    const ACTIVE = new Set(['등록']);
+    if (!ACTIVE.has(c.status ?? '')) {
+      await softDisableNecAvatar(user.id, c.status);
+    } else {
+      await ensureNecAvatarVisibleIfWasAutoDisabled(user.id);
+    }
+
+    await reportImportRow({
+      huboid: c.huboid,
+      status: c.status,
+      normalized: loc,
+      raw: c
+    });
+  }
+
+CRITICAL: do not use repo.save(entity).
+Use targeted UPDATE + INSERT fallback:
+
+  async function upsertCandidateProfileByUserId(
+    userId: string,
+    fields: NecOwnedProfileFields
+  ) {
+    const r = await profileRepo.update(
+      { userId },
+      pick(fields, [...NEC_OWNED_PROFILE_FIELDS])
+    );
+    if (r.affected === 0) {
+      await profileRepo.insert({ userId, ...fields });
+    }
+  }
+
+3.4 ENV FLAG
+
+  // src/modules/nec-importer/nec.config.ts
+  electionId = process.env.NEC_IMPORT_ELECTION_ID || '20260603';
+  typecodes  = (process.env.NEC_IMPORT_TYPECODES || '3,4,5,7,9').split(',');
+  disabled   = process.env.NEC_IMPORTER_DISABLED === 'true';
+  apiKey     = process.env.NEC_API_KEY;
+
+  // onApplicationBootstrap:
+  if (this.config.disabled || !this.config.apiKey) {
+    this.logger.warn('NEC importer disabled or missing key');
+    return;
+  }
+  this.runImport();
+
+3.5 STATUS HANDLING (allowlist)
+
+  const ACTIVE_NEC_STATUSES = new Set(['등록']);
+
+  // Any of 사퇴 / 퇴장 / 등록무효 / any future unknown value:
+  if (!ACTIVE_NEC_STATUSES.has(candidate.status ?? '')) {
+    softDisableNecAvatar(user.id, candidate.status);
+  }
+
+3.6 IMPORT REPORT
+
+  // src/modules/nec-importer/import-report.entity.ts
+  @Entity('nec_import_report')
+  export class NecImportReport {
+    @PrimaryGeneratedColumn('uuid') id: string;
+    @Column() runStartedAt: Date;
+    @Column() huboid: string;
+    @Column() sgTypecode: string;
+    @Column({ nullable: true }) sggName: string | null;
+    @Column({ nullable: true }) wiwName: string | null;
+    @Column({ nullable: true }) status:  string | null;
+    @Column({ nullable: true }) resolvedSigunguId:  string | null;
+    @Column({ nullable: true }) resolvedDistrictId: string | null;
+    @Column() outcome:
+      | 'imported'
+      | 'updated'
+      | 'unmatched-district'
+      | 'unmatched-sigungu'
+      | 'unmatched-emd'
+      | 'soft-disabled';
+  }
+
+═══════════════════════════════════════════════════════════════
+4. FILTER PLAN — single strict matcher with district coverage
+═══════════════════════════════════════════════════════════════
+
+4.1 SHARED MATCHER
+
+  // src/modules/candidate-filter/public-candidate-filter.ts
+  export async function profileMatchesPublicFilter(
+    profile: CandidateProfileForFilter,
+    filter: PublicListFilter,
+    deps: {
+      districtCoversEmd:
+        (districtId: string, emdId: string) => Promise<boolean>;
+      districtCoversSigungu:
+        (districtId: string, sigunguId: string) => Promise<boolean>;
+    }
+  ): Promise<boolean> {
+    if (profile.electionTypeId !== filter.electionTypeId) return false;
+    if (profile.provinceId !== filter.provinceId) return false;
+
+    if (filter.emdId) {
+      if (!profile.electoralDistrictId) return false;
+      return await deps.districtCoversEmd(
+        profile.electoralDistrictId, filter.emdId
+      );
+    }
+
+    if (filter.sigunguId) {
+      // Path A: district coverage — required for integrated cities
+      //         where profile.sigunguId is a sub-sigungu of a wider district.
+      if (profile.electoralDistrictId) {
+        const covered = await deps.districtCoversSigungu(
+          profile.electoralDistrictId, filter.sigunguId
+        );
+        if (covered) return true;
+      }
+      // Path B: direct match — for manual candidates without district
+      return profile.sigunguId === filter.sigunguId;
+    }
+
+    return true;
+  }
+
+4.2 AVATAR ENDPOINT
+
+  /api/v1/avatars  (avatar.service.ts listPublicApproved)
+  - drop inline avatarLocationMatches
+  - call profileMatchesPublicFilter per row
+  - keep electionType-active check separately
+
+4.3 CANDIDATE DIRECTORY ENDPOINT
+
+  /api/v1/candidates  (user.service.ts listPublicCandidateDirectory)
+  - remove all "IS NULL OR =" patterns
+  - WHERE:
+      candidate.electionTypeId = :electionTypeId
+      cp.provinceId            = :provinceId
+
+      if (sigunguId && !emdId):
+        WHERE (
+          EXISTS (
+            SELECT 1 FROM electoral_district_sigungu eds
+             WHERE eds.electoralDistrictId = cp.electoralDistrictId
+               AND eds.sigunguId = :sigunguId
+          )
+          OR cp.sigunguId = :sigunguId
+        )
+
+      if (emdId):
+        INNER JOIN electoral_district_emd ede
+          ON ede.electoralDistrictId = cp.electoralDistrictId
+         AND ede.emdId = :emdId
+
+4.4 CONSISTENCY INVARIANT (codified as test)
+
+  For any (electionTypeId, provinceId, sigunguId?, emdId?) query,
+  /api/v1/avatars and /api/v1/candidates MUST return the same set of
+  candidate IDs (after filtering by PUBLIC + PUBLISHED + active version).
+
+═══════════════════════════════════════════════════════════════
+5. MIGRATION PLAN
+═══════════════════════════════════════════════════════════════
+
+ORDER:
+  M1   2026-05-12-01-create-electoral-district.ts
+  M2   2026-05-12-02-create-electoral-district-emd.ts
+  M2b  2026-05-12-02b-create-electoral-district-sigungu.ts   ⭐ NEW
+  M3   2026-05-12-03-add-raw-nec-fields-to-candidate-profile.ts
+  M4   2026-05-12-04-seed-electoral-districts-from-excel.ts
+       (data migration; seeds ed + eds + ede)
+  M5   2026-05-12-05-repair-nec-candidate-locations.ts
+       (data migration; user.necHuboid IS NOT NULL only)
+  M6   2026-05-12-06-detect-orphan-nec-candidates.ts
+       (optional; report only, no auto-delete in v1)
+
+5.1 M4 — Excel ingestion
+
+  Reads ai-avatar-core/scripts/seed-data/election-2026-06-03/*.xlsx
+  Idempotent.
+
+  Stable filenames:
+    sd-uihoe.xlsx       (sgTypecode=5, 시·도의회의원선거)
+    gusigun-uihoe.xlsx  (sgTypecode=7, 구·시·군의회의원선거)
+    gusigun-jang.xlsx   (sgTypecode=4, 구·시·군의_장선거)
+
+  Steps per file:
+    1. Each sheet name = province nameKo → map to province.id.
+    2. Header row is row 4. Columns:
+         구시군명 | 선거구명 (sggName) | 정수 | 읍면동명 (CSV emds)
+    3. For each row:
+       a. Normalize sigunguName via normalizeKoreanName().
+       b. Resolve sigunguId by (provinceId, normalized nameKo).
+       c. Upsert electoral_district keyed by
+            (sgTypecode, provinceId, sggName).
+       d. Upsert electoral_district_sigungu keyed by
+            (electoralDistrictId, sigunguId).
+       e. For integrated city typecode 4 (e.g. 청주시), some Excel rows
+          may have districtName blank (continuation of previous district).
+          Use the last-seen districtName until a new one appears.
+          The result: one district 청주시 linked to 4 sigungus.
+       f. Split 읍면동명 by ',' and normalize each.
+       g. Resolve emd by (sigunguId, normalized emd.nameKo).
+       h. Upsert electoral_district_emd keyed by
+            (electoralDistrictId, emdId).
+       i. If emd not found → nec_import_report outcome=unmatched-emd.
+
+  Wrap per sheet in a transaction. Idempotent on rerun.
+
+5.2 M5 — NEC repair (scoped to user.necHuboid IS NOT NULL)
+
+  FOR EACH user u WHERE u.necHuboid IS NOT NULL:
+    cp = profile for u
+    IF cp.electoralDistrictId IS NULL:
+      district = find_district by
+        (sgTypecode of u.electionType, cp.provinceId, cp.sggNameRaw)
+      IF district found:
+        cp.electoralDistrictId = district.id
+        IF cp.sigunguId IS NULL:
+          cp.sigunguId = first_sigungu_of(district) or null
+      ELSE:
+        report unmatched-district
+    IF cp.sigunguId IS NULL AND district found AND
+       district has exactly 1 covered sigungu:
+      cp.sigunguId = that sigungu
+
+    Never touch: symbolNumber, slogan, greeting, privateAccessKey,
+                 avatar visibility/content.
+
+  Rows where sggNameRaw is still null (imported before §2 fields existed)
+  are re-derived on the NEXT importer cycle, now that the new
+  importer §3.3 writes raw fields every upsert. M5 does only what it
+  can with current state.
+
+5.3 M6 — orphan detection (report only)
+
+  FOR EACH user u WHERE u.necHuboid IS NOT NULL:
+    IF last successful importer run did NOT touch u
+       AND that run covered (u.sgTypecode, u.provinceId):
+      Mark u as 'needs investigation'. DO NOT auto-delete.
+
+  Auto-delete deferred to a future migration after 7+ days of clean runs.
+
+5.4 OLD MIGRATION (2000000000000-RepairNecCouncilCandidates.ts)
+
+  Leave it. Add a top-of-file comment:
+    // Superseded by 2026-05-12-05-repair-nec-candidate-locations.ts.
+
+═══════════════════════════════════════════════════════════════
+6. EMD NAME NORMALIZATION
+═══════════════════════════════════════════════════════════════
+
+  // src/modules/location/normalize-name.ts
+  export function normalizeKoreanName(raw: string | null | undefined): string {
+    if (!raw) return '';
+    return String(raw).normalize('NFC').replace(/\s+/g, '').trim();
+  }
+
+Strict resolution rule:
+  Always resolve EMD by (sigunguId + normalized emd.nameKo).
+  NEVER global by name only — some names repeat across Korea
+  (e.g. 강남동 exists more than once).
+
+If unmatched after first pass → report outcome='unmatched-emd'.
+Optional second pass with looser variants can be added later.
+
+═══════════════════════════════════════════════════════════════
+7. TEST PLAN
+═══════════════════════════════════════════════════════════════
+
+7.1 normalize-nec-location.spec.ts
+  - typecode 3, sggName=province → { sigunguId: null, districtId: null }
+  - typecode 4 simple (sggName=종로구, wiwName=종로구) → both resolve
+  - typecode 4 INTEGRATED (sggName=청주시, wiwName=청주시상당구)
+      → sigunguId = 청주시상당구, districtId = 청주시
+  - typecode 5, sggName=종로구제1선거구 → district + sigungu via district
+  - typecode 5, sggName unmatched → wiwName fallback for sigungu
+  - typecode 7, sggName=종로구가선거구 → district resolved
+  - typecode 9, province-only behavior
+  - ambiguous sigungu name across provinces (남구) → only same-province
+
+7.2 nec-importer.service.spec.ts (mocked NecApiClient)
+  - first run creates rows
+  - second run is idempotent (no duplicate users)
+  - existing necHuboid with stale null sigunguId → second run repairs
+  - manual candidate (necHuboid=null) NEVER touched
+  - status='사퇴' → avatar visibilityStatus moves to PRIVATE
+  - status='등록무효' → also disabled
+  - rerun with status='등록' → restored
+  - user-authored slogan/greeting/symbolNumber not overwritten
+
+7.3 public-candidate-filter.spec.ts
+  - profile w/ districtId, filter emdId in district → match
+  - profile w/ districtId, filter emdId NOT in district → no match
+  - profile w/ null districtId, filter emdId → no match (strict)
+  - profile w/ sigunguId=X, filter sigunguId=Y → no match (direct)
+  - INTEGRATED CITY: profile sigunguId=청주시상당구, districtId=청주시,
+        filter sigunguId=청주시서원구 → match via district coverage
+  - typecode 3 profile (sigunguId=null), filter province-only → match
+  - typecode 3 profile, filter sigunguId set → no match
+
+7.4 e2e test: public-listing-consistency.e2e-spec.ts
+  - seed 5+ candidates spanning typecodes 3, 4, 5, 7 across 대구·서울·부산·충북
+  - for each filter combination, hit /api/v1/avatars AND /api/v1/candidates
+  - assert SAME candidateId set returned
+  - include 3 broken cases from owner's audit (see §8.4)
+  - include integrated city case (AT5)
+
+7.5 election-district seed test
+  - run M4 against fixture xlsx (1 province sheet, 3 districts, 7 emds)
+  - assert correct rows in ed / eds / ede
+  - second seed run idempotent
+  - unmatched emd recorded, not thrown
+
+═══════════════════════════════════════════════════════════════
+8. QA RUNBOOK
+═══════════════════════════════════════════════════════════════
+
+8.1 Pre-deploy
+  - Owner places 3 Excel files at:
+      ai-avatar-core/scripts/seed-data/election-2026-06-03/
+        sd-uihoe.xlsx
+        gusigun-uihoe.xlsx
+        gusigun-jang.xlsx
+  - Source files in nec-api-test/data/ — copy or symlink.
+  - Deploy feature branch with M1, M2, M2b, M3, M4, M5, M6.
+
+8.2 Deploy
+  yarn build
+  yarn migrate              # runs M1..M6 in order
+  yarn start:prod
+  # Set NEC_IMPORTER_DISABLED=true to skip first-boot run if needed.
+
+  Check M4 results:
+    SELECT outcome, COUNT(*) FROM nec_import_report
+     WHERE runStartedAt = (SELECT MAX(runStartedAt) FROM nec_import_report)
+     GROUP BY outcome;
+
+  Fix any unmatched-emd / unmatched-district before continuing.
+
+8.3 Trigger one importer run
+  yarn ts-node scripts/run-nec-import-once.ts
+  # or POST /api/v1/admin/nec-importer/run if exposed
+
+  Check:
+    SELECT cp.sggNameRaw, COUNT(*) FROM candidate_profile cp
+     JOIN "user" u ON u.id = cp.userId
+     WHERE u.necHuboid IS NOT NULL AND cp.electoralDistrictId IS NULL
+     GROUP BY cp.sggNameRaw
+     ORDER BY 2 DESC;
+
+  Expected: only typecode 3 and 9 candidates have NULL districtId.
+
+8.4 Acceptance tests — hit BOTH endpoints, assert identical sets
+
+  AT1  electionType=nec-5, province=대구광역시,
+       sigungu=남구, emd=이천동
+       → only 남구제1선거구 council (no 달서구)
+
+  AT2  electionType=nec-5, province=강원특별자치도,
+       sigungu=강릉시, emd=강남동
+       → only 강릉시제1선거구 (no 춘천·원주·홍천)
+
+  AT3  electionType=nec-5, province=부산광역시,
+       sigungu=남구, emd=용당동
+       → only 남구제1선거구 (no 사하·연제)
+
+  AT4  electionType=nec-4, province=경기도, sigungu=가평군
+       → empty OR only 등록 status candidates (no 신상진/신현철/이상일/이민근)
+
+  AT5  electionType=nec-4, province=충청북도, sigungu=청주시서원구
+       → includes Cheongju mayor candidates whose profile.sigunguId
+         is 청주시상당구, matched via electoral_district_sigungu coverage
+
+8.5 Rollback
+  M1-M3   safe (additive)
+  M4      re-runnable
+  M5      idempotent
+  M6      reports only
+
+  If problem post-deploy: revert app code, keep migrations.
+
+═══════════════════════════════════════════════════════════════
+9. CHANGED FILES SUMMARY
+═══════════════════════════════════════════════════════════════
+
+ADDED
+  src/modules/election-district/electoral-district.entity.ts
+  src/modules/election-district/electoral-district-sigungu.entity.ts  ⭐ NEW
+  src/modules/election-district/electoral-district-emd.entity.ts
+  src/modules/election-district/election-district.module.ts
+  src/modules/election-district/election-district.repository.ts
+  src/modules/nec-importer/normalize-nec-location.ts
+  src/modules/nec-importer/nec-owned-fields.ts
+  src/modules/nec-importer/import-report.entity.ts
+  src/modules/candidate-filter/public-candidate-filter.ts
+  src/modules/location/normalize-name.ts
+  src/migrations/2026-05-12-01-create-electoral-district.ts
+  src/migrations/2026-05-12-02-create-electoral-district-emd.ts
+  src/migrations/2026-05-12-02b-create-electoral-district-sigungu.ts  ⭐ NEW
+  src/migrations/2026-05-12-03-add-raw-nec-fields-to-candidate-profile.ts
+  src/migrations/2026-05-12-04-seed-electoral-districts-from-excel.ts
+  src/migrations/2026-05-12-05-repair-nec-candidate-locations.ts
+  src/migrations/2026-05-12-06-detect-orphan-nec-candidates.ts
+  scripts/seed-data/election-2026-06-03/sd-uihoe.xlsx
+  scripts/seed-data/election-2026-06-03/gusigun-uihoe.xlsx
+  scripts/seed-data/election-2026-06-03/gusigun-jang.xlsx
+  scripts/run-nec-import-once.ts
+  test/e2e/public-listing-consistency.e2e-spec.ts
+
+MODIFIED
+  src/modules/nec-importer/nec-importer.service.ts
+    (idempotent upsert flow + status allowlist + env flag)
+  src/modules/nec-importer/nec-api.client.ts
+    (parse sgName if present)
+  src/modules/nec-importer/nec.config.ts
+    (add NEC_IMPORTER_DISABLED)
+  src/modules/avatar/avatar.service.ts
+    (use profileMatchesPublicFilter)
+  src/modules/user/user.service.ts
+    (rewrite listPublicCandidateDirectory WHERE; districtCoversSigungu)
+  src/modules/user/entities/candidate-profile.entity.ts
+    (add 4 new fields)
+  src/modules/location/location.module.ts
+    (export Sigungu/Emd findByName helpers)
+
+UNCHANGED
+  src/modules/election-type/election-type.entity.ts
+  src/modules/location/entities/{province,sigungu,emd}.entity.ts
+  src/migrations/2000000000000-RepairNecCouncilCandidates.ts
+    (add top-of-file comment noting M5 supersedes)
+
+═══════════════════════════════════════════════════════════════
+10. IMPLEMENTATION ORDER (7 days)
+═══════════════════════════════════════════════════════════════
+
+Day 1
+  - M1, M2, M2b, M3 schema migrations
+  - normalizeKoreanName utility + tests
+  - NecImporterConfig env flag wiring
+
+Day 2
+  - M4 Excel seed (parses 4/5/7 files)
+    - emit ElectoralDistrict
+    - emit ElectoralDistrictSigungu (CRITICAL for typecode 4)
+    - emit ElectoralDistrictEmd
+    - report unmatched to nec_import_report
+
+Day 3
+  - normalizeNecCandidateLocation per §3.2
+  - upsertUserByNecHuboid + upsertCandidateProfileByUserId
+    (targeted UPDATE, never repo.save)
+  - status allowlist + softDisableNecAvatar
+  - import report wiring
+
+Day 4
+  - M5 repair migration
+  - profileMatchesPublicFilter with districtCoversSigungu / Emd
+  - avatar.service refactor (use shared matcher)
+  - user.service SQL rewrite
+
+Day 5
+  - normalizer unit tests
+  - importer integration tests
+  - filter unit tests (including AT5 integrated city)
+  - cross-endpoint e2e tests
+
+Day 6
+  - QA runbook on sandbox
+  - fix unmatched-emd from M4 dry run
+  - regression sweep on manual candidates
+
+Day 7 (buffer)
+  - PR review cycle, doc updates, ship
+
+═══════════════════════════════════════════════════════════════
+META-QUESTION FOR THE OWNER
+═══════════════════════════════════════════════════════════════
+
+Who is implementing this — Iran dev or owner's side via PR contribution?
+
+The plan is the same either way, but only ONE party should pick up
+Day 1 to avoid stepping on each other's commits.
+
+Please confirm before Day 1 starts.
+
+═══════════════════════════════════════════════════════════════
+END OF v2 PLAN
+═══════════════════════════════════════════════════════════════

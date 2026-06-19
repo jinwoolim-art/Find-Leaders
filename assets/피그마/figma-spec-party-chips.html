@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Party Filter Chip — Spec</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+  body{background:#f8fafc;color:#0f172a;padding:48px 32px}
+  .container{max-width:980px;margin:0 auto}
+  h1{font-size:24px;font-weight:900;margin-bottom:6px;letter-spacing:-.01em}
+  .lead{font-size:13px;color:#64748b;margin-bottom:36px}
+  h2{font-size:14px;font-weight:900;color:#0f172a;margin:32px 0 12px;letter-spacing:.04em}
+  h3{font-size:11px;font-weight:800;color:#64748b;margin:18px 0 8px;letter-spacing:.06em;text-transform:uppercase}
+
+  .panel{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:24px 24px;margin-bottom:14px}
+
+  .chip-row{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;padding:4px 0}
+  .chip{flex-shrink:0;padding:6px 12px;border-radius:9999px;font-size:12px;font-weight:700;border:1px solid;cursor:default;white-space:nowrap}
+
+  /* Active style */
+  .chip.active{color:#fff;box-shadow:0 2px 6px currentColor}
+
+  /* Color tokens (used as both bg-active and text-inactive) */
+  .c-all       { --c:#7C3AED }
+  .c-democratic{ --c:#004EA2 }
+  .c-peoples   { --c:#E6002D }
+  .c-justice   { --c:#D4A017 }
+  .c-progress  { --c:#6B21A8 }
+  .c-green     { --c:#009933 }
+  .c-basic     { --c:#00BFA5 }
+  .c-new_era   { --c:#FF6600 }
+  .c-independent{ --c:#666666 }
+  .c-other     { --c:#999999 }
+
+  .chip{ color:var(--c); border-color:color-mix(in srgb, var(--c) 35%, transparent); background:#fff }
+  .chip.active{ color:#fff; background:var(--c); border-color:var(--c); box-shadow:0 2px 6px color-mix(in srgb, var(--c) 35%, transparent) }
+
+  /* Color swatches */
+  .swatches{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .sw{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fff;border:1px solid #e2e8f0;border-radius:8px}
+  .sw-dot{width:24px;height:24px;border-radius:6px;flex-shrink:0;border:1px solid rgba(0,0,0,.06)}
+  .sw-info{flex:1;min-width:0}
+  .sw-name{font-size:12.5px;font-weight:800;color:#0f172a}
+  .sw-key{font-size:10.5px;color:#64748b;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;margin-top:1px}
+  .sw-hex{font-size:10.5px;color:#475569;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:700}
+
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;font-size:12px}
+  th,td{padding:9px 12px;text-align:left;border-bottom:1px solid #f1f5f9}
+  th{background:#f8fafc;font-size:10.5px;color:#475569;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+  tr:last-child td{border-bottom:none}
+  td .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .meta-key{font-size:10.5px;font-weight:800;color:#64748b;letter-spacing:.06em;margin-bottom:4px}
+  .meta-val{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;color:#0f172a;font-weight:700}
+
+  .footer{margin-top:32px;font-size:11px;color:#94a3b8;text-align:center}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Party Filter Chip · 정당 구분 칩</h1>
+  <p class="lead">Ilkkun (일꾼을묻다) — V3 후보자 리스트 페이지 상단에 노출되는 정당 필터 컴포넌트. 한국어 / 영어 두 버전.</p>
+
+  <h2>① 한국어 (KO)</h2>
+
+  <div class="panel">
+    <h3>State 1 · Default — "전체" Active</h3>
+    <div class="chip-row">
+      <button class="chip active c-all">전체</button>
+      <button class="chip c-democratic">더불어민주당</button>
+      <button class="chip c-peoples">국민의힘</button>
+      <button class="chip c-justice">정의당</button>
+      <button class="chip c-progress">진보당</button>
+      <button class="chip c-green">녹색당</button>
+      <button class="chip c-basic">기본소득당</button>
+      <button class="chip c-new_era">시대전환</button>
+      <button class="chip c-independent">무소속</button>
+      <button class="chip c-other">기타</button>
+    </div>
+
+    <h3 style="margin-top:24px">State 2 · "더불어민주당" Active</h3>
+    <div class="chip-row">
+      <button class="chip c-all">전체</button>
+      <button class="chip active c-democratic">더불어민주당</button>
+      <button class="chip c-peoples">국민의힘</button>
+      <button class="chip c-justice">정의당</button>
+      <button class="chip c-progress">진보당</button>
+      <button class="chip c-green">녹색당</button>
+      <button class="chip c-basic">기본소득당</button>
+      <button class="chip c-new_era">시대전환</button>
+      <button class="chip c-independent">무소속</button>
+      <button class="chip c-other">기타</button>
+    </div>
+
+    <h3 style="margin-top:24px">State 3 · "국민의힘" Active</h3>
+    <div class="chip-row">
+      <button class="chip c-all">전체</button>
+      <button class="chip c-democratic">더불어민주당</button>
+      <button class="chip active c-peoples">국민의힘</button>
+      <button class="chip c-justice">정의당</button>
+      <button class="chip c-progress">진보당</button>
+      <button class="chip c-green">녹색당</button>
+      <button class="chip c-basic">기본소득당</button>
+      <button class="chip c-new_era">시대전환</button>
+      <button class="chip c-independent">무소속</button>
+      <button class="chip c-other">기타</button>
+    </div>
+  </div>
+
+  <h2>② English (EN)</h2>
+
+  <div class="panel">
+    <h3>State 1 · Default — "All" Active</h3>
+    <div class="chip-row">
+      <button class="chip active c-all">All</button>
+      <button class="chip c-democratic">Democratic</button>
+      <button class="chip c-peoples">People Power</button>
+      <button class="chip c-justice">Justice</button>
+      <button class="chip c-progress">Progressive</button>
+      <button class="chip c-green">Green</button>
+      <button class="chip c-basic">Basic Income</button>
+      <button class="chip c-new_era">New Era</button>
+      <button class="chip c-independent">Independent</button>
+      <button class="chip c-other">Others</button>
+    </div>
+
+    <h3 style="margin-top:24px">State 2 · "Democratic" Active</h3>
+    <div class="chip-row">
+      <button class="chip c-all">All</button>
+      <button class="chip active c-democratic">Democratic</button>
+      <button class="chip c-peoples">People Power</button>
+      <button class="chip c-justice">Justice</button>
+      <button class="chip c-progress">Progressive</button>
+      <button class="chip c-green">Green</button>
+      <button class="chip c-basic">Basic Income</button>
+      <button class="chip c-new_era">New Era</button>
+      <button class="chip c-independent">Independent</button>
+      <button class="chip c-other">Others</button>
+    </div>
+
+    <h3 style="margin-top:24px">State 3 · "People Power" Active</h3>
+    <div class="chip-row">
+      <button class="chip c-all">All</button>
+      <button class="chip c-democratic">Democratic</button>
+      <button class="chip active c-peoples">People Power</button>
+      <button class="chip c-justice">Justice</button>
+      <button class="chip c-progress">Progressive</button>
+      <button class="chip c-green">Green</button>
+      <button class="chip c-basic">Basic Income</button>
+      <button class="chip c-new_era">New Era</button>
+      <button class="chip c-independent">Independent</button>
+      <button class="chip c-other">Others</button>
+    </div>
+  </div>
+
+  <h2>③ Color tokens · 색상 토큰</h2>
+
+  <div class="swatches">
+    <div class="sw"><div class="sw-dot" style="background:#7C3AED"></div><div class="sw-info"><div class="sw-name">전체 · All</div><div class="sw-key">all</div></div><div class="sw-hex">#7C3AED</div></div>
+    <div class="sw"><div class="sw-dot" style="background:#004EA2"></div><div class="sw-info"><div class="sw-name">더불어민주당 · Democratic</div><div class="sw-key">democratic</div></div><div class="sw-hex">#004EA2</div></div>
+    <div class="sw"><div class="sw-dot" style="background:#E6002D"></div><div class="sw-info"><div class="sw-name">국민의힘 · People Power</div><div class="sw-key">peoples</div></div><div class="sw-hex">#E6002D</div></div>
+    <div class="sw"><div class="sw-dot" style="background:#D4A017"></div><div class="sw-info"><div class="sw-name">정의당 · Justice</div><div class="sw-key">justice</div></div><div class="sw-hex">#D4A017</div></div>
+    <div class="sw"><div class="sw-dot" style="background:#6B21A8"></div><div class="sw-info"><div class="sw-name">진보당 · Progressive</div><div class="sw-key">progress</div></div><div class="sw-hex">#6B21A8</div></div>
+    <div class="sw"><div class="sw-dot" style="background:#009933"></div><div class="sw-info"><div class="sw-name">녹색당 · Green</div><div class="sw-key">green</div></div><div class="sw-hex">#009933</div></div>
+    <div class="sw"><div class="sw-dot" style="background:#00BFA5"></div><div class="sw-info"><div class="sw-name">기본소득당 · Basic Income</div><div class="sw-key">basic</div></div><div class="sw-hex">#00BFA5</div></div>
+    <div class="sw"><div class="sw-dot" style="background:#FF6600"></div><div class="sw-info"><div class="sw-name">시대전환 · New Era</div><div class="sw-key">new_era</div></div><div class="sw-hex">#FF6600</div></div>
+    <div class="sw"><div class="sw-dot" style="background:#666666"></div><div class="sw-info"><div class="sw-name">무소속 · Independent</div><div class="sw-key">independent</div></div><div class="sw-hex">#666666</div></div>
+    <div class="sw"><div class="sw-dot" style="background:#999999"></div><div class="sw-info"><div class="sw-name">기타 · Others</div><div class="sw-key">other</div></div><div class="sw-hex">#999999</div></div>
+  </div>
+
+  <h2>④ Style spec · 스타일 명세</h2>
+
+  <table>
+    <thead><tr><th>Property</th><th>Active</th><th>Inactive</th></tr></thead>
+    <tbody>
+      <tr><td>Background</td><td><span class="mono">var(--c)</span></td><td><span class="mono">#FFFFFF</span></td></tr>
+      <tr><td>Text color</td><td><span class="mono">#FFFFFF</span></td><td><span class="mono">var(--c)</span></td></tr>
+      <tr><td>Border</td><td><span class="mono">1px solid var(--c)</span></td><td><span class="mono">1px solid var(--c) @ 35%</span></td></tr>
+      <tr><td>Box shadow</td><td><span class="mono">0 2px 6px var(--c) @ 35%</span></td><td>none</td></tr>
+      <tr><td>Padding</td><td colspan="2"><span class="mono">6px 12px</span></td></tr>
+      <tr><td>Border radius</td><td colspan="2"><span class="mono">9999px (full)</span></td></tr>
+      <tr><td>Font size</td><td colspan="2"><span class="mono">12px</span></td></tr>
+      <tr><td>Font weight</td><td colspan="2"><span class="mono">700 (bold)</span></td></tr>
+      <tr><td>Gap between chips</td><td colspan="2"><span class="mono">8px</span></td></tr>
+      <tr><td>Container padding</td><td colspan="2"><span class="mono">16px 16px 4px 16px</span></td></tr>
+      <tr><td>Container overflow</td><td colspan="2">horizontal scroll, no wrap, scrollbar hidden</td></tr>
+    </tbody>
+  </table>
+
+  <h2>⑤ Behavior · 동작</h2>
+
+  <div class="grid-2">
+    <div class="panel">
+      <div class="meta-key">Single select</div>
+      <div class="meta-val">Only one chip is Active at any time. Clicking another chip switches Active state.</div>
+    </div>
+    <div class="panel">
+      <div class="meta-key">All chip</div>
+      <div class="meta-val">Resets filter — all candidate cards visible.</div>
+    </div>
+    <div class="panel">
+      <div class="meta-key">Filter logic</div>
+      <div class="meta-val">card[data-party] === chip[data-party-key], else card.style.display = 'none'</div>
+    </div>
+    <div class="panel">
+      <div class="meta-key">Initial state</div>
+      <div class="meta-val">First chip ("전체" / "All") is Active on page load and on segment change.</div>
+    </div>
+  </div>
+
+  <p class="footer">Ilkkun · V3 prototype · 2026-05-05</p>
+</div>
+</body>
+</html>
+</parameter>
+</invoke>

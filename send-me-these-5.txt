@@ -1,0 +1,98 @@
+Yes, gubernatorial candidates (sgTypecode=3) are strictly province-level.
+
+==========================================
+Korean Election Structure for sgTypecode=3
+==========================================
+
+There is exactly ONE governor/mayor election per 시·도, covering the
+entire province. The electoral district = the whole province.
+
+17 시·도 with one governor each:
+  - 7 광역시: 서울특별시장, 부산광역시장, 대구광역시장, 인천광역시장,
+              광주광역시장, 대전광역시장, 울산광역시장
+  - 1 특별자치시장: 세종특별자치시장
+  - 1 특별자치도지사: 제주특별자치도지사
+  - 2 특별자치도지사: 강원특별자치도지사, 전북특별자치도지사
+  - 6 도지사: 경기, 충북, 충남, 전남, 경북, 경남
+
+There are NO sub-district elections for governor:
+  - no sigungu-level sub-race
+  - no emd-level sub-race
+  - one district = entire province
+
+==========================================
+Implication for your importer
+==========================================
+
+For sgTypecode=3, NEC returns:
+  - sdName  = "광주광역시" (or similar)
+  - sggName = "광주광역시" (district name = province name itself)
+  - wiwName = null
+  - addr    = candidate's residential address (NOT the constituency)
+
+Sample we already saw:
+  {
+    sgTypecode: "3",
+    sdName:     "서울특별시",
+    sggName:    "서울특별시",   <- district name equals province
+    wiwName:    null,
+    name:       "김형남",
+    addr:       "서울특별시 성북구 아리랑로19길",  <- residence, not district
+  }
+
+So for sgTypecode=3:
+  - candidate_profile.sigunguId          = null
+  - candidate_profile.emdId              = null
+  - candidate_profile.electoralDistrictId = the single province-level
+    electoral_district row (if you choose to seed one per province)
+
+==========================================
+Implication for your public filter
+==========================================
+
+For sgTypecode=3 queries, the filter logic should be:
+
+  if (electionType.sgTypecode === '3') {
+    // Match by province only.
+    // sigunguId and emdId filters are IGNORED.
+    return profile.provinceId === query.provinceId;
+  }
+
+This is important because the public UI may still let users pick a
+sigungu or emd alongside electionType=3. In that case the result should
+be the governor candidates for the parent province, NOT empty.
+
+Two ways to implement:
+
+  Option A (recommended): the filter logic ignores sigunguId/emdId
+  when sgTypecode='3' or '9'.
+
+  Option B: the UI hides sigungu/emd dropdowns when electionType is
+  governor or superintendent.
+
+Option A is more forgiving. Option B is cleaner UX. Both are valid.
+
+==========================================
+About Gwangju (issue #1 from previous message)
+==========================================
+
+Since governors exist for all 17 시·도 (including 광주광역시), the
+"0 candidates for 광주광역시 governor" result indicates a data issue,
+not a structural one. NEC always has governor candidates registered
+for every province during election season. Please run the SELECT query
+I sent in item #1 of the previous message and share the result.
+
+==========================================
+Same logic applies to sgTypecode=9 (교육감)
+==========================================
+
+Superintendent of Education is also strictly province-level. Same
+behavior as sgTypecode=3.
+
+  - 17 superintendents (one per 시·도)
+  - no sub-district race
+  - sigunguId/emdId always null for typecode=9 candidates
+  - filter logic: match by provinceId only
+
+Let me know if you have follow-up questions on the cardinality of
+other typecodes.

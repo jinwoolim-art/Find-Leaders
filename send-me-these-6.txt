@@ -1,0 +1,67 @@
+Quick follow-up — no need to dig deep, these are likely simple key
+mismatches, not architectural issues. You've already fixed the hard
+parts; remaining items are 5-minute checks.
+
+==========================================
+Big picture: you nailed the hard work
+==========================================
+
+  Yesterday:  council candidates leaking across wrong districts in
+              3 confirmed cases (대구 남구 이천동, 강원 강릉, 부산 남구);
+              Gapyeong-gun dummy showing 4 fake candidates; sggName
+              completely missing.
+
+  Today:      24/26 sgTypecode=5 cases map to the correct sggName.
+              Zero candidate leak across emds. Gapyeong-gun is clean.
+
+The core importer/normalizer/filter is now correct. The remaining items
+in send-me-these-4.txt are almost certainly trivial data/key mismatches.
+
+==========================================
+About Gwangju governor (#33) — likely a simple sdName key mismatch
+==========================================
+
+NEC uses different sdName labels across typecodes:
+
+  sgTypecode=3  (governor)        →  "광주광역시"
+  sgTypecode=4  (mayor)           →  "광주광역시"
+  sgTypecode=5  (provincial)      →  "전남광주통합특별시"  (광주+전남 merged)
+  sgTypecode=7  (municipal)       →  "광주광역시"
+
+So our hypothesis: either an old import left Gwangju typecode=3
+candidates under a different sdName key, OR the typecode=3 importer
+skipped Gwangju entirely.
+
+To confirm in 30 seconds, please run:
+
+  SELECT huboid, name, status, sdName, sggName
+    FROM candidate
+   WHERE sgTypecode = '3'
+     AND sdName LIKE '%광주%';
+
+Three possible outcomes:
+
+  (a) Rows returned with sdName='광주광역시'
+      → import worked, candidates exist. Then debug the filter UI:
+        does it pass sdName='광주광역시' correctly?
+
+  (b) Rows returned with sdName='전남광주통합특별시' (or other key)
+      → old/wrong import. Re-run the typecode=3 importer for
+        sdName='광주광역시'. Old rows can be deleted or repaired.
+
+  (c) No rows
+      → importer skipped Gwangju typecode=3. Trigger one import run
+        for that combination only.
+
+==========================================
+Don't over-engineer
+==========================================
+
+These three remaining items (Gwangju missing, 전예슬/임완식 possible
+homonyms, sdName form for 전라남도) are all simple verification tasks.
+No new schema changes needed. No filter logic changes needed.
+
+The previous plan in send-me-these-3.txt is still correct as-is.
+
+Reply with the SELECT query results from item 1 + the necHuboid check
+for item 2a, and we'll close out. Almost there — great work.

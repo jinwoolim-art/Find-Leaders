@@ -1,0 +1,16 @@
+node_modules
+dist
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+coverage
+
+# SQLite local DB
+data/*
+!data/.gitkeep
+
+# Sign in with Apple — .p8 개인키는 절대 커밋 금지
+secrets/
+*.p8

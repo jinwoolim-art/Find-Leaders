@@ -1,0 +1,89 @@
+Hi — verification of yesterday's fix is done. Great progress: 24/26
+sgTypecode=5 cases now map to correct sggName, and no candidate appears
+in multiple wrong emds. The main bug is fixed.
+
+Three items to check:
+
+==========================================
+1. Missing Gwangju governor (sgTypecode=3)
+==========================================
+Search "광주광역시 / 서구 / 치평동" returned 0 candidates.
+All other provinces returned 4 each.
+
+Please verify:
+
+  SELECT huboid, name, status FROM candidate
+   WHERE sgTypecode = '3' AND sdName = '광주광역시';
+
+Possible causes:
+  - importer skipped sdName='광주광역시' for sgTypecode=3
+  - all Gwangju governor candidates have status != '등록'
+  - NEC currently has no registered governor candidates for Gwangju
+
+Please share the query result.
+
+==========================================
+2. Possible dummy residue: 전예슬 + 임완식
+==========================================
+Yesterday's audit found these two names in Gapyeong-gun seed/dummy data
+(sgTypecode=5, all 4 same-party 민주, not in NEC).
+
+Today they appear in result #16 (경기도 / 오산시 / 중앙동):
+
+  남상현(국힘) · 전예슬(민주) · 박현명(국힘) · 임완식(민주)
+
+Two possibilities:
+  (A) Real NEC candidates with the same Korean names (homonyms)
+  (B) Old dummy rows that were re-mapped to 오산시 instead of cleaned up
+
+Please verify by:
+
+  a) Check user.necHuboid + candidate sources for these two names:
+
+     SELECT u.id, u.displayName, u.necHuboid,
+            cp.sigunguId, cp.electoralDistrictId, cp.sggNameRaw
+       FROM user u
+       JOIN candidate_profile cp ON cp.userId = u.id
+      WHERE u.displayName IN ('전예슬', '임완식');
+
+  b) Hit NEC directly for 경기도 sgTypecode=5:
+
+     env SG_ID=20260603 SG_TYPECODE=5 SD_NAME=경기도 \
+         node scripts/fetch-all-pages.js | grep -E "전예슬|임완식"
+
+If they exist in NEC for 오산시 → real, case (A), close this item.
+If NEC doesn't return them OR they share huboid with the Gapyeong rows
+→ case (B), dummy residue still present. We need M6 cleanup.
+
+==========================================
+3. sdName: "전라남도" vs "전남광주통합특별시"
+==========================================
+Result #10 (해남군 황산면) returns sdName='전라남도' in your output,
+but the official NEC sigungu-level Excel for sgTypecode=5 lists 광주+전남
+under the merged name '전남광주통합특별시'.
+
+Please confirm internal consistency:
+  - Does candidate.sdName store '전라남도' or '전남광주통합특별시'?
+  - Does the public UI filter dropdown for sdName include
+    '전남광주통합특별시' as an option, or only '광주광역시' and '전라남도'?
+  - Will users who select '광주광역시' or '전라남도' see the same merged
+    council race candidates?
+
+Either form is fine as long as importer + filter UI agree. Otherwise
+users may miss candidates in council races for Gwangju/Jeonnam.
+
+Side observation for #10: all 4 candidates are 민주당 only
+(이상미·박성재·조광영·김병덕). The Gapyeong-gun dummy pattern was also
+"4 all from one party with no NEC presence." Please confirm these 4
+have valid necHuboid linked to real NEC entries.
+
+==========================================
+Summary
+==========================================
+  ✓ 24/26 sgTypecode=5 emd→sggName mapping correct
+  ✓ No cross-district candidate leak
+  ✓ Gapyeong-gun mayor (sgTypecode=4) cleaned up
+  → Open: items 1, 2, 3 above
+
+Please reply with query results for items 1, 2a, 2b. Item 3 needs only
+a yes/no on whether importer and UI agree on the sdName format.

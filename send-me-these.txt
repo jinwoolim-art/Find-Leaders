@@ -1,0 +1,208 @@
+Hi — thanks for the writeup. I've read wrong-flow.txt and the brief.
+Before I produce the root-cause analysis + fix plan, please send the
+following in a single batch (do not answer one-by-one). If something is
+unknown, just write "unknown" and I'll mark it as an assumption.
+
+═══════════════════════════════════════════════════════════════
+A. CODE TO PASTE (most important — I don't have repo access)
+═══════════════════════════════════════════════════════════════
+
+A1. nec-importer.service.ts
+    - Lines 1–80  (config load + bootstrap + cron)
+    - Lines 240–340 (location resolution block + upsert block)
+
+A2. nec-api.client.ts
+    - Lines 100–180 (NEC response parser)
+
+A3. avatar.service.ts
+    - Lines 300–340 (location filter)
+    - Lines 770–800 (listPublicApproved)
+
+A4. user.service.ts
+    - Lines 800–830 and 1390–1420 (listPublicCandidateDirectory + the
+      SQL with `cp.sigunguId IS NULL OR cp.sigunguId = :sigunguId`)
+
+A5. location/entities/*  (province, sigungu, emd entity files — full)
+
+A6. election-type.entity.ts (full)
+    - Plus: is there exactly one ElectionType row per sgTypecode globally,
+      or one per (sgTypecode × province)?
+
+A7. 2000000000000-RepairNecCouncilCandidates.ts  (full migration file)
+    - Plus: was this migration actually executed on sandbox?
+
+A8. candidate_profile entity (full)
+    - I want to see if there is any field beyond provinceId / sigunguId /
+      emdId (e.g. electoralDistrictId, sggNameRaw, etc.)
+
+═══════════════════════════════════════════════════════════════
+B. NEC API RESPONSE SHAPE — one sample candidate per typecode
+═══════════════════════════════════════════════════════════════
+
+Please paste 1 raw NEC response candidate (post-parse) for each:
+
+B1. sgTypecode = 5  (시·도의원, provincial council)
+    Expected fields filled: sdName, sggName (e.g. "남구제1선거구"?),
+    wiwName (e.g. "남구"?)
+
+B2. sgTypecode = 7  (구·시·군의원, municipal council)
+    Expected: sdName, sggName, wiwName — does it include sub-district
+    letter like "남구가선거구"?
+
+B3. sgTypecode = 4  (구청장/시장/군수, head of local govt)
+    Expected: sdName, sggName ("남구"?), wiwName empty?
+
+B4. sgTypecode = 3  (시·도지사, governor)
+    Expected: province-only, sggName / wiwName empty?
+
+B5. sgTypecode = 9  (교육감, superintendent)
+    Expected: province-only?
+
+═══════════════════════════════════════════════════════════════
+C. LOCAL DB NAME FORMAT
+═══════════════════════════════════════════════════════════════
+
+C1. province.nameKo example value — "서울특별시" or "서울"?
+
+C2. sigungu.nameKo example value —
+    "남구"  (ambiguous nationally — Daegu/Busan/Ulsan/Incheon/Gwangju
+            all have a 남구)
+    or
+    "부산광역시 남구"  (province-qualified)?
+
+C3. Does the `emd` table exist and is it populated? With which name
+    format (e.g. "이천동" or "대구광역시 남구 이천동")?
+
+═══════════════════════════════════════════════════════════════
+D. FILTER UX
+═══════════════════════════════════════════════════════════════
+
+D1. Which levels does the public UI filter expose to the end user?
+    (electionType / province / sigungu / emd — which are pickable?)
+
+D2. If user picks (electionType=5, province=대구, sigungu=남구, emd=이천동),
+    what is the expected result set?
+    - Only candidates whose sggName is "남구제1선거구"?
+    - Or all typecode-5 candidates whose location intersects with the
+      picked emd?
+
+D3. Is there any UI surface that lets the user pick sggName directly,
+    or is sggName always derived from the emd selection?
+
+═══════════════════════════════════════════════════════════════
+E. MAPPING DATA — NEC EXCEL FILES (we have them)
+═══════════════════════════════════════════════════════════════
+
+Owner has 3 NEC-published Excel files:
+
+  - 시·도의회의원선거.xlsx        (sgTypecode=5)
+  - 구·시·군의회의원선거.xlsx    (sgTypecode=7)
+  - 구·시·군의_장선거.xlsx       (sgTypecode=4)
+
+Each has ~16 province sheets. Header row 4. Columns:
+  구시군명 | 선거구명 (sggName) | 정수 | 읍면동명 (comma-separated emds)
+
+Example row (Seoul · Jongno-gu, sgTypecode=5):
+  종로구 | 종로구제1선거구 | 1 | 청운효자동, 사직동, 삼청동, 부암동, 평창동, ...
+
+This gives us the canonical (emd → sggName) mapping per sgTypecode.
+
+E1. Preferred schema for ingesting this:
+    a) New entity `electoral_district` with (sd, sgg_name, sg_typecode)
+       and a join table `electoral_district_emd`?
+    b) Add a denormalized `sgg_name` column to emd (per typecode dim)?
+    c) Some other approach?
+    Please pick or say "you decide".
+
+E2. Once seeded, should the importer use this mapping (lookup
+    emd → sggName → district → sigungu) instead of matching NEC's
+    wiwName/sggName string against sigungu.nameKo?
+    My recommendation: yes.
+
+E3. Are emd names in the Excel files guaranteed to match local
+    emd.nameKo exactly, or do we need normalization (strip whitespace,
+    normalize "·", handle "제1동" vs "1동", etc.)?
+
+═══════════════════════════════════════════════════════════════
+F. DECISIONS I'D LIKE YOU TO MAKE (or say "you decide")
+═══════════════════════════════════════════════════════════════
+
+F1. Filter semantics consistency direction —
+    make BOTH lists strict (null sigunguId = excluded when filter set),
+    or BOTH permissive (null = match-all)?
+    >> My default: STRICT for both. Permissive lets unrepaired rows leak.
+
+F2. ElectionType cardinality —
+    keep one row per sgTypecode globally (current: code = `nec-{typecode}`),
+    or one row per (sgTypecode × province)?
+    >> My default: keep global per-typecode. Province is a separate axis.
+
+F3. Should raw NEC sgName be stored on candidate_profile?
+    >> My default: YES, as a denormalized debug column (sggNameRaw),
+       but not used as the primary mapping key.
+
+F4. Should the importer always upsert existing necHuboid rows?
+    >> My default: ALWAYS upsert location fields (idempotent), NEVER
+       touch user-edited fields (slogan, greeting, symbolNumber,
+       avatar visibilityStatus once published).
+
+F5. Repair migration approach for stale records —
+    destructive (delete & reimport) or in-place repair?
+    >> My default: IN-PLACE repair, scoped strictly to
+       `user.necHuboid IS NOT NULL`. Manual candidates untouched.
+
+═══════════════════════════════════════════════════════════════
+G. TEST INFRASTRUCTURE
+═══════════════════════════════════════════════════════════════
+
+G1. Jest + supertest already wired? In-memory SQLite or real Postgres
+    in CI?
+
+G2. Are there existing tests for nec-importer.service.ts or
+    avatar.service.ts that I should extend, or am I writing the first?
+
+G3. Can I use NEC API fixtures (pre-recorded JSON files), or must
+    tests stub the HTTP client via a mock?
+
+═══════════════════════════════════════════════════════════════
+H. SANITY CHECK — does this match your mental model? (Y/N each)
+═══════════════════════════════════════════════════════════════
+
+H1. Root cause #1 = name-matching mismatch between NEC's
+    wiwName/sggName and local sigungu.nameKo (case, spacing, suffix,
+    ambiguity across provinces).                                  [Y/N]
+
+H2. Root cause #2 = importer skips existing necHuboid rows, so any
+    previously-null sigunguId is permanent until manual repair.   [Y/N]
+
+H3. Root cause #3 = the two list endpoints disagree on how to treat
+    null sigunguId profiles (avatar strict, candidate permissive). [Y/N]
+
+H4. There is no electoral-district level entity in the schema right
+    now, so sggName from NEC is transient and lost after import.  [Y/N]
+
+H5. The Excel files are needed because NEC API does not provide a
+    clean emd→sggName mapping per typecode — we have to ingest it
+    separately.                                                   [Y/N]
+
+═══════════════════════════════════════════════════════════════
+WHAT I'LL DELIVER WHEN YOU REPLY
+═══════════════════════════════════════════════════════════════
+
+Once you reply with the above (especially A1–A8 code paste, B1–B5
+sample payloads, C1–C3 local name format, H1–H5 confirmation), I will
+produce in one go:
+
+  1. Root cause analysis mapped to repo paths and line numbers
+  2. Verdict on storing raw NEC sgName (F3)
+  3. Unified filter semantics design (avatar + candidate)
+  4. Importer fix for typecodes 3 / 4 / 5 / 7 / 9 using Excel-based
+     sggName mapping
+  5. Idempotent repair migration scoped to NEC rows only
+  6. Test plan covering all 5 scenarios you listed
+  7. Changed file list + migration/reimport runbook for QA
+
+If any of A–H is unknown to you too, just write "unknown" and I will
+mark it as an assumption in the deliverable.
+
+Thanks.

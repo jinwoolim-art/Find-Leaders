@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>통합 아바타 관리자 — 일꾼을 묻다</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #7c3aed;
+    --primary-soft: #ede9fe;
+    --primary-border: #ddd6fe;
+    --primary-text: #5b21b6;
+    --card-bg: #ffffff;
+    --card-border: #e7ebf3;
+    --muted: #64748b;
+    --text: #0f172a;
+    --ok: #16a34a;
+    --ok-soft: #dcfce7;
+    --warn: #d97706;
+    --warn-soft: #fef3c7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Noto Sans KR', 'Public Sans', 'Inter', sans-serif;
+    background: #f8fafc;
+    color: var(--text);
+    min-height: 100vh;
+  }
+  /* ── Topbar ──────────────────────────────────────── */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 20px; background: #fff; border-bottom: 1px solid var(--card-border);
+  }
+  .topbar h1 { margin: 0; font-size: 16px; }
+  .topbar h1 .tag {
+    display: inline-block; margin-left: 8px; padding: 2px 8px;
+    background: var(--warn-soft); color: var(--warn); border-radius: 6px;
+    font-size: 11px; font-weight: 700;
+  }
+  .admin-key-row { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .admin-key-row input {
+    width: 200px; padding: 6px 10px; border: 1px solid var(--card-border);
+    border-radius: 6px; font-family: monospace; font-size: 12px;
+  }
+  .admin-key-row .status-ok { color: var(--ok); font-weight: 700; }
+  .admin-key-row .status-warn { color: var(--warn); font-weight: 700; }
+  /* ── Tabs ────────────────────────────────────────── */
+  .tabs {
+    display: flex; gap: 4px; padding: 0 20px; background: #fff;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .tab {
+    padding: 12px 16px; font-size: 13px; font-weight: 700;
+    background: transparent; border: 0; cursor: pointer; color: var(--muted);
+    border-bottom: 2px solid transparent;
+  }
+  .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+  .tab.disabled { color: #cbd5e1; cursor: not-allowed; }
+  .tab.disabled .phase2 {
+    background: #f1f5f9; color: #94a3b8; padding: 1px 6px; border-radius: 4px;
+    font-size: 10px; margin-left: 4px;
+  }
+  /* ── Layout ──────────────────────────────────────── */
+  .layout {
+    display: grid; grid-template-columns: 320px 1fr;
+    min-height: calc(100vh - 110px);
+  }
+  .sidebar {
+    background: #fff; border-right: 1px solid var(--card-border);
+    padding: 16px; overflow-y: auto;
+  }
+  .sidebar h3 { margin: 0 0 12px; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .sidebar input[type=search] {
+    width: 100%; padding: 8px 12px; border: 1px solid var(--card-border);
+    border-radius: 8px; font-family: inherit; font-size: 13px;
+    margin-bottom: 12px;
+  }
+  .tree-item {
+    padding: 6px 8px; font-size: 13px; cursor: pointer; border-radius: 6px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .tree-item:hover { background: var(--primary-soft); }
+  .tree-item.selected { background: var(--primary); color: #fff; }
+  .tree-item .badge-on {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--ok);
+    flex-shrink: 0;
+  }
+  .tree-item .badge-off {
+    width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1;
+    flex-shrink: 0;
+  }
+  .tree-group { margin-bottom: 8px; }
+  .tree-group > .tree-label {
+    font-weight: 700; color: var(--text); padding: 4px 8px; font-size: 13px;
+  }
+  .tree-group > .tree-children { padding-left: 12px; }
+  /* ── Main panel ──────────────────────────────────── */
+  .main { padding: 24px; overflow-y: auto; }
+  .empty-state {
+    text-align: center; padding: 60px 20px; color: var(--muted);
+  }
+  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+  .card {
+    background: #fff; border: 1px solid var(--card-border); border-radius: 12px;
+    padding: 24px; margin-bottom: 16px;
+  }
+  .card h2 { margin: 0 0 16px; font-size: 18px; }
+  .card .row { display: flex; gap: 12px; margin-bottom: 12px; font-size: 14px; }
+  .card .row .label { width: 120px; color: var(--muted); }
+  .card .row .value { flex: 1; }
+  .toggle {
+    display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+  }
+  .toggle input { display: none; }
+  .toggle .switch {
+    width: 44px; height: 24px; background: #cbd5e1; border-radius: 999px;
+    position: relative; transition: background 0.2s;
+  }
+  .toggle .switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 20px; height: 20px; background: #fff; border-radius: 50%;
+    transition: left 0.2s;
+  }
+  .toggle input:checked + .switch { background: var(--ok); }
+  .toggle input:checked + .switch::after { left: 22px; }
+  .toggle .state-label { font-weight: 700; }
+  .input-line {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--card-border);
+    border-radius: 8px; font-family: inherit; font-size: 14px;
+  }
+  .preview-img {
+    margin-top: 8px; max-width: 200px; max-height: 200px;
+    border-radius: 12px; border: 1px solid var(--card-border);
+  }
+  .actions { display: flex; gap: 8px; margin-top: 24px; }
+  .primary-btn {
+    background: var(--primary); color: #fff; border: 0; padding: 10px 20px;
+    border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .primary-btn:hover { background: #6d28d9; }
+  .primary-btn:disabled { background: #cbd5e1; cursor: not-allowed; }
+  .ghost-btn {
+    background: transparent; color: var(--muted); border: 1px solid var(--card-border);
+    padding: 10px 16px; border-radius: 8px; font-size: 14px; cursor: pointer;
+  }
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; padding: 12px 20px;
+    background: var(--ok); color: #fff; border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: none;
+    font-size: 14px; font-weight: 700;
+  }
+  .toast.show { display: block; }
+  /* Phase 2 placeholder content */
+  .phase2-block {
+    text-align: center; padding: 60px 20px; color: var(--muted);
+    background: #f8fafc; border: 1px dashed var(--card-border); border-radius: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>통합 아바타 관리자 <span class="tag">PRIVATE</span></h1>
+  <div class="admin-key-row">
+    <label>X-Admin-Key:</label>
+    <input type="password" id="admin-key" placeholder="관리자 키" />
+    <span id="key-status" class="status-warn">미설정</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" data-tab="config">선거구 설정</button>
+  <button class="tab disabled" title="Phase 2">FAQ 답변 관리 <span class="phase2">Phase 2</span></button>
+  <button class="tab disabled" title="Phase 2">가드레일 편집 <span class="phase2">Phase 2</span></button>
+  <button class="tab disabled" title="Phase 2">대화 로그 검수 <span class="phase2">Phase 2</span></button>
+</div>
+
+<div class="layout" id="tab-config">
+  <aside class="sidebar">
+    <h3>선거구 찾기</h3>
+    <input type="search" id="search" placeholder="시·도, 시·군·구, 선거구명 검색" />
+    <div id="tree"></div>
+    <hr style="border:0; border-top:1px solid var(--card-border); margin: 16px 0;" />
+    <h3>활성 선거구 (<span id="active-count">0</span>)</h3>
+    <div id="active-list"></div>
+  </aside>
+
+  <main class="main">
+    <div id="empty-state" class="empty-state">
+      <div class="icon">🏛️</div>
+      <p>왼쪽에서 선거구를 선택해주세요.</p>
+    </div>
+    <div id="detail-panel" style="display:none;">
+      <div class="card">
+        <h2 id="detail-title">선거구</h2>
+        <div class="row"><div class="label">sgId</div><div class="value" id="d-sgid">-</div></div>
+        <div class="row"><div class="label">선거 종류</div><div class="value" id="d-typecode">-</div></div>
+        <div class="row"><div class="label">시·도</div><div class="value" id="d-sd">-</div></div>
+        <div class="row"><div class="label">시·군·구</div><div class="value" id="d-sigungu">-</div></div>
+        <div class="row"><div class="label">선거구명</div><div class="value" id="d-sgg">-</div></div>
+        <div class="row"><div class="label">후보자 수</div><div class="value" id="d-count">-</div></div>
+      </div>
+      <div class="card">
+        <h2>통합 아바타 설정</h2>
+        <div class="row">
+          <div class="label">활성 상태</div>
+          <div class="value">
+            <label class="toggle">
+              <input type="checkbox" id="d-enabled" />
+              <span class="switch"></span>
+              <span class="state-label" id="d-enabled-label">비활성</span>
+            </label>
+          </div>
+        </div>
+        <div class="row" style="align-items: flex-start;">
+          <div class="label">아바타 이미지 URL</div>
+          <div class="value">
+            <input type="url" class="input-line" id="d-image-url" placeholder="https://...  (탐이 별도 제공)" />
+            <img id="d-image-preview" class="preview-img" style="display:none;" />
+          </div>
+        </div>
+        <div class="actions">
+          <button class="primary-btn" id="d-save">저장</button>
+          <button class="ghost-btn" id="d-revert">되돌리기</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast">저장됨</div>
+
+<script>
+/**
+ * district-avatar-admin.html — Phase 1 mock scaffold.
+ * Backend endpoints (GET/PUT /api/v1/avatars/district-config) not yet live;
+ * uses localStorage as the source of truth for Phase 1 demo.
+ * Swap to real endpoints once sahab ships them.
+ */
+const TYPE_LABEL = {
+  '1': '대통령', '2': '국회의원', '3': '시·도지사',
+  '4': '구청장 / 시장', '5': '시·도의원', '6': '구·시·군의원', '11': '교육감',
+};
+const STORAGE_KEY = 'district-avatar-config-v1';
+
+const STATE = {
+  candidates: [],
+  configs: loadConfigs(),
+  selected: null,         // selection key string
+  selectedRecord: null,   // detail record
+};
+
+const $ = (id) => document.getElementById(id);
+
+// ── Admin key ─────────────────────────────────────────
+$('admin-key').addEventListener('input', (e) => {
+  const k = e.target.value.trim();
+  $('key-status').textContent = k ? '설정됨' : '미설정';
+  $('key-status').className = k ? 'status-ok' : 'status-warn';
+  localStorage.setItem('admin-key', k);
+});
+$('admin-key').value = localStorage.getItem('admin-key') || '';
+if ($('admin-key').value) {
+  $('key-status').textContent = '설정됨';
+  $('key-status').className = 'status-ok';
+}
+
+// ── Load candidates ──────────────────────────────────
+fetch('assets/candidates-real.json')
+  .then(r => r.json())
+  .then(data => {
+    STATE.candidates = Array.isArray(data) ? data : (data.candidates || []);
+    renderTree();
+    renderActiveList();
+  })
+  .catch(err => console.warn('candidates load failed', err));
+
+$('search').addEventListener('input', renderTree);
+
+function renderTree() {
+  const q = $('search').value.trim().toLowerCase();
+  const tree = $('tree');
+  // Group candidates by (sdName, sigunguName, sggName)
+  const groups = {};
+  STATE.candidates.forEach(c => {
+    const sd = c.sdName || c.sido || '';
+    const sg = c.sigunguName || c.sigungu || '';
+    const sgg = c.sggName || c.electoralDistrict || '';
+    const sgTypecode = String(c.sgTypecode || c.sgTypeCode || '?');
+    const sgId = c.sgId || '';
+    const key = `${sgId}|${sd}|${sg}|${sgg}|${sgTypecode}`;
+    if (q) {
+      const hay = `${sd} ${sg} ${sgg}`.toLowerCase();
+      if (!hay.includes(q)) return;
+    }
+    (groups[sd] = groups[sd] || {});
+    (groups[sd][sg] = groups[sd][sg] || []);
+    if (!groups[sd][sg].find(g => g.key === key)) {
+      groups[sd][sg].push({ key, sgId, sd, sg, sgg, sgTypecode, candidates: [] });
+    }
+    groups[sd][sg].find(g => g.key === key).candidates.push(c);
+  });
+
+  const sds = Object.keys(groups).sort();
+  tree.innerHTML = sds.map(sd => `
+    <div class="tree-group">
+      <div class="tree-label">${escapeHtml(sd)}</div>
+      <div class="tree-children">
+        ${Object.keys(groups[sd]).sort().map(sg => `
+          <div class="tree-label" style="font-size:12px; padding:4px 8px;">${escapeHtml(sg) || '(시·도 단위)'}</div>
+          <div class="tree-children">
+            ${groups[sd][sg].map(g => {
+              const isActive = STATE.configs[g.key]?.enabled;
+              const sel = STATE.selected === g.key ? 'selected' : '';
+              return `
+                <div class="tree-item ${sel}" data-key="${escapeAttr(g.key)}" onclick="selectDistrict('${escapeAttr(g.key)}')">
+                  <span class="${isActive ? 'badge-on' : 'badge-off'}"></span>
+                  <span>${escapeHtml(g.sgg || TYPE_LABEL[g.sgTypecode] || g.sgTypecode)}</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+  // Stash for selection
+  STATE.groups = groups;
+}
+
+function selectDistrict(key) {
+  STATE.selected = key;
+  let record = null;
+  for (const sd in STATE.groups) {
+    for (const sg in STATE.groups[sd]) {
+      for (const g of STATE.groups[sd][sg]) {
+        if (g.key === key) record = g;
+      }
+    }
+  }
+  if (!record) return;
+  STATE.selectedRecord = record;
+  $('empty-state').style.display = 'none';
+  $('detail-panel').style.display = '';
+  $('detail-title').textContent = `${record.sd} ${record.sg} ${record.sgg || '(' + (TYPE_LABEL[record.sgTypecode] || record.sgTypecode) + ')'}`;
+  $('d-sgid').textContent = record.sgId || '(none)';
+  $('d-typecode').textContent = `${record.sgTypecode} (${TYPE_LABEL[record.sgTypecode] || '기타'})`;
+  $('d-sd').textContent = record.sd;
+  $('d-sigungu').textContent = record.sg || '(none)';
+  $('d-sgg').textContent = record.sgg || '(none)';
+  $('d-count').textContent = `${record.candidates.length}명`;
+  const cfg = STATE.configs[key] || { enabled: false, assetImageUrl: '' };
+  $('d-enabled').checked = !!cfg.enabled;
+  $('d-enabled-label').textContent = cfg.enabled ? '활성' : '비활성';
+  $('d-image-url').value = cfg.assetImageUrl || '';
+  updatePreview();
+  renderTree(); // re-highlight selection
+}
+
+$('d-enabled').addEventListener('change', () => {
+  $('d-enabled-label').textContent = $('d-enabled').checked ? '활성' : '비활성';
+});
+$('d-image-url').addEventListener('input', updatePreview);
+
+function updatePreview() {
+  const url = $('d-image-url').value.trim();
+  const img = $('d-image-preview');
+  if (url) {
+    img.src = url; img.style.display = '';
+    img.onerror = () => { img.style.display = 'none'; };
+  } else {
+    img.style.display = 'none';
+  }
+}
+
+$('d-save').addEventListener('click', () => {
+  if (!STATE.selected || !STATE.selectedRecord) return;
+  if (!$('admin-key').value.trim()) {
+    alert('X-Admin-Key를 먼저 입력해주세요.');
+    return;
+  }
+  const rec = STATE.selectedRecord;
+  STATE.configs[STATE.selected] = {
+    sgId: rec.sgId,
+    sgTypecode: Number(rec.sgTypecode) || null,
+    sdName: rec.sd,
+    sigunguName: rec.sg || null,
+    sggName: rec.sgg || null,
+    enabled: $('d-enabled').checked,
+    assetImageUrl: $('d-image-url').value.trim() || null,
+    updatedAt: new Date().toISOString(),
+    updatedBy: 'admin',
+  };
+  saveConfigs(STATE.configs);
+  renderTree();
+  renderActiveList();
+  showToast('저장됨 (mock: localStorage). 백엔드 endpoint 연결 후 PUT /district-config 호출됩니다.');
+});
+
+$('d-revert').addEventListener('click', () => {
+  if (STATE.selected) selectDistrict(STATE.selected);
+});
+
+function renderActiveList() {
+  const active = Object.entries(STATE.configs).filter(([, v]) => v.enabled);
+  $('active-count').textContent = active.length;
+  $('active-list').innerHTML = active.map(([key, v]) => `
+    <div class="tree-item" onclick="selectDistrict('${escapeAttr(key)}')">
+      <span class="badge-on"></span>
+      <span>${escapeHtml(v.sggName || v.sigunguName || v.sdName)}</span>
+    </div>
+  `).join('') || '<div style="font-size:12px; color:var(--muted); padding:4px 8px;">활성 선거구 없음</div>';
+}
+
+function showToast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function loadConfigs() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+  catch { return {}; }
+}
+function saveConfigs(c) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(c));
+}
+
+function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function escapeAttr(s) { return escapeHtml(s); }
+
+// Expose for inline onclick
+window.selectDistrict = selectDistrict;
+</script>
+</body>
+</html>

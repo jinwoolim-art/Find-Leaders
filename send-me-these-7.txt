@@ -1,0 +1,51 @@
+Yes, please proceed with deploy and run the importer.
+We have no live campaigns yet, so temporary empty/sparse results are
+acceptable. This is actually a good test cycle.
+
+==========================================
+Expected after today's (2026-05-14) import
+==========================================
+  - sgTypecode=3 (governor): 0 candidates everywhere
+    → NEC not releasing yet, this is correct
+  - sgTypecode=7 (구의원): 0 candidates everywhere
+    → NEC not releasing yet, this is correct
+  - sgTypecode=4 / 5 / 9: partial — only some 시·도 have data
+  - Old NEC rows from yesterday's pre-candidate snapshot will be
+    deactivated where they don't match today's main-candidate response
+    → This is expected and desired (auto-cleanup of stale + dummy rows)
+
+==========================================
+Verify on sandbox right after import
+==========================================
+1. /api/v1/avatars and /api/v1/candidates return identical
+   candidate IDs for the same filter
+     (electionTypeId, provinceId, sigunguId, emdId)
+
+2. Yesterday's 3 broken cases now map to a single correct sggName:
+     - 대구 남구 이천동       (sgTypecode=5)
+     - 강원 강릉 강남동       (sgTypecode=5)
+     - 부산 남구 용당동       (sgTypecode=5)
+   Each should return candidates only from the matching sggName,
+   no cross-district leak.
+
+3. Yesterday's suspected dummy names should NOT appear anymore:
+     - 신상진 / 신현철                          (Gapyeong typecode=4)
+     - 전예슬 / 임완식 / 김영희 / 김귀근        (Gapyeong typecode=5)
+   If they still appear after import, the M5/M6 cleanup did not
+   catch them — we'll need to debug further.
+
+==========================================
+Schedule second full import on 2026-05-16 morning
+==========================================
+By then NEC should release sgTypecode=3 and 7 plus the remaining
+시·도. That second run will fill in the gaps idempotently. The same
+3 verifications apply.
+
+Please share:
+  - the import-report summary (counts by outcome:
+    imported / updated / unmatched-district / unmatched-sigungu /
+    unmatched-emd / soft-disabled)
+  - any errors during the run
+  - status of the 3 broken cases + 6 dummy names listed above
+
+Thanks — go ahead.

@@ -1,0 +1,44 @@
+From 771ef94526367e9a37f43ccd23d9c90bdc46e89e Mon Sep 17 00:00:00 2001
+From: Tam <jinwoo.lim@play4meta.com>
+Date: Fri, 22 May 2026 03:48:07 +0900
+Subject: [PATCH] fix(compare): show pledge title only on candidate compare
+ page
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The candidate compare page rendered the full pledge `description`
+(목표/이행방법/이행기간/재원조달 — 4 sections), which overflowed the
+compare card layout and broke the page.
+
+- descriptionText now shows `pledge.title` only (core info); full
+  detail remains on the standalone pledge detail page.
+- categoryText now shows `pledge.category` (NEC realm string) directly.
+  NEC-imported pledges use key='nec-...', so CategoryEnum mapping
+  fell through to Unknown and displayed "알려지지 않은".
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
+---
+ .../Scripts/CandidateCamparePledgeItem.cs                   | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/Assets/Scripts/UIPages/CandidateComparePage/Scripts/CandidateCamparePledgeItem.cs b/Assets/Scripts/UIPages/CandidateComparePage/Scripts/CandidateCamparePledgeItem.cs
+index 46f3578..cbb909a 100644
+--- a/Assets/Scripts/UIPages/CandidateComparePage/Scripts/CandidateCamparePledgeItem.cs
++++ b/Assets/Scripts/UIPages/CandidateComparePage/Scripts/CandidateCamparePledgeItem.cs
+@@ -16,8 +16,10 @@ public class CandidateCamparePledgeItem : MonoBehaviour
+ 	{
+ 		if (pledge != null)
+ 		{
+-			descriptionText.text = pledge.description;
+-			categoryText.text = LocalizationManager.Instance.GetTranslatedText(pledge.CategoryEnum.ToString());
++			// 비교 화면 = 공약 제목만 (목표/이행방법 등 세부는 상세페이지). 전문 렌더 시 레이아웃 오버플로.
++			descriptionText.text = pledge.title;
++			// NEC 공약은 key='nec-...' → CategoryEnum 매핑 실패(Unknown→"알려지지 않은"). NEC realm 문자열을 직접 표시.
++			categoryText.text = pledge.category;
+ 			categoryIcon.sprite = CandidateManager.Instance.GetPledgesCategorySprite(pledge.CategoryEnum);
+ 		}
+ 		else
+-- 
+2.52.0
+

@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>카카오 로그인 테스트 클라이언트</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif; max-width: 720px; margin: 32px auto; padding: 0 16px; color: #222; }
+    h1 { font-size: 20px; margin-bottom: 4px; }
+    .sub { color: #888; font-size: 13px; margin-bottom: 24px; }
+    section { border: 1px solid #e5e5e5; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+    h2 { font-size: 15px; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+    .num { background: #fee500; color: #3c1e1e; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+    label { display: block; font-size: 12px; color: #555; margin-top: 8px; }
+    input, textarea, select { width: 100%; padding: 8px 10px; border: 1px solid #d4d4d4; border-radius: 6px; font-size: 13px; font-family: inherit; }
+    textarea { font-family: ui-monospace, Menlo, monospace; font-size: 11px; }
+    button { background: #fee500; color: #3c1e1e; border: 0; padding: 10px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 12px; font-size: 13px; }
+    button:hover { background: #ffd900; }
+    button.secondary { background: #f0f0f0; color: #333; }
+    button.secondary:hover { background: #e5e5e5; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .row > * { flex: 1; min-width: 0; }
+    pre.out { background: #1a1a1a; color: #d4d4d4; padding: 12px; border-radius: 6px; font-size: 11px; max-height: 240px; overflow: auto; white-space: pre-wrap; word-break: break-all; margin-top: 12px; }
+    .hint { font-size: 11px; color: #888; margin-top: 6px; }
+    .ok { color: #0a8a3f; }
+    .err { color: #c62828; }
+  </style>
+</head>
+<body>
+  <h1>카카오 로그인 테스트 클라이언트</h1>
+  <p class="sub">로컬 백엔드(<code>http://localhost:3001/api</code>) + 카카오 OAuth 전체 흐름을 클릭만으로 테스트.</p>
+
+  <section>
+    <h2><span class="num">0</span> 설정</h2>
+    <label>카카오 REST API Key (또는 JavaScript Key)</label>
+    <input id="clientId" placeholder="developers.kakao.com 의 REST API 키" />
+    <label>Redirect URI (카카오 콘솔에 등록한 값과 정확히 일치)</label>
+    <input id="redirectUri" value="http://localhost:5500/test/test-client.html" />
+    <label>백엔드 Base URL</label>
+    <input id="apiBase" value="http://localhost:3001/api" />
+    <p class="hint">새로고침해도 값이 유지됩니다 (localStorage).</p>
+  </section>
+
+  <section>
+    <h2><span class="num">1</span> 카카오 인가코드 받기</h2>
+    <p class="hint">버튼을 누르면 카카오 로그인 페이지로 이동합니다. 로그인 후 이 페이지로 돌아오며 <code>?code=</code> 가 자동으로 채워집니다.</p>
+    <button onclick="startKakao()">카카오로 로그인 시작</button>
+    <label>받은 인가코드</label>
+    <input id="code" placeholder="?code=xxxx 가 URL 에서 자동으로 채워짐" />
+  </section>
+
+  <section>
+    <h2><span class="num">2</span> POST /auth/kakao</h2>
+    <button onclick="postKakao()">로그인 시도</button>
+    <pre class="out" id="out2">대기 중...</pre>
+    <div class="row">
+      <div>
+        <label>signupToken (신규일 때)</label>
+        <input id="signupToken" />
+      </div>
+      <div>
+        <label>accessToken (기존일 때)</label>
+        <input id="accessToken" />
+      </div>
+      <div>
+        <label>refreshToken</label>
+        <input id="refreshToken" />
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">3</span> POST /auth/kakao/complete-signup (신규만)</h2>
+    <div class="row">
+      <div>
+        <label>role</label>
+        <select id="role">
+          <option value="voter">voter (유권자)</option>
+          <option value="candidate">candidate (후보자)</option>
+        </select>
+      </div>
+      <div>
+        <label>phone (선택)</label>
+        <input id="phone" placeholder="010-1234-5678" />
+      </div>
+    </div>
+    <div class="row">
+      <label><input type="checkbox" id="agreeTerms" checked /> 이용약관 동의 (필수)</label>
+      <label><input type="checkbox" id="agreePrivacy" checked /> 개인정보 동의 (필수)</label>
+      <label><input type="checkbox" id="agreeMarketing" /> 마케팅 동의</label>
+    </div>
+    <button onclick="completeSignup()">가입 완료</button>
+    <pre class="out" id="out3">대기 중...</pre>
+  </section>
+
+  <section>
+    <h2><span class="num">4</span> GET /auth/me</h2>
+    <button onclick="me()">현재 사용자 조회</button>
+    <pre class="out" id="out4">대기 중...</pre>
+  </section>
+
+  <section>
+    <h2><span class="num">5</span> POST /auth/refresh</h2>
+    <button onclick="refresh()">토큰 재발급</button>
+    <pre class="out" id="out5">대기 중...</pre>
+  </section>
+
+  <section>
+    <h2><span class="num">6</span> POST /auth/logout</h2>
+    <button class="secondary" onclick="logout()">로그아웃</button>
+    <pre class="out" id="out6">대기 중...</pre>
+  </section>
+
+<script>
+  // ── 설정 영속화 ───────────────────────────
+  const $ = (id) => document.getElementById(id);
+  const STORE_KEYS = ['clientId','redirectUri','apiBase','code','signupToken','accessToken','refreshToken'];
+  STORE_KEYS.forEach(k => {
+    const v = localStorage.getItem('kakao_test_' + k);
+    if (v && $(k)) $(k).value = v;
+    if ($(k)) $(k).addEventListener('input', () => localStorage.setItem('kakao_test_' + k, $(k).value));
+  });
+
+  // ── URL 의 code 자동 캡처 ─────────────────
+  (function captureCode() {
+    const params = new URLSearchParams(location.search);
+    const code = params.get('code');
+    if (code) {
+      $('code').value = code;
+      localStorage.setItem('kakao_test_code', code);
+      history.replaceState({}, '', location.pathname);
+    }
+  })();
+
+  function out(id, data, isErr) {
+    const el = $(id);
+    el.textContent = (typeof data === 'string') ? data : JSON.stringify(data, null, 2);
+    el.classList.toggle('err', !!isErr);
+  }
+
+  function startKakao() {
+    const id = $('clientId').value.trim();
+    const redir = $('redirectUri').value.trim();
+    if (!id || !redir) return alert('clientId 와 redirectUri 를 먼저 채우세요.');
+    const url = `https://kauth.kakao.com/oauth/authorize?client_id=${encodeURIComponent(id)}&redirect_uri=${encodeURIComponent(redir)}&response_type=code`;
+    location.href = url;
+  }
+
+  async function postKakao() {
+    const base = $('apiBase').value.trim();
+    const code = $('code').value.trim();
+    const redirectUri = $('redirectUri').value.trim();
+    if (!code) return out('out2', 'code 가 비어 있습니다.', true);
+    try {
+      const res = await fetch(`${base}/auth/kakao`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, redirectUri }),
+      });
+      const json = await res.json();
+      out('out2', json, !res.ok);
+      if (json.signupToken) { $('signupToken').value = json.signupToken; localStorage.setItem('kakao_test_signupToken', json.signupToken); }
+      if (json.accessToken) { $('accessToken').value = json.accessToken; localStorage.setItem('kakao_test_accessToken', json.accessToken); }
+      if (json.refreshToken) { $('refreshToken').value = json.refreshToken; localStorage.setItem('kakao_test_refreshToken', json.refreshToken); }
+    } catch (e) { out('out2', String(e), true); }
+  }
+
+  async function completeSignup() {
+    const base = $('apiBase').value.trim();
+    const body = {
+      signupToken: $('signupToken').value.trim(),
+      role: $('role').value,
+      phone: $('phone').value.trim() || undefined,
+      agreeTerms: $('agreeTerms').checked,
+      agreePrivacy: $('agreePrivacy').checked,
+      agreeMarketing: $('agreeMarketing').checked,
+    };
+    try {
+      const res = await fetch(`${base}/auth/kakao/complete-signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const json = await res.json();
+      out('out3', json, !res.ok);
+      if (json.accessToken) { $('accessToken').value = json.accessToken; localStorage.setItem('kakao_test_accessToken', json.accessToken); }
+      if (json.refreshToken) { $('refreshToken').value = json.refreshToken; localStorage.setItem('kakao_test_refreshToken', json.refreshToken); }
+    } catch (e) { out('out3', String(e), true); }
+  }
+
+  async function me() {
+    const base = $('apiBase').value.trim();
+    const token = $('accessToken').value.trim();
+    try {
+      const res = await fetch(`${base}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      out('out4', json, !res.ok);
+    } catch (e) { out('out4', String(e), true); }
+  }
+
+  async function refresh() {
+    const base = $('apiBase').value.trim();
+    const refreshToken = $('refreshToken').value.trim();
+    try {
+      const res = await fetch(`${base}/auth/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken }),
+      });
+      const json = await res.json();
+      out('out5', json, !res.ok);
+      if (json.accessToken) { $('accessToken').value = json.accessToken; localStorage.setItem('kakao_test_accessToken', json.accessToken); }
+      if (json.refreshToken) { $('refreshToken').value = json.refreshToken; localStorage.setItem('kakao_test_refreshToken', json.refreshToken); }
+    } catch (e) { out('out5', String(e), true); }
+  }
+
+  async function logout() {
+    const base = $('apiBase').value.trim();
+    const refreshToken = $('refreshToken').value.trim();
+    try {
+      const res = await fetch(`${base}/auth/logout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken }),
+      });
+      out('out6', res.status === 204 ? '✅ 로그아웃 완료 (204)' : await res.text(), !res.ok);
+    } catch (e) { out('out6', String(e), true); }
+  }
+</script>
+</body>
+</html>

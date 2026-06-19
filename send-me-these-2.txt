@@ -1,0 +1,503 @@
+Deliverable
+Confirmed root causes (H1–H5 all Y). Below is the full plan. Where a decision had to be made and you said "you decide," I went with the safer/idempotent option.
+
+1. Root Cause Analysis
+Mapped to your code:
+
+#	Root cause	Location	Why it breaks
+RC1	Exact-string sigungu match in resolveSigungu()	nec-importer.service.ts resolveSigungu()	wiwName/sggName from NEC vs sigungu.nameKo is brittle. For typecode=4 it happens to work (sggName = wiwName = 종로구). For typecode=3 NEC returns sggName = "서울특별시" so the lookup tries to find a sigungu named "서울특별시" — fails, returns null.
+RC2	No electoral-district entity	schema — missing ElectoralDistrict and ElectoralDistrictEmd	NEC's sggName like 종로구제1선거구 is stored nowhere. After import there is no way to know which EMDs belong to that district, so emd-filter cannot resolve to district.
+RC3	emdId is hardcoded null in processCandidate()	nec-importer.service.ts line near emdId: null,	Even with electoral district present, the candidate has no per-emd location. Avatar list's emd-match path then falls back to sigungu or province, which leaks neighboring districts.
+RC4	if (existing) return "skipped"	nec-importer.service.ts processCandidate()	Any row with bad/null sigunguId from prior runs is permanent. New importer fixes do nothing for them.
+RC5	Two list endpoints disagree on null semantics	avatar.service.ts avatarLocationMatches is strict-with-fallback; user.service.ts listPublicCandidateDirectory SQL is IS NULL OR =, fully permissive	Same (electionType, province, sigungu, emd) returns different sets in /avatars vs /candidates.
+RC6	Seed/dummy NEC rows never reconciled	importer never reconciles against current NEC response — once written, only manual deletion removes them	Owner observed Gapyeong-gun-style entries that don't exist in NEC. They survive every reimport because of RC4.
+RC7	registDate/status not used for soft-disable	processCandidate() writes status field but never uses it to set visibilityStatus	사퇴/퇴장 (withdrawn) candidates remain PUBLIC/PUBLISHED.
+The user-visible bug (wrong region returns wrong candidates) is the sum of RC1+RC2+RC3 at write-time and RC5 at read-time. RC4 is the reason why fixing the write path alone is insufficient — you must also repair existing rows.
+
+2. Schema Plan
+Three additive changes, all backward-compatible.
+
+2.1 New entities
+
+// src/modules/election-district/entities/electoral-district.entity.ts
+@Entity('electoral_district')
+@Unique('uq_district_typecode_province_sgg', ['sgTypecode', 'provinceId', 'sggName'])
+export class ElectoralDistrict {
+  @PrimaryGeneratedColumn('uuid') id: string;
+  @Column() sgTypecode: '3' | '4' | '5' | '7' | '9';
+  @Column() provinceId: string;
+  @Column({ nullable: true }) sigunguId: string | null;
+  @Column() sggName: string;             // canonical: "종로구제1선거구", "종로구", "서울특별시"
+  @Column({ type: 'int', default: 1 }) seatCount: number;
+  @Column({ nullable: true }) sgId: string | null;
+  @Column({ nullable: true }) sourceFile: string | null;
+  @ManyToOne(() => Province) province: Province;
+  @ManyToOne(() => Sigungu, { nullable: true }) sigungu: Sigungu | null;
+}
+
+// src/modules/election-district/entities/electoral-district-emd.entity.ts
+@Entity('electoral_district_emd')
+@Unique('uq_district_emd', ['electoralDistrictId', 'emdId'])
+@Index(['emdId', 'sgTypecode'])  // hot path for emd→district lookup
+export class ElectoralDistrictEmd {
+  @PrimaryGeneratedColumn('uuid') id: string;
+  @Column() electoralDistrictId: string;
+  @Column() emdId: string;
+  @Column() sgTypecode: '4' | '5' | '7';  // typecodes 3/9 don't need emd coverage
+  @ManyToOne(() => ElectoralDistrict, { onDelete: 'CASCADE' }) electoralDistrict: ElectoralDistrict;
+  @ManyToOne(() => Emd, { onDelete: 'CASCADE' }) emd: Emd;
+}
+2.2 CandidateProfile additions
+
+@Column({ nullable: true }) electoralDistrictId: string | null;
+@Column({ nullable: true }) sgNameRaw:  string | null;  // future-proof; null today
+@Column({ nullable: true }) sggNameRaw: string | null;  // "종로구제1선거구"
+@Column({ nullable: true }) wiwNameRaw: string | null;  // "종로구"
+@ManyToOne(() => ElectoralDistrict, { nullable: true }) electoralDistrict: ElectoralDistrict | null;
+Why store raw fields: audit, debugging, future migration if NEC adds sgName, and a quick way to find rows that failed to normalize (WHERE electoralDistrictId IS NULL AND sggNameRaw IS NOT NULL).
+
+2.3 Migration order
+
+M1: 2026-05-12-01-create-electoral-district.ts
+M2: 2026-05-12-02-create-electoral-district-emd.ts
+M3: 2026-05-12-03-add-raw-nec-fields-to-candidate-profile.ts
+M4: 2026-05-12-04-seed-electoral-districts-from-excel.ts   // data migration
+M5: 2026-05-12-05-repair-nec-candidate-locations.ts        // data migration, scoped to user.necHuboid IS NOT NULL
+M6: 2026-05-12-06-cleanup-orphan-nec-candidates.ts         // optional, see §5.3
+The old 2000000000000-RepairNecCouncilCandidates.ts should remain (history is history) but is effectively superseded by M5. Add a comment noting that.
+
+3. Importer Plan — idempotent + repair-on-every-run
+Key idea: the importer becomes the single source of truth for NEC-owned fields, and never touches user-authored fields.
+
+3.1 NEC-owned vs user-authored — explicit boundary
+
+// src/modules/nec-importer/nec-owned-fields.ts
+export const NEC_OWNED_USER_FIELDS = ['displayName', 'electionTypeId', 'necHuboid', 'lang'] as const;
+
+export const NEC_OWNED_PROFILE_FIELDS = [
+  'provinceId', 'sigunguId', 'emdId',
+  'electoralDistrictId',
+  'sgNameRaw', 'sggNameRaw', 'wiwNameRaw',
+  'party', 'age',
+] as const;
+
+export const USER_AUTHORED_PROFILE_FIELDS = [
+  'symbolNumber', 'slogan', 'greeting', 'privateAccessKey',
+] as const;
+
+export const NEC_OWNED_AVATAR_FIELDS = ['displayName', 'description'] as const;
+export const NEC_NEVER_TOUCH_AVATAR_FIELDS = [
+  'visibilityStatus', 'verificationStatus', 'isActiveVersion', 'chatEnabled',
+  'avatarPrompt', 'avatarContent', /* anything candidate-authored */
+] as const;
+Rule: when the importer upserts, it only writes NEC_OWNED_*. Avatar is created only if missing.
+
+3.2 New normalizer
+
+// src/modules/nec-importer/normalize-nec-location.ts
+export async function normalizeNecCandidateLocation(
+  candidate: NecCandidate,
+  province: Province,
+  deps: { findDistrict: (q: DistrictQuery) => Promise<ElectoralDistrict | null>;
+          findSigungu: (provinceId: string, nameKo: string) => Promise<Sigungu | null>; }
+): Promise<NormalizedLocation> {
+
+  const typecode = candidate.sgTypecode;
+
+  // 3 (governor) and 9 (superintendent) — province-only
+  if (typecode === '3' || typecode === '9') {
+    return { provinceId: province.id, sigunguId: null, electoralDistrictId: null };
+  }
+
+  // 4 (mayor/governor of sigungu) — sigungu-level, optional district
+  if (typecode === '4') {
+    const sigunguName = candidate.sggName ?? candidate.wiwName;
+    const sigungu = sigunguName && sigunguName !== province.nameKo
+      ? await deps.findSigungu(province.id, sigunguName)
+      : null;
+    const district = candidate.sggName
+      ? await deps.findDistrict({ sgTypecode: '4', provinceId: province.id, sggName: candidate.sggName })
+      : null;
+    return { provinceId: province.id, sigunguId: sigungu?.id ?? null, electoralDistrictId: district?.id ?? null };
+  }
+
+  // 5, 7 (council) — district-level, sigungu derived from district
+  if (typecode === '5' || typecode === '7') {
+    const district = candidate.sggName
+      ? await deps.findDistrict({ sgTypecode: typecode, provinceId: province.id, sggName: candidate.sggName })
+      : null;
+    const sigungu = district?.sigunguId
+      ? { id: district.sigunguId }
+      : (candidate.wiwName ? await deps.findSigungu(province.id, candidate.wiwName) : null);
+    return { provinceId: province.id, sigunguId: sigungu?.id ?? null, electoralDistrictId: district?.id ?? null };
+  }
+
+  return { provinceId: province.id, sigunguId: null, electoralDistrictId: null };
+}
+findDistrict looks up ElectoralDistrict rows seeded from Excel (§5.1).
+
+3.3 New processCandidate (idempotent)
+
+async function processCandidate(candidate: NecCandidate, province: Province) {
+  const electionType = await resolveElectionType(candidate.sgTypecode);
+  const loc = await normalizeNecCandidateLocation(candidate, province, deps);
+
+  const user = await upsertUserByNecHuboid(candidate.huboid, {
+    displayName: candidate.name,           // NEC-owned
+    electionTypeId: electionType.id,       // NEC-owned
+    accountType: 'CANDIDATE',
+    electionRole: 'CANDIDATE',
+    necHuboid: candidate.huboid,
+    lang: 'ko',
+  });
+  // ^ upsert only writes the NEC-owned subset; the rest stays.
+
+  await upsertCandidateProfileByUserId(user.id, {
+    provinceId: loc.provinceId,
+    sigunguId:  loc.sigunguId,
+    emdId:      null, // intentional: NEC gives no emd; emd-filtering uses district→emd join
+    electoralDistrictId: loc.electoralDistrictId,
+    sgNameRaw:  candidate.sgName  ?? null,
+    sggNameRaw: candidate.sggName ?? null,
+    wiwNameRaw: candidate.wiwName ?? null,
+    party:      candidate.party,
+    age:        candidate.age,
+  });
+
+  await createNecAvatarIfMissing(user.id, {
+    displayName: candidate.name,
+    description: derivedDescription(candidate),
+  });
+
+  await syncEducationCareerFromNec(user.id, candidate);
+
+  // RC7 — apply NEC status to avatar visibility only for *NEC-owned* avatars
+  if (candidate.status === '사퇴' || candidate.status === '퇴장') {
+    await softDisableNecAvatar(user.id);
+  } else {
+    await ensureNecAvatarVisibleIfWasAutoDisabled(user.id);
+  }
+
+  await reportImportRow({ huboid: candidate.huboid, normalized: loc, raw: candidate });
+}
+upsertUserByNecHuboid and upsertCandidateProfileByUserId must do UPDATE … WHERE necHuboid = ? rather than findOrFail-then-skip. Implementation tip:
+
+
+async function upsertCandidateProfileByUserId(userId: string, fields: NecOwnedProfileFields) {
+  const result = await profileRepo.update(
+    { userId },
+    pick(fields, [...NEC_OWNED_PROFILE_FIELDS])
+  );
+  if (result.affected === 0) {
+    await profileRepo.insert({ userId, ...fields });
+  }
+}
+Never use repo.save(entity) here — it loads the full entity and would overwrite user-authored fields if not careful. Use targeted UPDATE.
+
+3.4 Unmatched-name reporting
+
+// src/modules/nec-importer/import-report.entity.ts
+@Entity('nec_import_report')
+export class NecImportReport {
+  @PrimaryGeneratedColumn('uuid') id: string;
+  @Column() runStartedAt: Date;
+  @Column() huboid: string;
+  @Column() sgTypecode: string;
+  @Column({ nullable: true }) sggName: string | null;
+  @Column({ nullable: true }) wiwName: string | null;
+  @Column() resolvedSigunguId: string | null;
+  @Column() resolvedDistrictId: string | null;
+  @Column() outcome: 'imported' | 'updated' | 'unmatched-district' | 'unmatched-sigungu' | 'soft-disabled';
+}
+This gives QA a queryable view of where normalization fails, instead of silent nulls.
+
+4. Filter Plan — one shared strict matcher
+4.1 Extract a single source of truth
+
+// src/modules/candidate-filter/public-candidate-filter.ts
+export type PublicListFilter = {
+  electionTypeId: string;
+  provinceId: string;
+  sigunguId?: string;
+  emdId?: string;
+};
+
+export type CandidateProfileForFilter = {
+  electionTypeId: string;
+  provinceId: string | null;
+  sigunguId: string | null;
+  electoralDistrictId: string | null;
+};
+
+/**
+ * Strict rules:
+ *  - electionType must match exactly
+ *  - province must match exactly
+ *  - sigunguId filter requires profile.sigunguId === filter.sigunguId (no null fallback)
+ *  - emdId filter:
+ *      profile.electoralDistrictId must be present AND
+ *      district must cover the chosen emd
+ *      (NO fallback to sigungu or province)
+ */
+export async function profileMatchesPublicFilter(
+  profile: CandidateProfileForFilter,
+  filter: PublicListFilter,
+  deps: { districtCoversEmd: (districtId: string, emdId: string) => Promise<boolean> }
+): Promise<boolean> {
+  if (profile.electionTypeId !== filter.electionTypeId) return false;
+  if (profile.provinceId !== filter.provinceId) return false;
+
+  if (filter.emdId) {
+    if (!profile.electoralDistrictId) return false;
+    return await deps.districtCoversEmd(profile.electoralDistrictId, filter.emdId);
+  }
+  if (filter.sigunguId) {
+    return profile.sigunguId === filter.sigunguId;
+  }
+  return true;
+}
+4.2 Apply to both endpoints
+Avatar list (avatar.service.ts listPublicApproved): drop the inline avatarLocationMatches. After the in-memory load, call profileMatchesPublicFilter per row. Keep the existing electionType active check separately.
+
+Candidate directory (user.service.ts listPublicCandidateDirectory): rewrite the WHERE clauses:
+
+
+qb.andWhere('candidate.electionTypeId = :electionTypeId', { electionTypeId });
+qb.andWhere('cp.provinceId = :provinceId', { provinceId });
+
+if (sigunguId && !emdId) {
+  qb.andWhere('cp.sigunguId = :sigunguId', { sigunguId });
+}
+
+if (emdId) {
+  qb.innerJoin(
+    'electoral_district_emd',
+    'ede',
+    'ede.electoralDistrictId = cp.electoralDistrictId AND ede.emdId = :emdId',
+    { emdId }
+  );
+}
+No more IS NULL OR =. After the migration repairs existing NEC rows, any candidate that legitimately has no district (typecode 3, 9) simply won't match a sigungu/emd filter — which is correct.
+
+4.3 Consistency invariant (worth a comment in code)
+For any (electionTypeId, provinceId, sigunguId?, emdId?) query, the set of candidateIds returned by /api/v1/avatars MUST equal the set returned by /api/v1/candidates after filtering both by visibilityStatus=PUBLIC + verificationStatus=PUBLISHED + isActiveVersion=true.
+
+Add this as a documented test (§6.3).
+
+5. Migration Plan
+5.1 Excel ingestion — data migration M4
+
+// 2026-05-12-04-seed-electoral-districts-from-excel.ts
+// Reads /scripts/seed-data/election-2026-06-03/*.xlsx, idempotent.
+// One row per (sgTypecode, provinceId, sggName) in electoral_district.
+// One row per (electoralDistrictId, emdId) in electoral_district_emd.
+Steps inside the migration:
+
+Load each XLSX. Skip header rows. Each sheet name = province nameKo (서울특별시, etc.) — map to province.id.
+For each row: 구시군명, 선거구명, 정수, 읍면동명.
+Resolve sigunguId by (provinceId, sigunguName) exact match (we own this seed, so it should match).
+Insert/update electoral_district keyed by (sgTypecode, provinceId, sggName).
+Split emdNames by , and trim. Normalize each:
+Replace · with · (NFC) and strip whitespace.
+For each name, find emd by (sigunguId, nameKo) exact match.
+If found, insert into electoral_district_emd keyed by (electoralDistrictId, emdId). Idempotent via the unique constraint.
+If not found, write to nec_import_report with outcome='unmatched-emd' and continue. Never silently drop.
+After all rows, log a summary: districts created/updated, emd coverage count, unmatched-emd count by province.
+Re-runnable: yes. Wrap in transaction per province sheet so partial failure is recoverable.
+
+5.2 NEC repair migration — M5 (scoped to user.necHuboid IS NOT NULL)
+Logic, not literal code:
+
+
+FOR EACH user u WHERE u.necHuboid IS NOT NULL:
+  cp = profile for u
+  IF cp.electoralDistrictId IS NULL:
+    Try to derive from cp.sggNameRaw + cp.provinceId via electoral_district lookup.
+      If found → SET cp.electoralDistrictId, cp.sigunguId = district.sigunguId (if cp.sigunguId IS NULL OR mismatched).
+      If not found → log to nec_import_report (outcome='unmatched-district').
+  IF cp.sigunguId IS NULL AND district.sigunguId IS NOT NULL:
+    SET cp.sigunguId = district.sigunguId.
+  Never touch: symbolNumber, slogan, greeting, privateAccessKey, avatar visibility/content.
+Run order:
+
+M4 must run first (seeded districts must exist).
+Then M5 derives via raw fields. For rows where sggNameRaw is still null because they were imported before §2.2 fields existed — M5 instead re-runs normalizeNecCandidateLocation using whatever cached NEC payload you have OR triggers a runImport() on the next cron/bootstrap to refill those raw fields (the new importer §3.3 writes them on every upsert).
+Suggested approach: have M5 do whatever it can with existing data, then trust the next scheduled importer cycle to fill in the rest now that the importer is idempotent. That's a strictly safer pattern than blocking deployment on a one-shot reimport.
+
+5.3 Orphan / dummy NEC row cleanup — M6 (optional but recommended)
+Reasoning: project owner found seed-only candidates in production for Gapyeong-gun. After a clean importer run, we can detect orphans:
+
+
+FOR EACH user u WHERE u.necHuboid IS NOT NULL:
+  IF the last importer run did NOT touch u (NecImportReport has no row for u.necHuboid in the most-recent run):
+    AND if the last run completed successfully and covered (sgTypecode, province) of u:
+      Mark u as "needs investigation". Do NOT auto-delete.
+Don't auto-delete in M6 v1. Instead surface them to admin UI for human review. Auto-delete can come later once the new importer has run cleanly 7+ days.
+
+5.4 What happens to 2000000000000-RepairNecCouncilCandidates.ts?
+Leave it. Add a top-of-file comment:
+
+
+// Superseded by 2026-05-12-05-repair-nec-candidate-locations.ts.
+// This migration was historical. New repair logic in M5 is idempotent
+// and scoped to user.necHuboid IS NOT NULL only.
+Don't reverse or delete history.
+
+6. Test Plan
+6.1 Normalizer unit tests
+src/modules/nec-importer/normalize-nec-location.spec.ts
+
+
+- typecode 3, sggName=province → { sigunguId: null, electoralDistrictId: null }
+- typecode 4, sggName=종로구, sigungu seeded → resolves correct sigungu, district if seeded
+- typecode 5, sggName=종로구제1선거구, district seeded → district.id, sigungu via district
+- typecode 5, sggName unmatched → sigunguId via wiwName fallback, electoralDistrictId=null + report
+- typecode 7, sggName=종로구가선거구 (sub-letter), district seeded → resolved
+- typecode 9, no sample → assert province-only behavior + non-throw
+- ambiguous sigungu name across provinces (남구) → only same-province match
+6.2 Importer integration tests
+src/modules/nec-importer/nec-importer.service.spec.ts
+
+Use mocked NecApiClient returning fixture JSON.
+
+
+- first run creates rows, second run is idempotent (no duplicate users)
+- existing necHuboid with stale null sigunguId → second run repairs sigunguId & electoralDistrictId
+- manual candidate (necHuboid=null) is NEVER touched by importer
+- candidate with status='사퇴' → avatar visibilityStatus moves to PRIVATE; rerun with status='등록' → restored
+- user-authored slogan/greeting/symbolNumber not overwritten on rerun
+6.3 Shared filter tests
+src/modules/candidate-filter/public-candidate-filter.spec.ts
+
+
+- profile with electoralDistrictId, filter emdId in district → match
+- profile with electoralDistrictId, filter emdId NOT in district → no match
+- profile with null electoralDistrictId, filter emdId → no match (strict)
+- profile with sigunguId=X, filter sigunguId=Y → no match
+- typecode 3 profile (sigunguId=null), filter only by (electionType, province) → match
+- typecode 3 profile (sigunguId=null), filter by (electionType, province, sigungu) → no match (correct, governor has no sigungu)
+6.4 Cross-endpoint consistency test
+test/e2e/public-listing-consistency.e2e-spec.ts
+
+
+- seed: 5 candidates spanning typecodes 3,4,5,7 in 대구·서울·부산
+- for each combination of filter values that the UI can produce, hit both /api/v1/avatars and /api/v1/candidates
+- assert the set of candidateIds returned is identical
+- include the 3 known broken cases from owner's audit:
+    대구 남구 이천동, 강원 강릉 강남동, 부산 남구 용당동
+- assert each returns only candidates whose electoralDistrict covers the chosen emd
+This e2e test is the canary for the original bug.
+
+6.5 Excel seed test
+src/modules/election-district/seed.spec.ts
+
+
+- seed M4 against a fixture xlsx (one province sheet, 3 districts, 7 emds)
+- assert correct rows in electoral_district and electoral_district_emd
+- second seed run is idempotent
+- unmatched emd name is recorded in nec_import_report, not thrown
+7. QA Runbook
+For sandbox deployment. ETA ~15 minutes excluding Excel placement.
+
+7.1 Pre-deploy
+Owner places the 3 NEC Excel files in /scripts/seed-data/election-2026-06-03/ in the repo, exact filenames:
+
+sd-uihoe.xlsx       (sgTypecode=5, 시·도의회의원선거)
+gusigun-uihoe.xlsx  (sgTypecode=7, 구·시·군의회의원선거)
+gusigun-jang.xlsx   (sgTypecode=4, 구·시·군의_장선거)
+File renaming: import script accepts the original names too, but stable names make code reviews safer.
+Deploy from feature branch with M1–M6.
+7.2 Deploy
+
+yarn build
+yarn migrate            # runs M1, M2, M3, M4, M5, M6 in order
+yarn start:prod         # importer cron does NOT fire on bootstrap if NEC_IMPORTER_DISABLED=true is set;
+                        # for the first deploy we want it to fire.
+If M4 reports any unmatched-emd rows, inspect them before proceeding:
+
+
+SELECT outcome, COUNT(*) FROM nec_import_report
+ WHERE runStartedAt = (SELECT MAX(runStartedAt) FROM nec_import_report)
+ GROUP BY outcome;
+For each unmatched-emd, decide: is the local emd seed missing that row, or is the Excel value spelled differently? Patch local seed or normalize the Excel parser, then re-run M4 (idempotent).
+
+7.3 Trigger one importer run
+
+yarn ts-node scripts/run-nec-import-once.ts
+# or POST /api/v1/admin/nec-importer/run if you expose it
+Then check:
+
+
+-- How many candidate_profiles are still unnormalized?
+SELECT cp.sggNameRaw, COUNT(*) FROM candidate_profile cp
+ JOIN "user" u ON u.id = cp.userId
+ WHERE u.necHuboid IS NOT NULL AND cp.electoralDistrictId IS NULL
+ GROUP BY cp.sggNameRaw
+ ORDER BY 2 DESC;
+Expected: only typecode 3 and 9 candidates (province-only) have NULL electoralDistrictId. Everything else should be normalized.
+
+7.4 Acceptance tests — the 3 broken cases from owner's audit
+For each, hit both endpoints and assert identical candidate sets:
+
+#	Filter	Expected
+AT1	electionType=nec-5, province=대구광역시, sigungu=남구, emd=이천동	candidates of 남구제1선거구 only (no 달서구)
+AT2	electionType=nec-5, province=강원특별자치도, sigungu=강릉시, emd=강남동	candidates of 강릉시제1선거구 only (no 춘천/원주/홍천)
+AT3	electionType=nec-5, province=부산광역시, sigungu=남구, emd=용당동	candidates of 남구제1선거구 only (no 사하/연제)
+Plus the Gapyeong dummy check:
+
+| AT4 | electionType=nec-4, province=경기도, sigungu=가평군 | empty OR only candidates currently active in NEC (no 신상진/신현철/이상일/이민근) |
+
+7.5 Rollback
+M1–M3 (schema additions): safe to keep even if reverting code. New columns are nullable.
+M4 (Excel seed): re-runnable.
+M5 (NEC repair): idempotent — re-running is safe.
+M6 (orphan detection): doesn't delete in v1, only reports.
+If a problem is found post-deploy, revert the app code (filter changes) but do not revert migrations. The new columns and tables are harmless when unused.
+
+8. Changed Files Summary
+
+ADDED
+  src/modules/election-district/electoral-district.entity.ts
+  src/modules/election-district/electoral-district-emd.entity.ts
+  src/modules/election-district/election-district.module.ts
+  src/modules/election-district/election-district.repository.ts
+  src/modules/nec-importer/normalize-nec-location.ts
+  src/modules/nec-importer/nec-owned-fields.ts
+  src/modules/nec-importer/import-report.entity.ts
+  src/modules/candidate-filter/public-candidate-filter.ts
+  src/migrations/2026-05-12-01-create-electoral-district.ts
+  src/migrations/2026-05-12-02-create-electoral-district-emd.ts
+  src/migrations/2026-05-12-03-add-raw-nec-fields-to-candidate-profile.ts
+  src/migrations/2026-05-12-04-seed-electoral-districts-from-excel.ts
+  src/migrations/2026-05-12-05-repair-nec-candidate-locations.ts
+  src/migrations/2026-05-12-06-detect-orphan-nec-candidates.ts
+  scripts/seed-data/election-2026-06-03/{sd-uihoe,gusigun-uihoe,gusigun-jang}.xlsx
+  scripts/run-nec-import-once.ts
+  test/e2e/public-listing-consistency.e2e-spec.ts
+
+MODIFIED
+  src/modules/nec-importer/nec-importer.service.ts      (use new normalizer + upsert flow)
+  src/modules/nec-importer/nec-api.client.ts            (parse sgName if present; pass through)
+  src/modules/avatar/avatar.service.ts                  (use profileMatchesPublicFilter)
+  src/modules/user/user.service.ts                      (rewrite listPublicCandidateDirectory WHERE)
+  src/modules/user/entities/candidate-profile.entity.ts (add 4 new fields)
+  src/modules/location/location.module.ts               (export Sigungu/Emd findByName helpers)
+
+UNCHANGED
+  src/modules/election-type/election-type.entity.ts     (one row per sgTypecode globally — current)
+  src/modules/location/entities/{province,sigungu,emd}.entity.ts
+  src/migrations/2000000000000-RepairNecCouncilCandidates.ts  (historical, add comment only)
+9. Open Questions Before Implementation Starts
+These won't block design but will affect normalizer details. Please answer at your convenience:
+
+sgTypecode=7 and sgTypecode=9 sample payloads — you wrote "unknown / no sample returned." Can you hit NEC directly with these typecodes once and paste a single sample of each? Specifically: for typecode 7, does sggName ever include sub-district letters like 종로구가선거구? My §3.2 normalizer assumes yes.
+
+Typecode 4 — can sggName ever differ from wiwName? Your sample has both = 종로구. For 통합 cities like 청주시 (which has 4 districts: 상당/서원/흥덕/청원), what does NEC return for the mayor of 청주시 vs the head of a 구? My normalizer uses sggName ?? wiwName which should be safe but I want to confirm.
+
+Excel file location in repo — OK to commit them to scripts/seed-data/election-2026-06-03/? Or do you prefer they stay outside the repo (mounted at deploy time)? Affects M4 file-reading code.
+
+Importer run cadence after this fix — current is onApplicationBootstrap + daily midnight. With idempotent upserts, bootstrap-time runs become safe to repeat. Keep both, or move to cron-only? My recommendation: keep bootstrap as a "self-heal on deploy" mechanism.
+
+EMD name normalization details — for the Excel parser in M4, please confirm if any emds in the Excel sheets use spellings that differ from your emd.nameKo seed (e.g., 종로1·2·3·4가동 Excel vs 종로1.2.3.4가동 seed, or 제1동 vs 1동). If yes, M4 needs a small normalization layer; if no, exact-match is fine.
+
+Once these are answered I can sharpen the normalizer and M4 implementations specifically; the design above already supports both directions. 

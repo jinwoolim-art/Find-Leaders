@@ -1,0 +1,214 @@
+Current Data Entry Flow
+
+NEC import starts automatically on app bootstrap and every day at midnight from nec-importer.service.ts (line 77).
+
+Config comes from nec.config.ts (line 3):
+
+text
+
+
+
+NEC_IMPORT_ELECTION_ID=20260603
+NEC_IMPORT_TYPECODES=3,4,5,7,9
+
+
+
+For every configured sgTypecode and every local province.nameKo, importer calls NEC API:
+
+text
+
+
+
+sgId = electionId
+sgTypecode = current type code
+sdName = province.nameKo
+
+
+
+The NEC client parses candidates into this shape in nec-api.client.ts (line 139):
+
+text
+
+
+
+huboid, sgId, sgTypecode, name, party(jdName), sdName, sggName, wiwName,
+gender, birthday, age, addr, job, edu, career1, career2, registDate, status
+
+
+
+Important: raw NEC sgName is not currently parsed or stored. Our election type is derived only from sgTypecode.
+
+For each candidate, importer checks user.necHuboid = huboid. If it already exists, it skips the row completely. It does not update/repair existing records.
+
+If new, it creates:
+
+text
+
+
+
+ElectionType:
+  code = nec-{sgTypecode}
+  name = hardcoded label from NEC_TYPE_LABELS
+
+User:
+  displayName = candidate.name
+  accountType = HOST/CANDIDATE
+  electionRole = CANDIDATE
+  electionTypeId = resolved ElectionType
+  necHuboid = NEC huboid
+  lang = ko
+
+CandidateProfile:
+  userId = user.id
+  provinceId = current province.id
+  sigunguId = resolved from NEC location name
+  emdId = null
+  party = candidate.party
+  age = candidate.age
+  slogan/greeting/symbolNumber = null
+
+CandidateProfileEducation:
+  one row from candidate.edu
+
+CandidateProfileCareer:
+  rows from candidate.career1 and career2
+
+Avatar:
+  candidateId = user.id
+  displayName = candidate.name
+  description = party/job/address
+  visibilityStatus = PUBLIC
+  verificationStatus = PUBLISHED
+  isActiveVersion = true
+  chatEnabled = false
+
+
+
+Location resolution is here: nec-importer.service.ts (line 274)
+
+ts
+
+
+
+const isCouncilType = candidate.sgTypecode === '5' || candidate.sgTypecode === '7';
+const nameToResolve = (isCouncilType ? candidate.wiwName : candidate.sggName)?.trim();
+
+
+
+Then it exact-matches:
+
+text
+
+
+
+sigungu.provinceId = province.id
+sigungu.nameKo = nameToResolve
+
+
+
+So any naming mismatch leaves candidate_profile.sigunguId = null.
+
+Public Avatar List Flow
+
+Endpoint:
+
+text
+
+
+
+GET /api/v1/avatars
+
+
+
+Controller passes query directly to AvatarService.listPublicApproved.
+
+Required filters:
+
+text
+
+
+
+electionTypeId
+provinceId
+optional sigunguId
+optional emdId
+
+
+
+Avatar list loads all public/published/active avatars, then filters in memory by:
+
+text
+
+
+
+candidate.electionTypeId === query.electionTypeId
+candidateProfile location matches query
+election type is currently active
+
+
+
+Relevant code: avatar.service.ts (line 783)
+
+Avatar location matching is strict: if query has sigunguId, profile must have the same sigunguId. If profile has null sigunguId, it is excluded. See avatar.service.ts (line 317).
+
+Public Candidate List Flow
+
+Endpoint:
+
+text
+
+
+
+GET /api/v1/candidates
+
+
+
+It uses UserService.listPublicCandidateDirectory.
+
+It joins candidate users with public/published/active avatars and filters by election type and profile location.
+
+But candidate-directory location matching is permissive. If candidate_profile.provinceId or sigunguId is null, it treats that as match-any. Query also says:
+
+sql
+
+
+
+(cp.sigunguId IS NULL OR cp.sigunguId = :sigunguId)
+
+
+
+Relevant code: user.service.ts (line 814) and user.service.ts (line 1402).
+
+This means the two public flows can disagree:
+
+text
+
+
+
+/avatar list: null sigunguId is excluded when sigungu filter selected
+/candidate list: null sigunguId is included when sigungu filter selected
+
+
+
+That can explain tester reports where selected filters return wrong/different avatar and candidate public lists.
+
+Known Risk Points
+
+
+sgName is not parsed/stored from NEC, although tester is referring to sgname. We only map sgTypecode to generic ElectionType rows like nec-3, nec-4, etc.
+
+
+
+Existing NEC records are never updated because necHuboid causes skip. If earlier imports normalized location incorrectly, future importer runs will not fix them.
+
+
+
+Typecode 5 and 7 council races depend on wiwName for sigungu matching. There is already a repair migration saying previous data for 5/7 was stale and should be deleted/reimported: RepairNecCouncilCandidates.ts (line 4). If migration was not applied or import did not rerun, stale null sigunguId data remains.
+
+
+
+Matching against local sigungu.nameKo is exact. NEC names and local seed names may differ in spelling, suffix, district format, spaces, or special cases.
+
+
+
+Candidate public list and avatar public list use different location semantics, especially for null profile location fields.
