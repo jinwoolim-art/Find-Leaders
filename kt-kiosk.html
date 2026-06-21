@@ -189,9 +189,10 @@
                 <span class="material-symbols-outlined text-[56px] opacity-50">smart_toy</span>
                 <p class="text-[12px] text-slate-300">후보자 아바타 캐릭터</p>
             </div>
-            <div id="detail-keywords" class="absolute top-3 left-3 z-10"></div>
             <div id="detail-avatar-name" class="absolute bottom-3 right-3"></div>
         </div>
+        <!-- 공약 카드 (아바타 아래 — 캐릭터와 겹치지 않게 분리) -->
+        <div id="detail-keywords" class="px-4 pt-2.5 -mt-3 relative z-10"></div>
 
         <!-- 음성 대화 (메인) — 말하면 자막으로 표시 -->
         <div id="mode-voice" class="flex-1 min-h-0 flex flex-col bg-background-light overflow-hidden">
@@ -509,12 +510,9 @@ function openPerson(p, from) {
         : '';
     document.getElementById('detail-slogan').textContent = ex.slogan ? `"${ex.slogan}"` : '';
     document.getElementById('detail-keywords').innerHTML = (ex.keywords && ex.keywords.length)
-        ? `<div class="rounded-2xl bg-white/90 backdrop-blur-md shadow-xl border border-white/60 p-3 w-[150px]">
-               <div class="mb-2">
-                   <p class="text-[9px] font-bold text-amber-500 flex items-center gap-0.5"><span class="material-symbols-outlined text-[12px]">elderly</span>어르신을 위한</p>
-                   <p class="text-[13px] font-black text-slate-800 leading-tight">${p.name.slice(1)}의 약속</p>
-               </div>
-               <div class="space-y-1.5">${ex.keywords.map((k, i) => { const c = KW_COLORS[i % KW_COLORS.length]; return `<div class="text-[12px] font-black px-2.5 py-1.5 rounded-lg leading-tight" style="background:${c}1f;color:${c}">${k}</div>`; }).join('')}</div>
+        ? `<div class="rounded-2xl bg-white shadow-lg border border-slate-100 px-3.5 py-2.5">
+               <p class="text-[12px] font-black text-slate-800 flex items-center gap-1 mb-2"><span class="material-symbols-outlined text-[15px] text-amber-500">elderly</span><span class="text-amber-500">어르신을 위한</span> ${p.name.slice(1)}의 약속</p>
+               <div class="flex gap-2 overflow-x-auto scrollbar-hide">${ex.keywords.map((k, i) => { const c = KW_COLORS[i % KW_COLORS.length]; return `<span class="shrink-0 text-[12px] font-black px-3 py-1.5 rounded-lg whitespace-nowrap" style="background:${c}1f;color:${c}">${k}</span>`; }).join('')}</div>
            </div>`
         : '';
     document.getElementById('detail-avatar-name').innerHTML = `<span class="inline-block bg-black/45 backdrop-blur-sm text-white font-medium text-[12px] px-2.5 py-1 rounded-md">${p.name} ${p.roleLabel}</span>`;
