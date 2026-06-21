@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KT 제안서 | 우리 동네 일꾼 — 어르신 맞춤 시민 소통 키오스크</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Public+Sans:wght@600;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: {
+    colors: { kt: "#0d2b6b", ktblue: "#2563eb", accent: "#e2231a" },
+    fontFamily: { display: ["Public Sans","Noto Sans KR","sans-serif"] },
+} } };
+</script>
+<style>
+  body { font-family:'Noto Sans KR',sans-serif; color:#0f172a; }
+  .material-symbols-outlined { font-variation-settings:'FILL' 1; vertical-align:middle; }
+  .slide { min-height:100vh; scroll-snap-align:start; }
+  html { scroll-snap-type:y proximity; scroll-behavior:smooth; }
+  .phone { border-radius:30px; border:9px solid #1e293b; box-shadow:0 25px 60px -20px rgba(0,0,0,.45); overflow:hidden; background:#000; }
+  .tag { font-size:12px; font-weight:800; letter-spacing:.04em; }
+  @media print { .slide { min-height:auto; page-break-after:always; } html{scroll-snap-type:none;} }
+</style>
+</head>
+<body class="bg-slate-50">
+
+<!-- 진행 네비 -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur border-b border-slate-200 px-5 py-2.5 flex items-center justify-between text-sm">
+  <div class="flex items-center gap-2 font-display font-black">
+    <span class="bg-kt text-white rounded-md px-2 py-0.5 text-xs">KT</span>
+    <span class="text-slate-700">우리 동네 일꾼 · 제안서</span>
+  </div>
+  <div class="hidden sm:flex gap-4 text-slate-500 font-bold text-[13px]">
+    <a href="#s2" class="hover:text-ktblue">배경</a>
+    <a href="#s3" class="hover:text-ktblue">솔루션</a>
+    <a href="#s4" class="hover:text-ktblue">가치</a>
+    <a href="#s5" class="hover:text-ktblue">성과</a>
+  </div>
+</nav>
+
+<!-- ===== S1 표지 ===== -->
+<section class="slide flex items-center bg-gradient-to-br from-kt via-[#123a8a] to-ktblue text-white px-6 pt-16">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center w-full">
+    <div>
+      <p class="tag text-blue-200 mb-4">KT 제휴·도입 제안 (초안)</p>
+      <h1 class="font-display font-black text-4xl sm:text-5xl leading-tight">우리 동네 일꾼</h1>
+      <p class="text-xl sm:text-2xl font-bold mt-3 text-blue-100">어르신 맞춤 시민 소통 키오스크</p>
+      <p class="text-lg mt-6 leading-relaxed text-blue-50/90">
+        “말만 하면, 우리 동네 당선인과 공공기관이 답합니다.”<br/>
+        디지털이 어려운 어르신도 <b class="text-white">음성</b>으로 우리 동네
+        시·도지사·구청장·교육감을 만나고, 지자체·교육청 소식을 받아봅니다.
+      </p>
+      <div class="flex flex-wrap gap-2 mt-7">
+        <span class="bg-white/15 rounded-full px-3.5 py-1.5 text-sm font-bold">🎙️ 음성 우선</span>
+        <span class="bg-white/15 rounded-full px-3.5 py-1.5 text-sm font-bold">🤖 AI 아바타 대화</span>
+        <span class="bg-white/15 rounded-full px-3.5 py-1.5 text-sm font-bold">🏛️ 공공기관 홍보</span>
+        <span class="bg-white/15 rounded-full px-3.5 py-1.5 text-sm font-bold">👵 디지털 포용</span>
+      </div>
+    </div>
+    <div class="flex justify-center gap-4">
+      <div class="phone w-[210px] rotate-[-4deg]"><img src="assets/proposal/s-menu.png" alt="메뉴 화면"/></div>
+      <div class="phone w-[210px] rotate-[4deg] mt-10 hidden sm:block"><img src="assets/proposal/s-voice.png" alt="음성 대화 화면"/></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== S2 배경/취지 ===== -->
+<section id="s2" class="slide flex items-center px-6 py-20">
+  <div class="max-w-5xl mx-auto w-full">
+    <p class="tag text-ktblue mb-2">01 · 배경 및 취지</p>
+    <h2 class="font-display font-black text-3xl sm:text-4xl mb-3">왜 지금 필요한가</h2>
+    <p class="text-slate-500 text-lg mb-10">행정·복지 정보는 넘치지만, 정작 어르신에게 닿지 않습니다.</p>
+    <div class="grid md:grid-cols-3 gap-5">
+      <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+        <span class="material-symbols-outlined text-ktblue text-4xl">elderly</span>
+        <h3 class="font-black text-lg mt-3">어르신 디지털 소외</h3>
+        <p class="text-slate-600 mt-2 leading-relaxed">행정·복지가 앱·키보드 중심이라 접근이 어렵고, “어디에 물어야 할지”조차 모릅니다.</p>
+      </div>
+      <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+        <span class="material-symbols-outlined text-ktblue text-4xl">campaign</span>
+        <h3 class="font-black text-lg mt-3">선거 후 끊기는 소통</h3>
+        <p class="text-slate-600 mt-2 leading-relaxed">당선 후 공약·활동을 접할 창구가 없고, 당선인도 상시 소통 채널이 부족합니다.</p>
+      </div>
+      <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+        <span class="material-symbols-outlined text-ktblue text-4xl">apartment</span>
+        <h3 class="font-black text-lg mt-3">공공정보 전달의 한계</h3>
+        <p class="text-slate-600 mt-2 leading-relaxed">예방접종·난방비·늘봄학교 같은 생활 소식이 현수막·공문에 머물러 도달률이 낮습니다.</p>
+      </div>
+    </div>
+    <div class="mt-8 bg-kt text-white rounded-3xl p-6 text-lg font-bold leading-relaxed">
+      취지 — 어르신이 <b class="text-blue-200">말 한마디로</b> 우리 동네 일꾼·공공 서비스에 닿게 하고, 기관은 주민에게 <b class="text-blue-200">직접·반복 노출</b>되는 채널을 갖습니다.
+    </div>
+  </div>
+</section>
+
+<!-- ===== S3 솔루션 ===== -->
+<section id="s3" class="slide px-6 py-20 bg-white">
+  <div class="max-w-6xl mx-auto w-full">
+    <p class="tag text-ktblue mb-2">02 · 솔루션</p>
+    <h2 class="font-display font-black text-3xl sm:text-4xl mb-3">어르신 눈높이의 음성 키오스크</h2>
+    <p class="text-slate-500 text-lg mb-10">글자 크게 · 음성 우선 · 단계 최소화로 설계했습니다.</p>
+
+    <div class="grid lg:grid-cols-3 gap-8 items-start">
+      <div class="space-y-5">
+        <div class="flex gap-3"><span class="bg-blue-100 text-ktblue font-black rounded-full w-8 h-8 flex items-center justify-center shrink-0">1</span>
+          <div><h3 class="font-black">지역 자동 고정</h3><p class="text-slate-600 text-sm mt-1">설치 지역으로 고정되어 어르신은 선택 없이 우리 동네 화면을 봅니다.</p></div></div>
+        <div class="flex gap-3"><span class="bg-blue-100 text-ktblue font-black rounded-full w-8 h-8 flex items-center justify-center shrink-0">2</span>
+          <div><h3 class="font-black">우리 동네 소식 (기관 홍보)</h3><p class="text-slate-600 text-sm mt-1">보건소·구청·교육청 등 <b>발신 기관 라벨</b>과 함께 생활 소식을 노출합니다.</p></div></div>
+        <div class="flex gap-3"><span class="bg-blue-100 text-ktblue font-black rounded-full w-8 h-8 flex items-center justify-center shrink-0">3</span>
+          <div><h3 class="font-black">🎙️ 음성으로 일꾼 찾기</h3><p class="text-slate-600 text-sm mt-1">고민을 말하면 시·도지사·구청장·교육감 중 <b>담당자를 자동 분류·연결</b>합니다.</p></div></div>
+        <div class="flex gap-3"><span class="bg-blue-100 text-ktblue font-black rounded-full w-8 h-8 flex items-center justify-center shrink-0">4</span>
+          <div><h3 class="font-black">🤖 AI 아바타 음성 대화</h3><p class="text-slate-600 text-sm mt-1">당선인 아바타와 음성 대화, 답변은 <b>음성+자막</b> 동시 제공. 대화는 텍스트로도 확인.</p></div></div>
+        <p class="text-[12px] text-slate-400 leading-snug pt-1">※ AI 아바타는 후보자 제공 자료를 학습한 가상 안내이며, 본인의 실제 음성·발언이 아님을 명확히 고지합니다.</p>
+      </div>
+      <div class="phone w-full max-w-[280px] mx-auto"><img src="assets/proposal/s-menu.png" alt="메뉴"/></div>
+      <div class="phone w-full max-w-[280px] mx-auto"><img src="assets/proposal/s-voice.png" alt="음성 대화"/></div>
+    </div>
+
+    <div class="grid sm:grid-cols-3 gap-5 mt-10">
+      <div class="phone w-full max-w-[230px] mx-auto"><img src="assets/proposal/s-bot.png" alt="안내봇"/></div>
+      <div class="phone w-full max-w-[230px] mx-auto"><img src="assets/proposal/s-find.png" alt="일꾼 찾기"/></div>
+      <div class="phone w-full max-w-[230px] mx-auto"><img src="assets/proposal/s-region.png" alt="지역 선택"/></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== S4 가치 ===== -->
+<section id="s4" class="slide flex items-center px-6 py-20">
+  <div class="max-w-6xl mx-auto w-full">
+    <p class="tag text-ktblue mb-2">03 · 이해관계자별 가치</p>
+    <h2 class="font-display font-black text-3xl sm:text-4xl mb-10">모두에게 이로운 구조</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-3xl p-7 shadow-sm border border-slate-100">
+        <div class="text-3xl">👵</div>
+        <h3 class="font-black text-xl mt-2">어르신 (이용자)</h3>
+        <ul class="text-slate-600 mt-4 space-y-2 text-[15px] leading-relaxed list-disc pl-4">
+          <li>키보드 없이 <b>음성만으로</b> 접근</li>
+          <li>담당자를 몰라도 안내봇이 연결</li>
+          <li>큰 글자·자막으로 정보 격차 해소</li>
+        </ul>
+      </div>
+      <div class="bg-kt text-white rounded-3xl p-7 shadow-lg ring-4 ring-ktblue/20">
+        <div class="text-3xl">🏛️</div>
+        <h3 class="font-black text-xl mt-2">공공기관 <span class="text-blue-200 text-sm align-middle">핵심 고객</span></h3>
+        <ul class="text-blue-50 mt-4 space-y-2 text-[15px] leading-relaxed list-disc pl-4">
+          <li>기관 로고·이름이 <b class="text-white">주인공으로 노출</b></li>
+          <li>생활정책 <b class="text-white">도달률 상승</b></li>
+          <li>주민 상시 소통 → 행정 신뢰 제고</li>
+          <li>입점·소식 게재 기반 <b class="text-white">B2G 제휴</b></li>
+        </ul>
+      </div>
+      <div class="bg-white rounded-3xl p-7 shadow-sm border border-slate-100">
+        <div class="text-3xl">📡</div>
+        <h3 class="font-black text-xl mt-2">KT</h3>
+        <ul class="text-slate-600 mt-4 space-y-2 text-[15px] leading-relaxed list-disc pl-4">
+          <li><b>디지털 포용(ESG)</b> 대표 사례</li>
+          <li>지점·통신·키오스크 인프라 결합</li>
+          <li>지자체·교육청 <b>B2G 신사업 채널</b></li>
+          <li>AI 음성·클라우드 역량의 공익 쇼케이스</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== S5 성과/로드맵 ===== -->
+<section id="s5" class="slide flex items-center px-6 py-20 bg-white">
+  <div class="max-w-5xl mx-auto w-full">
+    <p class="tag text-ktblue mb-2">04 · 기대 성과 및 실행 방안</p>
+    <h2 class="font-display font-black text-3xl sm:text-4xl mb-10">검증 → 확산 → 정식</h2>
+
+    <div class="grid md:grid-cols-2 gap-6 mb-10">
+      <div class="bg-slate-50 rounded-3xl p-6 border border-slate-100">
+        <h3 class="font-black text-lg mb-3">기대 성과</h3>
+        <p class="text-slate-600 text-[15px] leading-relaxed"><b class="text-slate-800">정성</b> · 어르신 정보 접근성 향상, 당선인-주민 소통 상시화, 공공정보 도달률 개선</p>
+        <p class="text-slate-600 text-[15px] leading-relaxed mt-2"><b class="text-slate-800">정량</b> · 이용·대화 건수, 소식 노출·연결 수, 입점 기관 수·재게재율, 설치 대수, 만족도</p>
+      </div>
+      <div class="bg-slate-50 rounded-3xl p-6 border border-slate-100">
+        <h3 class="font-black text-lg mb-3">KT 역할(제안)</h3>
+        <ul class="text-slate-600 text-[15px] leading-relaxed list-disc pl-4 space-y-1.5">
+          <li>키오스크 HW 공급·설치, 통신·클라우드 인프라</li>
+          <li>전국 지점·지자체 네트워크로 설치처 확보</li>
+          <li>AI 음성(STT/TTS)·운영 안정성 지원</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="overflow-hidden rounded-3xl border border-slate-200">
+      <table class="w-full text-left text-[15px]">
+        <thead class="bg-kt text-white font-bold"><tr><th class="px-5 py-3">단계</th><th class="px-5 py-3">기간(예시)</th><th class="px-5 py-3">내용</th></tr></thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr><td class="px-5 py-3 font-black text-ktblue">PoC</td><td class="px-5 py-3">1~2개월</td><td class="px-5 py-3 text-slate-600">1개 지자체 시범 설치, 어르신 사용성 검증</td></tr>
+          <tr><td class="px-5 py-3 font-black text-ktblue">확산</td><td class="px-5 py-3">3~6개월</td><td class="px-5 py-3 text-slate-600">자치구·교육청 입점 확대, 소식·홍보 운영</td></tr>
+          <tr><td class="px-5 py-3 font-black text-ktblue">정식</td><td class="px-5 py-3">6개월~</td><td class="px-5 py-3 text-slate-600">권역별 키오스크 망 구축, 정량 성과 리포트</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== S6 데모/CTA ===== -->
+<section class="slide flex items-center px-6 py-20 bg-gradient-to-br from-kt to-ktblue text-white">
+  <div class="max-w-4xl mx-auto w-full text-center">
+    <p class="tag text-blue-200 mb-3">지금 바로 시연 가능합니다</p>
+    <h2 class="font-display font-black text-3xl sm:text-4xl mb-6">데모는 이미 동작합니다</h2>
+    <div class="grid sm:grid-cols-3 gap-5 text-left mb-10">
+      <div class="bg-white/10 rounded-2xl p-5"><p class="text-3xl font-black">259명</p><p class="text-blue-100 text-sm mt-1">제9회 지방선거 당선인 데이터·사진 적재 (자료: 중앙선관위)</p></div>
+      <div class="bg-white/10 rounded-2xl p-5"><p class="text-3xl font-black">3 + 1</p><p class="text-blue-100 text-sm mt-1">시·도지사·구청장·교육감 + 안내봇 음성 분류</p></div>
+      <div class="bg-white/10 rounded-2xl p-5"><p class="text-3xl font-black">즉시</p><p class="text-blue-100 text-sm mt-1">웹 프로토타입 시연 — 음성 대화·소식·아바타 구현 완료</p></div>
+    </div>
+    <p class="text-blue-100">함께 어르신을 위한 디지털 포용을 만들어 가겠습니다.</p>
+    <p class="text-blue-300/70 text-xs mt-8">※ 본 문서는 내부 검토용 초안입니다. 수치·모델·기관명은 협의 단계에서 확정합니다.</p>
+  </div>
+</section>
+
+</body>
+</html>

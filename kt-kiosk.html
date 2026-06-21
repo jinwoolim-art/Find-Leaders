@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html class="light" lang="ko">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <title>KT Kiosk | 우리 동네 일꾼 소통 키오스크 (시범)</title>
+    <meta name="theme-color" content="#2563eb"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Public+Sans:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script src="assets/winners.js"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: {
+                colors: { primary: "#2563eb", "primary-dark": "#1d4ed8", "background-light": "#f4f7fc" },
+                fontFamily: { display: ["Public Sans", "Noto Sans KR", "sans-serif"] },
+                borderRadius: { "2xl": "1rem", "3xl": "1.5rem", "4xl": "2rem" },
+            } },
+        };
+    </script>
+    <style>
+        body { font-family: 'Noto Sans KR', 'Public Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .page { display: none; flex-direction: column; min-height: 100vh; }
+        .page.active { display: flex; }
+        .page-enter { animation: fadeIn .3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+        .seg { background: #eef2f9; padding: 5px; border-radius: 14px; display: flex; }
+        .seg-item { flex: 1; text-align: center; padding: 12px 0; font-weight: 700; border-radius: 10px; transition: .2s; cursor: pointer; color: #64748b; }
+        .seg-item.active { background: #fff; color: #2563eb; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+        .chat-typing span { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; animation: typing 1.4s infinite; }
+        .chat-typing span:nth-child(2) { animation-delay: .2s; }
+        .chat-typing span:nth-child(3) { animation-delay: .4s; }
+        @keyframes typing { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-5px); } }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { scrollbar-width: none; }
+        .gated { opacity: .45; pointer-events: none; filter: grayscale(.3); }
+        /* 마이크 천천히 퍼지는 파장 */
+        @keyframes pulseRing { 0% { transform: scale(.85); opacity: .55; } 80%, 100% { transform: scale(1.7); opacity: 0; } }
+        .pulse-ring { animation: pulseRing 2.6s cubic-bezier(0.2,0.6,0.3,1) infinite; }
+        select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%232563eb' stroke-width='2.5'%3E%3Cpath d='M5 8l5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right .7rem center; }
+    </style>
+</head>
+<body class="bg-background-light text-slate-900">
+
+<div id="app" class="relative mx-auto w-full max-w-[520px] min-h-screen bg-background-light shadow-2xl overflow-hidden">
+
+    <!-- ==================== P0: 지역 선택 (설치 시 이 페이지만 제거) ==================== -->
+    <div id="page-region" class="page active">
+        <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-slate-200 px-5 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="h-10 w-10 rounded-2xl bg-gradient-to-br from-primary to-blue-500 flex items-center justify-center text-white font-display font-black text-lg">KT</div>
+                <div>
+                    <h1 class="text-lg font-black leading-tight">우리 동네 일꾼</h1>
+                    <p class="text-[11px] text-slate-400 leading-tight">시민 소통 키오스크 · 시범</p>
+                </div>
+            </div>
+            <span class="material-symbols-outlined text-slate-300 text-[28px]">campaign</span>
+        </header>
+
+        <main class="flex-1 flex flex-col px-5 pt-6 pb-8">
+            <div class="text-center mb-6 mt-4">
+                <div class="mx-auto h-16 w-16 rounded-3xl bg-primary/10 flex items-center justify-center mb-3"><span class="material-symbols-outlined text-primary text-[36px]">location_on</span></div>
+                <h2 class="text-2xl font-black text-slate-800">어느 지역이신가요?</h2>
+                <p class="text-sm text-slate-400 mt-1.5">거주하시는 지역을 선택해 주세요</p>
+            </div>
+            <section class="rounded-3xl bg-white border border-slate-200 p-4 shadow-sm">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-sm font-bold text-slate-700">지역 선택</span>
+                    <span class="text-[10px] font-bold text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full">데모용 · 설치 시 생략</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <select id="sel-sido" class="w-full rounded-xl border-slate-200 bg-slate-50 text-sm font-bold text-slate-800 py-3 pl-3.5 pr-9 appearance-none focus:ring-2 focus:ring-primary"></select>
+                    <select id="sel-gu" class="w-full rounded-xl border-slate-200 bg-slate-50 text-sm font-bold text-slate-800 py-3 pl-3.5 pr-9 appearance-none focus:ring-2 focus:ring-primary"></select>
+                </div>
+                <p id="region-current" class="text-[12px] text-slate-400 mt-2.5 hidden">선택됨: <b class="text-primary"></b></p>
+            </section>
+            <div class="flex-1 min-h-[24px]"></div>
+            <button id="start-btn" onclick="goToMenu()" disabled class="w-full rounded-2xl bg-primary text-white py-4 font-black text-lg shadow-lg shadow-primary/25 disabled:opacity-40 disabled:shadow-none transition flex items-center justify-center gap-2">시작하기 <span class="material-symbols-outlined">arrow_forward</span></button>
+            <p id="start-hint" class="text-center text-[12px] text-amber-600 font-medium mt-2.5">지역을 선택하면 시작할 수 있어요</p>
+        </main>
+    </div>
+
+    <!-- ==================== P1: 메뉴 (음성/버튼 일꾼찾기) ==================== -->
+    <div id="page-home" class="page">
+        <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-slate-200 px-5 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="h-10 w-10 rounded-2xl bg-gradient-to-br from-primary to-blue-500 flex items-center justify-center text-white font-display font-black text-lg">KT</div>
+                <div>
+                    <h1 class="text-base font-black leading-tight">우리 동네 일꾼</h1>
+                    <p id="home-region" class="text-[11px] text-primary font-bold leading-tight"></p>
+                </div>
+            </div>
+            <button onclick="changeRegion()" class="text-[12px] font-bold text-slate-500 bg-slate-100 rounded-full px-3 py-1.5 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">sync_alt</span>지역 변경</button>
+        </header>
+        <main class="flex-1 px-5 pt-5 pb-10 space-y-5">
+            <!-- 이번 주 우리 동네 소식 -->
+            <section class="space-y-2.5">
+                <p class="text-[15px] font-bold text-slate-700 px-1 flex items-center gap-2"><span class="relative inline-flex items-center justify-center w-[18px] h-[18px]"><span class="material-symbols-outlined absolute animate-ping" style="font-size:18px;color:#ec4899;opacity:.55;font-variation-settings:'FILL' 1">favorite</span><span class="material-symbols-outlined relative" style="font-size:17px;color:#ec4899;font-variation-settings:'FILL' 1">favorite</span></span>이번 주 우리 동네 소식</p>
+                <div id="news-cards" class="flex gap-3 overflow-x-auto scrollbar-hide pb-1"></div>
+            </section>
+
+            <div class="h-3 border-t border-slate-100 mt-3"></div>
+            <p class="text-[15px] font-bold text-slate-700 px-1 mt-3">어떻게 찾으시겠어요?</p>
+
+            <!-- 음성으로 일꾼 찾기 -->
+            <section onclick="openBot()" class="rounded-3xl bg-gradient-to-br from-primary to-blue-500 text-white p-5 shadow-xl shadow-primary/25 cursor-pointer active:scale-[.99] transition">
+                <div class="flex items-center gap-3.5">
+                    <div class="h-14 w-14 rounded-2xl bg-white/20 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[32px]">mic</span></div>
+                    <div class="flex-1">
+                        <p class="font-black text-xl leading-tight">음성으로 일꾼 찾기</p>
+                        <p class="text-[13px] text-white/85 mt-0.5">말씀하시면 담당 일꾼을 찾아 연결해 드려요</p>
+                    </div>
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                </div>
+                <div class="flex gap-2 mt-4 flex-wrap">
+                    <button onclick="event.stopPropagation();askBot('집앞 쓰레기 수거가 잘 안 돼요')" class="text-[12px] font-medium bg-white/15 hover:bg-white/25 rounded-full px-3 py-1.5">🗑️ 쓰레기·청소</button>
+                    <button onclick="event.stopPropagation();askBot('우리 아이 학교 문제로 상담하고 싶어요')" class="text-[12px] font-medium bg-white/15 hover:bg-white/25 rounded-full px-3 py-1.5">🏫 학교·교육</button>
+                    <button onclick="event.stopPropagation();askBot('지하철·광역버스를 늘려주세요')" class="text-[12px] font-medium bg-white/15 hover:bg-white/25 rounded-full px-3 py-1.5">🚇 교통</button>
+                </div>
+            </section>
+
+            <!-- 버튼으로 일꾼 찾기 -->
+            <button onclick="openFind()" class="w-full rounded-3xl bg-white border border-slate-200 p-5 shadow-sm flex items-center gap-4 active:scale-[.99] transition hover:border-primary/40 hover:shadow-md">
+                <div class="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-primary text-[30px]">touch_app</span></div>
+                <div class="flex-1 text-left">
+                    <p class="font-black text-lg text-slate-800">버튼으로 일꾼 찾기</p>
+                    <p class="text-[13px] text-slate-400 mt-0.5">시·도지사 · 구청장·시장·군수 · 교육감 직접 선택</p>
+                </div>
+                <span class="material-symbols-outlined text-slate-300">chevron_right</span>
+            </button>
+
+        </main>
+    </div>
+
+    <!-- ==================== P-find: 우리동네 일꾼 찾기 ==================== -->
+    <div id="page-find" class="page">
+        <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 px-3 py-3 flex items-center gap-2">
+            <button onclick="goHome()" class="h-11 w-11 flex items-center justify-center rounded-full hover:bg-slate-100"><span class="material-symbols-outlined text-slate-700">arrow_back</span></button>
+            <div><p class="font-bold text-slate-800 leading-tight">우리동네 일꾼 찾기</p><p id="find-region" class="text-[11px] text-slate-400 leading-tight"></p></div>
+        </header>
+        <main class="flex-1 px-5 pt-5 pb-10 space-y-5">
+            <div class="px-1">
+                <p class="text-[13px] text-slate-400 font-medium">이 지역의 일꾼</p>
+                <h2 id="find-title" class="text-2xl font-black text-slate-800 mt-0.5"></h2>
+                <p class="text-[12px] text-slate-400 mt-1">카드를 누르면 일꾼과 대화하거나 이력을 볼 수 있어요</p>
+            </div>
+            <section id="find-cards" class="space-y-3.5"></section>
+        </main>
+    </div>
+
+    <!-- ==================== P-bot: 안내봇 ==================== -->
+    <div id="page-bot" class="page">
+        <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 px-3 py-3 flex items-center gap-2">
+            <button onclick="goHome()" class="h-11 w-11 flex items-center justify-center rounded-full hover:bg-slate-100"><span class="material-symbols-outlined text-slate-700">arrow_back</span></button>
+            <div class="flex items-center gap-2">
+                <div class="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-[22px]">support_agent</span></div>
+                <div><p class="font-bold text-slate-800 leading-tight">일꾼 안내봇</p><p id="bot-region" class="text-[11px] text-slate-400 leading-tight"></p></div>
+            </div>
+        </header>
+        <div id="bot-log" class="flex-1 min-h-0 overflow-y-auto scrollbar-hide px-5 py-4 space-y-3"></div>
+        <!-- 하단: 왼쪽 예시 질문 + 오른쪽 마이크(파장) -->
+        <div class="bg-white border-t border-slate-100 px-4 pt-3 pb-3 flex flex-col items-center gap-3">
+            <div class="flex flex-col items-center">
+                <div class="relative w-[76px] h-[76px] flex items-center justify-center">
+                    <span class="absolute inset-0 rounded-full bg-primary/40 pulse-ring"></span>
+                    <span class="absolute inset-0 rounded-full bg-primary/30 pulse-ring" style="animation-delay:1.3s"></span>
+                    <button id="bot-voice-btn" onclick="startBotVoice()" class="relative w-[72px] h-[72px] rounded-full bg-primary text-white shadow-xl shadow-primary/30 flex items-center justify-center active:scale-95 transition"><span class="material-symbols-outlined text-4xl">mic</span></button>
+                </div>
+                <p id="bot-voice-status" class="text-[15px] font-bold text-slate-600 mt-2 text-center leading-tight">탭하여 말하기</p>
+            </div>
+            <div id="bot-chips" class="flex gap-2 overflow-x-auto scrollbar-hide w-full justify-center"></div>
+        </div>
+    </div>
+
+    <!-- ==================== P-detail: 대화하기 (채팅/음성) ==================== -->
+    <div id="page-detail" class="page">
+        <header class="sticky top-0 z-40 bg-white border-b border-slate-200 px-3 py-1.5 flex items-center gap-2.5">
+            <button onclick="backFromDetail()" class="h-9 w-9 flex items-center justify-center rounded-full hover:bg-slate-100 shrink-0"><span class="material-symbols-outlined text-slate-700">arrow_back</span></button>
+            <div id="detail-symbol" class="shrink-0"></div>
+            <p id="detail-slogan" class="text-[13px] font-bold text-slate-500 truncate flex-1 min-w-0"></p>
+        </header>
+
+        <!-- 아바타 영역 (일꾼 아바타 캐릭터 자리 — 추후 연결) -->
+        <div class="relative w-full bg-gradient-to-b from-slate-700 to-slate-900 overflow-hidden shrink-0" style="aspect-ratio:16/9">
+            <div id="detail-avatar" class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 gap-2">
+                <span class="material-symbols-outlined text-[56px] opacity-50">smart_toy</span>
+                <p class="text-[12px] text-slate-300">후보자 아바타 캐릭터</p>
+            </div>
+            <div id="detail-keywords" class="absolute top-3 left-3 z-10"></div>
+            <div id="detail-avatar-name" class="absolute bottom-3 right-3"></div>
+        </div>
+
+        <!-- 음성 대화 (메인) — 말하면 자막으로 표시 -->
+        <div id="mode-voice" class="flex-1 min-h-0 flex flex-col bg-background-light overflow-hidden">
+            <div id="voice-caption" class="flex-1 min-h-0 overflow-y-auto scrollbar-hide px-5 py-4 space-y-3"></div>
+            <!-- 하단: 왼쪽 공약 칩(벽돌) + 오른쪽 마이크(파장) -->
+            <div class="bg-white border-t border-slate-100 px-4 pt-3 pb-3 flex flex-col items-center gap-3">
+                <div class="flex flex-col items-center">
+                    <div class="relative w-[76px] h-[76px] flex items-center justify-center">
+                        <span class="absolute inset-0 rounded-full bg-primary/40 pulse-ring"></span>
+                        <span class="absolute inset-0 rounded-full bg-primary/30 pulse-ring" style="animation-delay:1.3s"></span>
+                        <button id="voice-btn" onclick="startVoiceMode()" class="relative w-[72px] h-[72px] rounded-full bg-primary text-white shadow-xl shadow-primary/30 flex items-center justify-center active:scale-95 transition"><span class="material-symbols-outlined text-4xl">mic</span></button>
+                    </div>
+                    <p id="voice-status" class="text-[15px] font-bold text-slate-600 mt-2 text-center leading-tight">탭하여 말하기</p>
+                </div>
+                <div id="voice-chips" class="flex gap-2 overflow-x-auto scrollbar-hide w-full justify-center"></div>
+            </div>
+        </div>
+
+        <!-- 텍스트 기록 (토글로 전환) -->
+        <div id="mode-transcript" class="flex-1 flex flex-col bg-background-light overflow-hidden" style="display:none">
+            <div id="chat-log" class="flex-1 overflow-y-auto scrollbar-hide px-5 py-4 space-y-3"></div>
+        </div>
+
+        <!-- 하단 토글 버튼 -->
+        <button id="transcript-toggle" onclick="toggleTranscript()" class="mx-4 mt-2 mb-3 py-3 rounded-xl bg-slate-100 text-slate-700 font-bold text-sm flex items-center justify-center gap-1.5 active:scale-[.99] transition"><span class="material-symbols-outlined text-[18px]">subject</span><span id="transcript-toggle-label">대화 내용 텍스트로 보기</span></button>
+    </div>
+
+    <!-- ==================== P-bio: 상세보기 (이력) ==================== -->
+    <div id="page-bio" class="page">
+        <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 px-3 py-3 flex items-center gap-2">
+            <button onclick="backFromBio()" class="h-11 w-11 flex items-center justify-center rounded-full hover:bg-slate-100"><span class="material-symbols-outlined text-slate-700">arrow_back</span></button>
+            <span id="bio-head" class="font-bold text-slate-800"></span>
+        </header>
+        <div id="bio-hero" class="px-5 pt-5 pb-4 bg-gradient-to-b from-white to-background-light"></div>
+        <div id="bio-body" class="flex-1 px-5 pt-2 pb-10 space-y-5 overflow-y-auto"></div>
+    </div>
+</div>
+
+<script>
+const W = window.KT_WINNERS;
+const SHORT = {
+    '서울특별시':'서울','부산광역시':'부산','대구광역시':'대구','인천광역시':'인천',
+    '대전광역시':'대전','울산광역시':'울산','광주광역시':'광주','세종특별자치시':'세종',
+    '경기도':'경기','강원특별자치도':'강원','충청북도':'충북','충청남도':'충남',
+    '전북특별자치도':'전북','전라남도':'전남','경상북도':'경북','경상남도':'경남',
+    '제주특별자치도':'제주','전남광주통합특별시':'전남·광주',
+};
+const PARTY_STYLE = {
+    '더불어민주당': { bg:'#152484', fg:'#fff' }, '국민의힘': { bg:'#E61E2B', fg:'#fff' },
+    '개혁신당': { bg:'#FF7210', fg:'#fff' }, '진보당': { bg:'#D6001C', fg:'#fff' },
+    '조국혁신당': { bg:'#0073CF', fg:'#fff' },
+};
+const partyStyle = (p) => PARTY_STYLE[p] || { bg:'#64748b', fg:'#fff' };
+const initials = (n) => (n||'').slice(0,1);
+const shortTitle = (p) => {
+    const r = p.roleLabel || '';
+    if (r.endsWith('도지사')) return '도지사';
+    if (r.endsWith('교육감')) return '교육감';
+    if (r.endsWith('구청장')) return '구청장';
+    if (r.endsWith('군수')) return '군수';
+    if (r.endsWith('시장')) return '시장';
+    return '';
+};
+
+let cur = { sido: '', gu: null };   // 시작 시 미선택 (지역 선택 강제)
+let curPerson = null;
+let prevPage = 'home';
+
+// 캐릭터 보유 8명 — 슬로건 + 공약 핵심 키워드 (임의 시연 데이터)
+const KT_EXTRA = {
+    '100162984': { slogan: '다시 뛰는 서울', keywords: ['주택 공급 확대', '교통 혼잡 해소', '안전한 도시'] },           // 오세훈
+    '100161493': { slogan: '아이가 행복한 서울교육', keywords: ['초등 늘봄 확대', '기초학력 보장', '교권 회복'] },        // 정근식
+    '100158841': { slogan: '역사와 미래가 공존하는 강남', keywords: ['재건축 속도전', '교통 인프라', '촘촘한 복지'] },     // 김현기
+    '100163148': { slogan: '변화의 중심, 기회의 경기', keywords: ['30분 출퇴근', '내 집 마련', '경기 일자리'] },        // 추미애
+    '100153797': { slogan: 'AI 시대, 교육 대전환', keywords: ['AI 맞춤 교육', '교권 강화', '무상 통학버스'] },        // 안민석
+    '100155611': { slogan: '특례시 고양, 더 큰 도약', keywords: ['자족도시 완성', 'GTX 교통망', '청년 일자리'] },      // 민경선
+    '100163128': { slogan: '시민이 주인인 인천', keywords: ['해양 친수도시', '교통 대개선', '생활 복지'] },           // 박찬대
+    '100163408': { slogan: '모두를 위한 인천교육', keywords: ['돌봄 확대', '진로 교육', '기초학력 책임'] },           // 도성훈
+};
+const KW_COLORS = ['#2563eb', '#0ea5e9', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981'];
+
+function photoHtml(p, sizeCls, txtCls) {
+    const st = partyStyle(p.party);
+    if (p.photo) return `<img src="${p.photo}" alt="${p.name}" class="${sizeCls} object-cover"/>`;
+    return `<div class="${sizeCls} flex items-center justify-center font-black ${txtCls}" style="background:${st.bg};color:${st.fg}">${initials(p.name)}</div>`;
+}
+function regionLabel() { return SHORT[cur.sido] + (cur.gu ? ' ' + cur.gu : ''); }
+
+// 발신 주체 이름 (지역 반영)
+function sidoLabel() { return SHORT[cur.sido] + (cur.sido.endsWith('도') ? '도' : '시'); }
+function orgName(type) {
+    const gu = cur.gu || sidoLabel();
+    if (type === 'sido') return sidoLabel();
+    if (type === 'gu') return cur.gu ? cur.gu + '청' : sidoLabel() + '청';
+    if (type === 'health') return gu + ' 보건소';
+    if (type === 'edu') return SHORT[cur.sido] + '교육청';
+    return sidoLabel();
+}
+
+// 이번 주 우리 동네 소식 (임의 시연 — 주체는 지역 반영)
+const NEWS = [
+    { tag: '건강', icon: '💉', title: '독감 예방접종<br/>무료 시작', org: 'health', meta: '이번 주', bg: 'linear-gradient(135deg,#fb7185,#f97316)' },
+    { tag: '교육', icon: '📚', title: '늘봄학교<br/>확대 운영', org: 'edu', meta: '2학기 부터', bg: 'linear-gradient(135deg,#22c55e,#0d9488)' },
+    { tag: '복지', icon: '♨️', title: '경로당 난방비<br/>지원 신청', org: 'gu', meta: '~10/31', bg: 'linear-gradient(135deg,#38bdf8,#2563eb)' },
+    { tag: '행사', icon: '🎉', title: '주민과 함께<br/>가을 음악회', org: 'sido', meta: '10/12 토', bg: 'linear-gradient(135deg,#a78bfa,#6366f1)' },
+    { tag: '생활', icon: '🚌', title: '마을버스 노선<br/>추가 운행', org: 'gu', meta: '10/15 부터', bg: 'linear-gradient(135deg,#34d399,#059669)' },
+];
+function orgIcon(type) {
+    return type === 'health' ? 'medical_services' : type === 'edu' ? 'school' : type === 'sido' ? 'location_city' : 'account_balance';
+}
+function renderNews() {
+    document.getElementById('news-cards').innerHTML = NEWS.map(n => `
+        <div class="relative shrink-0 w-[200px] rounded-3xl p-3.5 text-white shadow-md overflow-hidden" style="background:${n.bg}">
+            <span class="absolute -right-2 -bottom-3 text-[68px] opacity-20 select-none">${n.icon}</span>
+            <div class="relative inline-flex items-center gap-1 bg-white rounded-full pl-1.5 pr-2.5 py-1 shadow-sm">
+                <span class="material-symbols-outlined text-[15px] text-slate-600">${orgIcon(n.org)}</span>
+                <span class="font-black text-[12px] text-slate-800">${orgName(n.org)}</span>
+            </div>
+            <p class="relative font-black text-[15px] leading-snug mt-2.5">${n.title}</p>
+            <p class="relative text-[11px] text-white/85 mt-1.5">${n.tag} · ${n.meta}</p>
+        </div>`).join('');
+}
+
+// ── 지역 선택 (홈 한 곳) ─────────────────────────────────────
+function fillSido() {
+    const sel = document.getElementById('sel-sido');
+    sel.innerHTML = `<option value="">시·도 선택</option>` +
+        W.sidoOrder.map((s) => `<option value="${s}">${SHORT[s]}</option>`).join('');
+    sel.onchange = () => onSidoChange(sel.value);
+    document.getElementById('sel-gu').onchange = (e) => { cur.gu = e.target.value || null; updateStart(); };
+    fillGu();
+    updateStart();
+}
+function onSidoChange(s) {
+    cur.sido = s;
+    cur.gu = null;
+    fillGu();
+    updateStart();
+}
+function fillGu() {
+    const sel = document.getElementById('sel-gu');
+    if (!cur.sido) {
+        sel.disabled = true;
+        sel.innerHTML = `<option value="">구·시·군 선택</option>`;
+        return;
+    }
+    const gus = W.regions[cur.sido].sggList || [];
+    if (gus.length === 0) {        // 세종·제주: 단층제 — 구 선택 불필요
+        sel.disabled = true;
+        sel.innerHTML = `<option value="">해당 없음 (단층제)</option>`;
+    } else {
+        sel.disabled = false;
+        sel.innerHTML = `<option value="">구·시·군 선택</option>` +
+            gus.map((g) => `<option value="${g}">${g}</option>`).join('');
+    }
+}
+// 지역 선택 완료 여부: 시도 필수 + (구 선택 OR 단층제)
+function regionReady() {
+    if (!cur.sido) return false;
+    const gus = W.regions[cur.sido].sggList || [];
+    return gus.length === 0 || !!cur.gu;
+}
+function updateStart() {
+    const ok = regionReady();
+    document.getElementById('start-btn').disabled = !ok;
+    document.getElementById('start-hint').style.display = ok ? 'none' : 'block';
+    const rc = document.getElementById('region-current');
+    if (ok) { rc.classList.remove('hidden'); rc.querySelector('b').textContent = regionLabel(); }
+    else { rc.classList.add('hidden'); }
+}
+function goToMenu() {
+    if (!regionReady()) return;
+    document.getElementById('home-region').textContent = regionLabel() + ' 일꾼';
+    renderNews();
+    showPage('home');
+}
+function changeRegion() { showPage('region'); }
+
+// ── 일꾼 찾기 ───────────────────────────────────────────────
+function card(p, role, emptyMsg) {
+    if (!p) {
+        return `<div class="rounded-3xl bg-white border border-dashed border-slate-200 p-5 flex items-center gap-4 opacity-70">
+            <div class="h-[72px] w-[72px] rounded-2xl bg-slate-100 flex items-center justify-center"><span class="material-symbols-outlined text-slate-300">hourglass_empty</span></div>
+            <div><p class="text-xs text-slate-400">${role}</p><p class="font-bold text-slate-400 mt-0.5">${emptyMsg || '데이터 준비 중'}</p></div>
+        </div>`;
+    }
+    const st = partyStyle(p.party);
+    const pj = JSON.stringify(p).replace(/'/g,"&#39;");
+    return `<div class="rounded-3xl bg-white border border-slate-200 p-4 shadow-sm">
+        <div class="flex items-center gap-4">
+            <div class="h-[72px] w-[72px] rounded-2xl overflow-hidden shrink-0 ring-2 ring-slate-100">${photoHtml(p,'h-full w-full','text-2xl')}</div>
+            <div class="flex-1 min-w-0">
+                <span class="text-[11px] font-bold text-primary">${role}</span>
+                <p class="text-xl font-black text-slate-800 leading-tight mt-0.5">${p.name} <span class="font-bold text-slate-500">${shortTitle(p)}</span></p>
+                <p class="text-[12px] text-slate-400 mt-1.5">${p.roleLabel}</p>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2 mt-3.5">
+            <button onclick='openPerson(${pj},"find")' class="flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-sm font-bold active:scale-[.98] transition"><span class="material-symbols-outlined text-[18px]">forum</span>대화하기</button>
+            <button onclick='openBio(${pj},"find")' class="flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-slate-200 text-slate-700 text-sm font-bold active:scale-[.98] transition"><span class="material-symbols-outlined text-[18px]">description</span>상세보기</button>
+        </div>
+    </div>`;
+}
+function renderFind() {
+    const r = W.regions[cur.sido];
+    document.getElementById('find-title').textContent = regionLabel();
+    document.getElementById('find-region').textContent = regionLabel() + ' 일꾼';
+    const mayor = cur.gu && r.mayors[cur.gu] ? r.mayors[cur.gu] : null;
+    const hasSeats = (r.sggList || []).length > 0;
+    document.getElementById('find-cards').innerHTML =
+        card(r.governor, '시·도지사') +
+        card(mayor, '구청장·시장·군수', hasSeats ? '데이터 준비 중' : '해당 없음 (단층제)') +
+        card(r.superintendent, '교육감');
+}
+function openFind() { if (!regionReady()) return; renderFind(); showPage('find'); }
+
+// ── 안내봇 ──────────────────────────────────────────────────
+const ROUTE = {
+    superintendent: ['학교','교육','학생','교사','선생','급식','입시','수능','유치원','어린이집','돌봄','방과후','학원','교복','등교','하교','진학','학교폭력','학폭','특수교육','교실','수업','교육청','장학','학부모','초등','중학','고등','보육','어린이'],
+    governor: ['지하철','전철','도시철도','광역버스','고속도로','국도','상수도','광역','도청','산업단지','일자리','투자','관광','대중교통','재난','감염병','미세먼지','광역교통','도시계획','철도','시내버스','버스노선','상하수도'],
+    mayor: ['쓰레기','분리수거','청소','주차','주정차','보건소','주민센터','동사무소','복지','경로당','공원','도서관','놀이터','가로등','골목','보도블록','민원','인허가','위생','방역','재활용','소음','반려동물','노인정','어르신','복지관','가로수','불법'],
+};
+const ROUTE_WHY = {
+    superintendent: '학교·교육에 관한 일',
+    governor: '시·도 전체(교통·도시계획 등 광역 행정)에 관한 일',
+    mayor: '우리 동네 생활 민원',
+};
+function classify(t) {
+    const score = { superintendent: 0, governor: 0, mayor: 0 };
+    for (const k in ROUTE) for (const w of ROUTE[k]) if (t.includes(w)) score[k]++;
+    let best = 'mayor', max = 0;
+    for (const k in score) if (score[k] > max) { max = score[k]; best = k; }
+    return max === 0 ? 'mayor' : best;
+}
+function routePerson(cat) {
+    const r = W.regions[cur.sido];
+    if (cat === 'superintendent') return r.superintendent;
+    if (cat === 'governor') return r.governor;
+    return (cur.gu && r.mayors[cur.gu]) ? r.mayors[cur.gu] : r.governor;
+}
+function botBubble(side, html) {
+    if (side === 'ai') return `<div class="flex gap-2 items-end"><div class="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-primary text-[20px]">support_agent</span></div><div class="max-w-[80%] bg-white border border-slate-200 rounded-2xl rounded-bl-md px-4 py-2.5 text-[15px] text-slate-700 leading-relaxed">${html}</div></div>`;
+    return `<div class="flex justify-end"><div class="max-w-[80%] bg-primary text-white rounded-2xl rounded-br-md px-4 py-2.5 text-[15px] leading-relaxed">${html}</div></div>`;
+}
+function pushBot(side, html) {
+    const log = document.getElementById('bot-log');
+    log.insertAdjacentHTML('beforeend', botBubble(side, html));
+    log.scrollTop = log.scrollHeight;
+}
+const BOT_CHIPS = [
+    ['🗑️ 쓰레기·청소', '집앞 쓰레기 수거가 잘 안 돼요'],
+    ['🏫 학교·교육', '우리 아이 학교 문제로 상담하고 싶어요'],
+    ['🚍 교통', '지하철과 버스를 늘려주세요'],
+];
+function renderBotChips() {
+    document.getElementById('bot-chips').innerHTML = BOT_CHIPS.map(([label, q]) =>
+        `<button onclick="sendBot('${q}')" class="shrink-0 px-3 py-2 rounded-full bg-slate-100 border border-slate-200 text-[13px] font-bold text-slate-700 whitespace-nowrap active:scale-[.97] transition">${label}</button>`).join('');
+}
+function initBot() {
+    document.getElementById('bot-region').textContent = regionLabel() + ' 기준 안내';
+    document.getElementById('bot-voice-status').textContent = '탭하여 말하기';
+    document.getElementById('bot-log').innerHTML = '';
+    renderBotChips();
+    pushBot('ai', `안녕하세요. <b>${regionLabel()}</b> 안내봇입니다.<br/>어떤 점이 궁금하거나 불편하신지 편하게 말씀해 주세요. 담당 일꾼을 찾아 연결해 드릴게요.`);
+}
+function openBot() { if (!regionReady()) return; initBot(); showPage('bot'); }
+function askBot(t) { if (!regionReady()) return; initBot(); showPage('bot'); sendBot(t); }
+function startBotVoice() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const status = document.getElementById('bot-voice-status');
+    if (!SR) { status.textContent = '음성인식 미지원 — 왼쪽 버튼을 눌러보세요'; return; }
+    const btn = document.getElementById('bot-voice-btn');
+    const r = new SR();
+    r.lang = 'ko-KR'; r.interimResults = false; r.maxAlternatives = 1;
+    status.textContent = '듣고 있어요…';
+    btn.classList.add('bg-red-500'); btn.classList.remove('bg-primary');
+    r.onresult = (e) => sendBot(e.results[0][0].transcript);
+    r.onerror = () => { status.textContent = '잘 안 들렸어요. 다시 눌러 주세요'; };
+    r.onend = () => { btn.classList.remove('bg-red-500'); btn.classList.add('bg-primary'); };
+    try { r.start(); } catch (e) {}
+}
+function sendBot(text) {
+    const msg = (text || '').trim();
+    if (!msg) return;
+    pushBot('me', msg);
+    document.getElementById('bot-voice-status').textContent = '답을 찾고 있어요…';
+    const log = document.getElementById('bot-log');
+    log.insertAdjacentHTML('beforeend', `<div id="bot-typing" class="flex gap-2 items-end"><div class="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-primary text-[20px]">support_agent</span></div><div class="chat-typing bg-white border border-slate-200 rounded-2xl px-4 py-3.5"><span></span><span></span><span></span></div></div>`);
+    log.scrollTop = log.scrollHeight;
+    setTimeout(() => {
+        document.getElementById('bot-typing')?.remove();
+        document.getElementById('bot-voice-status').textContent = '탭하여 말하기';
+        const cat = classify(msg);
+        const p = routePerson(cat);
+        const intro = `말씀하신 내용은 ${ROUTE_WHY[cat]}이라, ${SHORT[cur.sido]}에서는 ${p.name} ${p.roleLabel}께 연결해 드릴 수 있어요.`;
+        pushBot('ai', `말씀하신 내용은 <b>${ROUTE_WHY[cat]}</b>이라, <b>${SHORT[cur.sido]}</b>에서는 아래 일꾼께 연결해 드릴 수 있어요.`);
+        const cardHtml = `<div class="flex items-center gap-3">
+            <div class="h-14 w-14 rounded-2xl overflow-hidden shrink-0 ring-2 ring-slate-100">${photoHtml(p,'h-full w-full','text-xl')}</div>
+            <div class="flex-1"><p class="font-black text-slate-800">${p.name} <span class="text-slate-500">${shortTitle(p)}</span></p>
+            <span class="text-[11px] text-slate-400">${p.roleLabel}</span></div></div>
+            <button onclick='openPerson(${JSON.stringify(p).replace(/'/g,"&#39;")},"bot")' class="mt-3 w-full bg-primary text-white rounded-xl py-2.5 font-bold text-sm flex items-center justify-center gap-1.5"><span class="material-symbols-outlined text-[18px]">forum</span>${p.name} ${shortTitle(p)}와 대화하기</button>`;
+        pushBot('ai', cardHtml);
+        try { const u = new SpeechSynthesisUtterance(intro); u.lang = 'ko-KR'; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {}
+    }, 1000);
+}
+
+// ── 대화하기 (채팅 / 음성) ──────────────────────────────────
+function openPerson(p, from) {
+    curPerson = p;
+    if (from) prevPage = from;
+    const st = partyStyle(p.party);
+    const ex = KT_EXTRA[p.huboid] || {};
+    document.getElementById('detail-symbol').innerHTML = p.orgLogo
+        ? `<img src="${p.orgLogo}" alt="" class="h-[34px] w-auto max-w-[140px] object-contain"/>`
+        : '';
+    document.getElementById('detail-slogan').textContent = ex.slogan ? `"${ex.slogan}"` : '';
+    document.getElementById('detail-keywords').innerHTML = (ex.keywords && ex.keywords.length)
+        ? `<div class="rounded-2xl bg-white/90 backdrop-blur-md shadow-xl border border-white/60 p-3 w-[150px]">
+               <div class="mb-2">
+                   <p class="text-[9px] font-bold text-amber-500 flex items-center gap-0.5"><span class="material-symbols-outlined text-[12px]">elderly</span>어르신을 위한</p>
+                   <p class="text-[13px] font-black text-slate-800 leading-tight">${p.name.slice(1)}의 약속</p>
+               </div>
+               <div class="space-y-1.5">${ex.keywords.map((k, i) => { const c = KW_COLORS[i % KW_COLORS.length]; return `<div class="text-[12px] font-black px-2.5 py-1.5 rounded-lg leading-tight" style="background:${c}1f;color:${c}">${k}</div>`; }).join('')}</div>
+           </div>`
+        : '';
+    document.getElementById('detail-avatar-name').innerHTML = `<span class="inline-block bg-black/45 backdrop-blur-sm text-white font-medium text-[12px] px-2.5 py-1 rounded-md">${p.name} ${p.roleLabel}</span>`;
+    document.getElementById('detail-avatar').innerHTML = p.avatar
+        ? `<img src="${p.avatar}" alt="${p.name} 아바타" class="w-full h-full object-cover"/>`
+        : `<span class="material-symbols-outlined text-[56px] opacity-50">smart_toy</span><p class="text-[13px] text-slate-300 font-bold">${p.name} 후보자 아바타</p><p class="text-[10px] text-slate-500">캐릭터 준비 중</p>`;
+    renderChips(p);
+    initConv(p);
+    document.getElementById('voice-status').textContent = '탭하여 말하기';
+    setTranscript(false);
+    showPage('detail');
+}
+function backFromDetail() { try { speechSynthesis.cancel(); } catch(e){} showPage(prevPage); }
+
+// 공약 칩 (어르신 눈높이 — 누르면 음성으로 질문)
+const VOICE_CHIPS = [
+    ['👵 복지', '어르신 복지 정책을 알려주세요'],
+    ['🏥 의료', '건강과 의료 공약을 알려주세요'],
+    ['🚍 교통', '교통과 이동 편의 정책을 알려주세요'],
+    ['🛡️ 안전', '우리 동네 안전 대책을 알려주세요'],
+    ['💼 일자리', '일자리와 경제 공약을 알려주세요'],
+    ['🏠 주거', '주거와 생활 환경 정책을 알려주세요'],
+];
+function renderChips(p) {
+    document.getElementById('voice-chips').innerHTML = VOICE_CHIPS.map(([label, q]) =>
+        `<button onclick="voiceAsk('${q}')" class="shrink-0 px-3 py-2 rounded-full bg-slate-100 border border-slate-200 text-[13px] font-bold text-slate-700 whitespace-nowrap active:scale-[.97] transition">${label}</button>`).join('');
+}
+
+// 대화 기록 (음성 자막 + 텍스트 보기 공용)
+let conv = [];
+function convBubble(m, big) {
+    const sz = big ? 'text-[15px]' : 'text-sm';
+    const av = big ? 'h-9 w-9' : 'h-8 w-8';
+    if (m.side === 'ai') return `<div class="flex gap-2 items-end"><div class="${av} rounded-full overflow-hidden shrink-0">${photoHtml(curPerson,'h-full w-full','text-xs')}</div><div class="max-w-[80%] bg-white border border-slate-200 rounded-2xl rounded-bl-md px-4 py-2.5 ${sz} text-slate-700 leading-relaxed">${m.text}</div></div>`;
+    return `<div class="flex justify-end"><div class="max-w-[80%] bg-primary text-white rounded-2xl rounded-br-md px-4 py-2.5 ${sz} leading-relaxed">${m.text}</div></div>`;
+}
+function renderConv() {
+    const vc = document.getElementById('voice-caption');
+    vc.innerHTML = conv.map(m => convBubble(m, true)).join('');
+    vc.scrollTop = vc.scrollHeight;
+    const cl = document.getElementById('chat-log');
+    cl.innerHTML = conv.map(m => convBubble(m, false)).join('');
+    cl.scrollTop = cl.scrollHeight;
+}
+function initConv(p) {
+    conv = [{ side: 'ai', text: `안녕하세요, <b>${p.roleLabel} ${p.name}</b>입니다. 궁금하신 점이나 바라시는 점을 편하게 말씀해 주세요.` }];
+    renderConv();
+}
+// 음성: 마이크(STT) → 자막 표시 + 답변 음성출력(TTS)
+function voiceAsk(text) {
+    conv.push({ side: 'me', text });
+    renderConv();
+    document.getElementById('voice-status').textContent = '답변을 준비하고 있어요…';
+    setTimeout(() => {
+        const reply = `소중한 의견 감사합니다. 말씀해주신 내용은 ${curPerson.name} ${curPerson.roleLabel}께 전달됩니다. 시범 버전이라 실제 답변은 일꾼 AI 아바타 엔진 연결 시 음성으로 제공됩니다.`;
+        conv.push({ side: 'ai', text: reply });
+        renderConv();
+        document.getElementById('voice-status').textContent = '탭하여 말하기';
+        try { const u = new SpeechSynthesisUtterance(reply); u.lang = 'ko-KR'; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {}
+    }, 900);
+}
+function startVoiceMode() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const status = document.getElementById('voice-status');
+    if (!SR) { status.textContent = '음성인식 미지원 — 아래 공약 버튼을 눌러보세요'; return; }
+    const btn = document.getElementById('voice-btn');
+    const r = new SR();
+    r.lang = 'ko-KR'; r.interimResults = false; r.maxAlternatives = 1;
+    status.textContent = '듣고 있어요… 말씀해 주세요';
+    btn.classList.add('bg-red-500'); btn.classList.remove('bg-primary');
+    r.onresult = (e) => voiceAsk(e.results[0][0].transcript);
+    r.onerror = () => { status.textContent = '잘 안 들렸어요. 다시 눌러 주세요'; };
+    r.onend = () => { btn.classList.remove('bg-red-500'); btn.classList.add('bg-primary'); };
+    try { r.start(); } catch (e) {}
+}
+// 음성 ↔ 텍스트 기록 토글
+let transcriptOn = false;
+function setTranscript(on) {
+    transcriptOn = on;
+    document.getElementById('mode-voice').style.display = on ? 'none' : 'flex';
+    document.getElementById('mode-transcript').style.display = on ? 'flex' : 'none';
+    document.getElementById('transcript-toggle-label').textContent = on ? '음성 대화로 돌아가기' : '대화 내용 텍스트로 보기';
+    if (on) { try { speechSynthesis.cancel(); } catch (e) {} }
+}
+function toggleTranscript() { setTranscript(!transcriptOn); }
+
+// ── 상세보기 (이력) ─────────────────────────────────────────
+function openBio(p, from) {
+    curPerson = p;
+    if (from) prevPage = from;
+    document.getElementById('bio-head').textContent = '상세 정보';
+    document.getElementById('bio-hero').innerHTML = `
+        <div class="flex items-center gap-4">
+            <div class="h-24 w-24 rounded-3xl overflow-hidden shrink-0 ring-4 ring-white shadow-lg">${photoHtml(p,'h-full w-full','text-3xl')}</div>
+            <div>
+                <p class="text-2xl font-black text-slate-800">${p.name} ${p.roleLabel}</p>
+                ${p.age ? `<p class="text-sm text-slate-500 font-medium mt-1">${p.age}세</p>` : ''}
+            </div>
+        </div>`;
+    renderBio(p);
+    showPage('bio');
+}
+function backFromBio() { showPage(prevPage); }
+function renderBio(p) {
+    const careers = (p.career||[]).filter(c=>c.title).map(c =>
+        `<li class="flex gap-2.5"><span class="material-symbols-outlined text-primary text-[18px] mt-0.5">check_circle</span><span class="text-sm text-slate-700">${c.title}</span></li>`).join('');
+    const pledges = (p.pledges||[]).filter(pl=>pl.title).slice(0,5).map((pl,i) =>
+        `<div class="rounded-2xl bg-white border border-slate-200 p-4">
+            <p class="font-bold text-slate-800 text-sm flex items-start gap-2"><span class="text-primary font-black">${i+1}</span>${pl.title}</p>
+            ${pl.content ? `<p class="text-[13px] text-slate-500 mt-1.5 leading-relaxed whitespace-pre-line">${pl.content.slice(0,180)}${pl.content.length>180?'…':''}</p>`:''}
+        </div>`).join('');
+    document.getElementById('bio-body').innerHTML = `
+        <div class="rounded-2xl bg-white border border-slate-200 p-4 space-y-2.5">
+            ${p.education ? `<div class="flex gap-2.5"><span class="material-symbols-outlined text-slate-400 text-[20px]">school</span><div><p class="text-[11px] text-slate-400">학력</p><p class="text-sm text-slate-700 font-medium">${p.education}</p></div></div>`:''}
+            ${p.birthplace ? `<div class="flex gap-2.5"><span class="material-symbols-outlined text-slate-400 text-[20px]">home_pin</span><div><p class="text-[11px] text-slate-400">출생</p><p class="text-sm text-slate-700 font-medium">${p.birthplace}</p></div></div>`:''}
+        </div>
+        ${careers ? `<div><p class="text-sm font-black text-slate-700 mb-2.5">주요 경력</p><ul class="space-y-2">${careers}</ul></div>`:''}
+        ${pledges ? `<div><p class="text-sm font-black text-slate-700 mb-2.5">주요 공약</p><div class="space-y-2.5">${pledges}</div></div>`:'<p class="text-sm text-slate-400 text-center py-6">등록된 공약 정보가 없습니다.</p>'}`;
+}
+// ── 네비게이션 ──────────────────────────────────────────────
+function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const el = document.getElementById('page-'+id);
+    el.classList.add('active', 'page-enter');
+    window.scrollTo(0,0);
+}
+function goHome() { showPage('home'); }
+
+// ── 초기화 ──────────────────────────────────────────────────
+const PRM = new URLSearchParams(location.search);
+if (PRM.get('sido') && W.regions[PRM.get('sido')]) {
+    cur.sido = PRM.get('sido');
+    if (PRM.get('gu')) cur.gu = PRM.get('gu');
+}
+fillSido();
+if (cur.sido) { document.getElementById('sel-sido').value = cur.sido; fillGu(); if (cur.gu) document.getElementById('sel-gu').value = cur.gu; updateStart(); }
+// 딥링크: 지역이 지정됐고 진입 대상이 있으면 지역선택 화면 건너뛰고 메뉴로
+if (regionReady() && (PRM.get('p') || PRM.get('ask') || PRM.get('person') || PRM.get('go'))) goToMenu();
+const _p = PRM.get('p');
+if (_p === 'find' && regionReady()) openFind();
+else if (_p === 'bot' && regionReady()) openBot();
+const _ask = PRM.get('ask');
+if (_ask && regionReady()) askBot(_ask);
+const _person = PRM.get('person'); // governor|mayor|superintendent
+if (_person && regionReady()) {
+    const r = W.regions[cur.sido];
+    const pp = _person === 'mayor' ? r.mayors[cur.gu] : r[_person];
+    if (pp) openPerson(pp, 'find');
+    else if (_person === 'bio') { /* handled below */ }
+}
+const _bio = PRM.get('bio'); // governor|mayor|superintendent — 상세보기 딥링크
+if (_bio && regionReady()) {
+    const r = W.regions[cur.sido];
+    const pp = _bio === 'mayor' ? r.mayors[cur.gu] : r[_bio];
+    if (pp) openBio(pp, 'find');
+}
+</script>
+</body>
+</html>
