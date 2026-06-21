@@ -507,8 +507,8 @@ function openPerson(p, from) {
     document.getElementById('detail-slogan').textContent = ex.slogan ? `"${ex.slogan}"` : '';
     document.getElementById('detail-keywords').innerHTML = (ex.keywords && ex.keywords.length)
         ? `<div class="rounded-2xl bg-white/92 backdrop-blur shadow-lg border border-white/60 p-2.5">
-               <p class="text-[8px] font-bold text-amber-500 flex items-center gap-0.5"><span class="material-symbols-outlined text-[11px]">elderly</span>어르신을 위한</p>
-               <p class="text-[12px] font-black text-slate-800 leading-tight mb-1.5">${p.name.slice(1)}의 약속</p>
+               <p class="text-[13px] font-black text-amber-500 leading-tight">어르신을 위한</p>
+               <p class="text-[13px] font-black text-slate-800 leading-tight mb-2">${p.name.slice(1)}의 약속</p>
                <div class="space-y-1">${ex.keywords.map((k, i) => { const c = KW_COLORS[i % KW_COLORS.length]; return `<div class="text-[11px] font-black px-2 py-1 rounded-md leading-tight whitespace-nowrap overflow-hidden text-ellipsis" style="background:${c}1f;color:${c}">${k}</div>`; }).join('')}</div>
            </div>`
         : '';
@@ -543,7 +543,10 @@ let conv = [];
 function convBubble(m, big) {
     const sz = big ? 'text-[15px]' : 'text-sm';
     const av = big ? 'h-9 w-9' : 'h-8 w-8';
-    if (m.side === 'ai') return `<div class="flex gap-2 items-end"><div class="${av} rounded-full overflow-hidden shrink-0">${photoHtml(curPerson,'h-full w-full','text-xs')}</div><div class="max-w-[80%] bg-white border border-slate-200 rounded-2xl rounded-bl-md px-4 py-2.5 ${sz} text-slate-700 leading-relaxed">${m.text}</div></div>`;
+    const face = curPerson.avatar
+        ? `<img src="${curPerson.avatar}" alt="" class="w-full h-full object-cover" style="object-position:center top"/>`
+        : photoHtml(curPerson,'h-full w-full','text-xs');
+    if (m.side === 'ai') return `<div class="flex gap-2 items-end"><div class="${av} rounded-full overflow-hidden shrink-0 bg-slate-100">${face}</div><div class="max-w-[80%] bg-white border border-slate-200 rounded-2xl rounded-bl-md px-4 py-2.5 ${sz} text-slate-700 leading-relaxed">${m.text}</div></div>`;
     return `<div class="flex justify-end"><div class="max-w-[80%] bg-primary text-white rounded-2xl rounded-br-md px-4 py-2.5 ${sz} leading-relaxed">${m.text}</div></div>`;
 }
 function renderConv() {
