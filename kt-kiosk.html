@@ -183,16 +183,12 @@
             <p id="detail-slogan" class="text-[13px] font-bold text-slate-500 truncate flex-1 min-w-0"></p>
         </header>
 
-        <!-- 아바타 영역 (일꾼 아바타 캐릭터 자리 — 추후 연결) -->
-        <div class="relative w-full bg-gradient-to-b from-slate-700 to-slate-900 overflow-hidden shrink-0" style="aspect-ratio:16/9">
-            <div id="detail-avatar" class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 gap-2">
-                <span class="material-symbols-outlined text-[56px] opacity-50">smart_toy</span>
-                <p class="text-[12px] text-slate-300">후보자 아바타 캐릭터</p>
-            </div>
-            <div id="detail-avatar-name" class="absolute bottom-3 right-3"></div>
+        <!-- 아바타 영역: ① 빈배경 ② 인물(우측) ③ 공약 팝업(좌상단) -->
+        <div class="relative w-full overflow-hidden shrink-0 bg-slate-200" style="aspect-ratio:16/9;background-image:url('assets/char-bg.png');background-size:cover;background-position:center top">
+            <div id="detail-avatar" class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 gap-2"></div>
+            <div id="detail-keywords" class="absolute top-2.5 left-2.5 z-10 w-[44%] max-w-[170px]"></div>
+            <div id="detail-avatar-name" class="absolute bottom-3 right-3 z-10"></div>
         </div>
-        <!-- 공약 카드 (아바타 아래 — 캐릭터와 겹치지 않게 분리) -->
-        <div id="detail-keywords" class="px-4 pt-2.5 -mt-3 relative z-10"></div>
 
         <!-- 음성 대화 (메인) — 말하면 자막으로 표시 -->
         <div id="mode-voice" class="flex-1 min-h-0 flex flex-col bg-background-light overflow-hidden">
@@ -510,14 +506,15 @@ function openPerson(p, from) {
         : '';
     document.getElementById('detail-slogan').textContent = ex.slogan ? `"${ex.slogan}"` : '';
     document.getElementById('detail-keywords').innerHTML = (ex.keywords && ex.keywords.length)
-        ? `<div class="rounded-2xl bg-white shadow-lg border border-slate-100 px-3.5 py-2.5">
-               <p class="text-[12px] font-black text-slate-800 flex items-center gap-1 mb-2"><span class="material-symbols-outlined text-[15px] text-amber-500">elderly</span><span class="text-amber-500">어르신을 위한</span> ${p.name.slice(1)}의 약속</p>
-               <div class="flex gap-2 overflow-x-auto scrollbar-hide">${ex.keywords.map((k, i) => { const c = KW_COLORS[i % KW_COLORS.length]; return `<span class="shrink-0 text-[12px] font-black px-3 py-1.5 rounded-lg whitespace-nowrap" style="background:${c}1f;color:${c}">${k}</span>`; }).join('')}</div>
+        ? `<div class="rounded-2xl bg-white/92 backdrop-blur shadow-lg border border-white/60 p-2.5">
+               <p class="text-[8px] font-bold text-amber-500 flex items-center gap-0.5"><span class="material-symbols-outlined text-[11px]">elderly</span>어르신을 위한</p>
+               <p class="text-[12px] font-black text-slate-800 leading-tight mb-1.5">${p.name.slice(1)}의 약속</p>
+               <div class="space-y-1">${ex.keywords.map((k, i) => { const c = KW_COLORS[i % KW_COLORS.length]; return `<div class="text-[11px] font-black px-2 py-1 rounded-md leading-tight whitespace-nowrap overflow-hidden text-ellipsis" style="background:${c}1f;color:${c}">${k}</div>`; }).join('')}</div>
            </div>`
         : '';
     document.getElementById('detail-avatar-name').innerHTML = `<span class="inline-block bg-black/45 backdrop-blur-sm text-white font-medium text-[12px] px-2.5 py-1 rounded-md">${p.name} ${p.roleLabel}</span>`;
     document.getElementById('detail-avatar').innerHTML = p.avatar
-        ? `<img src="${p.avatar}" alt="${p.name} 아바타" class="w-full h-full object-cover"/>`
+        ? `<img src="${p.avatar}" alt="${p.name} 아바타" class="w-full h-full object-cover" style="transform:translateX(12%)"/>`
         : `<span class="material-symbols-outlined text-[56px] opacity-50">smart_toy</span><p class="text-[13px] text-slate-300 font-bold">${p.name} 후보자 아바타</p><p class="text-[10px] text-slate-500">캐릭터 준비 중</p>`;
     renderChips(p);
     initConv(p);
