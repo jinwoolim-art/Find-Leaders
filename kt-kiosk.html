@@ -22,6 +22,8 @@
     </script>
     <style>
         html, body { overflow-x: hidden; max-width: 100%; }
+        html { scrollbar-width: none; }              /* 세로 스크롤바 폭 0 (레이아웃 밀림 방지) */
+        body::-webkit-scrollbar { display: none; }
         body { font-family: 'Noto Sans KR', 'Public Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         #app { overflow-x: clip; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
@@ -39,9 +41,9 @@
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { scrollbar-width: none; }
         .gated { opacity: .45; pointer-events: none; filter: grayscale(.3); }
-        /* 마이크 천천히 퍼지는 파장 */
-        @keyframes pulseRing { 0% { transform: scale(.85); opacity: .55; } 80%, 100% { transform: scale(1.7); opacity: 0; } }
-        .pulse-ring { animation: pulseRing 2.6s cubic-bezier(0.2,0.6,0.3,1) infinite; }
+        /* 마이크 천천히 퍼지는 파장 (box-shadow — 레이아웃 영향 없음) */
+        @keyframes micPulse { 0% { box-shadow: 0 0 0 0 rgba(37,99,235,.45); } 70%,100% { box-shadow: 0 0 0 22px rgba(37,99,235,0); } }
+        #voice-btn, #bot-voice-btn { animation: micPulse 2.4s ease-out infinite; }
         select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%232563eb' stroke-width='2.5'%3E%3Cpath d='M5 8l5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right .7rem center; }
     </style>
 </head>
@@ -164,16 +166,10 @@
         </header>
         <div id="bot-log" class="flex-1 min-h-0 overflow-y-auto scrollbar-hide px-5 py-4 space-y-3"></div>
         <!-- 하단: 왼쪽 예시 질문 + 오른쪽 마이크(파장) -->
-        <div class="bg-white border-t border-slate-100 px-4 pt-3 pb-3 flex flex-col items-center gap-3">
-            <div class="flex flex-col items-center">
-                <div class="relative w-[76px] h-[76px] flex items-center justify-center">
-                    <span class="absolute inset-0 rounded-full bg-primary/40 pulse-ring"></span>
-                    <span class="absolute inset-0 rounded-full bg-primary/30 pulse-ring" style="animation-delay:1.3s"></span>
-                    <button id="bot-voice-btn" onclick="startBotVoice()" class="relative w-[72px] h-[72px] rounded-full bg-primary text-white shadow-xl shadow-primary/30 flex items-center justify-center active:scale-95 transition"><span class="material-symbols-outlined text-4xl">mic</span></button>
-                </div>
-                <p id="bot-voice-status" class="text-[15px] font-bold text-slate-600 mt-2 text-center leading-tight">탭하여 말하기</p>
-            </div>
-            <div id="bot-chips" class="flex gap-2 overflow-x-auto scrollbar-hide w-full justify-center"></div>
+        <div class="bg-white border-t border-slate-100 px-4 pt-4 pb-3 flex flex-col items-center gap-2 overflow-hidden">
+            <button id="bot-voice-btn" onclick="startBotVoice()" class="shrink-0 w-[72px] h-[72px] rounded-full bg-primary text-white flex items-center justify-center active:scale-95 transition"><span class="material-symbols-outlined text-4xl">mic</span></button>
+            <p id="bot-voice-status" class="text-[15px] font-bold text-slate-600 text-center leading-tight whitespace-nowrap">탭하여 말하기</p>
+            <div id="bot-chips" class="flex gap-2 overflow-x-auto scrollbar-hide w-full min-w-0 justify-center mt-1"></div>
         </div>
     </div>
 
@@ -193,19 +189,13 @@
         </div>
 
         <!-- 음성 대화 (메인) — 말하면 자막으로 표시 -->
-        <div id="mode-voice" class="flex-1 min-h-0 flex flex-col bg-background-light overflow-hidden">
+        <div id="mode-voice" class="flex-1 min-h-0 min-w-0 flex flex-col bg-background-light overflow-hidden">
             <div id="voice-caption" class="flex-1 min-h-0 overflow-y-auto scrollbar-hide px-5 py-4 space-y-3"></div>
             <!-- 하단: 왼쪽 공약 칩(벽돌) + 오른쪽 마이크(파장) -->
-            <div class="bg-white border-t border-slate-100 px-4 pt-3 pb-3 flex flex-col items-center gap-3">
-                <div class="flex flex-col items-center">
-                    <div class="relative w-[76px] h-[76px] flex items-center justify-center">
-                        <span class="absolute inset-0 rounded-full bg-primary/40 pulse-ring"></span>
-                        <span class="absolute inset-0 rounded-full bg-primary/30 pulse-ring" style="animation-delay:1.3s"></span>
-                        <button id="voice-btn" onclick="startVoiceMode()" class="relative w-[72px] h-[72px] rounded-full bg-primary text-white shadow-xl shadow-primary/30 flex items-center justify-center active:scale-95 transition"><span class="material-symbols-outlined text-4xl">mic</span></button>
-                    </div>
-                    <p id="voice-status" class="text-[15px] font-bold text-slate-600 mt-2 text-center leading-tight">탭하여 말하기</p>
-                </div>
-                <div id="voice-chips" class="flex gap-2 overflow-x-auto scrollbar-hide w-full justify-center"></div>
+            <div class="bg-white border-t border-slate-100 px-4 pt-4 pb-3 flex flex-col items-center gap-2 overflow-hidden">
+                <button id="voice-btn" onclick="startVoiceMode()" class="shrink-0 w-[72px] h-[72px] rounded-full bg-primary text-white flex items-center justify-center active:scale-95 transition"><span class="material-symbols-outlined text-4xl">mic</span></button>
+                <p id="voice-status" class="text-[15px] font-bold text-slate-600 leading-tight text-center whitespace-nowrap">탭하여 말하기</p>
+                <div id="voice-chips" class="flex gap-2 overflow-x-auto scrollbar-hide justify-center w-full min-w-0 mt-1"></div>
             </div>
         </div>
 
