@@ -19,10 +19,13 @@ tailwind.config = { theme: { extend: {
   .slide { min-height:100vh; scroll-snap-align:start; }
   html { scroll-snap-type:y proximity; scroll-behavior:smooth; }
   .phone { border-radius:30px; border:9px solid #1e293b; box-shadow:0 25px 60px -20px rgba(0,0,0,.45); overflow:hidden; background:#000; }
-  /* 키오스크(스탠드형) 목업 */
-  .kiosk { border:14px solid #2d3748; border-top-width:20px; border-bottom-width:20px; border-radius:14px; background:#000; box-shadow:0 25px 60px -20px rgba(0,0,0,.5); overflow:hidden; }
-  .kiosk-neck { width:16px; height:36px; margin:0 auto; background:#2d3748; }
-  .kiosk-base { width:72%; height:12px; margin:0 auto; background:linear-gradient(#374151,#1f2937); border-radius:7px; }
+  /* 키오스크(스탠드형) 목업 — KT m&s 스타일 */
+  .kiosk-stand { background:#e9edf2; border-radius:22px; padding:12px 12px 0; box-shadow:0 28px 60px -18px rgba(0,0,0,.55); display:flex; flex-direction:column; }
+  .kiosk-screen { border:10px solid #f7a8c4; border-radius:16px; overflow:hidden; background:#000; }
+  .kiosk-slot { height:11px; margin:10px 14px 0; background:#c3cad3; border-radius:6px; box-shadow:inset 0 1px 2px rgba(0,0,0,.25); }
+  .kiosk-pillar { position:relative; margin-top:8px; height:170px; background:linear-gradient(180deg,#eef1f5,#dde2e9); border-radius:0 0 16px 16px; }
+  .kiosk-pillar::before { content:''; position:absolute; left:50%; top:16px; bottom:36px; width:2px; background:#b7bfc9; }
+  .kiosk-pillar::after { content:'kt m&s'; position:absolute; bottom:12px; left:0; right:0; text-align:center; font-weight:800; font-size:13px; color:#7b8694; }
   .tag { font-size:12px; font-weight:800; letter-spacing:.04em; }
   @media print { .slide { min-height:auto; page-break-after:always; } html{scroll-snap-type:none;} }
 </style>
@@ -75,10 +78,12 @@ tailwind.config = { theme: { extend: {
     <div class="flex justify-center items-end gap-5">
       <!-- 키오스크(스탠드형) 목업 -->
       <div class="flex flex-col items-center">
-        <div class="kiosk w-[160px] sm:w-[210px]"><img src="assets/proposal/s-menu.png?v=20260622c" alt="키오스크 메뉴 화면"/></div>
-        <div class="kiosk-neck"></div>
-        <div class="kiosk-base"></div>
-        <p class="text-[11px] text-blue-200 font-bold mt-1.5">설치형 키오스크</p>
+        <div class="kiosk-stand w-[175px] sm:w-[225px]">
+          <div class="kiosk-screen"><img src="assets/proposal/s-menu.png?v=20260622d" alt="키오스크 메뉴 화면"/></div>
+          <div class="kiosk-slot"></div>
+          <div class="kiosk-pillar"></div>
+        </div>
+        <p class="text-[11px] text-blue-200 font-bold mt-3">설치형 키오스크</p>
       </div>
       <!-- 모바일 목업 -->
       <div class="hidden sm:flex flex-col items-center mb-6">
