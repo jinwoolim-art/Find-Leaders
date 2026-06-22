@@ -19,6 +19,10 @@ tailwind.config = { theme: { extend: {
   .slide { min-height:100vh; scroll-snap-align:start; }
   html { scroll-snap-type:y proximity; scroll-behavior:smooth; }
   .phone { border-radius:30px; border:9px solid #1e293b; box-shadow:0 25px 60px -20px rgba(0,0,0,.45); overflow:hidden; background:#000; }
+  /* 키오스크(스탠드형) 목업 */
+  .kiosk { border:14px solid #2d3748; border-top-width:20px; border-bottom-width:20px; border-radius:14px; background:#000; box-shadow:0 25px 60px -20px rgba(0,0,0,.5); overflow:hidden; }
+  .kiosk-neck { width:16px; height:36px; margin:0 auto; background:#2d3748; }
+  .kiosk-base { width:72%; height:12px; margin:0 auto; background:linear-gradient(#374151,#1f2937); border-radius:7px; }
   .tag { font-size:12px; font-weight:800; letter-spacing:.04em; }
   @media print { .slide { min-height:auto; page-break-after:always; } html{scroll-snap-type:none;} }
 </style>
@@ -68,9 +72,19 @@ tailwind.config = { theme: { extend: {
         <span class="bg-white/15 rounded-full px-3.5 py-1.5 text-sm font-bold">👵 디지털 포용</span>
       </div>
     </div>
-    <div class="flex justify-center gap-4">
-      <div class="phone w-[150px] sm:w-[210px] rotate-[-4deg]"><img src="assets/proposal/s-menu.png?v=20260622b" alt="메뉴 화면"/></div>
-      <div class="phone w-[150px] sm:w-[210px] rotate-[4deg] mt-10 hidden sm:block"><img src="assets/proposal/s-voice.png?v=20260622b" alt="음성 대화 화면"/></div>
+    <div class="flex justify-center items-end gap-5">
+      <!-- 키오스크(스탠드형) 목업 -->
+      <div class="flex flex-col items-center">
+        <div class="kiosk w-[160px] sm:w-[210px]"><img src="assets/proposal/s-menu.png?v=20260622c" alt="키오스크 메뉴 화면"/></div>
+        <div class="kiosk-neck"></div>
+        <div class="kiosk-base"></div>
+        <p class="text-[11px] text-blue-200 font-bold mt-1.5">설치형 키오스크</p>
+      </div>
+      <!-- 모바일 목업 -->
+      <div class="hidden sm:flex flex-col items-center mb-6">
+        <div class="phone w-[185px] rotate-[3deg]"><img src="assets/proposal/s-voice.png?v=20260622c" alt="모바일 음성 대화"/></div>
+        <p class="text-[11px] text-blue-200 font-bold mt-3.5 -rotate-0">모바일</p>
+      </div>
     </div>
   </div>
 </section>
