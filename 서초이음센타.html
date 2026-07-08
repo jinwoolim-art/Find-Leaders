@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex, nofollow"/>
+<title>제안서 | 어르신 말벗 도우미 「이음이」 — 음성 소통 키오스크</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Public+Sans:wght@600;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: {
+    colors: { brand: "#15704f", brand2: "#1f9b6c", warm: "#f59e0b", cream: "#fbf7ef" },
+    fontFamily: { display: ["Public Sans","Noto Sans KR","sans-serif"] },
+} } };
+</script>
+<style>
+  body { font-family:'Noto Sans KR',sans-serif; color:#0f172a; }
+  .material-symbols-outlined { font-variation-settings:'FILL' 1; vertical-align:middle; }
+  .slide { min-height:100vh; scroll-snap-align:start; }
+  html { scroll-snap-type:y proximity; scroll-behavior:smooth; }
+  /* 키오스크(스탠드형) 목업 */
+  .kiosk-stand { background:#e9edf2; border-radius:22px; padding:12px 12px 0; box-shadow:0 28px 60px -18px rgba(0,0,0,.45); display:flex; flex-direction:column; }
+  .kiosk-screen { border:10px solid #cbd5e1; border-radius:16px; overflow:hidden; background:#fff; }
+  .kiosk-slot { height:11px; margin:10px 14px 0; background:#c3cad3; border-radius:6px; box-shadow:inset 0 1px 2px rgba(0,0,0,.25); }
+  .kiosk-pillar { position:relative; margin-top:8px; height:150px; background:linear-gradient(180deg,#eef1f5,#dde2e9); border-radius:0 0 16px 16px; }
+  .kiosk-pillar::before { content:''; position:absolute; left:50%; top:16px; bottom:36px; width:2px; background:#b7bfc9; }
+  .kiosk-pillar::after { content:'행복이음'; position:absolute; bottom:12px; left:0; right:0; text-align:center; font-weight:800; font-size:12px; color:#7b8694; }
+  .tag { font-size:12px; font-weight:800; letter-spacing:.04em; }
+  .mic-btn { background:radial-gradient(circle at 50% 35%, #22b083, #15704f); box-shadow:0 12px 30px -8px rgba(21,112,79,.6); }
+  @media print { .slide { min-height:auto; page-break-after:always; } html{scroll-snap-type:none;} }
+</style>
+</head>
+<body class="bg-cream">
+
+<!-- 진행 네비 -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white/85 backdrop-blur border-b border-slate-200 px-5 py-2.5 flex items-center justify-between text-sm">
+  <div class="flex items-center gap-2 font-display font-black">
+    <span class="bg-brand text-white rounded-md px-2 py-0.5 text-xs">이음이</span>
+    <span class="text-slate-700">어르신 말벗 도우미 · 제안서</span>
+  </div>
+  <div class="hidden sm:flex gap-4 text-slate-500 font-bold text-[13px]">
+    <a href="#tour" class="hover:text-brand2 text-brand font-black">▶ 둘러보기</a>
+    <a href="#s3" class="hover:text-brand2">1 핵심 컨셉</a>
+    <a href="#s4" class="hover:text-brand2">2 서비스·운영</a>
+    <a href="#s-src" class="hover:text-brand2">3 출처</a>
+    <a href="#s-arch" class="hover:text-brand2">4 구조</a>
+  </div>
+</nav>
+
+<!-- ===== S0 표지 ===== -->
+<section class="slide flex flex-col items-center justify-center text-white text-center px-6" style="background:linear-gradient(160deg,#0f5c40,#15704f 45%,#1f9b6c)">
+  <h1 class="font-display font-black text-4xl sm:text-6xl leading-tight">어르신 말벗 도우미<br/><span class="text-warm">「이음이」</span></h1>
+  <p class="text-lg sm:text-2xl font-bold mt-5 text-emerald-50">말만 걸면, 알아서 도와드립니다</p>
+  <p class="text-sm mt-8 text-emerald-100/80">음성 소통 키오스크 + 공공데이터 실시간 연동 · <b class="text-white">작동 프로토타입 완성</b></p>
+  <p class="text-xs mt-10 text-emerald-200/70">(주)플레이포 &nbsp;·&nbsp; www.play4.co.kr</p>
+</section>
+
+<!-- ===== S1 개요 표지 ===== -->
+<section class="slide flex items-center px-6 pt-16" style="background:linear-gradient(160deg,#15704f,#1f9b6c)">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center w-full text-white">
+    <div>
+      <h2 class="font-display font-black text-3xl sm:text-4xl leading-tight">키오스크가 직원처럼<br/>어르신을 돕습니다</h2>
+      <p class="text-lg mt-6 leading-relaxed text-emerald-50/90">
+        복잡한 메뉴도, 어려운 버튼도 없습니다. 어르신은 <b class="text-white">그냥 말씀만</b> 하시면 됩니다.
+        도우미 「이음이」가 알아듣고, 필요한 정보를 <b class="text-white">음성으로</b> 안내하며,
+        원하시면 <b class="text-white">문자로 정리해</b> 보내드립니다.
+      </p>
+    </div>
+    <div class="flex justify-center items-end gap-3 sm:gap-5">
+      <!-- 우리 서비스 실제 첫 화면 (이음이 대기화면) -->
+      <div class="flex flex-col items-center">
+        <div class="kiosk-stand w-[210px] sm:w-[260px]">
+          <div class="kiosk-screen" style="aspect-ratio:3/4;position:relative;background:#f4f3f1;overflow:hidden">
+            <img src="assets/prototype/이음이프린트티.png" alt="이음이" style="position:absolute;left:-6%;bottom:0;width:72%;height:80%;object-fit:contain;object-position:bottom center"/>
+            <div style="position:absolute;top:5%;right:4%;left:40%;background:#fff;border:2.5px solid #3f8fbf;border-radius:14px;padding:9px 6px;font-size:11px;font-weight:800;color:#183a56;text-align:center;line-height:1.4">수화기를 들고<br/>아래버튼을<br/>눌러주세요.<br/><br/>이음이가<br/>도와드릴게요.</div>
+            <img src="assets/prototype/전화아이콘.png" alt="통화 버튼" style="position:absolute;right:7%;bottom:7%;width:28%"/>
+          </div>
+          <div class="kiosk-slot"></div>
+          <div class="kiosk-pillar"></div>
+        </div>
+        <p class="text-[11px] text-emerald-200 font-bold mt-3">노인정 설치형 키오스크 · 실제 첫 화면</p>
+      </div>
+      <!-- 수화기 (실물 이미지) -->
+      <div class="flex items-end" style="margin-bottom:24px">
+        <img src="assets/prototype/전화기누끼.png" alt="수화기" style="width:130px;filter:drop-shadow(0 12px 14px rgba(0,0,0,.3))"/>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== S2 둘러보기 · 시연 영상 ===== -->
+<section id="tour" class="slide px-6 py-20 bg-cream">
+  <div class="max-w-6xl mx-auto w-full">
+    <p class="tag text-brand2 mb-2">둘러보기</p>
+    <h2 class="font-display font-black text-3xl sm:text-4xl mb-3">직접 보십시오 — <span class="text-brand">이음이 시연 영상</span></h2>
+    <p class="text-slate-500 text-lg mb-10">설명보다 한 번 보시는 편이 빠릅니다. 어르신이 <b class="text-slate-700">말만 걸면</b> 이음이가 알아듣고, 일자리를 <b class="text-slate-700">음성으로 안내</b>하고, 원하시면 <b class="text-slate-700">문자로 정리</b>해 보내드립니다.</p>
+
+    <div class="grid lg:grid-cols-5 gap-8 items-center">
+      <!-- 시연 영상 (작게) -->
+      <div class="lg:col-span-2">
+        <div class="rounded-3xl overflow-hidden shadow-xl border-4 border-white bg-black max-w-[280px] mx-auto">
+          <video controls playsinline preload="metadata" poster="assets/prototype/샷1-대화.png" class="w-full block" style="aspect-ratio:9/16;background:#fff;object-fit:cover">
+            <source src="assets/prototype/테스트비디오.mp4" type="video/mp4"/>
+            브라우저가 영상을 지원하지 않습니다. 파일을 직접 재생해 주세요.
+          </video>
+        </div>
+        <p class="text-[13px] text-slate-500 font-bold mt-3 text-center">▶ 실제 작동 프로토타입 시연</p>
+      </div>
+
+      <!-- 동작 설명 -->
+      <div class="lg:col-span-3 bg-white rounded-3xl p-7 border border-slate-100 shadow-sm">
+        <p class="tag text-brand2 mb-4">이렇게 동작합니다</p>
+        <div class="space-y-4">
+          <div class="flex gap-3"><span class="material-symbols-outlined text-brand">touch_app</span>
+            <div><h4 class="font-black">버튼은 딱 하나</h4><p class="text-slate-600 text-sm mt-0.5">수화기를 들고 큰 초록 버튼만 누르면 대화가 시작됩니다.</p></div></div>
+          <div class="flex gap-3"><span class="material-symbols-outlined text-brand">record_voice_over</span>
+            <div><h4 class="font-black">이음이가 음성으로 응대</h4><p class="text-slate-600 text-sm mt-0.5">어르신이 말씀하시면 알아듣고, 편안한 목소리로 안내합니다.</p></div></div>
+          <div class="flex gap-3"><span class="material-symbols-outlined text-brand">sms</span>
+            <div><h4 class="font-black">문자로 정리해 발송</h4><p class="text-slate-600 text-sm mt-0.5">안내한 일자리·정보를 어르신 번호로 문자 전송. 회원이면 성함까지 자동 확인합니다.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 실제 화면 3단계 흐름 -->
+    <div class="mt-12">
+      <p class="tag text-brand2 mb-5 text-center">실제 화면 구성 · 3단계로 진행됩니다</p>
+      <div class="grid grid-cols-3 gap-3 sm:gap-6 max-w-3xl mx-auto">
+        <figure class="text-center">
+          <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-50"><img src="assets/prototype/샷1-대화.png" alt="대화 화면" class="w-full block"/></div>
+          <div class="font-black text-brand text-base sm:text-lg mt-3">① 대화</div>
+          <p class="text-slate-500 text-xs sm:text-sm mt-0.5 leading-snug">말만 걸면 이음이가<br/>알아듣고 안내합니다</p>
+        </figure>
+        <figure class="text-center">
+          <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-50"><img src="assets/prototype/샷2-번호입력.png" alt="번호 입력 화면" class="w-full block"/></div>
+          <div class="font-black text-brand text-base sm:text-lg mt-3">② 번호 입력</div>
+          <p class="text-slate-500 text-xs sm:text-sm mt-0.5 leading-snug">문자 받을 번호 입력<br/>회원 성함 자동 확인</p>
+        </figure>
+        <figure class="text-center">
+          <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-50"><img src="assets/prototype/샷3-문자발송.png" alt="문자 발송 화면" class="w-full block"/></div>
+          <div class="font-black text-brand text-base sm:text-lg mt-3">③ 문자 발송</div>
+          <p class="text-slate-500 text-xs sm:text-sm mt-0.5 leading-snug">안내한 일자리를<br/>문자로 정리해 전송</p>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 구분 1 -->
+<div class="bg-brand text-white py-16 px-6 text-center">
+  <div class="font-display font-black text-warm leading-none" style="font-size:5.5rem">1</div>
+  <div class="font-display font-black text-3xl sm:text-5xl mt-1">핵심 컨셉</div>
+  <p class="text-emerald-100 mt-3 font-bold text-lg">이음이는 메뉴가 아니라, 말벗 도우미</p>
+</div>
+
+<!-- ===== S3 핵심 컨셉 ===== -->
+<section id="s3" class="slide px-6 py-20 bg-white">
+  <div class="max-w-6xl mx-auto w-full">
+    <p class="tag text-brand2 mb-2">핵심 컨셉</p>
+    <h2 class="font-display font-black text-3xl sm:text-4xl mb-3">「이음이」는 메뉴가 아니라, <span class="text-brand">말벗 도우미</span>입니다</h2>
+    <p class="text-slate-500 text-lg mb-10">어르신은 카테고리를 고르지 않습니다. 그냥 말씀하시면, 이음이가 알아서 연결합니다.</p>
+
+    <div class="grid lg:grid-cols-2 gap-8 items-stretch">
+      <div class="bg-cream rounded-3xl p-7 border border-amber-100">
+        <h3 class="font-black text-xl text-brand mb-4">이렇게 동작합니다</h3>
+        <div class="space-y-4">
+          <div class="flex gap-3"><span class="bg-brand text-white font-black rounded-full w-8 h-8 flex items-center justify-center shrink-0">1</span>
+            <div><h4 class="font-black">버튼은 딱 하나</h4><p class="text-slate-600 text-sm mt-0.5">큰 마이크 버튼 하나. “여기를 누르고 말씀하세요.”</p></div></div>
+          <div class="flex gap-3"><span class="bg-brand text-white font-black rounded-full w-8 h-8 flex items-center justify-center shrink-0">2</span>
+            <div><h4 class="font-black">그냥 말씀하시면 됩니다</h4><p class="text-slate-600 text-sm mt-0.5">“요즘 일이 없어서 용돈이라도 벌었으면…” 처럼 편하게.</p></div></div>
+          <div class="flex gap-3"><span class="bg-brand text-white font-black rounded-full w-8 h-8 flex items-center justify-center shrink-0">3</span>
+            <div><h4 class="font-black">이음이가 알아서 연결</h4><p class="text-slate-600 text-sm mt-0.5">일자리·복지 등 <b>어떤 도움이 필요한지 자동으로 판단</b>해 안내합니다. 어르신은 카테고리를 몰라도 됩니다.</p></div></div>
+        </div>
+      </div>
+
+      <div class="bg-slate-900 rounded-3xl p-7 text-white flex flex-col justify-center">
+        <p class="tag text-emerald-300 mb-4">대화 예시</p>
+        <div class="space-y-3 text-[15px]">
+          <div class="bg-white/10 rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%]">👵 “요즘 일이 없어서 용돈이라도 벌까 하는데…”</div>
+          <div class="bg-brand2 rounded-2xl rounded-tr-sm px-4 py-3 max-w-[88%] ml-auto">🧑‍🦳 “네, 어르신. 서초구에서 하실 수 있는 어르신 일자리를 알려드릴게요. 걷는 데는 불편 없으세요?”</div>
+          <div class="bg-white/10 rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%]">👵 “그럼, 걷는 건 괜찮아.”</div>
+          <div class="bg-brand2 rounded-2xl rounded-tr-sm px-4 py-3 max-w-[88%] ml-auto">🧑‍🦳 “좋습니다. 마침 맞는 자리가 있어요. <b>정리해서 문자로 보내드릴까요?</b>”</div>
+        </div>
+        <p class="text-[12px] text-slate-400 leading-snug mt-5">※ 「이음이」는 센터 자료를 바탕으로 안내하는 가상 도우미이며, 실제 상담·결정은 센터 직원이 함께합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 구분 2 -->
+<div class="bg-brand text-white py-16 px-6 text-center">
+  <div class="font-display font-black text-warm leading-none" style="font-size:5.5rem">2</div>
+  <div class="font-display font-black text-3xl sm:text-5xl mt-1">서비스 · 운영</div>
+  <p class="text-emerald-100 mt-3 font-bold text-lg">이용 시나리오 · 로드맵 · 기술·운영</p>
+</div>
+
+<!-- ===== S4 이용 시나리오 ===== -->
+<section id="s4" class="slide flex items-center px-6 py-20 bg-cream">
+  <div class="max-w-6xl mx-auto w-full">
+    <p class="tag text-brand2 mb-2">이용 시나리오</p>
+    <h2 class="font-display font-black text-3xl sm:text-4xl mb-10">어르신이 겪는 4단계, 아주 단순합니다</h2>
+
+    <div class="grid md:grid-cols-4 gap-4">
+      <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm text-center">
+        <div class="text-4xl">🚶</div>
+        <p class="font-black text-brand mt-2">① 다가가기</p>
+        <p class="text-slate-600 text-sm mt-1.5">키오스크 앞에 서면 이음이가 인사합니다.</p>
+      </div>
+      <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm text-center">
+        <div class="text-4xl">🎙️</div>
+        <p class="font-black text-brand mt-2">② 말하기</p>
+        <p class="text-slate-600 text-sm mt-1.5">버튼 하나 누르고, 하고 싶은 말을 합니다.</p>
+      </div>
+      <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm text-center">
+        <div class="text-4xl">👂</div>
+        <p class="font-black text-brand mt-2">③ 안내받기</p>
+        <p class="text-slate-600 text-sm mt-1.5">이음이가 음성으로 알기 쉽게 안내합니다.</p>
+      </div>
+      <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm text-center">
+        <div class="text-4xl">📱</div>
+        <p class="font-black text-brand mt-2">④ 문자 받기</p>
+        <p class="text-slate-600 text-sm mt-1.5">“문자로 보내드릴까요?” → 번호 입력 → 발송.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== S6 서비스 로드맵 ===== -->
+<section id="s6" class="slide flex items-center px-6 py-20 bg-cream">
+  <div class="max-w-5xl mx-auto w-full">
+    <p class="tag text-brand2 mb-2">서비스 로드맵</p>
+    <h2 class="font-display font-black text-3xl sm:text-4xl mb-3">하나부터, 천천히 넓혀갑니다</h2>
+    <p class="text-slate-500 text-lg mb-10">처음엔 꼭 필요한 <b>노인 일자리</b> 하나로. 반응을 보며 넓힙니다.</p>
+
+    <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white">
+      <table class="w-full text-left text-[15px]">
+        <thead class="bg-brand text-white font-bold"><tr><th class="px-5 py-3">단계</th><th class="px-5 py-3">무엇을</th><th class="px-5 py-3">특징</th></tr></thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr><td class="px-5 py-3 font-black text-brand2">1차 · 시범</td><td class="px-5 py-3 text-slate-700"><b>노인 일자리 안내</b> 단일 서비스</td><td class="px-5 py-3 text-slate-600">음성 대화 + 문자 + 2단 대시보드. 일자리는 <b>공공 API 실시간 연동(검증 완료)</b> + 센터 자체 공고 등록.</td></tr>
+          <tr><td class="px-5 py-3 font-black text-brand2">2차 · 확장</td><td class="px-5 py-3 text-slate-700">건강·복지·법률·금융 등 <b>15개 영역으로 확대</b></td><td class="px-5 py-3 text-slate-600">공공 정보 소스(API·링크) <b>15개 영역을 이미 정리 완료</b>. 어르신 요청 데이터를 근거로 우선순위 추가.</td></tr>
+          <tr><td class="px-5 py-3 font-black text-brand2">3차 · 심화</td><td class="px-5 py-3 text-slate-700"><b>개인 모바일 연동</b></td><td class="px-5 py-3 text-slate-600">원하시는 분에 한해, 본인 폰으로 상세 안내·이력 확인. 공공 API·링크 연동도 검토.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-5 mt-8">
+      <div class="bg-white rounded-3xl p-6 border border-slate-100">
+        <h3 class="font-black text-lg mb-2 text-brand">1차의 원칙</h3>
+        <p class="text-slate-600 text-[15px] leading-relaxed">서비스는 하나만. 화면은 최대한 비우고, 어르신은 오직 <b>말하고 듣는 것</b>에만 집중하게 합니다.</p>
+      </div>
+      <div class="bg-white rounded-3xl p-6 border border-slate-100">
+        <h3 class="font-black text-lg mb-2 text-brand">모바일은 가볍게</h3>
+        <p class="text-slate-600 text-[15px] leading-relaxed">처음엔 앱 설치 없이 <b>문자</b>로 충분합니다. 필요가 깊어지면 카카오 알림톡·전용 앱을 순차 도입합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== S7 기술·운영 설계 ===== -->
+<section id="s7" class="slide flex items-center px-6 py-20 bg-white">
+  <div class="max-w-6xl mx-auto w-full">
+    <p class="tag text-brand2 mb-2">기술 · 운영 설계</p>
+    <h2 class="font-display font-black text-3xl sm:text-4xl mb-3">어르신 음성을 ‘정확히’ 듣는 것이 핵심입니다</h2>
+    <p class="text-slate-500 text-lg mb-10">노인정 소음 환경에서도 잘 알아듣도록, 하드웨어부터 신중히 설계합니다.</p>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="bg-cream rounded-3xl p-6 border border-slate-100">
+        <div class="flex items-center gap-3"><span class="material-symbols-outlined text-brand text-3xl">call</span><h3 class="font-black text-lg">수화기(핸드셋)형 마이크 권장</h3></div>
+        <p class="text-slate-600 text-[15px] leading-relaxed mt-2">전화기처럼 들고 말하는 방식. <b>익숙하고, 주변 소음을 차단</b>해 인식률이 크게 올라가며, 난청 어르신도 귀에 대고 <b>크게 들을 수</b> 있습니다.</p>
+      </div>
+      <div class="bg-cream rounded-3xl p-6 border border-slate-100">
+        <div class="flex items-center gap-3"><span class="material-symbols-outlined text-brand text-3xl">devices</span><h3 class="font-black text-lg">키오스크 하드웨어</h3></div>
+        <p class="text-slate-600 text-[15px] leading-relaxed mt-2">시범은 <b>대화면 + 외장 마이크</b> 조합으로 유연하게. 완제품 구매 시 <b>외장 마이크 장착이 가능한</b> 기종을 선택합니다.</p>
+      </div>
+      <div class="bg-cream rounded-3xl p-6 border border-slate-100">
+        <div class="flex items-center gap-3"><span class="material-symbols-outlined text-brand text-3xl">smart_toy</span><h3 class="font-black text-lg">말귀를 알아듣는 AI + 목소리</h3></div>
+        <p class="text-slate-600 text-[15px] leading-relaxed mt-2">두서없는 말도 <b>AI(Claude)가 이해·분류·응답</b>하고, <b>자연스러운 음성(클로바)</b>으로 또렷하게 안내. 어르신은 그냥 말씀만 하시면 됩니다.</p>
+      </div>
+      <div class="bg-cream rounded-3xl p-6 border border-slate-100">
+        <div class="flex items-center gap-3"><span class="material-symbols-outlined text-brand text-3xl">verified</span><h3 class="font-black text-lg">3중 안전장치</h3></div>
+        <p class="text-slate-600 text-[15px] leading-relaxed mt-2"><b>① 번호 음성 복창·확인</b>으로 오발송 방지 <b>② 회원명단 대조</b>로 미등록 번호 경고 <b>③ 무응답 시 자동으로 처음 화면 복귀.</b></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 구분 3 -->
+<div class="bg-brand text-white py-16 px-6 text-center">
+  <div class="font-display font-black text-warm leading-none" style="font-size:5.5rem">3</div>
+  <div class="font-display font-black text-3xl sm:text-5xl mt-1">출처</div>
+  <p class="text-emerald-100 mt-3 font-bold text-lg">일자리 정보 출처</p>
+</div>
+
+<!-- ===== S9 일자리 정보 출처 ===== -->
+<section id="s-src" class="slide flex items-center px-6 py-20 bg-white">
+  <div class="max-w-5xl mx-auto w-full">
+    <p class="tag text-brand2 mb-2">일자리 정보 출처</p>
+    <h2 class="font-display font-black text-3xl sm:text-4xl mb-3">서초구 일자리, 어디서 가져오나</h2>
+    <p class="text-slate-500 text-lg mb-6">저희가 확인한 <b>공식 출처</b>입니다. 서초구 일자리는 <b>서초 소재 기관·구청</b> 공고가 핵심입니다.</p>
+
+    <a href="서초구-일자리-출처와현황.xlsx" class="inline-flex items-center gap-2 bg-brand text-white font-black rounded-xl px-5 py-3 mb-7 shadow-sm hover:opacity-90">
+      <span class="material-symbols-outlined">table_view</span> 엑셀 파일 열기 · 출처/현황 업데이트
+    </a>
+
+    <div class="overflow-x-auto rounded-3xl border border-slate-200">
+      <table class="w-full text-left text-[14px] min-w-[640px]">
+        <thead class="bg-brand text-white font-bold"><tr>
+          <th class="px-3 py-3">코드</th><th class="px-4 py-3">출처(기관)</th><th class="px-3 py-3">종류</th><th class="px-4 py-3">서초구 커버 현황</th>
+        </tr></thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr><td class="px-3 py-3 font-black text-brand2">A</td><td class="px-4 py-3">한국노인인력개발원 — 노인 구인정보</td><td class="px-3 py-3">공공API</td><td class="px-4 py-3 text-slate-600">서초 실시간 구인 <b>현재 0건</b> (인근 구만)</td></tr>
+          <tr><td class="px-3 py-3 font-black text-brand2">B</td><td class="px-4 py-3">한국노인인력개발원 — 자립형 참여자모집</td><td class="px-3 py-3">공공API</td><td class="px-4 py-3 text-slate-600">서초구 <b>51건 / 수행기관 6곳</b> (현재 마감·연말 재개)</td></tr>
+          <tr><td class="px-3 py-3 font-black text-brand2">C</td><td class="px-4 py-3">양재노인종합복지관 <span class="text-slate-400">(서초 소재)</span></td><td class="px-3 py-3">웹 게시판</td><td class="px-4 py-3 text-slate-600">복지관 공지·채용 공고</td></tr>
+          <tr><td class="px-3 py-3 font-black text-brand2">D</td><td class="px-4 py-3">서초구립 중앙노인종합복지관 <span class="text-slate-400">(서초 소재)</span></td><td class="px-3 py-3">웹 게시판</td><td class="px-4 py-3 text-slate-600">복지관 공지·채용 공고</td></tr>
+          <tr><td class="px-3 py-3 font-black text-brand2">E</td><td class="px-4 py-3">서초구청 — 노인일자리</td><td class="px-3 py-3">웹</td><td class="px-4 py-3 text-slate-600">구청 노인일자리 안내</td></tr>
+          <tr class="bg-amber-50"><td class="px-3 py-3 font-black text-warm">검토</td><td class="px-4 py-3">서울시50플러스 · 서울 일자리플러스 등</td><td class="px-3 py-3">API/웹</td><td class="px-4 py-3 text-slate-600">서울 광역 (서초 필터 적용 예정)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-slate-500 text-sm mt-4">※ 출처는 지속적으로 업데이트됩니다.</p>
+  </div>
+</section>
+
+<!-- 구분 4 -->
+<div class="bg-brand text-white py-16 px-6 text-center">
+  <div class="font-display font-black text-warm leading-none" style="font-size:5.5rem">4</div>
+  <div class="font-display font-black text-3xl sm:text-5xl mt-1">구조</div>
+  <p class="text-emerald-100 mt-3 font-bold text-lg">플랫폼 구조 · Frontend는 심플, Backend는 체계적</p>
+</div>
+
+<!-- ===== S10 플랫폼 구조 ===== -->
+<section id="s-arch" class="slide px-6 py-20 bg-cream">
+  <div class="max-w-6xl mx-auto w-full">
+    <p class="tag text-brand2 mb-2">플랫폼 구조</p>
+    <h2 class="font-display font-black text-3xl sm:text-4xl mb-3">Frontend는 <span class="text-brand">심플</span>, Backend는 <span class="text-brand">체계적</span></h2>
+    <p class="text-slate-500 text-lg mb-8">어르신은 말 한마디만 하면 됩니다. 뒤에서는 자동으로 카테고리별 정리되어, 센터의 <b>지식·데이터·피드백</b>이 됩니다.</p>
+
+    <!-- Frontend / Backend -->
+    <div class="grid md:grid-cols-2 gap-6 mb-8">
+      <div class="bg-white rounded-3xl p-7 border border-blue-100">
+        <span class="rounded-full px-3 py-1 text-xs font-black" style="background:#dbeafe;color:#1d4ed8">FRONTEND · 앞단 · 심플</span>
+        <h3 class="font-black text-xl mt-3">어르신 화면 — 심플</h3>
+        <ul class="text-slate-600 mt-3 space-y-2 text-[15px] leading-relaxed list-disc pl-4">
+          <li>수화기 들고 <b>말 한마디</b></li>
+          <li>버튼·메뉴·작은 글씨 없음</li>
+          <li>“말 걸고, 듣기”가 전부</li>
+        </ul>
+      </div>
+      <div class="bg-brand text-white rounded-3xl p-7 shadow-lg">
+        <span class="rounded-full px-3 py-1 text-xs font-black" style="background:#dcfce7;color:#15803d">BACKEND · 뒷단 · 체계적</span>
+        <h3 class="font-black text-xl mt-3">자동 정리 — 체계적</h3>
+        <ul class="text-emerald-50 mt-3 space-y-2 text-[15px] leading-relaxed list-disc pl-4">
+          <li><b class="text-white">분류 → 요약 → 구조화</b> 자동 처리</li>
+          <li>카테고리별 <b class="text-white">지식·데이터·피드백</b> 축적</li>
+          <li>어르신은 이 구조를 몰라도 됨</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 설계 원리 -->
+    <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-7 mb-8 leading-relaxed">
+      <p class="tag text-emerald-300 mb-2">설계 원리</p>
+      어르신은 카테고리도, 메뉴도 모릅니다. <b class="text-warm">그냥 하고 싶은 말을 하면</b> 됩니다. 대신 뒷단에서는 그 말이 자동으로 알맞은 카테고리로 <b class="text-white">분류·정리</b>되어, 센터의 지식·데이터·피드백으로 차곡차곡 쌓입니다. — <b class="text-white">어르신 앞단 복잡도 = 0.</b>
+    </div>
+
+    <!-- 핵심 흐름 -->
+    <p class="font-black text-slate-700 text-lg mb-3">핵심 흐름 — 두서없는 말 → 정리된 데이터</p>
+    <div class="grid lg:grid-cols-2 gap-6 mb-4 items-stretch">
+      <div class="bg-white rounded-3xl p-6 border border-slate-100">
+        <pre class="text-[13px] leading-relaxed whitespace-pre-wrap text-brand font-bold">어르신의 자유로운 말
+   → (음성 인식)      말을 글로
+   → AI 3단 정리
+        ① 분류   어떤 주제인지 자동 판단
+        ② 요약   핵심만 한 줄로
+        ③ 구조화 데이터 항목으로
+   → 카테고리별로 체계적으로 축적</pre>
+      </div>
+      <div class="grid gap-3">
+        <div class="bg-white rounded-2xl p-4 border border-slate-100"><p class="font-black text-brand">📚 지식</p><p class="text-slate-600 text-[14px] mt-0.5 leading-relaxed">어르신들이 무엇을 궁금해하고 필요로 하는지가 카테고리별로 정리됩니다.</p></div>
+        <div class="bg-white rounded-2xl p-4 border border-slate-100"><p class="font-black text-brand">📊 데이터</p><p class="text-slate-600 text-[14px] mt-0.5 leading-relaxed">이용·관심·요청이 수치·항목으로 쌓여 현황을 한눈에 봅니다.</p></div>
+        <div class="bg-white rounded-2xl p-4 border border-slate-100"><p class="font-black text-brand">🔁 피드백</p><p class="text-slate-600 text-[14px] mt-0.5 leading-relaxed">아직 없는 주제의 문의도 정리되어, 다음에 무엇을 더할지 근거가 됩니다.</p></div>
+      </div>
+    </div>
+
+    <!-- 카테고리 구조 표 -->
+    <p class="font-black text-slate-700 text-lg mt-8 mb-3">카테고리 구조 — 지금은 일자리, 구조는 이미 넓게</p>
+    <div class="overflow-x-auto rounded-3xl border border-slate-200">
+      <table class="w-full text-left text-[14px] min-w-[620px]">
+        <thead class="bg-brand text-white font-bold"><tr><th class="px-4 py-3" style="width:170px">카테고리</th><th class="px-4 py-3">다루는 내용(예)</th><th class="px-4 py-3" style="width:100px">상태</th></tr></thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr><td class="px-4 py-2.5 font-black">① 일자리·경제</td><td class="px-4 py-2.5 text-slate-600">노인 일자리, 기초연금·수당, 일자리 교육</td><td class="px-4 py-2.5"><span class="text-green-700 font-bold">✅ 지금</span></td></tr>
+          <tr><td class="px-4 py-2.5 font-black">② 건강·의료</td><td class="px-4 py-2.5 text-slate-600">병원·건강검진 안내, 복약·만성질환, 방문건강</td><td class="px-4 py-2.5 text-blue-600 font-bold">🔵 확장</td></tr>
+          <tr><td class="px-4 py-2.5 font-black">③ 복지·돌봄</td><td class="px-4 py-2.5 text-slate-600">재가돌봄, 장기요양, 도시락·반찬, 안부확인</td><td class="px-4 py-2.5 text-blue-600 font-bold">🔵 확장</td></tr>
+          <tr><td class="px-4 py-2.5 font-black">④ 생활지원</td><td class="px-4 py-2.5 text-slate-600">주거·집수리, 교통·이동, 공과금·에너지 지원</td><td class="px-4 py-2.5 text-blue-600 font-bold">🔵 확장</td></tr>
+          <tr><td class="px-4 py-2.5 font-black">⑤ 여가·교육·참여</td><td class="px-4 py-2.5 text-slate-600">문화·운동 교실, 동아리, 나들이·행사</td><td class="px-4 py-2.5 text-blue-600 font-bold">🔵 확장</td></tr>
+          <tr><td class="px-4 py-2.5 font-black">⑥ 상담·정서</td><td class="px-4 py-2.5 text-slate-600">외로움·마음돌봄, 생활 상담</td><td class="px-4 py-2.5 text-blue-600 font-bold">🔵 확장</td></tr>
+          <tr><td class="px-4 py-2.5 font-black">⑦ 행정·민원</td><td class="px-4 py-2.5 text-slate-600">구청·주민센터 안내, 증명서·신청 안내</td><td class="px-4 py-2.5 text-blue-600 font-bold">🔵 확장</td></tr>
+          <tr><td class="px-4 py-2.5 font-black">⑧ 기타·미분류</td><td class="px-4 py-2.5 text-slate-600">분류되지 않은 모든 문의 (다음 서비스의 씨앗)</td><td class="px-4 py-2.5"><span class="text-green-700 font-bold">✅ 항상</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-slate-500 text-sm mt-3">※ 어르신이 아직 열지 않은 카테고리의 이야기를 하셔도 <b>막다른 길 없이 정리해 두는</b> 구조라, 그 자체가 다음 확장의 데이터가 됩니다.</p>
+
+    <!-- 확장성 -->
+    <div class="grid md:grid-cols-2 gap-5 mt-8">
+      <div class="bg-white rounded-3xl p-6 border border-slate-100">
+        <h3 class="font-black text-lg text-brand mb-2">어르신 경험은 바뀌지 않습니다</h3>
+        <p class="text-slate-600 text-[15px] leading-relaxed">카테고리가 하나든 여덟이든, 어르신은 늘 <b>“말 걸고 → 듣는”</b> 똑같이 단순한 경험만 합니다. 확장은 전부 뒷단에서 일어납니다.</p>
+      </div>
+      <div class="bg-white rounded-3xl p-6 border border-slate-100">
+        <h3 class="font-black text-lg text-brand mb-2">쌓인 데이터가 확장을 이끕니다</h3>
+        <p class="text-slate-600 text-[15px] leading-relaxed">일자리로 시작해 실제 요청이 쌓이면, <b>어떤 카테고리를 다음에 열지</b>가 데이터로 자연히 드러납니다.</p>
+      </div>
+    </div>
+    <p class="text-center text-lg sm:text-xl font-black mt-8">어르신에겐 <span class="text-brand">가장 단순한 말벗</span>, 센터에겐 <span class="text-warm">카테고리별로 쌓이는 체계</span></p>
+  </div>
+</section>
+
+</body>
+</html>
